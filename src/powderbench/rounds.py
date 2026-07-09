@@ -80,6 +80,22 @@ def submit_baselines(d: date, mode: str = "live") -> dict[str, Path]:
     return out
 
 
+def _biggest_24h(truth_d: pd.DataFrame) -> dict | None:
+    """The deepest valid 24h total this round — the storm headline."""
+    from .stations import by_id
+
+    h24 = truth_d[(truth_d["horizon_h"] == 24) & truth_d["valid"]]
+    if not len(h24) or h24["truth_in"].max() <= 0:
+        return None
+    top = h24.loc[h24["truth_in"].idxmax()]
+    station = by_id().get(top["station_id"])
+    return {
+        "station_id": top["station_id"],
+        "resort": station.resort if station else top["station_id"],
+        "inches": round(float(top["truth_in"]), 1),
+    }
+
+
 def _first_commit_utc(path: Path) -> datetime | None:
     """When the file first landed on the current branch (committer time)."""
     try:
@@ -129,6 +145,7 @@ def resolve_round(d: date, enforce_deadline: bool = True) -> dict | None:
             "station_horizons_valid": int(truth_d["valid"].sum()),
             "station_horizons_voided": int((~truth_d["valid"]).sum()),
         },
+        "biggest_24h": _biggest_24h(truth_d),
         "teams": teams,
     }
     results_dir = data_dir() / "results" / "rounds"

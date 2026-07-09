@@ -46,10 +46,14 @@ function renderRounds(rounds) {
       .sort((a, b) => b[1].powder_score - a[1].powder_score)[0];
     const card = document.createElement("div");
     card.className = "round-card";
+    const dump = r.biggest_24h
+      ? `${r.biggest_24h.inches}&Prime; <span class="who">@ ${r.biggest_24h.resort}</span>`
+      : "quiet day";
     card.innerHTML = `
       <div class="date">${r.round_id}</div>
-      <div class="snow">${r.qc.station_horizons_voided} voided / ${r.qc.station_horizons_valid} scored</div>
-      <div class="who">${best ? `best: ${best[0]} (${fmt(best[1].powder_score, 1)})` : "no ranked teams"}</div>`;
+      <div class="snow">${dump}</div>
+      <div class="who">${best ? `best: ${best[0]} (${fmt(best[1].powder_score, 1)})` : "no ranked teams"}</div>
+      <div class="who">${r.qc.station_horizons_valid} scored · ${r.qc.station_horizons_voided} voided</div>`;
     strip.appendChild(card);
   }
   if (!rounds.length) strip.innerHTML = `<p class="fine">No rounds resolved yet.</p>`;
