@@ -2,12 +2,14 @@
 
 ## The 3-minute version
 
-1. Fork the repo.
-2. Find the open round: `data/rounds/<date>/round.json` (a new one opens daily
-   at 00:05 UTC for the next UTC day).
-3. Add `data/submissions/<date>/<your-team>.csv`.
-4. Open a PR **before 00:00 UTC on the round date**. CI validates it immediately.
-5. Watch the leaderboard ~3 days later.
+1. Fork the repo. Pick a league — it's winter somewhere: **northern**
+   (Oct–May) or **southern** (Jun–Oct, trial).
+2. Find the open round: `data/rounds/<league>/<date>/round.json` (`cutoff_utc`
+   in the manifest is your deadline; new rounds open daily).
+3. Add `data/submissions/<league>/<date>/<your-team>.csv`.
+4. Open a PR **before the cutoff**. CI validates it immediately.
+5. Watch the leaderboard — ~3 days later (northern) or ~a week (southern,
+   ERA5 archive lag).
 
 ## The CSV
 
@@ -22,12 +24,13 @@ station_id,horizon_h,snowfall_in
 ...
 ```
 
-- `station_id`: SNOTEL triplet from `data/stations.yaml` (or `powderbench stations`).
+- `station_id`: from `data/stations.yaml` (or `powderbench stations --league <name>`).
 - `horizon_h`: 24, 48, or 72. Horizons are **cumulative** from the round date.
 - `snowfall_in`: inches, 0–200.
 
-Cover all 44 stations × 3 horizons for full coverage (132 rows). You can skip
-some, but ranking needs ≥70% average coverage.
+Cover every station × 3 horizons for full coverage (northern: 45 × 3 = 135
+rows; southern: 23 × 3 = 69). You can skip some, but ranking needs ≥70%
+average coverage.
 
 Optional columns:
 
@@ -38,7 +41,7 @@ Optional columns:
 Check before you push:
 
 ```bash
-powderbench validate my-team.csv
+powderbench validate my-team.csv --league southern
 ```
 
 ## Team names
@@ -64,6 +67,7 @@ workflow with their own secrets.
 ```bash
 # CSV with an extra round_date column, one block per practice day
 powderbench hindcast 2025-01-01 2025-01-31 --submission practice.csv --team me
+powderbench hindcast 2025-07-01 2025-07-14 --league southern   # austral winter
 ```
 
 The hindcast prints an unofficial leaderboard against all baselines for that

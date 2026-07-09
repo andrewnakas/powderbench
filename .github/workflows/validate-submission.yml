@@ -28,12 +28,19 @@ jobs:
           FAIL=0
           for f in $FILES; do
             echo "::group::$f"
-            # deadline: the round directory name is the cutoff date (00:00 UTC)
+            # path: data/submissions/<league>/<round>/<team>.csv
             ROUND=$(basename "$(dirname "$f")")
-            if [[ "$PR_CREATED_AT" > "${ROUND}T00:00:00Z" ]]; then
-              echo "::warning file=$f::PR opened after the $ROUND cutoff — will be scored but flagged late"
-            fi
-            powderbench validate "$f" || FAIL=1
+            LEAGUE=$(basename "$(dirname "$(dirname "$f")")")
+            python -c "
+          import os, sys
+          from datetime import date, datetime
+          from powderbench.leagues import get_league
+          cutoff = get_league('$LEAGUE').cutoff_utc(date.fromisoformat('$ROUND'))
+          created = datetime.fromisoformat(os.environ['PR_CREATED_AT'].replace('Z', '+00:00'))
+          if created > cutoff:
+              print(f'::warning file=$f::PR opened after the $LEAGUE/$ROUND cutoff ({cutoff:%Y-%m-%d %H:%M} UTC) — scored but flagged late')
+          "
+            powderbench validate "$f" --league "$LEAGUE" || FAIL=1
             echo "::endgroup::"
           done
           exit $FAIL

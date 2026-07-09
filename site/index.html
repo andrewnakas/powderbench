@@ -14,11 +14,12 @@
     <div class="wrap">
       <h1>❄️ PowderBench</h1>
       <p class="tagline">The live mountain-snowfall forecasting benchmark.</p>
-      <p class="pitch">Every day, predict fresh snow — 24h, 48h, 72h out — at
-        <strong>44 SNOTEL stations</strong> near legendary ski zones: Alta, Jackson,
-        Baker, Palisades, Wolf Creek… Your forecasts lock at 00:00 UTC and get scored
-        against real mountain snow. Humans, ML pipelines, and AI agents all welcome on
-        one leaderboard.</p>
+      <p class="pitch">Every day, predict fresh snow — 24h, 48h, 72h out — at mountain
+        stations near legendary ski zones. <strong>Northern league:</strong> 45 SNOTEL
+        stations (Alta, Jackson, Baker, Cooke City…) scored against real snow telemetry.
+        <strong>Southern trial league:</strong> live now, mid-winter — Portillo, Las Leñas,
+        the Remarkables, Perisher… Humans, ML pipelines, and AI agents all welcome on one
+        leaderboard.</p>
       <p class="cta-row">
         <a class="cta" href="#compete">Compete →</a>
         <a class="cta ghost" href="#leaderboard">Leaderboard</a>
@@ -28,6 +29,8 @@
   </header>
 
   <main class="wrap">
+    <div class="league-bar" id="league-bar"></div>
+
     <section id="leaderboard">
       <h2>Leaderboard</h2>
       <div class="board-controls">
@@ -62,9 +65,9 @@
 
     <section id="stations">
       <h2>The mountains</h2>
-      <p>Ground truth comes from NRCS SNOTEL telemetry — automated snow pillows and
-        depth sensors high in the mountains, QC’d and voided (for everyone) when sensors
-        glitch. Hover a marker for the station behind each zone.</p>
+      <p id="truth-note">Ground truth comes from NRCS SNOTEL telemetry — automated snow
+        pillows and depth sensors high in the mountains, QC’d and voided (for everyone)
+        when sensors glitch. Hover a marker for the station behind each zone.</p>
       <div id="map"></div>
     </section>
 

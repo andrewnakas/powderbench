@@ -1,6 +1,6 @@
 # Data: sources, truth definition, QC
 
-## Ground truth: SNOTEL
+## Ground truth: SNOTEL (northern league)
 
 Source: USDA NRCS AWDB REST API
 (`https://wcc.sc.egov.usda.gov/awdbRestApi`), public domain, no key.
@@ -40,22 +40,55 @@ A station-day is voided — excluded from scoring for everyone — when
 A 48h/72h window is valid only if every component day is valid. Typical
 midwinter void rates are a few percent.
 
+## Ground truth: ERA5 analysis (southern trial league)
+
+There is no southern-hemisphere SNOTEL equivalent with a stable public API
+(we probed: NIWA is key-gated with negotiated access; Chile's DGA is
+session-based JSP portals; the CL/AR Observatorio Andino is an R Shiny
+websocket app). The trial league therefore scores against **ERA5 reanalysis
+daily snowfall** at each resort's coordinates, fetched from Open-Meteo's
+keyless archive API (`archive-api.open-meteo.com`, CC BY 4.0).
+
+Honest caveats, disclosed everywhere the trial appears:
+
+- ERA5 is a **model analysis**, not a snow stake. At ~25 km grid scale it
+  mutes maritime peaks (NZ/AU totals read low) and misses microclimates.
+- ERA5 assimilates observations that also feed the live forecast models, so
+  the NWP baselines are structurally correlated with the truth — treat their
+  southern Powder Scores as a hard, slightly flattered target.
+- The archive lags real time by ~5 days, so rounds resolve from D+8.
+- QC is missing-data-only (no sensor glitches to void).
+
+## Observation feeds (southern)
+
+`src/powderbench/obsfeeds.py` records best-effort real observations next to
+model truth (never blocking resolution): a NIWA DataHub adapter that activates
+when `NIWA_API_KEY`/`NIWA_CUSTOMER_ID` secrets exist, and a DGA slot that
+ships disabled until a stable endpoint is identified. Once a feed runs clean
+for a station, that station's `truth_source` in `stations.yaml` can be flipped
+to promote it to real truth. Resort snow reports are **not** used: aggregators
+prohibit scraping and marketing totals are inflated and gameable.
+
 ## The stations
 
-`data/stations.yaml`: 44 active SNOTEL stations chosen for (a) proximity to
-iconic ski terrain, (b) long records, (c) geographic spread — Wasatch, Colorado
-Rockies, Tetons, Montana, Idaho, Cascades, Sierra, New Mexico, Chugach. All
-metadata (coordinates, elevations) comes from the API, not hand-entry.
+`data/stations.yaml`: 45 active SNOTEL stations (northern) chosen for (a)
+proximity to iconic ski terrain, (b) long records, (c) geographic spread —
+Wasatch, Colorado Rockies, Tetons, Beartooths, Montana, Idaho, Cascades,
+Sierra, New Mexico, Chugach. All SNOTEL metadata comes from the API, not
+hand-entry. Plus 23 southern ERA5 resort points (Chile, Argentina, NZ,
+Australia) with hand-curated coordinates.
 
-Station triplet format: `<id>:<state>:SNTL`, e.g. `766:UT:SNTL` = Snowbird.
+Station id formats: `<id>:<state>:SNTL` (e.g. `766:UT:SNTL` = Snowbird) and
+`<slug>:<country>:ERA5` (e.g. `portillo:CL:ERA5`).
 
 ## Climatology
 
-`data/climatology/climatology.csv` — built from water years 2016–2025
-(`powderbench build-climatology`). For each station × day-of-year (±7-day
-circular window, pooled across years): mean, quantiles (p10–p90) of the 24h /
-48h / 72h snowfall distributions, and the empirical frequency of ≥6" days.
-The **median** is climatology's point forecast (MAE-optimal no-skill reference).
+`data/climatology/<league>.csv` — northern from water years 2016–2025 of
+SNOTEL history; southern from ERA5 1991–2025 (`powderbench build-climatology
+--league <name>`). For each station × day-of-year (±7-day circular window,
+pooled across years): mean, quantiles (p10–p90) of the 24h / 48h / 72h
+snowfall distributions, and the empirical frequency of ≥6" days. The
+**median** is climatology's point forecast (MAE-optimal no-skill reference).
 
 ## NWP baselines: Open-Meteo
 
@@ -72,12 +105,14 @@ The **median** is climatology's point forecast (MAE-optimal no-skill reference).
 ## Layout of generated data
 
 ```
-data/rounds/<D>/round.json      manifest: cutoff, stations, target days
-data/rounds/<D>/truth.csv       QC'd truth written at resolution
-data/submissions/<D>/<team>.csv all submissions for round D
-data/results/rounds/<D>.json    per-team metrics + QC counts for round D
-data/results/leaderboard.json   season + last-30 aggregates
-data/cache/                     API response cache (gitignored)
+data/leagues.yaml                        league config
+data/rounds/<league>/<D>/round.json      manifest: cutoff, stations, target days
+data/rounds/<league>/<D>/truth.csv       QC'd truth written at resolution
+data/submissions/<league>/<D>/<team>.csv all submissions for round D
+data/results/<league>/rounds/<D>.json    per-team metrics + QC counts
+data/results/<league>/leaderboard.json   season + last-30 aggregates
+data/obs/<league>/                       observation-feed reference data
+data/cache/                              API response cache (gitignored)
 ```
 
 ## The exhibition week

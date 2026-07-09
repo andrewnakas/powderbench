@@ -1,11 +1,16 @@
 name: Open round
 on:
   schedule:
-    - cron: "5 0 * * *" # 00:05 UTC: open tomorrow's round -> ~24h submission window
+    - cron: "5 0 * * *" # northern: open tomorrow's round (~24h window to 00:00 UTC cutoff)
+    - cron: "5 11 * * *" # southern: open D+2 (~24h window to the 11:00 UTC D+1 cutoff)
   workflow_dispatch:
     inputs:
+      league:
+        description: "League (northern | southern)"
+        required: true
+        default: "northern"
       round_date:
-        description: "Round date (YYYY-MM-DD); default tomorrow UTC"
+        description: "Round date (YYYY-MM-DD); default per league"
         required: false
 
 permissions:
@@ -24,10 +29,14 @@ jobs:
       - run: pip install -e .
       - name: Open round
         run: |
+          LEAGUE="${{ github.event.inputs.league }}"
+          if [ -z "$LEAGUE" ]; then
+            [ "$(date -u +%H)" -ge 6 ] && LEAGUE=southern || LEAGUE=northern
+          fi
           if [ -n "${{ github.event.inputs.round_date }}" ]; then
-            powderbench open-round --round-date "${{ github.event.inputs.round_date }}"
+            powderbench open-round --league "$LEAGUE" --round-date "${{ github.event.inputs.round_date }}"
           else
-            powderbench open-round
+            powderbench open-round --league "$LEAGUE"
           fi
       - name: Commit
         run: |

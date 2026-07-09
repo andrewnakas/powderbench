@@ -135,10 +135,21 @@ def resolve_round(league: League, d: date, enforce_deadline: bool = True) -> dic
             metrics["late"] = False
         teams[team] = metrics
 
+    obs_ref = None
+    try:
+        from .obsfeeds import collect_observations
+
+        obs = collect_observations(league.name, d, d + timedelta(days=2))
+        if len(obs):
+            obs_ref = obs.groupby(["station_id", "feed"])["snow24_obs_in"].sum().reset_index().to_dict("records")
+    except Exception:
+        log.warning("observation feeds failed for %s/%s", league.name, d, exc_info=True)
+
     payload = {
         "round_id": d.isoformat(),
         "league": league.name,
         "resolved_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "observations_72h": obs_ref,
         "qc": {
             "station_horizons_valid": int(truth_d["valid"].sum()),
             "station_horizons_voided": int((~truth_d["valid"]).sum()),

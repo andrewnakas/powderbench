@@ -1,18 +1,35 @@
 # PowderBench rules
 
+## Leagues
+
+Two independent leaderboards; results never mix:
+
+| | Northern | Southern (**trial**) |
+|---|---|---|
+| Stations | 45 SNOTEL | 23 ERA5 resort points |
+| Truth | Real telemetry | Model analysis (disclosed per round) |
+| Cutoff for round D | 00:00 UTC on D | **11:00 UTC on D−1** |
+| Resolves | D+3, 16:00 UTC | from D+8, 16:00 UTC (ERA5 archive lag) |
+| Season | Oct 1 – Sep 30 | Apr 1 – Mar 31 |
+
+The southern league is a live trial: rules are identical, but the truth source
+is a reanalysis model while no stable southern station API exists, and its
+mechanics may be tuned between seasons. Trial results stay archived but are
+always labeled.
+
 ## The round
 
-- A round is named by its **cutoff date** `D`. Submissions lock at **00:00 UTC on D**
-  (plus a 5-minute grace period).
-- Targets: cumulative fresh snowfall (inches) at each of the 44 registry stations for
+- A round is named by its **target-start date** `D`; the first forecast day is
+  station-local day `D`. Submissions lock at the league cutoff (above), plus a
+  5-minute grace period.
+- Targets: cumulative fresh snowfall (inches) at each registry station for
   - **24h** — station-local day `D`
   - **48h** — days `D` through `D+1`
   - **72h** — days `D` through `D+2`
-- Rounds resolve at ~16:00 UTC on `D+3`, once SNOTEL end-of-day data for `D+2` is in.
 
 ## Submitting
 
-- One CSV per team per round: `data/submissions/<D>/<team>.csv`, via pull request.
+- One CSV per team per round: `data/submissions/<league>/<D>/<team>.csv`, via pull request.
 - Your team name is the filename. One team per person/bot; sockpuppets get removed.
 - Required columns: `station_id, horizon_h, snowfall_in`.
   Optional: `p10,p25,p50,p75,p90` (all five or none, non-decreasing) and `prob_6in`.
@@ -25,10 +42,12 @@
 
 ## Ground truth and QC
 
-- Truth is the QC'd SNOTEL snow-depth delta (see [DATA.md](DATA.md)).
-- A station-day is **voided for everyone** when sensors misbehave:
+- Northern truth is the QC'd SNOTEL snow-depth delta; southern-trial truth is
+  ERA5 daily snowfall at the station's coordinates (see [DATA.md](DATA.md)).
+- A station-day is **voided for everyone** when data misbehaves — northern:
   missing readings, negative/absurd depths, a >48" daily jump, or a ≥6" jump with
-  no supporting SWE increase. A 48h/72h window is voided if any component day is.
+  no supporting SWE increase; southern: missing analysis data. A 48h/72h window
+  is voided if any component day is.
 - Voided station-horizons never count for or against anyone. No appeals needed —
   the QC code is public and deterministic.
 
@@ -61,5 +80,6 @@
 
 ## Season
 
-- A season runs October 1 – September 30 (Western US snow year). The season
-  leaderboard resets; all-time results stay archived in `data/results/`.
+- Northern seasons run October 1 – September 30 (Western US snow year);
+  southern seasons April 1 – March 31. Season leaderboards reset; all-time
+  results stay archived in `data/results/<league>/`.

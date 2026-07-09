@@ -1,9 +1,14 @@
 name: Baseline submissions
 on:
   schedule:
-    - cron: "15 23 * * *" # 23:15 UTC: baselines lock in 45 min before the cutoff
+    - cron: "15 23 * * *" # northern: 45 min before tomorrow's 00:00 UTC cutoff
+    - cron: "15 10 * * *" # southern: 45 min before today's 11:00 UTC cutoff (round D = tomorrow)
   workflow_dispatch:
     inputs:
+      league:
+        description: "League (northern | southern)"
+        required: true
+        default: "northern"
       round_date:
         description: "Round date (YYYY-MM-DD); default tomorrow UTC"
         required: false
@@ -24,9 +29,13 @@ jobs:
       - run: pip install -e .
       - name: Generate baseline forecasts
         run: |
+          LEAGUE="${{ github.event.inputs.league }}"
+          if [ -z "$LEAGUE" ]; then
+            [ "$(date -u +%H)" -lt 20 ] && LEAGUE=southern || LEAGUE=northern
+          fi
           ROUND="${{ github.event.inputs.round_date }}"
           [ -z "$ROUND" ] && ROUND=$(date -u -d tomorrow +%F)
-          powderbench baseline-submit "$ROUND"
+          powderbench baseline-submit "$ROUND" --league "$LEAGUE"
       - name: Commit
         run: |
           git config user.name "powderbench-bot"

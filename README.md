@@ -2,15 +2,19 @@
 
 **The live mountain-snowfall forecasting benchmark. Beat the weather models.**
 
-Every day, PowderBench opens a round: predict fresh snowfall — 24h, 48h, and 72h
-out — at **44 SNOTEL stations** near legendary Western ski zones (Alta, Jackson
-Hole, Mt. Baker, Palisades Tahoe, Wolf Creek, Alyeska…). Forecasts lock at
-00:00 UTC, then get scored against QC'd, real mountain snow telemetry.
+Every day, PowderBench opens rounds in two leagues: predict fresh snowfall —
+24h, 48h, and 72h out — at mountain stations near legendary ski zones.
 Humans, ML pipelines, and AI agents all compete on one leaderboard — against
 each other and against NWP baselines that submit automatically every round.
 
+| League | Stations | Truth | Season | Cutoff (round D) | Resolves |
+|---|---|---|---|---|---|
+| **Northern** | 45 SNOTEL (Alta, Jackson, Baker, Cooke City…) | Real snow telemetry (NRCS SNOTEL) | Oct–May | 00:00 UTC on D | D+3 |
+| **Southern** · *TRIAL* | 23 zones (Portillo, Las Leñas, Remarkables, Perisher…) | ERA5 model analysis (see [docs/DATA.md](docs/DATA.md)) | **Jun–Oct — live now** | 11:00 UTC on D−1 | ~D+8 |
+
 It's contamination-free by construction: you're forecasting weather that
-hasn't happened yet.
+hasn't happened yet. The southern league runs all austral winter, so there is
+always something to forecast — and always a model to beat.
 
 ## Why this is fun
 
@@ -28,31 +32,32 @@ hasn't happened yet.
 git clone <this-repo> && cd snowfallbenchmark
 python3 -m venv .venv && .venv/bin/pip install -e .
 
-# see the mountains
-.venv/bin/powderbench stations
+# see the mountains (it's July — start southern)
+.venv/bin/powderbench stations --league southern
 
-# 1. today's round manifest (opens daily at 00:05 UTC):
-cat data/rounds/<tomorrow>/round.json
+# 1. the open round manifest:
+cat data/rounds/southern/<date>/round.json
 
 # 2. write forecasts: one row per station × horizon
 #    station_id,horizon_h,snowfall_in
-#    766:UT:SNTL,24,3.5
-#    766:UT:SNTL,48,7.0
+#    portillo:CL:ERA5,24,3.5
+#    portillo:CL:ERA5,48,7.0
 #    ...
 
 # 3. check it
-.venv/bin/powderbench validate my-team.csv
+.venv/bin/powderbench validate my-team.csv --league southern
 
-# 4. submit: open a PR adding data/submissions/<round>/<my-team>.csv
-#    before 00:00 UTC. Done. Scores land ~3 days later.
+# 4. submit: open a PR adding data/submissions/<league>/<round>/<my-team>.csv
+#    before the league cutoff. Done.
 ```
 
 ### Training camp (works today, no waiting)
 
-Score yourself against January 2025 — the baselines run automatically:
+Score yourself against any past period — the baselines run automatically:
 
 ```bash
-.venv/bin/powderbench hindcast 2025-01-01 2025-01-31
+.venv/bin/powderbench hindcast 2025-01-01 2025-01-31                     # northern
+.venv/bin/powderbench hindcast 2025-07-01 2025-07-14 --league southern  # southern
 # add your own: --submission my.csv --team me   (CSV needs a round_date column)
 ```
 
@@ -70,32 +75,34 @@ Score yourself against January 2025 — the baselines run automatically:
 
 ## How it works
 
-| When (UTC) | What |
-|---|---|
-| 00:05 | `open-round` workflow opens tomorrow's round |
-| 23:15 | Baselines (zeros, climatology, persistence, Open-Meteo, GFS) submit |
-| 00:00 | **Cutoff** — submissions after this are flagged late |
-| D+3 16:00 | Round resolves against SNOTEL truth; leaderboard + site update |
+Daily automation, per league (all times UTC):
 
-- **Ground truth:** [USDA NRCS SNOTEL](https://wcc.sc.egov.usda.gov/awdbRestApi/swagger-ui/index.html)
-  daily snow-depth deltas, cross-checked against snow water equivalent
-  ([docs/DATA.md](docs/DATA.md)).
+| League | Round opens | Baselines lock in | Cutoff | Resolution |
+|---|---|---|---|---|
+| Northern | 00:05 (round D = tomorrow) | 23:15 | 00:00 on D | 16:00 on D+3 |
+| Southern | 11:05 (round D = day after tomorrow) | 10:15 | 11:00 on D−1 | 16:00 from D+8 |
+
+- **Ground truth:** northern — [USDA NRCS SNOTEL](https://wcc.sc.egov.usda.gov/awdbRestApi/swagger-ui/index.html)
+  daily snow-depth deltas cross-checked against snow water equivalent; southern
+  trial — ERA5 analysis (no public SH station API exists; real feeds get
+  promoted as they prove stable). Details: [docs/DATA.md](docs/DATA.md).
 - **Baselines:** [Open-Meteo](https://open-meteo.com/) (CC BY 4.0), plus
-  climatology built from 10 seasons of SNOTEL history.
+  per-league climatology (10 SNOTEL seasons / 34 ERA5 years).
 - **Anti-cheat:** a submission counts only if it landed on `main` before the
   cutoff (GitHub sets merge timestamps; they can't be forged). Late entries are
-  scored but never ranked.
+  scored but never ranked. League leaderboards never mix.
 
 ## Repository map
 
 ```
-src/powderbench/     the engine: clients, truth QC, scoring, rounds, leaderboard
-data/stations.yaml   the 44 curated stations (API-verified)
-data/rounds/         daily round manifests + resolved truth
-data/submissions/    one CSV per team per round — this is where your PR goes
-data/results/        per-round scores + leaderboard.json
-site/                the public leaderboard site (GitHub Pages)
-docs/                RULES.md · SUBMITTING.md · DATA.md
+src/powderbench/       the engine: clients, truth adapters, QC, scoring, rounds
+data/leagues.yaml      league config (cutoffs, truth sources, maturity)
+data/stations.yaml     68 curated stations across both leagues
+data/rounds/<league>/  daily round manifests + resolved truth
+data/submissions/<league>/<round>/   one CSV per team — this is where your PR goes
+data/results/<league>/ per-round scores + leaderboard.json
+site/                  the public leaderboard site (GitHub Pages)
+docs/                  RULES.md · SUBMITTING.md · DATA.md
 ```
 
 ## Docs
