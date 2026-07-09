@@ -12,7 +12,7 @@ import hashlib
 import json
 import logging
 import time
-from datetime import date
+from datetime import date, timedelta
 from pathlib import Path
 
 import pandas as pd
@@ -24,6 +24,7 @@ log = logging.getLogger(__name__)
 
 FORECAST_URL = "https://api.open-meteo.com/v1/forecast"
 HISTORICAL_URL = "https://historical-forecast-api.open-meteo.com/v1/forecast"
+ARCHIVE_URL = "https://archive-api.open-meteo.com/v1/archive"
 CM_PER_INCH = 2.54
 TIMEOUT = 120
 BATCH_SIZE = 25
@@ -102,3 +103,11 @@ def hindcast_daily_snowfall(stations: list[Station], begin: date, end: date, mod
     """Archived past forecasts (what the model actually predicted at the time,
     short lead). Available from ~2021-03. Cached on disk."""
     return _fetch(HISTORICAL_URL, stations, model, begin, end, cacheable=True)
+
+
+def era5_daily_snowfall(stations: list[Station], begin: date, end: date) -> pd.DataFrame:
+    """ERA5 reanalysis daily snowfall (inches) per station-local day.
+    Lags realtime by ~5 days; complete back to 1940. Cached when old enough
+    that the archive can no longer change (end 10+ days ago)."""
+    cacheable = end <= date.today() - timedelta(days=10)
+    return _fetch(ARCHIVE_URL, stations, "best_match", begin, end, cacheable=cacheable)

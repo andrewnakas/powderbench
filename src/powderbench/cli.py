@@ -13,42 +13,55 @@ import typer
 app = typer.Typer(help="PowderBench: live mountain-snowfall forecasting benchmark.", no_args_is_help=True)
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
 
+LeagueOpt = typer.Option("northern", "--league", "-l", help="League: northern | southern")
+
 
 def _parse_date(s: str) -> date:
     return datetime.strptime(s, "%Y-%m-%d").date()
 
 
 @app.command()
-def stations():
-    """List the station registry."""
+def stations(league: str = LeagueOpt):
+    """List a league's station registry."""
     from .stations import load_stations
 
-    for s in load_stations():
-        typer.echo(f"{s.station_id:>14}  {s.resort:<28} {s.region:<18} {s.elevation_ft:>6.0f} ft")
+    for s in load_stations(league):
+        typer.echo(f"{s.station_id:>18}  {s.resort:<30} {s.region:<22} {s.elevation_ft:>6.0f} ft")
 
 
 @app.command()
-def validate(submission: Path):
+def validate(submission: Path, league: str = LeagueOpt):
     """Validate a submission CSV (schema, ranges, coverage)."""
     from .validate import validate_submission
 
-    res = validate_submission(submission)
+    res = validate_submission(submission, league=league)
     typer.echo(res.summary())
     raise typer.Exit(0 if res.ok else 1)
 
 
 @app.command()
-def build_climatology(begin: str = "2015-10-01", end: str = "2025-06-30"):
-    """Rebuild the climatology table from SNOTEL history."""
+def build_climatology(
+    league: str = LeagueOpt,
+    begin: Optional[str] = typer.Option(None, help="Default: league-appropriate history"),
+    end: Optional[str] = typer.Option(None),
+):
+    """Rebuild a league's climatology table from its truth history."""
     from .climatology import build_climatology as build
+    from .leagues import get_league
 
-    build(_parse_date(begin), _parse_date(end))
+    lg = get_league(league)
+    defaults = {
+        "snotel": ("2015-10-01", "2025-06-30"),
+        "era5": ("1991-01-01", "2025-06-30"),
+    }[lg.truth_source]
+    build(lg, _parse_date(begin or defaults[0]), _parse_date(end or defaults[1]))
 
 
 @app.command()
 def hindcast(
     begin: str,
     end: str,
+    league: str = LeagueOpt,
     submission: Optional[Path] = typer.Option(None, help="CSV with round_date column"),
     team: str = typer.Option("you", help="Team name for your submission"),
     out: Optional[Path] = typer.Option(None, help="Write per-round metrics CSV here"),
@@ -56,9 +69,11 @@ def hindcast(
     """Training camp: score baselines (and optionally your forecasts) on past days."""
     from .hindcast import load_hindcast_submission, run_hindcast
     from .leaderboard import aggregate
+    from .leagues import get_league
 
+    lg = get_league(league)
     subs = {team: load_hindcast_submission(submission)} if submission else {}
-    rows = run_hindcast(_parse_date(begin), _parse_date(end), submissions=subs)
+    rows = run_hindcast(lg, _parse_date(begin), _parse_date(end), submissions=subs)
     if not len(rows):
         typer.echo("no scorable rounds in range")
         raise typer.Exit(1)
@@ -67,54 +82,72 @@ def hindcast(
         typer.echo(f"wrote {out}")
     board = aggregate(rows, min_rounds=1)
     cols = ["rank", "team", "rounds", "powder_score", "mae", "pinball", "brier6", "avg_coverage"]
-    typer.echo("\n=== Hindcast leaderboard (unofficial — training camp) ===")
+    typer.echo(f"\n=== {lg.label} hindcast (unofficial — training camp) ===")
     typer.echo(board[cols].to_string(index=False))
 
 
 @app.command()
-def open_round(round_date: Optional[str] = typer.Option(None, help="Defaults to tomorrow UTC")):
+def open_round(
+    league: str = LeagueOpt,
+    round_date: Optional[str] = typer.Option(None, help="Default: next round with a ~24h window"),
+):
     """Create the round manifest for a submission day."""
+    from .leagues import get_league
     from .rounds import open_round as do_open
 
-    d = _parse_date(round_date) if round_date else date.today() + timedelta(days=1)
-    path = do_open(d)
-    typer.echo(f"opened round {d} -> {path}")
+    lg = get_league(league)
+    # default: the round whose cutoff is ~24h away (cutoff sits days_before ahead of D)
+    d = _parse_date(round_date) if round_date else date.today() + timedelta(days=1 + lg.cutoff_days_before)
+    path = do_open(lg, d)
+    typer.echo(f"opened {lg.name} round {d} -> {path}")
 
 
 @app.command()
-def baseline_submit(round_date: str, mode: str = typer.Option("live", help="live | hindcast (dry runs)")):
+def baseline_submit(
+    round_date: str,
+    league: str = LeagueOpt,
+    mode: str = typer.Option("live", help="live | hindcast (dry runs)"),
+):
     """Generate and store baseline submissions for an open round."""
+    from .leagues import get_league
     from .rounds import submit_baselines
 
-    for team, path in submit_baselines(_parse_date(round_date), mode=mode).items():
+    for team, path in submit_baselines(get_league(league), _parse_date(round_date), mode=mode).items():
         typer.echo(f"{team}: {path}")
 
 
 @app.command()
-def resolve(round_date: Optional[str] = typer.Option(None, help="Resolve one round; default: all matured")):
-    """Fetch observations, score submissions for matured rounds, update results."""
+def resolve(
+    league: Optional[str] = typer.Option(None, "--league", "-l", help="Default: all leagues"),
+    round_date: Optional[str] = typer.Option(None, help="Resolve one round; default: all matured"),
+):
+    """Fetch truth, score submissions for matured rounds, update results."""
+    from .leagues import get_league
     from .rounds import resolve_matured, resolve_round
 
     if round_date:
-        result = resolve_round(_parse_date(round_date))
+        lg = get_league(league or "northern")
+        result = resolve_round(lg, _parse_date(round_date))
         typer.echo(json.dumps(result, indent=1, default=str) if result else "not resolvable yet")
     else:
-        for rid in resolve_matured():
+        for rid in resolve_matured(get_league(league) if league else None):
             typer.echo(f"resolved {rid}")
 
 
 @app.command()
-def build_leaderboard():
-    """Aggregate resolved rounds into results/leaderboard.json."""
+def build_leaderboard(league: Optional[str] = typer.Option(None, "--league", "-l", help="Default: all leagues")):
+    """Aggregate resolved rounds into per-league leaderboard.json."""
     from .leaderboard import build_leaderboard as build
+    from .leagues import load_leagues
 
-    out = build()
-    typer.echo(f"leaderboard over {out['generated_rounds']} rounds")
+    for lg in load_leagues() if league is None else [next(l for l in load_leagues() if l.name == league)]:
+        out = build(lg)
+        typer.echo(f"{lg.name}: leaderboard over {out['generated_rounds']} rounds")
 
 
 @app.command()
 def build_site():
-    """Copy leaderboard + station data into site/data for the static site."""
+    """Copy leaderboards + station data into site/data for the static site."""
     from .site import build_site as build
 
     for f in build():

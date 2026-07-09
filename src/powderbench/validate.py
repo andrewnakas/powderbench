@@ -35,7 +35,10 @@ class ValidationResult:
         return "\n".join(lines)
 
 
-def validate_submission(path: Path | str) -> ValidationResult:
+def validate_submission(path: Path | str, league: object = None) -> ValidationResult:
+    """league: League object or league name; default northern. The submission
+    is checked against that league's station registry."""
+    league_name = getattr(league, "name", league) or "northern"
     res = ValidationResult(ok=True)
     try:
         df = pd.read_csv(path)
@@ -47,7 +50,7 @@ def validate_submission(path: Path | str) -> ValidationResult:
     if missing:
         return ValidationResult(ok=False, errors=[f"missing required columns: {sorted(missing)}"])
 
-    known = set(station_ids())
+    known = set(station_ids(league_name))
     bad_stations = sorted(set(df["station_id"]) - known)
     if bad_stations:
         res.errors.append(f"unknown station_id(s): {bad_stations[:5]}")

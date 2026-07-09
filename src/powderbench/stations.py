@@ -19,7 +19,7 @@ def data_dir() -> Path:
 
 @dataclass(frozen=True)
 class Station:
-    station_id: str  # SNOTEL triplet, e.g. "766:UT:SNTL"
+    station_id: str  # SNOTEL triplet ("766:UT:SNTL") or ERA5 point ("portillo:CL:ERA5")
     slug: str
     name: str
     resort: str
@@ -28,18 +28,25 @@ class Station:
     elevation_ft: float
     latitude: float
     longitude: float
+    league: str = "northern"
+    truth_source: str | None = None  # override; defaults to the league's source
 
 
 @lru_cache(maxsize=1)
-def load_stations() -> tuple[Station, ...]:
+def _all_stations() -> tuple[Station, ...]:
     path = data_dir() / "stations.yaml"
     raw = yaml.safe_load(path.read_text())
     return tuple(Station(**s) for s in raw["stations"])
 
 
-def by_id() -> dict[str, Station]:
-    return {s.station_id: s for s in load_stations()}
+def load_stations(league: str = "northern") -> tuple[Station, ...]:
+    return tuple(s for s in _all_stations() if s.league == league)
 
 
-def station_ids() -> list[str]:
-    return [s.station_id for s in load_stations()]
+def by_id(league: str | None = None) -> dict[str, Station]:
+    pool = _all_stations() if league is None else load_stations(league)
+    return {s.station_id: s for s in pool}
+
+
+def station_ids(league: str = "northern") -> list[str]:
+    return [s.station_id for s in load_stations(league)]

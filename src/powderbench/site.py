@@ -1,4 +1,4 @@
-"""Assemble the static site's data files from benchmark results."""
+"""Assemble the static site's data files from benchmark results, per league."""
 
 from __future__ import annotations
 
@@ -7,7 +7,8 @@ import shutil
 from dataclasses import asdict
 from pathlib import Path
 
-from .leaderboard import LEADERBOARD_PATH, ROUND_RESULTS_DIR
+from .leaderboard import leaderboard_path, round_results_dir
+from .leagues import load_leagues
 from .stations import data_dir, load_stations
 
 RECENT_ROUNDS = 14
@@ -18,24 +19,35 @@ def site_dir() -> Path:
 
 
 def build_site() -> list[Path]:
-    """Copy leaderboard + registry + recent rounds into site/data/."""
+    """Copy per-league leaderboards, registries, and recent rounds into site/data/."""
     out_dir = site_dir() / "data"
     out_dir.mkdir(parents=True, exist_ok=True)
     written = []
 
-    stations_out = out_dir / "stations.json"
-    stations_out.write_text(json.dumps([asdict(s) for s in load_stations()], indent=1))
-    written.append(stations_out)
+    leagues = load_leagues()
+    leagues_out = out_dir / "leagues.json"
+    leagues_out.write_text(
+        json.dumps(
+            [{"name": l.name, "label": l.label, "status": l.status, "truth_source": l.truth_source} for l in leagues],
+            indent=1,
+        )
+    )
+    written.append(leagues_out)
 
-    lb = data_dir() / LEADERBOARD_PATH
-    if lb.exists():
-        target = out_dir / "leaderboard.json"
-        shutil.copyfile(lb, target)
-        written.append(target)
+    for league in leagues:
+        stations_out = out_dir / f"stations-{league.name}.json"
+        stations_out.write_text(json.dumps([asdict(s) for s in load_stations(league.name)], indent=1))
+        written.append(stations_out)
 
-    rounds = sorted((data_dir() / ROUND_RESULTS_DIR).glob("*.json"))[-RECENT_ROUNDS:]
-    recent = [json.loads(p.read_text()) for p in rounds]
-    recent_out = out_dir / "recent_rounds.json"
-    recent_out.write_text(json.dumps(recent, indent=1))
-    written.append(recent_out)
+        lb = leaderboard_path(league)
+        if lb.exists():
+            target = out_dir / f"leaderboard-{league.name}.json"
+            shutil.copyfile(lb, target)
+            written.append(target)
+
+        rounds = sorted(round_results_dir(league).glob("*.json"))[-RECENT_ROUNDS:]
+        recent = [json.loads(p.read_text()) for p in rounds]
+        recent_out = out_dir / f"recent_rounds-{league.name}.json"
+        recent_out.write_text(json.dumps(recent, indent=1))
+        written.append(recent_out)
     return written

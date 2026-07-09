@@ -1,0 +1,23 @@
+# PowderBench leagues. Each league has its own stations, rounds, submissions,
+# results, climatology, truth source, and cutoff/maturity rules.
+#
+# cutoff: submissions for round D lock at (D - days_before) hour_utc:00 UTC.
+# resolve_after: a round matures for scoring at D + days, at hour_utc UTC.
+leagues:
+  - name: northern
+    label: "Northern · Western US"
+    status: live
+    truth_source: snotel
+    cutoff: { days_before: 0, hour_utc: 0 }
+    resolve_after: { days: 3, hour_utc: 15 }
+    season_start_month: 10 # water year: Oct 1 - Sep 30
+  - name: southern
+    label: "Southern · Andes / NZ / AU"
+    status: trial
+    truth_source: era5
+    # 11:00 UTC the day before D precedes every station's local day-D start
+    # (NZ day D begins 12:00 UTC D-1; AU 14:00 UTC D-1; Chile 04:00 UTC D).
+    cutoff: { days_before: 1, hour_utc: 11 }
+    # ERA5 lands on the Open-Meteo archive with ~5 days lag; D+2 is final by D+8.
+    resolve_after: { days: 8, hour_utc: 16 }
+    season_start_month: 4 # southern snow year: Apr 1 - Mar 31

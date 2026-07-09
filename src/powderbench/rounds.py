@@ -1,9 +1,10 @@
-"""Live round lifecycle.
+"""Live round lifecycle, per league.
 
-A round is named by its cutoff date D: submissions lock at 00:00 UTC on D,
-target windows are station-local days D (24h), D..D+1 (48h), D..D+2 (72h).
-Truth for D+2 is final once SNOTEL posts the end-of-day reading, so a round
-matures for resolution at 15:00 UTC on D+3.
+A round is named by its target-start date D. The league config sets when
+submissions lock (northern: 00:00 UTC on D; southern: 11:00 UTC on D-1, ahead
+of every station's local day-D start) and when the round matures for scoring
+(northern: D+3 15:00 UTC once SNOTEL posts end-of-day D+2; southern: D+8,
+after ERA5's ~5-day archive lag).
 
 Anti-cheat: a submission only counts as on-time if its file first landed on
 the main branch (merge commit time, which GitHub sets and authors can't forge)
@@ -21,8 +22,10 @@ from pathlib import Path
 
 import pandas as pd
 
-from . import HORIZONS, baselines, climatology, scoring, snotel, truth
-from .stations import data_dir, station_ids
+from . import HORIZONS, baselines, climatology, scoring, truth
+from .leagues import League, get_league, load_leagues
+from .stations import by_id, data_dir, station_ids
+from .truth_sources import daily_truth
 from .validate import validate_submission
 
 log = logging.getLogger(__name__)
@@ -30,65 +33,60 @@ log = logging.getLogger(__name__)
 GRACE_MINUTES = 5
 
 
-def round_dir(d: date) -> Path:
-    return data_dir() / "rounds" / d.isoformat()
+def round_dir(league: League, d: date) -> Path:
+    return data_dir() / "rounds" / league.name / d.isoformat()
 
 
-def submissions_dir(d: date) -> Path:
-    return data_dir() / "submissions" / d.isoformat()
+def submissions_dir(league: League, d: date) -> Path:
+    return data_dir() / "submissions" / league.name / d.isoformat()
 
 
-def cutoff_utc(d: date) -> datetime:
-    return datetime(d.year, d.month, d.day, tzinfo=timezone.utc)
+def results_dir(league: League) -> Path:
+    return data_dir() / "results" / league.name / "rounds"
 
 
-def matured(d: date, now: datetime | None = None) -> bool:
-    now = now or datetime.now(timezone.utc)
-    return now >= cutoff_utc(d) + timedelta(days=3, hours=15)
-
-
-def open_round(d: date) -> Path:
-    rdir = round_dir(d)
+def open_round(league: League, d: date) -> Path:
+    rdir = round_dir(league, d)
     rdir.mkdir(parents=True, exist_ok=True)
     manifest = {
         "round_id": d.isoformat(),
-        "cutoff_utc": cutoff_utc(d).isoformat(),
+        "league": league.name,
+        "truth_source": league.truth_source,
+        "cutoff_utc": league.cutoff_utc(d).isoformat(),
         "target_days": [(d + timedelta(days=i)).isoformat() for i in range(3)],
         "horizons_h": list(HORIZONS),
-        "stations": station_ids(),
+        "stations": station_ids(league.name),
         "status": "open",
         "opened_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
     }
     path = rdir / "round.json"
     path.write_text(json.dumps(manifest, indent=1))
-    submissions_dir(d).mkdir(parents=True, exist_ok=True)
-    keep = submissions_dir(d) / ".gitkeep"
-    keep.touch()
+    sdir = submissions_dir(league, d)
+    sdir.mkdir(parents=True, exist_ok=True)
+    (sdir / ".gitkeep").touch()
     return path
 
 
-def submit_baselines(d: date, mode: str = "live") -> dict[str, Path]:
+def submit_baselines(league: League, d: date, mode: str = "live") -> dict[str, Path]:
     """Write baseline submissions for round d (run shortly before the cutoff).
     mode="hindcast" pulls archived forecasts instead — used for dry runs."""
     out = {}
-    sdir = submissions_dir(d)
+    sdir = submissions_dir(league, d)
     sdir.mkdir(parents=True, exist_ok=True)
-    for team, pred in baselines.all_baselines(d, mode=mode).items():
+    for team, pred in baselines.all_baselines(league, d, mode=mode).items():
         path = sdir / f"{team}.csv"
         pred.to_csv(path, index=False)
         out[team] = path
     return out
 
 
-def _biggest_24h(truth_d: pd.DataFrame) -> dict | None:
+def _biggest_24h(truth_d: pd.DataFrame, league: League) -> dict | None:
     """The deepest valid 24h total this round — the storm headline."""
-    from .stations import by_id
-
     h24 = truth_d[(truth_d["horizon_h"] == 24) & truth_d["valid"]]
     if not len(h24) or h24["truth_in"].max() <= 0:
         return None
     top = h24.loc[h24["truth_in"].idxmax()]
-    station = by_id().get(top["station_id"])
+    station = by_id(league.name).get(top["station_id"])
     return {
         "station_id": top["station_id"],
         "resort": station.resort if station else top["station_id"],
@@ -108,25 +106,24 @@ def _first_commit_utc(path: Path) -> datetime | None:
         return None
 
 
-def resolve_round(d: date, enforce_deadline: bool = True) -> dict | None:
+def resolve_round(league: League, d: date, enforce_deadline: bool = True) -> dict | None:
     """Score all submissions for round d against QC'd truth. Returns the round
     result payload, or None if the round hasn't matured."""
-    if not matured(d):
+    if not league.matured(d):
         return None
-    obs = snotel.fetch_daily(station_ids(), d - timedelta(days=1), d + timedelta(days=2))
-    daily = truth.daily_snowfall(obs)
+    daily = daily_truth(league, station_ids(league.name), d - timedelta(days=1), d + timedelta(days=2))
     truth_d = truth.window_truth(daily, d)
 
-    rdir = round_dir(d)
+    rdir = round_dir(league, d)
     rdir.mkdir(parents=True, exist_ok=True)
     truth_d.to_csv(rdir / "truth.csv", index=False)
 
-    climo_pred = climatology.climatology_prediction(d)
-    deadline = cutoff_utc(d) + timedelta(minutes=GRACE_MINUTES)
+    climo_pred = climatology.climatology_prediction(d, league)
+    deadline = league.cutoff_utc(d) + timedelta(minutes=GRACE_MINUTES)
     teams: dict[str, dict] = {}
-    for sub_path in sorted(submissions_dir(d).glob("*.csv")):
+    for sub_path in sorted(submissions_dir(league, d).glob("*.csv")):
         team = sub_path.stem
-        res = validate_submission(sub_path)
+        res = validate_submission(sub_path, league=league)
         if not res.ok:
             teams[team] = {"invalid": True, "errors": res.errors}
             continue
@@ -140,17 +137,18 @@ def resolve_round(d: date, enforce_deadline: bool = True) -> dict | None:
 
     payload = {
         "round_id": d.isoformat(),
+        "league": league.name,
         "resolved_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "qc": {
             "station_horizons_valid": int(truth_d["valid"].sum()),
             "station_horizons_voided": int((~truth_d["valid"]).sum()),
         },
-        "biggest_24h": _biggest_24h(truth_d),
+        "biggest_24h": _biggest_24h(truth_d, league),
         "teams": teams,
     }
-    results_dir = data_dir() / "results" / "rounds"
-    results_dir.mkdir(parents=True, exist_ok=True)
-    (results_dir / f"{d.isoformat()}.json").write_text(json.dumps(payload, indent=1))
+    rdir_results = results_dir(league)
+    rdir_results.mkdir(parents=True, exist_ok=True)
+    (rdir_results / f"{d.isoformat()}.json").write_text(json.dumps(payload, indent=1))
 
     manifest_path = rdir / "round.json"
     if manifest_path.exists():
@@ -160,20 +158,22 @@ def resolve_round(d: date, enforce_deadline: bool = True) -> dict | None:
     return payload
 
 
-def resolve_matured() -> list[str]:
-    """Resolve every open round that has matured. Returns resolved round ids."""
+def resolve_matured(league: League | None = None) -> list[str]:
+    """Resolve every open round that has matured (all leagues by default).
+    Returns resolved round ids as '<league>/<date>'."""
     resolved = []
-    rounds_root = data_dir() / "rounds"
-    if not rounds_root.exists():
-        return resolved
-    for rdir in sorted(rounds_root.iterdir()):
-        manifest_path = rdir / "round.json"
-        if not manifest_path.exists():
+    for lg in [league] if league else load_leagues():
+        rounds_root = data_dir() / "rounds" / lg.name
+        if not rounds_root.exists():
             continue
-        manifest = json.loads(manifest_path.read_text())
-        if manifest.get("status") == "resolved":
-            continue
-        d = date.fromisoformat(manifest["round_id"])
-        if resolve_round(d):
-            resolved.append(manifest["round_id"])
+        for rdir in sorted(rounds_root.iterdir()):
+            manifest_path = rdir / "round.json"
+            if not manifest_path.exists():
+                continue
+            manifest = json.loads(manifest_path.read_text())
+            if manifest.get("status") == "resolved":
+                continue
+            d = date.fromisoformat(manifest["round_id"])
+            if resolve_round(lg, d):
+                resolved.append(f"{lg.name}/{manifest['round_id']}")
     return resolved

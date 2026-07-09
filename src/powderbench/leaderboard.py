@@ -15,12 +15,19 @@ from pathlib import Path
 
 import pandas as pd
 
+from .leagues import League, get_league
 from .stations import data_dir
 from .validate import MIN_COVERAGE
 
 MIN_ROUNDS = 5
-ROUND_RESULTS_DIR = "results/rounds"
-LEADERBOARD_PATH = "results/leaderboard.json"
+
+
+def round_results_dir(league: League) -> Path:
+    return data_dir() / "results" / league.name / "rounds"
+
+
+def leaderboard_path(league: League) -> Path:
+    return data_dir() / "results" / league.name / "leaderboard.json"
 
 
 def aggregate(rows: pd.DataFrame, min_rounds: int = MIN_ROUNDS) -> pd.DataFrame:
@@ -70,10 +77,11 @@ def _mean(series) -> float | None:
     return round(float(vals.mean()), 3) if len(vals) else None
 
 
-def load_round_results() -> pd.DataFrame:
-    """Flatten all resolved-round JSON files into (team, round) metric rows."""
+def load_round_results(league: League | str = "northern") -> pd.DataFrame:
+    """Flatten a league's resolved-round JSON files into (team, round) metric rows."""
+    league = get_league(league) if isinstance(league, str) else league
     rows = []
-    rounds_dir = data_dir() / ROUND_RESULTS_DIR
+    rounds_dir = round_results_dir(league)
     for path in sorted(rounds_dir.glob("*.json")):
         payload = json.loads(path.read_text())
         for team, metrics in payload["teams"].items():
@@ -85,10 +93,11 @@ def load_round_results() -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-def build_leaderboard(season_start: date | None = None) -> dict:
-    """Aggregate resolved rounds into leaderboard.json (all-time + last-30-rounds)."""
-    rows = load_round_results()
-    out = {"generated_rounds": 0, "season": [], "last30": []}
+def build_leaderboard(league: League | str = "northern", season_start: date | None = None) -> dict:
+    """Aggregate a league's resolved rounds into leaderboard.json."""
+    league = get_league(league) if isinstance(league, str) else league
+    rows = load_round_results(league)
+    out = {"league": league.name, "status": league.status, "generated_rounds": 0, "season": [], "last30": []}
     if len(rows):
         if season_start is not None:
             rows = rows[rows["round"] >= season_start.isoformat()]
@@ -98,7 +107,7 @@ def build_leaderboard(season_start: date | None = None) -> dict:
         last30 = rows[rows["round"].isin(round_ids[-30:])]
         out["last30"] = _records(aggregate(last30, min_rounds=min(MIN_ROUNDS, len(round_ids[-30:]))))
         out["rounds"] = round_ids
-    path = data_dir() / LEADERBOARD_PATH
+    path = leaderboard_path(league)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(out, indent=1, default=str))
     return out

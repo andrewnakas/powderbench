@@ -1,4 +1,4 @@
-"""Training camp: score forecasts against past seasons, offline.
+"""Training camp: score forecasts against past seasons, offline, per league.
 
 Hindcast rounds use the same truth pipeline and scoring as live rounds. The
 NWP baselines come from Open-Meteo's archive of *actual past model runs*
@@ -14,8 +14,10 @@ from pathlib import Path
 
 import pandas as pd
 
-from . import baselines, climatology, scoring, snotel, truth
+from . import baselines, climatology, scoring, truth
+from .leagues import League
 from .stations import station_ids
+from .truth_sources import daily_truth
 
 log = logging.getLogger(__name__)
 
@@ -30,6 +32,7 @@ def load_hindcast_submission(path: Path | str) -> dict[date, pd.DataFrame]:
 
 
 def run_hindcast(
+    league: League,
     begin: date,
     end: date,
     submissions: dict[str, dict[date, pd.DataFrame]] | None = None,
@@ -37,25 +40,28 @@ def run_hindcast(
 ) -> pd.DataFrame:
     """Score every round day in [begin, end]. Returns per-(team, round) metric rows."""
     submissions = submissions or {}
-    ids = station_ids()
-    obs = snotel.fetch_daily(ids, begin - timedelta(days=6), end + timedelta(days=3))
-    daily = truth.daily_snowfall(obs)
-    climo = climatology.load_climatology()
+    ids = station_ids(league.name)
+    daily = daily_truth(
+        league, ids,
+        begin - timedelta(days=baselines.PERSISTENCE_LOOKBACK_DAYS),
+        end + timedelta(days=2),
+    )
+    climo = climatology.load_climatology(league)
 
     rows = []
     day = begin
     while day <= end:
         truth_day = truth.window_truth(daily, day)
-        climo_pred = climatology.climatology_prediction(day, climo)
+        climo_pred = climatology.climatology_prediction(day, league, climo)
         subs: dict[str, pd.DataFrame] = {}
         if include_baselines:
             subs.update(
                 {
-                    "baseline-zeros": baselines.zeros_prediction(),
+                    "baseline-zeros": baselines.zeros_prediction(league),
                     baselines.CLIMO_TEAM: climo_pred,
                     "baseline-persistence": baselines.persistence_prediction(day, daily),
-                    "baseline-openmeteo": baselines.openmeteo_prediction(day, "best_match", "hindcast"),
-                    "baseline-gfs": baselines.openmeteo_prediction(day, "gfs_seamless", "hindcast"),
+                    "baseline-openmeteo": baselines.openmeteo_prediction(league, day, "best_match", "hindcast"),
+                    "baseline-gfs": baselines.openmeteo_prediction(league, day, "gfs_seamless", "hindcast"),
                 }
             )
         for team, by_round in submissions.items():
@@ -67,6 +73,6 @@ def run_hindcast(
             metrics = scoring.score_round(pred, truth_day, climo_pred=climo_pred)
             metrics.pop("mae_by_horizon", None)
             rows.append({"team": team, "round": day.isoformat(), **metrics})
-        log.info("scored %s (%d teams)", day, len(subs))
+        log.info("[%s] scored %s (%d teams)", league.name, day, len(subs))
         day += timedelta(days=1)
     return pd.DataFrame(rows)
