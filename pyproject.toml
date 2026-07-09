@@ -1,0 +1,33 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "powderbench"
+version = "0.1.0"
+description = "PowderBench: a live mountain-snowfall forecasting benchmark. Beat the weather models."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = [
+    "requests>=2.31",
+    "pandas>=2.0",
+    "PyYAML>=6.0",
+    "typer>=0.12",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+powderbench = "powderbench.cli:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/powderbench"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "live: tests that hit real external APIs (deselect with '-m \"not live\"')",
+]
+addopts = "-m 'not live'"
