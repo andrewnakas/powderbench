@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PowderBench — beat the weather models</title>
+  <meta name="description" content="A live mountain-snowfall forecasting benchmark. Predict fresh snow at 44 SNOTEL stations near iconic ski zones and get scored against reality.">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❄️</text></svg>">
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <h1>❄️ PowderBench</h1>
+      <p class="tagline">The live mountain-snowfall forecasting benchmark.</p>
+      <p class="pitch">Every day, predict fresh snow — 24h, 48h, 72h out — at
+        <strong>44 SNOTEL stations</strong> near legendary ski zones: Alta, Jackson,
+        Baker, Palisades, Wolf Creek… Your forecasts lock at 00:00 UTC and get scored
+        against real mountain snow. Humans, ML pipelines, and AI agents all welcome on
+        one leaderboard.</p>
+      <p class="cta-row">
+        <a class="cta" href="#compete">Compete →</a>
+        <a class="cta ghost" href="#leaderboard">Leaderboard</a>
+      </p>
+      <p class="challenge" id="challenge-line">Nobody is beating the weather models. Yet.</p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section id="leaderboard">
+      <h2>Leaderboard</h2>
+      <div class="board-controls">
+        <button class="tab active" data-window="season">Season</button>
+        <button class="tab" data-window="last30">Last 30 rounds</button>
+        <span class="rounds-note" id="rounds-note"></span>
+      </div>
+      <div class="table-scroll">
+        <table id="board">
+          <thead>
+            <tr>
+              <th>#</th><th>Team</th>
+              <th title="Skill vs. climatology: 100 × (1 − MAE/MAE_climatology). 0 = climatology, higher is better.">Powder Score</th>
+              <th title="Mean absolute error, inches">MAE</th>
+              <th title="Probabilistic track: mean pinball loss over p10/p25/p50/p75/p90 (lower is better)">Pinball</th>
+              <th title="Powder Alert track: Brier score on P(≥6&quot; in 24h), lower is better">Brier₆</th>
+              <th>Rounds</th><th>Coverage</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <p class="fine">Baselines run automatically every round. <em>Unranked</em> teams
+        haven’t met the eligibility bar yet (5+ rounds at ≥70% coverage). Late or invalid
+        submissions are scored for reference but never ranked.</p>
+    </section>
+
+    <section id="recent">
+      <h2>Recent rounds</h2>
+      <div id="rounds-strip" class="rounds-strip"></div>
+    </section>
+
+    <section id="stations">
+      <h2>The mountains</h2>
+      <p>Ground truth comes from NRCS SNOTEL telemetry — automated snow pillows and
+        depth sensors high in the mountains, QC’d and voided (for everyone) when sensors
+        glitch. Hover a marker for the station behind each zone.</p>
+      <div id="map"></div>
+    </section>
+
+    <section id="compete">
+      <h2>How to compete</h2>
+      <ol class="steps">
+        <li><strong>Grab a round.</strong> Each day a round opens for tomorrow (UTC).
+          The manifest lists 44 stations × 3 horizons.
+          <code>data/rounds/&lt;date&gt;/round.json</code></li>
+        <li><strong>Make your forecast.</strong> One CSV row per station-horizon:
+          <code>station_id,horizon_h,snowfall_in</code> — optionally add quantiles
+          (<code>p10..p90</code>) for the probabilistic track and <code>prob_6in</code>
+          for Powder Alerts.</li>
+        <li><strong>Open a PR</strong> adding
+          <code>data/submissions/&lt;date&gt;/&lt;your-team&gt;.csv</code> before
+          00:00 UTC. CI validates it on the spot.</li>
+        <li><strong>Get scored.</strong> Three days later the round resolves against
+          QC’d SNOTEL truth and the leaderboard updates. That’s it — no accounts, no
+          API keys.</li>
+      </ol>
+      <p>Practice first? Run the <strong>training camp</strong> against any past
+        season: <code>powderbench hindcast 2025-01-01 2025-01-31 --submission you.csv</code></p>
+      <p class="cta-row"><a class="cta" id="repo-link" href="#">GitHub repo & rules →</a></p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p>Ground truth: <a href="https://wcc.sc.egov.usda.gov/awdbRestApi/swagger-ui/index.html">USDA NRCS SNOTEL</a>.
+        NWP baselines: <a href="https://open-meteo.com/">Open-Meteo</a> (CC BY 4.0).
+        Scores update daily at 16:00 UTC.</p>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
