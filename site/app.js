@@ -119,6 +119,7 @@ function activeWindow() {
 
 async function selectLeague(name) {
   state.league = name;
+  if (location.hash.startsWith("#league=")) history.replaceState(null, "", `#league=${name}`);
   renderLeagueBar();
   const lg = state.leagues.find((l) => l.name === name);
   document.getElementById("truth-note").textContent = TRUTH_NOTES[lg.truth_source] || "";
@@ -154,5 +155,7 @@ async function selectLeague(name) {
       renderBoard(state.lb[btn.dataset.window], state.lb.generated_rounds);
     })
   );
-  await selectLeague(state.leagues[0].name);
+  const fromHash = location.hash.match(/^#league=(\w+)$/)?.[1];
+  const initial = state.leagues.find((l) => l.name === fromHash) || state.leagues[0];
+  await selectLeague(initial.name);
 })();

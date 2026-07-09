@@ -53,6 +53,13 @@ Honest caveats, disclosed everywhere the trial appears:
 
 - ERA5 is a **model analysis**, not a snow stake. At ~25 km grid scale it
   mutes maritime peaks (NZ/AU totals read low) and misses microclimates.
+  High-resolution models over-forecast relative to ERA5's smoothed totals —
+  calibrating your forecasts to the truth's scale is part of the game (July
+  2025 hindcast: GFS +49 Powder Score, the high-res best_match blend −34).
+- Truth is pinned to pure reanalysis (`models=era5_seamless`). The archive's
+  default "best_match" blends in the same operational data the forecast
+  archive serves, which would make the NWP baseline literally identical to
+  truth (we hit this: MAE 0.000 before pinning).
 - ERA5 assimilates observations that also feed the live forecast models, so
   the NWP baselines are structurally correlated with the truth — treat their
   southern Powder Scores as a hard, slightly flattered target.

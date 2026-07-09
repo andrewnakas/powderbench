@@ -42,19 +42,24 @@ def _get(url: str, params: dict, cacheable: bool) -> list | dict:
     cache = _cache_path(key)
     if cacheable and cache.exists():
         return json.loads(cache.read_text())
-    for attempt in range(3):
-        resp = requests.get(url, params=params, timeout=TIMEOUT)
-        if resp.status_code == 429:
-            time.sleep(10 * (attempt + 1))
-            continue
-        resp.raise_for_status()
-        payload = resp.json()
-        if cacheable:
-            cache.parent.mkdir(parents=True, exist_ok=True)
-            cache.write_text(json.dumps(payload))
-        return payload
-    resp.raise_for_status()
-    return resp.json()
+    for attempt in range(4):
+        try:
+            resp = requests.get(url, params=params, timeout=TIMEOUT)
+            if resp.status_code >= 500 or resp.status_code == 429:
+                raise requests.HTTPError(f"{resp.status_code}", response=resp)
+            resp.raise_for_status()
+            break
+        except (requests.HTTPError, requests.ConnectionError, requests.Timeout) as exc:
+            if attempt == 3:
+                raise
+            wait = 10 * 2**attempt
+            log.warning("Open-Meteo request failed (%s), retrying in %ss", exc, wait)
+            time.sleep(wait)
+    payload = resp.json()
+    if cacheable:
+        cache.parent.mkdir(parents=True, exist_ok=True)
+        cache.write_text(json.dumps(payload))
+    return payload
 
 
 def _daily_frame(stations: list[Station], payload: list | dict) -> pd.DataFrame:
@@ -108,6 +113,11 @@ def hindcast_daily_snowfall(stations: list[Station], begin: date, end: date, mod
 def era5_daily_snowfall(stations: list[Station], begin: date, end: date) -> pd.DataFrame:
     """ERA5 reanalysis daily snowfall (inches) per station-local day.
     Lags realtime by ~5 days; complete back to 1940. Cached when old enough
-    that the archive can no longer change (end 10+ days ago)."""
+    that the archive can no longer change (end 10+ days ago).
+
+    Pinned to era5_seamless (pure reanalysis): the archive's default
+    best_match blends in the same high-res operational data the forecast
+    archive serves, which would make truth identical to the NWP baseline
+    (verified: MAE would be exactly 0)."""
     cacheable = end <= date.today() - timedelta(days=10)
-    return _fetch(ARCHIVE_URL, stations, "best_match", begin, end, cacheable=cacheable)
+    return _fetch(ARCHIVE_URL, stations, "era5_seamless", begin, end, cacheable=cacheable)

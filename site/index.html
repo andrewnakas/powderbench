@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>PowderBench — beat the weather models</title>
-  <meta name="description" content="A live mountain-snowfall forecasting benchmark. Predict fresh snow at 44 SNOTEL stations near iconic ski zones and get scored against reality.">
+  <meta name="description" content="A live mountain-snowfall forecasting benchmark. Predict fresh snow at mountain stations near iconic ski zones — Northern and Southern hemisphere leagues — and get scored against reality.">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❄️</text></svg>">
@@ -74,19 +74,19 @@
     <section id="compete">
       <h2>How to compete</h2>
       <ol class="steps">
-        <li><strong>Grab a round.</strong> Each day a round opens for tomorrow (UTC).
-          The manifest lists 44 stations × 3 horizons.
-          <code>data/rounds/&lt;date&gt;/round.json</code></li>
+        <li><strong>Grab a round.</strong> Rounds open daily in each league — the
+          manifest lists the stations, horizons, and your exact cutoff.
+          <code>data/rounds/&lt;league&gt;/&lt;date&gt;/round.json</code></li>
         <li><strong>Make your forecast.</strong> One CSV row per station-horizon:
           <code>station_id,horizon_h,snowfall_in</code> — optionally add quantiles
           (<code>p10..p90</code>) for the probabilistic track and <code>prob_6in</code>
           for Powder Alerts.</li>
         <li><strong>Open a PR</strong> adding
-          <code>data/submissions/&lt;date&gt;/&lt;your-team&gt;.csv</code> before
-          00:00 UTC. CI validates it on the spot.</li>
-        <li><strong>Get scored.</strong> Three days later the round resolves against
-          QC’d SNOTEL truth and the leaderboard updates. That’s it — no accounts, no
-          API keys.</li>
+          <code>data/submissions/&lt;league&gt;/&lt;date&gt;/&lt;your-team&gt;.csv</code>
+          before the cutoff. CI validates it on the spot.</li>
+        <li><strong>Get scored.</strong> The round resolves against QC’d truth
+          (~3 days northern, ~a week southern) and the leaderboard updates.
+          That’s it — no accounts, no API keys.</li>
       </ol>
       <p>Practice first? Run the <strong>training camp</strong> against any past
         season: <code>powderbench hindcast 2025-01-01 2025-01-31 --submission you.csv</code></p>
