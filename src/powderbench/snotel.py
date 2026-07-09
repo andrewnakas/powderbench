@@ -10,6 +10,7 @@ from __future__ import annotations
 import hashlib
 import json
 import logging
+import time
 from datetime import date, timedelta
 from pathlib import Path
 
@@ -36,8 +37,19 @@ def _get(url: str, params: dict, cacheable: bool) -> list:
     cache = _cache_path(key)
     if cacheable and cache.exists():
         return json.loads(cache.read_text())
-    resp = requests.get(url, params=params, timeout=TIMEOUT)
-    resp.raise_for_status()
+    for attempt in range(4):
+        try:
+            resp = requests.get(url, params=params, timeout=TIMEOUT)
+            if resp.status_code >= 500 or resp.status_code == 429:
+                raise requests.HTTPError(f"{resp.status_code}", response=resp)
+            resp.raise_for_status()
+            break
+        except (requests.HTTPError, requests.ConnectionError, requests.Timeout) as exc:
+            if attempt == 3:
+                raise
+            wait = 5 * 2**attempt
+            log.warning("SNOTEL request failed (%s), retrying in %ss", exc, wait)
+            time.sleep(wait)
     payload = resp.json()
     if cacheable:
         cache.parent.mkdir(parents=True, exist_ok=True)

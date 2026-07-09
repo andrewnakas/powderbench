@@ -58,6 +58,11 @@ def aggregate(rows: pd.DataFrame, min_rounds: int = MIN_ROUNDS) -> pd.DataFrame:
     return board
 
 
+def _records(df: pd.DataFrame) -> list[dict]:
+    """JSON-safe records: pandas serializes NaN as null (browsers reject bare NaN)."""
+    return json.loads(df.to_json(orient="records"))
+
+
 def _mean(series) -> float | None:
     if series is None:
         return None
@@ -72,6 +77,8 @@ def load_round_results() -> pd.DataFrame:
     for path in sorted(rounds_dir.glob("*.json")):
         payload = json.loads(path.read_text())
         for team, metrics in payload["teams"].items():
+            if metrics.get("invalid") or metrics.get("late"):
+                continue  # scored for the team's own reference, never ranked
             row = {"team": team, "round": payload["round_id"], **metrics}
             row.pop("mae_by_horizon", None)
             rows.append(row)
@@ -87,11 +94,9 @@ def build_leaderboard(season_start: date | None = None) -> dict:
             rows = rows[rows["round"] >= season_start.isoformat()]
         round_ids = sorted(rows["round"].unique())
         out["generated_rounds"] = len(round_ids)
-        out["season"] = aggregate(rows).to_dict(orient="records")
+        out["season"] = _records(aggregate(rows))
         last30 = rows[rows["round"].isin(round_ids[-30:])]
-        out["last30"] = aggregate(last30, min_rounds=min(MIN_ROUNDS, len(round_ids[-30:]))).to_dict(
-            orient="records"
-        )
+        out["last30"] = _records(aggregate(last30, min_rounds=min(MIN_ROUNDS, len(round_ids[-30:]))))
         out["rounds"] = round_ids
     path = data_dir() / LEADERBOARD_PATH
     path.parent.mkdir(parents=True, exist_ok=True)

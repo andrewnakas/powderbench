@@ -1,0 +1,39 @@
+name: Validate submission
+on:
+  pull_request:
+    paths:
+      - "data/submissions/**"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e .
+      - name: Check changed submissions
+        env:
+          PR_CREATED_AT: ${{ github.event.pull_request.created_at }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          git fetch origin "$BASE_SHA" --depth=1
+          FILES=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" -- 'data/submissions/**/*.csv')
+          if [ -z "$FILES" ]; then echo "no submission CSVs changed"; exit 0; fi
+          FAIL=0
+          for f in $FILES; do
+            echo "::group::$f"
+            # deadline: the round directory name is the cutoff date (00:00 UTC)
+            ROUND=$(basename "$(dirname "$f")")
+            if [[ "$PR_CREATED_AT" > "${ROUND}T00:00:00Z" ]]; then
+              echo "::warning file=$f::PR opened after the $ROUND cutoff — will be scored but flagged late"
+            fi
+            powderbench validate "$f" || FAIL=1
+            echo "::endgroup::"
+          done
+          exit $FAIL

@@ -82,11 +82,11 @@ def open_round(round_date: Optional[str] = typer.Option(None, help="Defaults to 
 
 
 @app.command()
-def baseline_submit(round_date: str):
+def baseline_submit(round_date: str, mode: str = typer.Option("live", help="live | hindcast (dry runs)")):
     """Generate and store baseline submissions for an open round."""
     from .rounds import submit_baselines
 
-    for team, path in submit_baselines(_parse_date(round_date)).items():
+    for team, path in submit_baselines(_parse_date(round_date), mode=mode).items():
         typer.echo(f"{team}: {path}")
 
 

@@ -1,0 +1,99 @@
+{
+ "round_id": "2025-03-03",
+ "resolved_utc": "2026-07-09T17:55:15+00:00",
+ "qc": {
+  "station_horizons_valid": 132,
+  "station_horizons_voided": 0
+ },
+ "teams": {
+  "baseline-climatology": {
+   "n_scorable": 132,
+   "n_scored": 132,
+   "coverage": 1.0,
+   "mae": 3.4886,
+   "rmse": 5.273,
+   "bias": -3.2462,
+   "mae_by_horizon": {
+    "24": 2.2045,
+    "48": 3.6818,
+    "72": 4.5795
+   },
+   "powder_score": 0.0,
+   "pinball": 1.1764,
+   "n_pinball": 132,
+   "brier6": 0.1208,
+   "n_brier6": 44,
+   "late": false
+  },
+  "baseline-gfs": {
+   "n_scorable": 132,
+   "n_scored": 132,
+   "coverage": 1.0,
+   "mae": 3.0451,
+   "rmse": 4.6211,
+   "bias": -2.868,
+   "mae_by_horizon": {
+    "24": 1.969,
+    "48": 3.2054,
+    "72": 3.961
+   },
+   "powder_score": 12.71,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-openmeteo": {
+   "n_scorable": 132,
+   "n_scored": 132,
+   "coverage": 1.0,
+   "mae": 3.0792,
+   "rmse": 4.6388,
+   "bias": -2.8339,
+   "mae_by_horizon": {
+    "24": 2.0084,
+    "48": 3.2449,
+    "72": 3.9842
+   },
+   "powder_score": 11.74,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-persistence": {
+   "n_scorable": 132,
+   "n_scored": 132,
+   "coverage": 1.0,
+   "mae": 4.1136,
+   "rmse": 5.7977,
+   "bias": -2.6742,
+   "mae_by_horizon": {
+    "24": 2.5909,
+    "48": 4.6136,
+    "72": 5.1364
+   },
+   "powder_score": -17.91,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-zeros": {
+   "n_scorable": 132,
+   "n_scored": 132,
+   "coverage": 1.0,
+   "mae": 3.8106,
+   "rmse": 5.6199,
+   "bias": -3.8106,
+   "mae_by_horizon": {
+    "24": 2.2045,
+    "48": 3.8409,
+    "72": 5.3864
+   },
+   "powder_score": -9.23,
+   "pinball": 1.9053,
+   "n_pinball": 132,
+   "brier6": 0.1364,
+   "n_brier6": 44,
+   "late": false
+  }
+ }
+}

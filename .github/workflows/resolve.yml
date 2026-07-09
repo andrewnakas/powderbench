@@ -1,0 +1,52 @@
+name: Resolve rounds & publish
+on:
+  schedule:
+    - cron: "0 16 * * *" # 16:00 UTC: SNOTEL end-of-day data for D+2 is in for matured rounds
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency: benchmark-data
+
+jobs:
+  resolve:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # full history: deadline check reads first-commit times
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e .
+      - name: Resolve matured rounds
+        run: powderbench resolve
+      - name: Rebuild leaderboard and site data
+        run: |
+          powderbench build-leaderboard
+          powderbench build-site
+      - name: Commit results
+        run: |
+          git config user.name "powderbench-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add data/rounds data/results site/data
+          git diff --cached --quiet || git commit -m "Resolve rounds & update leaderboard"
+          git pull --rebase origin main
+          git push
+      - name: Upload site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+  deploy:
+    needs: resolve
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

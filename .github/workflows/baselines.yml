@@ -1,0 +1,37 @@
+name: Baseline submissions
+on:
+  schedule:
+    - cron: "15 23 * * *" # 23:15 UTC: baselines lock in 45 min before the cutoff
+  workflow_dispatch:
+    inputs:
+      round_date:
+        description: "Round date (YYYY-MM-DD); default tomorrow UTC"
+        required: false
+
+permissions:
+  contents: write
+
+concurrency: benchmark-data
+
+jobs:
+  submit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e .
+      - name: Generate baseline forecasts
+        run: |
+          ROUND="${{ github.event.inputs.round_date }}"
+          [ -z "$ROUND" ] && ROUND=$(date -u -d tomorrow +%F)
+          powderbench baseline-submit "$ROUND"
+      - name: Commit
+        run: |
+          git config user.name "powderbench-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add data/submissions
+          git diff --cached --quiet || git commit -m "Baseline submissions"
+          git pull --rebase origin main
+          git push
