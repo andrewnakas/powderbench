@@ -1,0 +1,106 @@
+{
+ "round_id": "2026-06-25",
+ "league": "era5",
+ "resolved_utc": "2026-07-09T23:52:57+00:00",
+ "observations_72h": null,
+ "qc": {
+  "station_horizons_valid": 69,
+  "station_horizons_voided": 0
+ },
+ "biggest_24h": {
+  "station_id": "mt-hutt:NZ:ERA5",
+  "resort": "Mt Hutt",
+  "inches": 3.1
+ },
+ "teams": {
+  "baseline-climatology": {
+   "n_scorable": 69,
+   "n_scored": 69,
+   "coverage": 1.0,
+   "mae": 0.4857,
+   "rmse": 0.8713,
+   "bias": -0.2492,
+   "mae_by_horizon": {
+    "24": 0.3392,
+    "48": 0.4936,
+    "72": 0.6243
+   },
+   "powder_score": -0.0,
+   "pinball": 0.2964,
+   "n_pinball": 69,
+   "brier6": 0.0037,
+   "n_brier6": 23,
+   "late": false
+  },
+  "baseline-gfs": {
+   "n_scorable": 69,
+   "n_scored": 69,
+   "coverage": 1.0,
+   "mae": 0.5001,
+   "rmse": 0.9912,
+   "bias": 0.3419,
+   "mae_by_horizon": {
+    "24": 0.2924,
+    "48": 0.4685,
+    "72": 0.7393
+   },
+   "powder_score": -2.97,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-openmeteo": {
+   "n_scorable": 69,
+   "n_scored": 69,
+   "coverage": 1.0,
+   "mae": 0.6862,
+   "rmse": 1.3536,
+   "bias": 0.683,
+   "mae_by_horizon": {
+    "24": 0.3619,
+    "48": 0.7801,
+    "72": 0.9166
+   },
+   "powder_score": -41.29,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-persistence": {
+   "n_scorable": 69,
+   "n_scored": 69,
+   "coverage": 1.0,
+   "mae": 0.6726,
+   "rmse": 1.0532,
+   "bias": 0.1222,
+   "mae_by_horizon": {
+    "24": 0.5296,
+    "48": 0.6626,
+    "72": 0.8256
+   },
+   "powder_score": -38.49,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-zeros": {
+   "n_scorable": 69,
+   "n_scored": 69,
+   "coverage": 1.0,
+   "mae": 0.8076,
+   "rmse": 1.5438,
+   "bias": -0.8076,
+   "mae_by_horizon": {
+    "24": 0.4146,
+    "48": 0.84,
+    "72": 1.1683
+   },
+   "powder_score": -66.28,
+   "pinball": 0.4038,
+   "n_pinball": 69,
+   "brier6": 0.0,
+   "n_brier6": 23,
+   "late": false
+  }
+ }
+}

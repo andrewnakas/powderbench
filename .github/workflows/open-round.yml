@@ -1,14 +1,14 @@
 name: Open round
 on:
   schedule:
-    - cron: "5 0 * * *" # northern: open tomorrow's round (~24h window to 00:00 UTC cutoff)
-    - cron: "5 11 * * *" # southern: open D+2 (~24h window to the 11:00 UTC D+1 cutoff)
+    - cron: "5 0 * * *" # stations: open tomorrow's round (~24h window to 00:00 UTC cutoff)
+    - cron: "5 11 * * *" # era5 + resorts: open D+2 (~24h window to the 11:00 UTC D+1 cutoff)
   workflow_dispatch:
     inputs:
       league:
-        description: "League (northern | southern)"
+        description: "League (stations | era5 | resorts)"
         required: true
-        default: "northern"
+        default: "stations"
       round_date:
         description: "Round date (YYYY-MM-DD); default per league"
         required: false
@@ -29,15 +29,21 @@ jobs:
       - run: pip install -e .
       - name: Open round
         run: |
-          LEAGUE="${{ github.event.inputs.league }}"
-          if [ -z "$LEAGUE" ]; then
-            [ "$(date -u +%H)" -ge 6 ] && LEAGUE=southern || LEAGUE=northern
+          LEAGUES="${{ github.event.inputs.league }}"
+          if [ -z "$LEAGUES" ]; then
+            # 11:05 run covers the shared 11:00-UTC-cutoff leagues; 00:05 covers stations
+            [ "$(date -u +%H)" -ge 6 ] && LEAGUES="era5 resorts" || LEAGUES="stations"
           fi
-          if [ -n "${{ github.event.inputs.round_date }}" ]; then
-            powderbench open-round --league "$LEAGUE" --round-date "${{ github.event.inputs.round_date }}"
-          else
-            powderbench open-round --league "$LEAGUE"
-          fi
+          FAILED=0
+          for LEAGUE in $LEAGUES; do
+            # one league's outage must not block the others
+            if [ -n "${{ github.event.inputs.round_date }}" ]; then
+              powderbench open-round --league "$LEAGUE" --round-date "${{ github.event.inputs.round_date }}" || FAILED=1
+            else
+              powderbench open-round --league "$LEAGUE" || FAILED=1
+            fi
+          done
+          exit $FAILED
       - name: Commit
         run: |
           git config user.name "powderbench-bot"

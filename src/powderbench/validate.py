@@ -36,9 +36,9 @@ class ValidationResult:
 
 
 def validate_submission(path: Path | str, league: object = None) -> ValidationResult:
-    """league: League object or league name; default northern. The submission
+    """league: League object or league name; default stations. The submission
     is checked against that league's station registry."""
-    league_name = getattr(league, "name", league) or "northern"
+    league_name = getattr(league, "name", league) or "stations"
     res = ValidationResult(ok=True)
     try:
         df = pd.read_csv(path)

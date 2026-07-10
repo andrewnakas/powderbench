@@ -1,23 +1,35 @@
-# PowderBench leagues. Each league has its own stations, rounds, submissions,
-# results, climatology, truth source, and cutoff/maturity rules.
+# PowderBench leagues, one per truth-source category. Each league has its own
+# stations, rounds, submissions, results, climatology, and cutoff/maturity
+# rules.
 #
 # cutoff: submissions for round D lock at (D - days_before) hour_utc:00 UTC.
 # resolve_after: a round matures for scoring at D + days, at hour_utc UTC.
 leagues:
-  - name: northern
-    label: "Northern · Western US"
+  - name: stations
+    label: "Stations · Western US SNOTEL"
     status: live
     truth_source: snotel
     cutoff: { days_before: 0, hour_utc: 0 }
     resolve_after: { days: 3, hour_utc: 15 }
     season_start_month: 10 # water year: Oct 1 - Sep 30
-  - name: southern
-    label: "Southern · Andes / NZ / AU"
-    status: trial
+  - name: era5
+    label: "ERA5 · Andes / NZ / AU"
+    status: live
     truth_source: era5
     # 11:00 UTC the day before D precedes every station's local day-D start
     # (NZ day D begins 12:00 UTC D-1; AU 14:00 UTC D-1; Chile 04:00 UTC D).
     cutoff: { days_before: 1, hour_utc: 11 }
     # ERA5 lands on the Open-Meteo archive with ~5 days lag; D+2 is final by D+8.
     resolve_after: { days: 8, hour_utc: 16 }
+    season_start_month: 4 # southern snow year: Apr 1 - Mar 31
+  - name: resorts
+    label: "Resorts · Southern Hemisphere"
+    status: live
+    truth_source: resort
+    # shares the era5 cutoff: 11:00 UTC on D-1 precedes every local day-D start
+    cutoff: { days_before: 1, hour_utc: 11 }
+    # snow24(D+2) appears in morning-of-D+3 local reports; the last publishers
+    # (Chile/Argentina, UTC-4/-3) are archived by the 13:00 UTC scrape on D+3,
+    # so D+3 16:00 UTC rides the existing resolve cron.
+    resolve_after: { days: 3, hour_utc: 16 }
     season_start_month: 4 # southern snow year: Apr 1 - Mar 31

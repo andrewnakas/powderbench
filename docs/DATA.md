@@ -1,6 +1,6 @@
 # Data: sources, truth definition, QC
 
-## Ground truth: SNOTEL (northern league)
+## Ground truth: SNOTEL (stations league)
 
 Source: USDA NRCS AWDB REST API
 (`https://wcc.sc.egov.usda.gov/awdbRestApi`), public domain, no key.
@@ -40,16 +40,16 @@ A station-day is voided — excluded from scoring for everyone — when
 A 48h/72h window is valid only if every component day is valid. Typical
 midwinter void rates are a few percent.
 
-## Ground truth: ERA5 analysis (southern trial league)
+## Ground truth: ERA5 analysis (era5 league)
 
 There is no southern-hemisphere SNOTEL equivalent with a stable public API
 (we probed: NIWA is key-gated with negotiated access; Chile's DGA is
 session-based JSP portals; the CL/AR Observatorio Andino is an R Shiny
-websocket app). The trial league therefore scores against **ERA5 reanalysis
+websocket app). The era5 league therefore scores against **ERA5 reanalysis
 daily snowfall** at each resort's coordinates, fetched from Open-Meteo's
 keyless archive API (`archive-api.open-meteo.com`, CC BY 4.0).
 
-Honest caveats, disclosed everywhere the trial appears:
+Honest caveats, disclosed everywhere the league appears:
 
 - ERA5 is a **model analysis**, not a snow stake. At ~25 km grid scale it
   mutes maritime peaks (NZ/AU totals read low) and misses microclimates.
@@ -62,11 +62,11 @@ Honest caveats, disclosed everywhere the trial appears:
   truth (we hit this: MAE 0.000 before pinning).
 - ERA5 assimilates observations that also feed the live forecast models, so
   the NWP baselines are structurally correlated with the truth — treat their
-  southern Powder Scores as a hard, slightly flattered target.
+  era5-league Powder Scores as a hard, slightly flattered target.
 - The archive lags real time by ~5 days, so rounds resolve from D+8.
 - QC is missing-data-only (no sensor glitches to void).
 
-## Observation feeds (southern)
+## Observation feeds (era5 league)
 
 `src/powderbench/obsfeeds.py` records best-effort real observations next to
 model truth (never blocking resolution). Once a feed runs clean for a station,
@@ -80,26 +80,100 @@ to real truth. Recon status (2026-07):
 | `niwa` | NZ Snow & Ice Network via DataHub API | Activates when `NIWA_API_KEY`/`NIWA_CUSTOMER_ID` secrets exist. Per the DataHub Non-Commercial Use Licence, raw values are never committed to this repo or published — only stored privately at scoring time; published results carry Earth Sciences NZ attribution and their required disclaimer |
 | `dga` | Chile DGA hourly nivometric telemetry | Disabled — real data exists but every public front (JSP portals, Shiny app, Angular observatorio) is app/session-gated |
 
-Resort snow reports are **not** used: aggregators prohibit scraping and
-marketing totals are inflated and gameable.
+A fifth feed, `resorts`, mirrors the resorts-league archive (below) onto the
+matching era5 points — a public, running measure of how resort-claimed totals
+compare with reanalysis.
+
+## Ground truth: resort snow reports (resorts league)
+
+The resorts league scores against **what the mountain itself reports**: each
+resort's published snow report, scraped from the resort's own site by
+`src/powderbench/resortfeeds/` and archived in this repo.
+
+Why this is its own league and never truth elsewhere: resort numbers are
+marketing-adjacent — measured at generous stakes, rounded up, occasionally
+corrected. That makes them unusable as truth for the stations/era5 leagues.
+Inside a dedicated league the bias is harmless: every competitor is scored
+against the same published number, and forecasting *what the resort will
+report* is a legitimate, well-defined game. The `resorts` obs feed keeps the
+receipts by publishing resort-claimed totals next to ERA5 reanalysis.
+
+**The ephemerality problem.** A resort's "24h snowfall" disappears when
+tomorrow's report replaces it, so truth can never be re-fetched. A scrape cron
+(`.github/workflows/scrape-resorts.yml`, 20:30 UTC for Oceania mornings and
+13:00 UTC for South America mornings) archives every report as an immutable
+snapshot CSV under `data/resortreports/raw/`, failures included — the archive
+is both the truth source and the public audit trail. Resolution reads only
+the committed archive.
+
+**Date attribution.** A report scraped between one morning refresh and the
+next describes snow that fell on the *previous* local calendar day (the same
+end-of-day convention as SNOTEL's `periodRef=END`):
+
+```
+attributed = (local_scrape_time − report_hour_local).date() − 1 day
+```
+
+Two scrapes landing on the same attributed day are deduped read-side keeping
+the earliest (closest after the morning refresh). Resorts that publish only a
+cumulative season total (e.g. NZSki) yield daily snowfall as day-over-day
+deltas, clamped at zero — a day after an archive gap can't be attributed and
+is voided.
+
+**QC (resorts league):**
+
+| Rule | Condition |
+|---|---|
+| `missing` | no archived report covers that station-day (scrape failed, site down, robots disallow) |
+| `implausible_jump` | reported 24h total > 48" |
+
+**Politeness and consent.** Aggregators (OnTheSnow, Snow-Forecast, …) are
+never scraped — their ToS prohibit it. Only individual resort sites are used,
+each onboarded with a robots.txt + terms review recorded in the registry's
+`verified` stamp (`src/powderbench/resortfeeds/registry.py`); the scraper
+re-checks robots.txt on every run, identifies itself with a descriptive
+User-Agent (`PowderBench/0.1 (+https://powderbench.com; …)`), spaces requests
+per host, and touches each site at most twice a day. If a resort objects, its
+spec is disabled and its station voids from that day forward. Per-resort
+status (2026-07-10):
+
+| Resort | Endpoint | Verdict |
+|---|---|---|
+| Mt Hutt, Coronet Peak, The Remarkables (NZSki) | own weather-app JSON (azurefd.net) | **Live** — robots OK, no ToS scraping clause; season-total deltas |
+| Thredbo | own XML feed `/feeds/snow-report/` | **Live** — robots OK, no ToS scraping clause; literal `snow24Hours` |
+| Cerro Catedral | operator's parte-diario API (Vía Bariloche) | **Live** — robots OK, no ToS scraping clause; per-sector `nieveUltimas24` |
+| Cardrona, Treble Cone | — | **Unusable**: site snow data is aggregator-fed (OpenSnow) |
+| Perisher, Falls Creek, Hotham | — | **Unusable** (conservative): Vail-owned, automated access treated as prohibited |
+| Whakapapa, Mt Buller, Portillo, Nevados de Chillán, Corralco | — | Recon incomplete: reports render client-side; candidates for headless onboarding |
+
+Adding a resort: [RESORTS.md](RESORTS.md).
+
+**Climatology caveat.** The resorts league has no report history yet, so its
+Powder Score reference is ERA5 climatology at the resort coordinates. Resort
+reports read systematically higher than ERA5, so early Powder Scores will look
+flattered vs climatology — identically for every team, hence fair. The
+climatology will be rebuilt from actual report history after a season or two.
 
 ## The stations
 
-`data/stations.yaml`: 45 active SNOTEL stations (northern) chosen for (a)
+`data/stations.yaml`: 45 active SNOTEL stations (stations league) chosen for (a)
 proximity to iconic ski terrain, (b) long records, (c) geographic spread —
 Wasatch, Colorado Rockies, Tetons, Beartooths, Montana, Idaho, Cascades,
 Sierra, New Mexico, Chugach. All SNOTEL metadata comes from the API, not
-hand-entry. Plus 23 southern ERA5 resort points (Chile, Argentina, NZ,
-Australia) with hand-curated coordinates.
+hand-entry. Plus 23 era5 resort points (Chile, Argentina, NZ, Australia) with
+hand-curated coordinates, and 5 resorts-league points mirroring the era5
+coordinates of their resorts.
 
-Station id formats: `<id>:<state>:SNTL` (e.g. `766:UT:SNTL` = Snowbird) and
-`<slug>:<country>:ERA5` (e.g. `portillo:CL:ERA5`).
+Station id formats: `<id>:<state>:SNTL` (e.g. `766:UT:SNTL` = Snowbird),
+`<slug>:<country>:ERA5` (e.g. `portillo:CL:ERA5`), and
+`<slug>:<country>:RESORT` (e.g. `thredbo:AU:RESORT`).
 
 ## Climatology
 
-`data/climatology/<league>.csv` — northern from water years 2016–2025 of
-SNOTEL history; southern from ERA5 1991–2025 (`powderbench build-climatology
---league <name>`). For each station × day-of-year (±7-day circular window,
+`data/climatology/<league>.csv` — stations from water years 2016–2025 of
+SNOTEL history; era5 from ERA5 1991–2025; resorts from ERA5 1991–2025 at the
+resort coordinates, pending real report history (`powderbench
+build-climatology --league <name>`). For each station × day-of-year (±7-day circular window,
 pooled across years): mean, quantiles (p10–p90) of the 24h / 48h / 72h
 snowfall distributions, and the empirical frequency of ≥6" days. The
 **median** is climatology's point forecast (MAE-optimal no-skill reference).
@@ -126,6 +200,7 @@ data/submissions/<league>/<D>/<team>.csv all submissions for round D
 data/results/<league>/rounds/<D>.json    per-team metrics + QC counts
 data/results/<league>/leaderboard.json   season + last-30 aggregates
 data/obs/<league>/                       observation-feed reference data
+data/resortreports/raw/                  archived resort snow-report snapshots
 data/cache/                              API response cache (gitignored)
 ```
 

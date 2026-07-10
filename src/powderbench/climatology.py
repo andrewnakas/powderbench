@@ -1,5 +1,5 @@
 """Per-league snowfall climatology: per-station, per-day-of-year stats built
-from that league's truth history (SNOTEL for northern, ERA5 for southern).
+from that league's truth history (SNOTEL for stations, ERA5 for era5).
 Used as the no-skill reference for the Powder Score and as a baseline.
 
 The point forecast is the climatological *median* (MAE-optimal for a

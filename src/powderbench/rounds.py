@@ -1,9 +1,9 @@
 """Live round lifecycle, per league.
 
 A round is named by its target-start date D. The league config sets when
-submissions lock (northern: 00:00 UTC on D; southern: 11:00 UTC on D-1, ahead
+submissions lock (stations: 00:00 UTC on D; era5/resorts: 11:00 UTC on D-1, ahead
 of every station's local day-D start) and when the round matures for scoring
-(northern: D+3 15:00 UTC once SNOTEL posts end-of-day D+2; southern: D+8,
+(stations: D+3 15:00 UTC once SNOTEL posts end-of-day D+2; era5: D+8,
 after ERA5's ~5-day archive lag).
 
 Anti-cheat: a submission only counts as on-time if its file first landed on

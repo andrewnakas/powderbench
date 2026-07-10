@@ -2,20 +2,21 @@
 
 ## Leagues
 
-Two independent leaderboards; results never mix:
+Three independent leaderboards — one per kind of ground truth; results never mix:
 
-| | Northern | Southern (**trial**) |
-|---|---|---|
-| Stations | 45 SNOTEL | 23 ERA5 resort points |
-| Truth | Real telemetry | Model analysis (disclosed per round) |
-| Cutoff for round D | 00:00 UTC on D | **11:00 UTC on D−1** |
-| Resolves | D+3, 16:00 UTC | from D+8, 16:00 UTC (ERA5 archive lag) |
-| Season | Oct 1 – Sep 30 | Apr 1 – Mar 31 |
+| | Stations | ERA5 | Resorts |
+|---|---|---|---|
+| Points | 45 SNOTEL | 23 ERA5 resort points | 5 resorts (growing) |
+| Truth | Real telemetry | Model analysis | The resort's own published snow report |
+| Cutoff for round D | 00:00 UTC on D | **11:00 UTC on D−1** | **11:00 UTC on D−1** |
+| Resolves | D+3, 16:00 UTC | from D+8, 16:00 UTC (ERA5 archive lag) | D+3, 16:00 UTC |
+| Season | Oct 1 – Sep 30 | Apr 1 – Mar 31 | Apr 1 – Mar 31 |
 
-The southern league is a live trial: rules are identical, but the truth source
-is a reanalysis model while no stable southern station API exists, and its
-mechanics may be tuned between seasons. Trial results stay archived but are
-always labeled.
+Each league is named for its truth source, because the truth *is* the game:
+telemetry rewards nowcasting real snow, reanalysis rewards matching a model's
+smoothed view, and the resorts league scores you against whatever number the
+mountain publishes in its morning report — generous stakes and all. Resort
+numbers never leak into the other leagues' truth (see [DATA.md](DATA.md)).
 
 ## The round
 
@@ -42,12 +43,14 @@ always labeled.
 
 ## Ground truth and QC
 
-- Northern truth is the QC'd SNOTEL snow-depth delta; southern-trial truth is
-  ERA5 daily snowfall at the station's coordinates (see [DATA.md](DATA.md)).
-- A station-day is **voided for everyone** when data misbehaves — northern:
+- Stations truth is the QC'd SNOTEL snow-depth delta; era5 truth is ERA5
+  daily snowfall at the station's coordinates; resorts truth is the resort's
+  archived snow report (see [DATA.md](DATA.md)).
+- A station-day is **voided for everyone** when data misbehaves — stations:
   missing readings, negative/absurd depths, a >48" daily jump, or a ≥6" jump with
-  no supporting SWE increase; southern: missing analysis data. A 48h/72h window
-  is voided if any component day is.
+  no supporting SWE increase; era5: missing analysis data; resorts: no archived
+  report for that day, or a >48" claim. A 48h/72h window is voided if any
+  component day is.
 - Voided station-horizons never count for or against anyone. No appeals needed —
   the QC code is public and deterministic.
 
@@ -80,6 +83,6 @@ always labeled.
 
 ## Season
 
-- Northern seasons run October 1 – September 30 (Western US snow year);
-  southern seasons April 1 – March 31. Season leaderboards reset; all-time
-  results stay archived in `data/results/<league>/`.
+- Stations seasons run October 1 – September 30 (Western US snow year);
+  era5 and resorts seasons April 1 – March 31. Season leaderboards reset;
+  all-time results stay archived in `data/results/<league>/`.

@@ -8,9 +8,13 @@ const TRUTH_NOTES = {
     "sensors high in the mountains, QC’d and voided (for everyone) when sensors glitch. " +
     "Hover a marker for the station behind each zone.",
   era5:
-    "Trial league: truth is ERA5 model analysis at each resort’s coordinates (no public " +
+    "Truth is ERA5 model analysis at each resort’s coordinates (no public " +
     "southern-hemisphere station API exists — real feeds get promoted as they become " +
     "available). Scores resolve about a week after each round.",
+  resort:
+    "Truth is each resort’s own published snow report, archived twice daily from the " +
+    "resort’s site. Resort numbers run generous — but every team is scored against the " +
+    "same report, so it’s a fair fight; cross-check the ERA5 league for the reanalysis view.",
 };
 
 let map = null;
@@ -146,7 +150,7 @@ async function selectLeague(name) {
   try {
     state.leagues = await loadJSON("data/leagues.json");
   } catch (e) {
-    state.leagues = [{ name: "northern", label: "Northern", status: "live", truth_source: "snotel" }];
+    state.leagues = [{ name: "stations", label: "Stations", status: "live", truth_source: "snotel" }];
   }
   document.querySelectorAll(".tab").forEach((btn) =>
     btn.addEventListener("click", () => {

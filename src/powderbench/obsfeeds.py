@@ -1,5 +1,5 @@
 """Observation feeds: best-effort real-world snow observations recorded
-alongside model truth in the southern league.
+alongside model truth in the era5 league.
 
 A feed is a fetcher returning rows of (station_id, date, snow24_obs_in). Feeds
 never block round resolution — they're reference data, stored under
@@ -7,7 +7,7 @@ data/obs/<league>/ and surfaced next to truth in round results. Once a feed
 proves stable for a station, that station's `truth_source` in stations.yaml
 can be flipped to promote it to actual truth (see truth_sources.py).
 
-Status of known southern sources (recon 2026-07, see docs/DATA.md):
+Status of known southern-hemisphere sources (recon 2026-07, see docs/DATA.md):
 - Argentina INA a5 (alerta.ina.gob.ar/a5): OPEN JSON API, 47 real "nivel de
   nieve" telemetry stations across the Andes — incl. NIV Las Leñas ~1 km from
   our las-lenas point and NIV Túnel Internacional near Portillo. Public data
@@ -22,8 +22,11 @@ Status of known southern sources (recon 2026-07, see docs/DATA.md):
   app/session auth. Slot ships disabled.
 - NIWA (NZ) Snow & Ice Network: real stations behind the DataHub API. The
   adapter activates when NIWA_API_KEY and NIWA_CUSTOMER_ID are set.
-- Resort snow reports: aggregators prohibit scraping and resort marketing
-  numbers are inflated/gameable — not used.
+- Resort snow reports: scraped from individual resort sites (resortfeeds/,
+  aggregators remain off-limits) as the resorts league's own truth. Mirrored
+  here onto the matching era5 points as reference columns — a public, running
+  measure of how resort-claimed totals compare with reanalysis. Marketing
+  numbers stay out of era5/stations truth.
 """
 
 from __future__ import annotations
@@ -152,11 +155,31 @@ def _snowy_fetch(begin: date, end: date) -> pd.DataFrame:
     return pd.DataFrame(rows, columns=["station_id", "date", "snow24_obs_in"])
 
 
+def _resorts_enabled() -> bool:
+    return True
+
+
+def _resorts_fetch(begin: date, end: date) -> pd.DataFrame:
+    """Resort-claimed snowfall from the committed scrape archive (see
+    resortfeeds.archive), mapped onto the era5 league's points by slug."""
+    from .resortfeeds import daily_from_archive
+    from .stations import station_ids
+
+    era5_by_slug = {sid.split(":")[0]: sid for sid in station_ids("era5")}
+    rows = [
+        {"station_id": era5_by_slug[r.station_id.split(":")[0]], "date": r.date, "snow24_obs_in": float(r.snow24_in)}
+        for r in daily_from_archive(begin, end).itertuples()
+        if r.station_id.split(":")[0] in era5_by_slug
+    ]
+    return pd.DataFrame(rows, columns=["station_id", "date", "snow24_obs_in"])
+
+
 FEEDS: tuple[Feed, ...] = (
-    Feed("ina", "southern", _ina_enabled, _ina_fetch),
-    Feed("snowyhydro", "southern", _snowy_enabled, _snowy_fetch),
-    Feed("niwa", "southern", _niwa_enabled, _niwa_fetch, publish_raw=False),
-    Feed("dga", "southern", _dga_enabled, _dga_fetch),
+    Feed("ina", "era5", _ina_enabled, _ina_fetch),
+    Feed("snowyhydro", "era5", _snowy_enabled, _snowy_fetch),
+    Feed("niwa", "era5", _niwa_enabled, _niwa_fetch, publish_raw=False),
+    Feed("dga", "era5", _dga_enabled, _dga_fetch),
+    Feed("resorts", "era5", _resorts_enabled, _resorts_fetch),
 )
 
 

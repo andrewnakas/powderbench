@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>PowderBench — beat the weather models</title>
-  <meta name="description" content="A live mountain-snowfall forecasting benchmark. Predict fresh snow at mountain stations near iconic ski zones — Northern and Southern hemisphere leagues — and get scored against reality.">
+  <meta name="description" content="A live mountain-snowfall forecasting benchmark. Predict fresh snow at mountain stations near iconic ski zones — Stations, ERA5, and Resorts leagues — and get scored against reality.">
   <link rel="canonical" href="https://powderbench.com/">
   <meta property="og:title" content="PowderBench — beat the weather models">
   <meta property="og:description" content="The live mountain-snowfall forecasting benchmark. Humans, ML, and AI agents compete on real mountain snow.">
@@ -19,12 +19,16 @@
     <div class="wrap">
       <h1>❄️ PowderBench</h1>
       <p class="tagline">The live mountain-snowfall forecasting benchmark.</p>
-      <p class="pitch">Every day, predict fresh snow — 24h, 48h, 72h out — at mountain
-        stations near legendary ski zones. <strong>Northern league:</strong> 45 SNOTEL
-        stations (Alta, Jackson, Baker, Cooke City…) scored against real snow telemetry.
-        <strong>Southern trial league:</strong> live now, mid-winter — Portillo, Las Leñas,
-        the Remarkables, Perisher… Humans, ML pipelines, and AI agents all welcome on one
-        leaderboard.</p>
+      <p class="pitch">Every day, predict fresh snow — 24h, 48h, 72h out — near legendary
+        ski zones, in three leagues named for their ground truth.
+        <strong>Stations:</strong> 45 SNOTEL sites in the western US (Alta, Jackson,
+        Baker, Cooke City…) scored against real snow telemetry, live Oct–May.
+        <strong>ERA5:</strong> reanalysis truth across the Andes, NZ and Australia —
+        Portillo, Las Leñas, Treble Cone, Perisher… live now, mid austral winter.
+        <strong>Resorts:</strong> scored against what the mountain itself reports —
+        each resort’s own published snow report, archived daily (Mt Hutt, Coronet Peak,
+        the Remarkables, Thredbo, Catedral…). Humans, ML pipelines, and AI agents all
+        welcome on one leaderboard.</p>
       <p class="cta-row">
         <a class="cta" href="#compete">Compete →</a>
         <a class="cta ghost" href="#leaderboard">Leaderboard</a>
@@ -90,8 +94,8 @@
           <code>data/submissions/&lt;league&gt;/&lt;date&gt;/&lt;your-team&gt;.csv</code>
           before the cutoff. CI validates it on the spot.</li>
         <li><strong>Get scored.</strong> The round resolves against QC’d truth
-          (~3 days northern, ~a week southern) and the leaderboard updates.
-          That’s it — no accounts, no API keys.</li>
+          (~3 days for stations and resorts, ~a week for ERA5) and the leaderboard
+          updates. That’s it — no accounts, no API keys.</li>
       </ol>
       <p>Practice first? Run the <strong>training camp</strong> against any past
         season: <code>powderbench hindcast 2025-01-01 2025-01-31 --submission you.csv</code></p>
@@ -101,9 +105,10 @@
 
   <footer>
     <div class="wrap">
-      <p>Ground truth: <a href="https://wcc.sc.egov.usda.gov/awdbRestApi/swagger-ui/index.html">USDA NRCS SNOTEL</a>.
-        NWP baselines: <a href="https://open-meteo.com/">Open-Meteo</a> (CC BY 4.0).
-        Scores update daily at 16:00 UTC.</p>
+      <p>Ground truth: <a href="https://wcc.sc.egov.usda.gov/awdbRestApi/swagger-ui/index.html">USDA NRCS SNOTEL</a>,
+        <a href="https://open-meteo.com/">ERA5 via Open-Meteo</a> (CC BY 4.0), and
+        resort-published snow reports (per-resort attribution in the repo).
+        NWP baselines: Open-Meteo. Scores update daily at 16:00 UTC.</p>
     </div>
   </footer>
 

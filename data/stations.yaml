@@ -1,10 +1,10 @@
 # PowderBench station registry.
 #
-# Northern league: curated SNOTEL stations near iconic ski zones, verified
+# Stations league: curated SNOTEL stations near iconic ski zones, verified
 # against the NRCS AWDB REST API (all fields come from the API); station_id is
-# the SNOTEL 'station triplet'. league defaults to northern when omitted.
+# the SNOTEL 'station triplet'. league defaults to stations when omitted.
 #
-# Southern league (trial): ERA5 grid points at hand-curated resort coordinates
+# ERA5 league: reanalysis grid points at hand-curated resort coordinates
 # (no public SH station API exists — see docs/DATA.md); station_id format is
 # <slug>:<country>:ERA5.
 stations:
@@ -414,27 +414,36 @@ stations:
     latitude: 60.95842
     longitude: -149.08858
 
-  # ---- Southern league (trial) — ERA5 points at resort coordinates ----
-  - { station_id: "portillo:CL:ERA5", slug: portillo, name: "Portillo", resort: "Ski Portillo", region: "Aconcagua, Chile", state: CL, elevation_ft: 9450, latitude: -32.8360, longitude: -70.1290, league: southern }
-  - { station_id: "valle-nevado:CL:ERA5", slug: valle-nevado, name: "Valle Nevado", resort: "Valle Nevado / Tres Valles", region: "Santiago Andes, Chile", state: CL, elevation_ft: 9925, latitude: -33.3560, longitude: -70.2490, league: southern }
-  - { station_id: "nevados-chillan:CL:ERA5", slug: nevados-chillan, name: "Nevados de Chillán", resort: "Nevados de Chillán", region: "Ñuble Andes, Chile", state: CL, elevation_ft: 6070, latitude: -36.9080, longitude: -71.4770, league: southern }
-  - { station_id: "corralco:CL:ERA5", slug: corralco, name: "Corralco", resort: "Corralco / Lonquimay", region: "Araucanía, Chile", state: CL, elevation_ft: 5900, latitude: -38.4270, longitude: -71.5720, league: southern }
-  - { station_id: "antillanca:CL:ERA5", slug: antillanca, name: "Antillanca", resort: "Antillanca", region: "Los Lagos, Chile", state: CL, elevation_ft: 3940, latitude: -40.7710, longitude: -72.1530, league: southern }
-  - { station_id: "las-lenas:AR:ERA5", slug: las-lenas, name: "Las Leñas", resort: "Las Leñas", region: "Mendoza Andes, Argentina", state: AR, elevation_ft: 8860, latitude: -35.1450, longitude: -70.0810, league: southern }
-  - { station_id: "penitentes:AR:ERA5", slug: penitentes, name: "Penitentes", resort: "Penitentes", region: "Mendoza Andes, Argentina", state: AR, elevation_ft: 9190, latitude: -32.8590, longitude: -69.8420, league: southern }
-  - { station_id: "caviahue:AR:ERA5", slug: caviahue, name: "Caviahue", resort: "Caviahue", region: "Neuquén Andes, Argentina", state: AR, elevation_ft: 5900, latitude: -37.8760, longitude: -71.0370, league: southern }
-  - { station_id: "chapelco:AR:ERA5", slug: chapelco, name: "Chapelco", resort: "Chapelco", region: "Neuquén Andes, Argentina", state: AR, elevation_ft: 5580, latitude: -40.2030, longitude: -71.3030, league: southern }
-  - { station_id: "catedral:AR:ERA5", slug: catedral, name: "Cerro Catedral", resort: "Catedral Alta Patagonia", region: "Bariloche, Argentina", state: AR, elevation_ft: 5910, latitude: -41.1700, longitude: -71.4430, league: southern }
-  - { station_id: "castor:AR:ERA5", slug: castor, name: "Cerro Castor", resort: "Cerro Castor", region: "Tierra del Fuego, Argentina", state: AR, elevation_ft: 1970, latitude: -54.7230, longitude: -68.1210, league: southern }
-  - { station_id: "whakapapa:NZ:ERA5", slug: whakapapa, name: "Whakapapa", resort: "Whakapapa / Ruapehu", region: "North Island, NZ", state: NZ, elevation_ft: 6560, latitude: -39.2530, longitude: 175.5610, league: southern }
-  - { station_id: "turoa:NZ:ERA5", slug: turoa, name: "Tūroa", resort: "Tūroa / Ruapehu", region: "North Island, NZ", state: NZ, elevation_ft: 6560, latitude: -39.3060, longitude: 175.5290, league: southern }
-  - { station_id: "mt-hutt:NZ:ERA5", slug: mt-hutt, name: "Mt Hutt", resort: "Mt Hutt", region: "Canterbury, NZ", state: NZ, elevation_ft: 6230, latitude: -43.4710, longitude: 171.5300, league: southern }
-  - { station_id: "remarkables:NZ:ERA5", slug: remarkables, name: "The Remarkables", resort: "The Remarkables", region: "Otago, NZ", state: NZ, elevation_ft: 6230, latitude: -45.0540, longitude: 168.8120, league: southern }
-  - { station_id: "coronet-peak:NZ:ERA5", slug: coronet-peak, name: "Coronet Peak", resort: "Coronet Peak", region: "Otago, NZ", state: NZ, elevation_ft: 4920, latitude: -44.9210, longitude: 168.7340, league: southern }
-  - { station_id: "cardrona:NZ:ERA5", slug: cardrona, name: "Cardrona", resort: "Cardrona", region: "Otago, NZ", state: NZ, elevation_ft: 5580, latitude: -44.8740, longitude: 168.9480, league: southern }
-  - { station_id: "treble-cone:NZ:ERA5", slug: treble-cone, name: "Treble Cone", resort: "Treble Cone", region: "Otago, NZ", state: NZ, elevation_ft: 5580, latitude: -44.6330, longitude: 168.8970, league: southern }
-  - { station_id: "perisher:AU:ERA5", slug: perisher, name: "Perisher", resort: "Perisher", region: "Snowy Mountains, AU", state: AU, elevation_ft: 5910, latitude: -36.4050, longitude: 148.4100, league: southern }
-  - { station_id: "thredbo:AU:ERA5", slug: thredbo, name: "Thredbo", resort: "Thredbo", region: "Snowy Mountains, AU", state: AU, elevation_ft: 6230, latitude: -36.5040, longitude: 148.2900, league: southern }
-  - { station_id: "falls-creek:AU:ERA5", slug: falls-creek, name: "Falls Creek", resort: "Falls Creek", region: "Victorian Alps, AU", state: AU, elevation_ft: 5410, latitude: -36.8660, longitude: 147.2780, league: southern }
-  - { station_id: "hotham:AU:ERA5", slug: hotham, name: "Mt Hotham", resort: "Mt Hotham", region: "Victorian Alps, AU", state: AU, elevation_ft: 5740, latitude: -36.9760, longitude: 147.1350, league: southern }
-  - { station_id: "mt-buller:AU:ERA5", slug: mt-buller, name: "Mt Buller", resort: "Mt Buller", region: "Victorian Alps, AU", state: AU, elevation_ft: 5250, latitude: -37.1460, longitude: 146.4470, league: southern }
+  # ---- ERA5 league — reanalysis points at resort coordinates ----
+  - { station_id: "portillo:CL:ERA5", slug: portillo, name: "Portillo", resort: "Ski Portillo", region: "Aconcagua, Chile", state: CL, elevation_ft: 9450, latitude: -32.8360, longitude: -70.1290, league: era5 }
+  - { station_id: "valle-nevado:CL:ERA5", slug: valle-nevado, name: "Valle Nevado", resort: "Valle Nevado / Tres Valles", region: "Santiago Andes, Chile", state: CL, elevation_ft: 9925, latitude: -33.3560, longitude: -70.2490, league: era5 }
+  - { station_id: "nevados-chillan:CL:ERA5", slug: nevados-chillan, name: "Nevados de Chillán", resort: "Nevados de Chillán", region: "Ñuble Andes, Chile", state: CL, elevation_ft: 6070, latitude: -36.9080, longitude: -71.4770, league: era5 }
+  - { station_id: "corralco:CL:ERA5", slug: corralco, name: "Corralco", resort: "Corralco / Lonquimay", region: "Araucanía, Chile", state: CL, elevation_ft: 5900, latitude: -38.4270, longitude: -71.5720, league: era5 }
+  - { station_id: "antillanca:CL:ERA5", slug: antillanca, name: "Antillanca", resort: "Antillanca", region: "Los Lagos, Chile", state: CL, elevation_ft: 3940, latitude: -40.7710, longitude: -72.1530, league: era5 }
+  - { station_id: "las-lenas:AR:ERA5", slug: las-lenas, name: "Las Leñas", resort: "Las Leñas", region: "Mendoza Andes, Argentina", state: AR, elevation_ft: 8860, latitude: -35.1450, longitude: -70.0810, league: era5 }
+  - { station_id: "penitentes:AR:ERA5", slug: penitentes, name: "Penitentes", resort: "Penitentes", region: "Mendoza Andes, Argentina", state: AR, elevation_ft: 9190, latitude: -32.8590, longitude: -69.8420, league: era5 }
+  - { station_id: "caviahue:AR:ERA5", slug: caviahue, name: "Caviahue", resort: "Caviahue", region: "Neuquén Andes, Argentina", state: AR, elevation_ft: 5900, latitude: -37.8760, longitude: -71.0370, league: era5 }
+  - { station_id: "chapelco:AR:ERA5", slug: chapelco, name: "Chapelco", resort: "Chapelco", region: "Neuquén Andes, Argentina", state: AR, elevation_ft: 5580, latitude: -40.2030, longitude: -71.3030, league: era5 }
+  - { station_id: "catedral:AR:ERA5", slug: catedral, name: "Cerro Catedral", resort: "Catedral Alta Patagonia", region: "Bariloche, Argentina", state: AR, elevation_ft: 5910, latitude: -41.1700, longitude: -71.4430, league: era5 }
+  - { station_id: "castor:AR:ERA5", slug: castor, name: "Cerro Castor", resort: "Cerro Castor", region: "Tierra del Fuego, Argentina", state: AR, elevation_ft: 1970, latitude: -54.7230, longitude: -68.1210, league: era5 }
+  - { station_id: "whakapapa:NZ:ERA5", slug: whakapapa, name: "Whakapapa", resort: "Whakapapa / Ruapehu", region: "North Island, NZ", state: NZ, elevation_ft: 6560, latitude: -39.2530, longitude: 175.5610, league: era5 }
+  - { station_id: "turoa:NZ:ERA5", slug: turoa, name: "Tūroa", resort: "Tūroa / Ruapehu", region: "North Island, NZ", state: NZ, elevation_ft: 6560, latitude: -39.3060, longitude: 175.5290, league: era5 }
+  - { station_id: "mt-hutt:NZ:ERA5", slug: mt-hutt, name: "Mt Hutt", resort: "Mt Hutt", region: "Canterbury, NZ", state: NZ, elevation_ft: 6230, latitude: -43.4710, longitude: 171.5300, league: era5 }
+  - { station_id: "remarkables:NZ:ERA5", slug: remarkables, name: "The Remarkables", resort: "The Remarkables", region: "Otago, NZ", state: NZ, elevation_ft: 6230, latitude: -45.0540, longitude: 168.8120, league: era5 }
+  - { station_id: "coronet-peak:NZ:ERA5", slug: coronet-peak, name: "Coronet Peak", resort: "Coronet Peak", region: "Otago, NZ", state: NZ, elevation_ft: 4920, latitude: -44.9210, longitude: 168.7340, league: era5 }
+  - { station_id: "cardrona:NZ:ERA5", slug: cardrona, name: "Cardrona", resort: "Cardrona", region: "Otago, NZ", state: NZ, elevation_ft: 5580, latitude: -44.8740, longitude: 168.9480, league: era5 }
+  - { station_id: "treble-cone:NZ:ERA5", slug: treble-cone, name: "Treble Cone", resort: "Treble Cone", region: "Otago, NZ", state: NZ, elevation_ft: 5580, latitude: -44.6330, longitude: 168.8970, league: era5 }
+  - { station_id: "perisher:AU:ERA5", slug: perisher, name: "Perisher", resort: "Perisher", region: "Snowy Mountains, AU", state: AU, elevation_ft: 5910, latitude: -36.4050, longitude: 148.4100, league: era5 }
+  - { station_id: "thredbo:AU:ERA5", slug: thredbo, name: "Thredbo", resort: "Thredbo", region: "Snowy Mountains, AU", state: AU, elevation_ft: 6230, latitude: -36.5040, longitude: 148.2900, league: era5 }
+  - { station_id: "falls-creek:AU:ERA5", slug: falls-creek, name: "Falls Creek", resort: "Falls Creek", region: "Victorian Alps, AU", state: AU, elevation_ft: 5410, latitude: -36.8660, longitude: 147.2780, league: era5 }
+  - { station_id: "hotham:AU:ERA5", slug: hotham, name: "Mt Hotham", resort: "Mt Hotham", region: "Victorian Alps, AU", state: AU, elevation_ft: 5740, latitude: -36.9760, longitude: 147.1350, league: era5 }
+  - { station_id: "mt-buller:AU:ERA5", slug: mt-buller, name: "Mt Buller", resort: "Mt Buller", region: "Victorian Alps, AU", state: AU, elevation_ft: 5250, latitude: -37.1460, longitude: 146.4470, league: era5 }
+
+  # ---- Resorts league — resort-reported snow, scraped from each resort's own
+  # site (src/powderbench/resortfeeds/registry.py has the audit trail).
+  # Coordinates mirror the era5 points; elevation is what the report refers to.
+  - { station_id: "mt-hutt:NZ:RESORT", slug: mt-hutt, name: "Mt Hutt", resort: "Mt Hutt", region: "Canterbury, NZ", state: NZ, elevation_ft: 6230, latitude: -43.4710, longitude: 171.5300, league: resorts }
+  - { station_id: "remarkables:NZ:RESORT", slug: remarkables, name: "The Remarkables", resort: "The Remarkables", region: "Otago, NZ", state: NZ, elevation_ft: 6230, latitude: -45.0540, longitude: 168.8120, league: resorts }
+  - { station_id: "coronet-peak:NZ:RESORT", slug: coronet-peak, name: "Coronet Peak", resort: "Coronet Peak", region: "Otago, NZ", state: NZ, elevation_ft: 4920, latitude: -44.9210, longitude: 168.7340, league: resorts }
+  - { station_id: "thredbo:AU:RESORT", slug: thredbo, name: "Thredbo", resort: "Thredbo", region: "Snowy Mountains, AU", state: AU, elevation_ft: 6230, latitude: -36.5040, longitude: 148.2900, league: resorts }
+  - { station_id: "catedral:AR:RESORT", slug: catedral, name: "Cerro Catedral", resort: "Catedral Alta Patagonia", region: "Bariloche, Argentina", state: AR, elevation_ft: 6560, latitude: -41.1700, longitude: -71.4430, league: resorts }

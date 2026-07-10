@@ -13,7 +13,7 @@ import typer
 app = typer.Typer(help="PowderBench: live mountain-snowfall forecasting benchmark.", no_args_is_help=True)
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
 
-LeagueOpt = typer.Option("northern", "--league", "-l", help="League: northern | southern")
+LeagueOpt = typer.Option("stations", "--league", "-l", help="League: stations | era5 | resorts")
 
 
 def _parse_date(s: str) -> date:
@@ -53,7 +53,14 @@ def build_climatology(
     defaults = {
         "snotel": ("2015-10-01", "2025-06-30"),
         "era5": ("1991-01-01", "2025-06-30"),
+        # resorts league has no report history yet: the reference climatology
+        # is ERA5 at the resort coordinates (see docs/DATA.md caveat)
+        "resort": ("1991-01-01", "2025-06-30"),
     }[lg.truth_source]
+    if lg.truth_source == "resort":
+        from dataclasses import replace
+
+        lg = replace(lg, truth_source="era5")
     build(lg, _parse_date(begin or defaults[0]), _parse_date(end or defaults[1]))
 
 
@@ -126,7 +133,7 @@ def resolve(
     from .rounds import resolve_matured, resolve_round
 
     if round_date:
-        lg = get_league(league or "northern")
+        lg = get_league(league or "stations")
         result = resolve_round(lg, _parse_date(round_date))
         typer.echo(json.dumps(result, indent=1, default=str) if result else "not resolvable yet")
     else:
@@ -143,6 +150,30 @@ def build_leaderboard(league: Optional[str] = typer.Option(None, "--league", "-l
     for lg in load_leagues() if league is None else [next(l for l in load_leagues() if l.name == league)]:
         out = build(lg)
         typer.echo(f"{lg.name}: leaderboard over {out['generated_rounds']} rounds")
+
+
+@app.command()
+def scrape_resorts(
+    only: Optional[str] = typer.Option(None, help="Scrape a single resort_id"),
+    dry_run: bool = typer.Option(False, help="Fetch and parse but write nothing"),
+):
+    """Scrape enabled resort snow reports into data/resortreports/raw/."""
+    from .resortfeeds import REGISTRY, scrape_all
+
+    if dry_run:
+        from .resortfeeds.http import polite_get, robots_allowed
+
+        for spec in REGISTRY:
+            if not spec.enabled or (only and spec.resort_id != only):
+                continue
+            if not robots_allowed(spec.url):
+                typer.echo(f"{spec.resort_id}: robots_blocked")
+                continue
+            value = spec.parse(polite_get(spec.url, headers=dict(spec.headers) if spec.headers else None).text)
+            typer.echo(f"{spec.resort_id}: {value} {spec.unit}" if value is not None else f"{spec.resort_id}: no report")
+        return
+    path = scrape_all(only=only)
+    typer.echo(f"wrote {path}")
 
 
 @app.command()

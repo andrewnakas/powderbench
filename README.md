@@ -2,19 +2,21 @@
 
 **The live mountain-snowfall forecasting benchmark. Beat the weather models.**
 
-Every day, PowderBench opens rounds in two leagues: predict fresh snowfall —
-24h, 48h, and 72h out — at mountain stations near legendary ski zones.
-Humans, ML pipelines, and AI agents all compete on one leaderboard — against
-each other and against NWP baselines that submit automatically every round.
+Every day, PowderBench opens rounds in three leagues — one per kind of ground
+truth: predict fresh snowfall — 24h, 48h, and 72h out — at mountain stations
+near legendary ski zones. Humans, ML pipelines, and AI agents all compete on
+one leaderboard — against each other and against NWP baselines that submit
+automatically every round.
 
 | League | Stations | Truth | Season | Cutoff (round D) | Resolves |
 |---|---|---|---|---|---|
-| **Northern** | 45 SNOTEL (Alta, Jackson, Baker, Cooke City…) | Real snow telemetry (NRCS SNOTEL) | Oct–May | 00:00 UTC on D | D+3 |
-| **Southern** · *TRIAL* | 23 zones (Portillo, Las Leñas, Remarkables, Perisher…) | ERA5 model analysis (see [docs/DATA.md](docs/DATA.md)) | **Jun–Oct — live now** | 11:00 UTC on D−1 | ~D+8 |
+| **Stations** | 45 SNOTEL (Alta, Jackson, Baker, Cooke City…) | Real snow telemetry (NRCS SNOTEL) | Oct–May | 00:00 UTC on D | D+3 |
+| **ERA5** | 23 zones (Portillo, Las Leñas, Remarkables, Perisher…) | ERA5 model analysis (see [docs/DATA.md](docs/DATA.md)) | **Jun–Oct — live now** | 11:00 UTC on D−1 | ~D+8 |
+| **Resorts** | 5 resorts and growing (Mt Hutt, Coronet Peak, Remarkables, Thredbo, Catedral) | The resort's own published snow report, archived daily (see [docs/DATA.md](docs/DATA.md)) | **Jun–Oct — live now** | 11:00 UTC on D−1 | D+3 |
 
 It's contamination-free by construction: you're forecasting weather that
-hasn't happened yet. The southern league runs all austral winter, so there is
-always something to forecast — and always a model to beat.
+hasn't happened yet. The ERA5 and Resorts leagues run all austral winter, so
+there is always something to forecast — and always a model to beat.
 
 ## Why this is fun
 
@@ -32,11 +34,11 @@ always something to forecast — and always a model to beat.
 git clone https://github.com/andrewnakas/powderbench.git && cd powderbench
 python3 -m venv .venv && .venv/bin/pip install -e .
 
-# see the mountains (it's July — start southern)
-.venv/bin/powderbench stations --league southern
+# see the mountains (it's July — start with the southern-hemisphere leagues)
+.venv/bin/powderbench stations --league era5
 
 # 1. the open round manifest:
-cat data/rounds/southern/<date>/round.json
+cat data/rounds/era5/<date>/round.json
 
 # 2. write forecasts: one row per station × horizon
 #    station_id,horizon_h,snowfall_in
@@ -45,7 +47,7 @@ cat data/rounds/southern/<date>/round.json
 #    ...
 
 # 3. check it
-.venv/bin/powderbench validate my-team.csv --league southern
+.venv/bin/powderbench validate my-team.csv --league era5
 
 # 4. submit: open a PR adding data/submissions/<league>/<round>/<my-team>.csv
 #    before the league cutoff. Done.
@@ -56,8 +58,8 @@ cat data/rounds/southern/<date>/round.json
 Score yourself against any past period — the baselines run automatically:
 
 ```bash
-.venv/bin/powderbench hindcast 2025-01-01 2025-01-31                     # northern
-.venv/bin/powderbench hindcast 2025-07-01 2025-07-14 --league southern  # southern
+.venv/bin/powderbench hindcast 2025-01-01 2025-01-31                 # stations
+.venv/bin/powderbench hindcast 2025-07-01 2025-07-14 --league era5   # era5
 # add your own: --submission my.csv --team me   (CSV needs a round_date column)
 ```
 
@@ -79,15 +81,24 @@ Daily automation, per league (all times UTC):
 
 | League | Round opens | Baselines lock in | Cutoff | Resolution |
 |---|---|---|---|---|
-| Northern | 00:05 (round D = tomorrow) | 23:15 | 00:00 on D | 16:00 on D+3 |
-| Southern | 11:05 (round D = day after tomorrow) | 10:15 | 11:00 on D−1 | 16:00 from D+8 |
+| Stations | 00:05 (round D = tomorrow) | 23:15 | 00:00 on D | 16:00 on D+3 |
+| ERA5 | 11:05 (round D = day after tomorrow) | 10:15 | 11:00 on D−1 | 16:00 from D+8 |
+| Resorts | 11:05 (round D = day after tomorrow) | 10:15 | 11:00 on D−1 | 16:00 on D+3 |
 
-- **Ground truth:** northern — [USDA NRCS SNOTEL](https://wcc.sc.egov.usda.gov/awdbRestApi/swagger-ui/index.html)
-  daily snow-depth deltas cross-checked against snow water equivalent; southern
-  trial — ERA5 analysis (no public SH station API exists; real feeds get
-  promoted as they prove stable). Details: [docs/DATA.md](docs/DATA.md).
+Resort snow reports are ephemeral, so a scrape cron archives them twice daily
+(20:30 and 13:00 UTC) into `data/resortreports/` — resolution reads the
+archive, never the live sites.
+
+- **Ground truth:** stations — [USDA NRCS SNOTEL](https://wcc.sc.egov.usda.gov/awdbRestApi/swagger-ui/index.html)
+  daily snow-depth deltas cross-checked against snow water equivalent; era5 —
+  ERA5 analysis (no public SH station API exists; real feeds get promoted as
+  they prove stable); resorts — each resort's own published snow report,
+  scraped from the resort's site with per-resort robots/ToS review
+  ([docs/RESORTS.md](docs/RESORTS.md)). Details: [docs/DATA.md](docs/DATA.md).
 - **Baselines:** [Open-Meteo](https://open-meteo.com/) (CC BY 4.0), plus
-  per-league climatology (10 SNOTEL seasons / 34 ERA5 years).
+  per-league climatology (10 SNOTEL seasons / 34 ERA5 years; the resorts
+  league reference is ERA5 climatology at the resort coordinates until enough
+  report history accumulates).
 - **Anti-cheat:** a submission counts only if it landed on `main` before the
   cutoff (GitHub sets merge timestamps; they can't be forged). Late entries are
   scored but never ranked. League leaderboards never mix.
@@ -96,13 +107,15 @@ Daily automation, per league (all times UTC):
 
 ```
 src/powderbench/       the engine: clients, truth adapters, QC, scoring, rounds
+src/powderbench/resortfeeds/   resort snow-report scrapers + snapshot archive
 data/leagues.yaml      league config (cutoffs, truth sources, maturity)
-data/stations.yaml     68 curated stations across both leagues
+data/stations.yaml     73 curated stations across the three leagues
 data/rounds/<league>/  daily round manifests + resolved truth
 data/submissions/<league>/<round>/   one CSV per team — this is where your PR goes
 data/results/<league>/ per-round scores + leaderboard.json
+data/resortreports/    archived resort snow-report snapshots (resorts truth)
 site/                  the public leaderboard site (GitHub Pages)
-docs/                  RULES.md · SUBMITTING.md · DATA.md
+docs/                  RULES.md · SUBMITTING.md · DATA.md · RESORTS.md
 ```
 
 ## Docs
@@ -110,6 +123,7 @@ docs/                  RULES.md · SUBMITTING.md · DATA.md
 - [SUBMITTING.md](docs/SUBMITTING.md) — submission format + PR walkthrough
 - [RULES.md](docs/RULES.md) — cutoffs, scoring, eligibility, QC, anti-gaming
 - [DATA.md](docs/DATA.md) — exactly how truth is computed, sources, licenses
+- [RESORTS.md](docs/RESORTS.md) — how resort scraping works + adding a resort
 
 ## License
 

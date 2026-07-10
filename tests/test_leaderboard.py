@@ -36,12 +36,12 @@ def test_load_round_results_skips_late_and_invalid(tmp_path, monkeypatch):
     from powderbench.leagues import League
 
     league = League(
-        name="northern", label="n", status="live", truth_source="snotel",
+        name="stations", label="n", status="live", truth_source="snotel",
         cutoff_days_before=0, cutoff_hour_utc=0, resolve_after_days=3,
         resolve_after_hour_utc=15, season_start_month=10,
     )
     monkeypatch.setenv("POWDERBENCH_DATA_DIR", str(tmp_path))
-    rounds = tmp_path / "results" / "northern" / "rounds"
+    rounds = tmp_path / "results" / "stations" / "rounds"
     rounds.mkdir(parents=True)
     payload = {
         "round_id": "2025-03-01",

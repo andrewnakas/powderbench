@@ -1,0 +1,106 @@
+{
+ "round_id": "2026-06-27",
+ "league": "era5",
+ "resolved_utc": "2026-07-09T23:52:59+00:00",
+ "observations_72h": null,
+ "qc": {
+  "station_horizons_valid": 69,
+  "station_horizons_voided": 0
+ },
+ "biggest_24h": {
+  "station_id": "corralco:CL:ERA5",
+  "resort": "Corralco / Lonquimay",
+  "inches": 2.7
+ },
+ "teams": {
+  "baseline-climatology": {
+   "n_scorable": 69,
+   "n_scored": 69,
+   "coverage": 1.0,
+   "mae": 0.43,
+   "rmse": 0.8064,
+   "bias": 0.1632,
+   "mae_by_horizon": {
+    "24": 0.2241,
+    "48": 0.2188,
+    "72": 0.8472
+   },
+   "powder_score": 0.01,
+   "pinball": 0.2607,
+   "n_pinball": 69,
+   "brier6": 0.0034,
+   "n_brier6": 23,
+   "late": false
+  },
+  "baseline-gfs": {
+   "n_scorable": 69,
+   "n_scored": 69,
+   "coverage": 1.0,
+   "mae": 0.3678,
+   "rmse": 0.827,
+   "bias": 0.2225,
+   "mae_by_horizon": {
+    "24": 0.2947,
+    "48": 0.3762,
+    "72": 0.4326
+   },
+   "powder_score": 14.47,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-openmeteo": {
+   "n_scorable": 69,
+   "n_scored": 69,
+   "coverage": 1.0,
+   "mae": 0.2145,
+   "rmse": 0.5755,
+   "bias": 0.193,
+   "mae_by_horizon": {
+    "24": 0.1534,
+    "48": 0.2133,
+    "72": 0.2768
+   },
+   "powder_score": 50.12,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-persistence": {
+   "n_scorable": 69,
+   "n_scored": 69,
+   "coverage": 1.0,
+   "mae": 0.5891,
+   "rmse": 1.3572,
+   "bias": 0.4334,
+   "mae_by_horizon": {
+    "24": 0.145,
+    "48": 0.5584,
+    "72": 1.064
+   },
+   "powder_score": -36.99,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-zeros": {
+   "n_scorable": 69,
+   "n_scored": 69,
+   "coverage": 1.0,
+   "mae": 0.4174,
+   "rmse": 0.8907,
+   "bias": -0.4174,
+   "mae_by_horizon": {
+    "24": 0.3283,
+    "48": 0.4122,
+    "72": 0.5116
+   },
+   "powder_score": 2.94,
+   "pinball": 0.2087,
+   "n_pinball": 69,
+   "brier6": 0.0,
+   "n_brier6": 23,
+   "late": false
+  }
+ }
+}

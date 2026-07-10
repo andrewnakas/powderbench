@@ -14,8 +14,8 @@ def test_axis_window_parses_hyplot_header():
 
 def test_feeds_registry_shape():
     names = [f.name for f in obsfeeds.FEEDS]
-    assert names == ["ina", "snowyhydro", "niwa", "dga"]
-    assert all(f.league == "southern" for f in obsfeeds.FEEDS)
+    assert names == ["ina", "snowyhydro", "niwa", "dga", "resorts"]
+    assert all(f.league == "era5" for f in obsfeeds.FEEDS)
     # niwa activates only with credentials; dga is hard-disabled
     assert not obsfeeds._dga_enabled()
 
@@ -30,13 +30,13 @@ def test_collect_observations_swallow_feed_failures(monkeypatch, tmp_path):
         [{"station_id": "perisher:AU:ERA5", "date": date(2026, 7, 4), "snow24_obs_in": 10.9}]
     )
     feeds = (
-        obsfeeds.Feed("bad", "southern", lambda: True, boom),
-        obsfeeds.Feed("good", "southern", lambda: True, lambda b, e: ok.copy()),
+        obsfeeds.Feed("bad", "era5", lambda: True, boom),
+        obsfeeds.Feed("good", "era5", lambda: True, lambda b, e: ok.copy()),
     )
     monkeypatch.setattr(obsfeeds, "FEEDS", feeds)
-    out = obsfeeds.collect_observations("southern", date(2026, 7, 1), date(2026, 7, 8))
+    out = obsfeeds.collect_observations("era5", date(2026, 7, 1), date(2026, 7, 8))
     assert out["feed"].tolist() == ["good"]
-    assert (tmp_path / "obs" / "southern").exists()
+    assert (tmp_path / "obs" / "era5").exists()
 
 
 def test_non_publishable_feed_stays_private(monkeypatch, tmp_path):
@@ -45,16 +45,16 @@ def test_non_publishable_feed_stays_private(monkeypatch, tmp_path):
         [{"station_id": "remarkables:NZ:ERA5", "date": date(2026, 7, 4), "snow24_obs_in": 6.2}]
     )
     feeds = (
-        obsfeeds.Feed("niwa-like", "southern", lambda: True, lambda b, e: licensed.copy(), publish_raw=False),
+        obsfeeds.Feed("niwa-like", "era5", lambda: True, lambda b, e: licensed.copy(), publish_raw=False),
     )
     monkeypatch.setattr(obsfeeds, "FEEDS", feeds)
-    out = obsfeeds.collect_observations("southern", date(2026, 7, 1), date(2026, 7, 8))
+    out = obsfeeds.collect_observations("era5", date(2026, 7, 1), date(2026, 7, 8))
     # raw licensed values excluded from the publishable frame (and thus round results)
     assert out.empty
-    priv = list((tmp_path / "obs" / "southern" / "private").glob("*.csv"))
+    priv = list((tmp_path / "obs" / "era5" / "private").glob("*.csv"))
     assert len(priv) == 1
     # nothing licensed landed in the public obs dir
-    assert not list((tmp_path / "obs" / "southern").glob("*.csv"))
+    assert not list((tmp_path / "obs" / "era5").glob("*.csv"))
 
 
 def test_niwa_feed_is_marked_non_publishable():

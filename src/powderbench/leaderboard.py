@@ -77,7 +77,7 @@ def _mean(series) -> float | None:
     return round(float(vals.mean()), 3) if len(vals) else None
 
 
-def load_round_results(league: League | str = "northern") -> pd.DataFrame:
+def load_round_results(league: League | str = "stations") -> pd.DataFrame:
     """Flatten a league's resolved-round JSON files into (team, round) metric rows."""
     league = get_league(league) if isinstance(league, str) else league
     rows = []
@@ -93,7 +93,7 @@ def load_round_results(league: League | str = "northern") -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-def build_leaderboard(league: League | str = "northern", season_start: date | None = None) -> dict:
+def build_leaderboard(league: League | str = "stations", season_start: date | None = None) -> dict:
     """Aggregate a league's resolved rounds into leaderboard.json."""
     league = get_league(league) if isinstance(league, str) else league
     rows = load_round_results(league)

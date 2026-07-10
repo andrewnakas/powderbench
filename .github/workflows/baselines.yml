@@ -1,14 +1,14 @@
 name: Baseline submissions
 on:
   schedule:
-    - cron: "15 23 * * *" # northern: 45 min before tomorrow's 00:00 UTC cutoff
-    - cron: "15 10 * * *" # southern: 45 min before today's 11:00 UTC cutoff (round D = tomorrow)
+    - cron: "15 23 * * *" # stations: 45 min before tomorrow's 00:00 UTC cutoff
+    - cron: "15 10 * * *" # era5 + resorts: 45 min before today's 11:00 UTC cutoff (round D = tomorrow)
   workflow_dispatch:
     inputs:
       league:
-        description: "League (northern | southern)"
+        description: "League (stations | era5 | resorts)"
         required: true
-        default: "northern"
+        default: "stations"
       round_date:
         description: "Round date (YYYY-MM-DD); default tomorrow UTC"
         required: false
@@ -29,13 +29,19 @@ jobs:
       - run: pip install -e .
       - name: Generate baseline forecasts
         run: |
-          LEAGUE="${{ github.event.inputs.league }}"
-          if [ -z "$LEAGUE" ]; then
-            [ "$(date -u +%H)" -lt 20 ] && LEAGUE=southern || LEAGUE=northern
+          LEAGUES="${{ github.event.inputs.league }}"
+          if [ -z "$LEAGUES" ]; then
+            # 10:15 run covers the shared 11:00-UTC-cutoff leagues; 23:15 covers stations
+            [ "$(date -u +%H)" -lt 20 ] && LEAGUES="era5 resorts" || LEAGUES="stations"
           fi
           ROUND="${{ github.event.inputs.round_date }}"
           [ -z "$ROUND" ] && ROUND=$(date -u -d tomorrow +%F)
-          powderbench baseline-submit "$ROUND" --league "$LEAGUE"
+          FAILED=0
+          for LEAGUE in $LEAGUES; do
+            # one league's outage must not block the others
+            powderbench baseline-submit "$ROUND" --league "$LEAGUE" || FAILED=1
+          done
+          exit $FAILED
       - name: Commit
         run: |
           git config user.name "powderbench-bot"

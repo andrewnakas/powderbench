@@ -28,7 +28,7 @@ class Station:
     elevation_ft: float
     latitude: float
     longitude: float
-    league: str = "northern"
+    league: str = "stations"
     truth_source: str | None = None  # override; defaults to the league's source
 
 
@@ -39,7 +39,7 @@ def _all_stations() -> tuple[Station, ...]:
     return tuple(Station(**s) for s in raw["stations"])
 
 
-def load_stations(league: str = "northern") -> tuple[Station, ...]:
+def load_stations(league: str = "stations") -> tuple[Station, ...]:
     return tuple(s for s in _all_stations() if s.league == league)
 
 
@@ -48,5 +48,5 @@ def by_id(league: str | None = None) -> dict[str, Station]:
     return {s.station_id: s for s in pool}
 
 
-def station_ids(league: str = "northern") -> list[str]:
+def station_ids(league: str = "stations") -> list[str]:
     return [s.station_id for s in load_stations(league)]

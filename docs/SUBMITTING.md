@@ -2,14 +2,14 @@
 
 ## The 3-minute version
 
-1. Fork the repo. Pick a league — it's winter somewhere: **northern**
-   (Oct–May) or **southern** (Jun–Oct, trial).
+1. Fork the repo. Pick a league — it's winter somewhere: **stations**
+   (Oct–May), **era5** (Jun–Oct), or **resorts** (Jun–Oct).
 2. Find the open round: `data/rounds/<league>/<date>/round.json` (`cutoff_utc`
    in the manifest is your deadline; new rounds open daily).
 3. Add `data/submissions/<league>/<date>/<your-team>.csv`.
 4. Open a PR **before the cutoff**. CI validates it immediately.
-5. Watch the leaderboard — ~3 days later (northern) or ~a week (southern,
-   ERA5 archive lag).
+5. Watch the leaderboard — ~3 days later (stations, resorts) or ~a week
+   (era5, archive lag).
 
 ## The CSV
 
@@ -28,9 +28,9 @@ station_id,horizon_h,snowfall_in
 - `horizon_h`: 24, 48, or 72. Horizons are **cumulative** from the round date.
 - `snowfall_in`: inches, 0–200.
 
-Cover every station × 3 horizons for full coverage (northern: 45 × 3 = 135
-rows; southern: 23 × 3 = 69). You can skip some, but ranking needs ≥70%
-average coverage.
+Cover every station × 3 horizons for full coverage (stations: 45 × 3 = 135
+rows; era5: 23 × 3 = 69; resorts: 5 × 3 = 15). You can skip some, but ranking
+needs ≥70% average coverage.
 
 Optional columns:
 
@@ -41,7 +41,7 @@ Optional columns:
 Check before you push:
 
 ```bash
-powderbench validate my-team.csv --league southern
+powderbench validate my-team.csv --league era5
 ```
 
 ## Team names
@@ -67,7 +67,7 @@ workflow with their own secrets.
 ```bash
 # CSV with an extra round_date column, one block per practice day
 powderbench hindcast 2025-01-01 2025-01-31 --submission practice.csv --team me
-powderbench hindcast 2025-07-01 2025-07-14 --league southern   # austral winter
+powderbench hindcast 2025-07-01 2025-07-14 --league era5   # austral winter
 ```
 
 The hindcast prints an unofficial leaderboard against all baselines for that

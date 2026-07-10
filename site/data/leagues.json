@@ -1,14 +1,20 @@
 [
  {
-  "name": "northern",
-  "label": "Northern \u00b7 Western US",
+  "name": "stations",
+  "label": "Stations \u00b7 Western US SNOTEL",
   "status": "live",
   "truth_source": "snotel"
  },
  {
-  "name": "southern",
-  "label": "Southern \u00b7 Andes / NZ / AU",
-  "status": "trial",
+  "name": "era5",
+  "label": "ERA5 \u00b7 Andes / NZ / AU",
+  "status": "live",
   "truth_source": "era5"
+ },
+ {
+  "name": "resorts",
+  "label": "Resorts \u00b7 Southern Hemisphere",
+  "status": "live",
+  "truth_source": "resort"
  }
 ]

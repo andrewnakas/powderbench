@@ -11,7 +11,7 @@ import yaml
 
 from .stations import data_dir
 
-DEFAULT_LEAGUE = "northern"
+DEFAULT_LEAGUE = "stations"
 
 
 @dataclass(frozen=True)
