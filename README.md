@@ -29,7 +29,7 @@ always something to forecast — and always a model to beat.
 ## Quickstart: your first forecast in 5 minutes
 
 ```bash
-git clone https://github.com/andrewnakas/powderbench.git && cd snowfallbenchmark
+git clone https://github.com/andrewnakas/powderbench.git && cd powderbench
 python3 -m venv .venv && .venv/bin/pip install -e .
 
 # see the mountains (it's July — start southern)
