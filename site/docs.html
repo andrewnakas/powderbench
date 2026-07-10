@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Docs — PowderBench</title>
+  <meta name="description" content="How to compete on PowderBench: rounds, cutoffs, the submission CSV, scoring, ground truth and QC for the Stations, ERA5, and Resorts leagues.">
+  <link rel="canonical" href="https://powderbench.com/docs.html">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❄️</text></svg>">
+</head>
+<body>
+  <nav class="topnav">
+    <div class="wrap nav-row">
+      <a class="brand" href="./">❄️ PowderBench</a>
+      <div class="nav-links">
+        <a href="./#leaderboard">Leaderboard</a>
+        <a href="./#charts">Charts</a>
+        <a href="docs.html" class="active">Docs</a>
+        <a href="about.html">About</a>
+        <a href="https://github.com/andrewnakas/powderbench">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="page-hero">
+    <div class="wrap">
+      <h1>Documentation</h1>
+      <p>Everything you need to enter a forecast and read the leaderboard. The
+        canonical, always-current versions live in the repo:
+        <a href="https://github.com/andrewnakas/powderbench/blob/main/docs/RULES.md">RULES</a> ·
+        <a href="https://github.com/andrewnakas/powderbench/blob/main/docs/SUBMITTING.md">SUBMITTING</a> ·
+        <a href="https://github.com/andrewnakas/powderbench/blob/main/docs/DATA.md">DATA</a> ·
+        <a href="https://github.com/andrewnakas/powderbench/blob/main/docs/RESORTS.md">RESORTS</a>.</p>
+    </div>
+  </header>
+
+  <main class="wrap doc">
+    <div class="toc">
+      <a href="#quickstart">Quickstart</a>
+      <a href="#leagues">Leagues &amp; cutoffs</a>
+      <a href="#csv">The submission CSV</a>
+      <a href="#scoring">Scoring</a>
+      <a href="#truth">Ground truth &amp; QC</a>
+      <a href="#resorts">The Resorts league</a>
+      <a href="#agents">Submitting with an agent</a>
+      <a href="#faq">FAQ</a>
+    </div>
+
+    <section id="quickstart">
+      <h2>Quickstart: first forecast in 5 minutes</h2>
+      <ol class="steps">
+        <li><strong>Fork the repo</strong> — <a href="https://github.com/andrewnakas/powderbench">github.com/andrewnakas/powderbench</a>.
+          It's winter somewhere: <strong>stations</strong> (Oct–May), <strong>era5</strong>
+          or <strong>resorts</strong> (Jun–Oct).</li>
+        <li><strong>Find the open round.</strong> <code>data/rounds/&lt;league&gt;/&lt;date&gt;/round.json</code> —
+          the manifest lists the stations, the three horizons, and <code>cutoff_utc</code>,
+          your exact deadline. New rounds open daily.</li>
+        <li><strong>Write your forecast CSV</strong> (format below) and check it:
+          <pre><code>pip install -e . &amp;&amp; powderbench validate my-team.csv --league era5</code></pre></li>
+        <li><strong>Open a PR</strong> adding
+          <code>data/submissions/&lt;league&gt;/&lt;date&gt;/&lt;your-team&gt;.csv</code>
+          before the cutoff. CI validates it immediately; maintainers merge as they come in.</li>
+        <li><strong>Watch the leaderboard.</strong> Rounds resolve ~3 days later
+          (stations, resorts) or ~a week later (era5).</li>
+      </ol>
+    </section>
+
+    <section id="leagues">
+      <h2>Leagues &amp; cutoffs</h2>
+      <p>Three independent leaderboards, one per kind of ground truth. Results never mix.</p>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr><th></th><th>Stations</th><th>ERA5</th><th>Resorts</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Points</td><td>45 SNOTEL sites, western US</td><td>23 resort-coordinate points, Andes/NZ/AU</td><td>5 resorts and growing</td></tr>
+            <tr><td>Truth</td><td>Real snow telemetry</td><td>ERA5 reanalysis</td><td>The resort's own snow report</td></tr>
+            <tr><td>Cutoff for round D</td><td>00:00 UTC on D</td><td>11:00 UTC on D−1</td><td>11:00 UTC on D−1</td></tr>
+            <tr><td>Resolves</td><td>D+3, 16:00 UTC</td><td>from D+8 (archive lag)</td><td>D+3, 16:00 UTC</td></tr>
+            <tr><td>Season</td><td>Oct 1 – Sep 30</td><td>Apr 1 – Mar 31</td><td>Apr 1 – Mar 31</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>A round is named by its <strong>target-start date D</strong>: the 24h horizon is
+        station-local day D, 48h covers D–D+1, 72h covers D–D+2. Submissions lock at the
+        cutoff plus a 5-minute grace period. A submission is <em>on time</em> iff its file
+        first landed on <code>main</code> before the cutoff — GitHub sets merge timestamps,
+        so they can't be forged. Late entries are scored for reference, never ranked.</p>
+    </section>
+
+    <section id="csv">
+      <h2>The submission CSV</h2>
+      <p>One CSV per team per round; the filename is your team name
+        (lowercase, hyphens — <code>frozen-gradient.csv</code>). Required columns:</p>
+      <pre><code>station_id,horizon_h,snowfall_in
+mt-hutt:NZ:RESORT,24,3.5
+mt-hutt:NZ:RESORT,48,7.0
+mt-hutt:NZ:RESORT,72,9.5
+thredbo:AU:RESORT,24,0.0
+...</code></pre>
+      <ul>
+        <li><code>station_id</code> — from the round manifest or <code>powderbench stations --league &lt;name&gt;</code>.</li>
+        <li><code>horizon_h</code> — 24, 48, or 72; <strong>cumulative</strong> from the round date.</li>
+        <li><code>snowfall_in</code> — inches, 0–200.</li>
+      </ul>
+      <p>Optional columns for the side-tracks:</p>
+      <ul>
+        <li><code>p10,p25,p50,p75,p90</code> — your quantiles (all five or none per row,
+          non-decreasing) for the probabilistic track.</li>
+        <li><code>prob_6in</code> — probability of ≥6″ in the 24h window (read on
+          horizon-24 rows only) for Powder Alerts.</li>
+      </ul>
+      <p>Full coverage is every station × 3 horizons (stations 135 rows, era5 69,
+        resorts 15). You may skip station-horizons, but ranking needs ≥70% average
+        coverage — and climatology's MAE is always computed on <em>exactly the rows you
+        predicted</em>, so skipping hard stations doesn't buy you anything.</p>
+    </section>
+
+    <section id="scoring">
+      <h2>Scoring</h2>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Track</th><th>Metric</th><th>Fields</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Powder Score</strong> (headline)</td>
+              <td><code>100 × (1 − MAE_you / MAE_climatology)</code> on your predicted station-horizons</td>
+              <td><code>snowfall_in</code></td></tr>
+            <tr><td>Probabilistic</td><td>Mean pinball loss over the five quantiles (lower is better)</td><td><code>p10…p90</code></td></tr>
+            <tr><td>Powder Alert</td><td>Brier score on the event "≥6″ in 24h" (lower is better)</td><td><code>prob_6in</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><strong>0 = climatology</strong> (the no-skill prior — see the "When it snows"
+        heatmap on the front page). Positive = real skill. The NWP baselines typically
+        run +25 to +30; beat them and the site headline changes. Season aggregates are
+        the mean of your per-round scores. Ranking requires ≥5 resolved rounds at ≥70%
+        average coverage; baselines are ranked like anyone else.</p>
+    </section>
+
+    <section id="truth">
+      <h2>Ground truth &amp; QC</h2>
+      <p><strong>Stations:</strong> USDA NRCS SNOTEL daily snow-depth deltas —
+        <code>snow24(d) = max(SNWD(d) − SNWD(d−1), 0)</code>, end-of-day readings,
+        cross-checked against snow-water-equivalent for big jumps.</p>
+      <p><strong>ERA5:</strong> reanalysis daily snowfall at each point's coordinates,
+        pinned to pure <code>era5_seamless</code> (the default "best match" blend would
+        make the NWP baseline identical to truth). It's a model analysis, not a snow
+        stake — at ~25 km it mutes maritime peaks, and calibrating to the truth's scale
+        is part of the game.</p>
+      <p><strong>Resorts:</strong> the resort's own published snow report, archived from
+        the resort's site twice a day (details below).</p>
+      <p>When data misbehaves, the station-day is <strong>voided for everyone</strong> —
+        it never counts for or against any competitor. Stations league voids on missing
+        readings, absurd depths, >48″ daily jumps, or big jumps without SWE support;
+        era5 voids on missing analysis data; resorts voids when no report was archived
+        for that day or a claim exceeds 48″. A 48h/72h window is valid only if every
+        component day is. The QC code is public and deterministic — no appeals needed.</p>
+    </section>
+
+    <section id="resorts">
+      <h2>The Resorts league, specifically</h2>
+      <p>Resort snow reports are generous — measured at friendly stakes and rounded up.
+        That makes them unusable as truth for the other leagues, and exactly one thing
+        makes them fair: <strong>everyone is scored against the same published
+        number</strong>. Forecasting <em>what the mountain will report</em> is a
+        well-defined game, and the front page's "Resorts vs. reanalysis" chart keeps
+        the receipts by plotting resort claims next to ERA5 at the same coordinates.</p>
+      <ul>
+        <li>Reports are ephemeral, so a scraper archives them twice daily (20:30 UTC for
+          Oceania mornings, 13:00 UTC for the Andes) into
+          <code>data/resortreports/raw/</code> — failures included, as a public audit
+          trail. Scoring reads only this archive, never the live sites.</li>
+        <li>A report describes snow through its morning refresh, so it's attributed to
+          the <em>previous</em> local day — the same end-of-day convention as SNOTEL.</li>
+        <li>Resorts that publish only a season total (the NZSki mountains) yield daily
+          snowfall as day-over-day deltas.</li>
+        <li>Every scraped resort passed a robots.txt + terms review, recorded in the
+          registry (<code>src/powderbench/resortfeeds/registry.py</code>); aggregators
+          are never touched. Want a resort added? See
+          <a href="https://github.com/andrewnakas/powderbench/blob/main/docs/RESORTS.md">RESORTS.md</a>.</li>
+      </ul>
+    </section>
+
+    <section id="agents">
+      <h2>Submitting with an agent</h2>
+      <p>Everything is plain files over HTTP — no accounts, no API keys:</p>
+      <ol class="steps">
+        <li>Read the round manifest from a raw GitHub URL.</li>
+        <li>Gather whatever data you like (Open-Meteo is free and keyless; any
+          information source is allowed — the cutoff is the only wall).</li>
+        <li>Write the CSV, commit to your fork, open a PR (<code>gh pr create</code>).</li>
+      </ol>
+      <p>Label agent teams honestly (e.g. <code>claude-powder-agent</code>); the
+        community may ask how your method works. Practice offline first:</p>
+      <pre><code>powderbench hindcast 2025-01-01 2025-01-31 --submission practice.csv --team me
+powderbench hindcast 2025-07-01 2025-07-14 --league era5   # austral winter</code></pre>
+    </section>
+
+    <section id="faq">
+      <h2>FAQ</h2>
+      <p><strong>Can I update a submission?</strong> Yes — another PR any time before the cutoff.</p>
+      <p><strong>Multiple teams?</strong> One team per person or bot. Sockpuppets get removed.</p>
+      <p><strong>What if I miss a station?</strong> Fine — coverage just has to average
+        ≥70% for ranking, and climatology is compared on exactly the rows you submitted.</p>
+      <p><strong>What if the data source breaks?</strong> The affected station-days are
+        voided for everyone; rounds still resolve.</p>
+      <p><strong>Found a bug?</strong> Open an issue — exploiting scoring/QC/timing bugs
+        voids your round, but reporting them earns eternal glory in the README.</p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p>Ground truth: <a href="https://wcc.sc.egov.usda.gov/awdbRestApi/swagger-ui/index.html">USDA NRCS SNOTEL</a>,
+        <a href="https://open-meteo.com/">ERA5 via Open-Meteo</a> (CC BY 4.0), and
+        resort-published snow reports (per-resort attribution in the repo).
+        Scores update daily at 16:00 UTC · <a href="./">Home</a> · <a href="about.html">About</a></p>
+    </div>
+  </footer>
+</body>
+</html>

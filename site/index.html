@@ -15,6 +15,19 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❄️</text></svg>">
 </head>
 <body>
+  <nav class="topnav">
+    <div class="wrap nav-row">
+      <a class="brand" href="./">❄️ PowderBench</a>
+      <div class="nav-links">
+        <a href="#leaderboard">Leaderboard</a>
+        <a href="#charts">Charts</a>
+        <a href="docs.html">Docs</a>
+        <a href="about.html">About</a>
+        <a href="https://github.com/andrewnakas/powderbench">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
   <header class="hero">
     <div class="wrap">
       <h1>❄️ PowderBench</h1>
@@ -32,6 +45,7 @@
       <p class="cta-row">
         <a class="cta" href="#compete">Compete →</a>
         <a class="cta ghost" href="#leaderboard">Leaderboard</a>
+        <a class="cta ghost" href="docs.html">Docs</a>
       </p>
       <p class="challenge" id="challenge-line">Nobody is beating the weather models. Yet.</p>
     </div>
@@ -67,9 +81,51 @@
         submissions are scored for reference but never ranked.</p>
     </section>
 
+    <section id="charts">
+      <h2>The race</h2>
+      <p class="section-note">Season-to-date Powder Score, round by round. 0 is
+        climatology; the weather-model baselines are the villains to beat. Dashed
+        lines are automated baselines.</p>
+      <div class="chart-panel"><canvas id="race-chart"></canvas></div>
+      <p class="fine" id="race-empty" style="display:none">Not enough resolved rounds
+        yet — the race appears once a couple of rounds are on the books.</p>
+    </section>
+
     <section id="recent">
       <h2>Recent rounds</h2>
       <div id="rounds-strip" class="rounds-strip"></div>
+    </section>
+
+    <section id="snow-history">
+      <h2>This season’s snow</h2>
+      <p class="section-note">Daily fresh snowfall from this league’s ground truth,
+        station by station — exactly the number competitors are scored against.</p>
+      <div class="chart-controls">
+        <label for="snow-station">Station</label>
+        <select id="snow-station"></select>
+      </div>
+      <div class="chart-panel short"><canvas id="snow-chart"></canvas></div>
+    </section>
+
+    <section id="receipts">
+      <h2>Resorts vs. reanalysis</h2>
+      <p class="section-note">The receipts: what each resort reported (the Resorts
+        league’s truth) next to ERA5 reanalysis at the same coordinates (the ERA5
+        league’s truth). Resort numbers usually read higher — that’s the point of
+        keeping them in their own league. ERA5 fills in with a ~8-day archive lag.</p>
+      <div class="chart-controls">
+        <label for="cmp-resort">Resort</label>
+        <select id="cmp-resort"></select>
+      </div>
+      <div class="chart-panel short"><canvas id="cmp-chart"></canvas></div>
+    </section>
+
+    <section id="climo">
+      <h2>When it snows</h2>
+      <p class="section-note">Climatology at a glance: average daily snowfall by month
+        (inches/day) at every station in this league, from decades of history. Brighter
+        is snowier — this is the no-skill prior every Powder Score is measured against.</p>
+      <div class="heatmap-scroll"><div class="heatmap" id="climo-grid"></div></div>
     </section>
 
     <section id="stations">
@@ -78,6 +134,23 @@
         pillows and depth sensors high in the mountains, QC’d and voided (for everyone)
         when sensors glitch. Hover a marker for the station behind each zone.</p>
       <div id="map"></div>
+    </section>
+
+    <section id="archive">
+      <h2>Round archive</h2>
+      <p class="section-note">Every resolved round in this league, newest first.</p>
+      <div class="table-scroll">
+        <table id="archive-table">
+          <thead>
+            <tr>
+              <th>Round</th><th>Biggest 24h dump</th><th>Best team</th>
+              <th title="Powder Score of the best team that round">Score</th>
+              <th title="Station-horizons scored / voided by QC">QC</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
     </section>
 
     <section id="compete">
@@ -99,7 +172,10 @@
       </ol>
       <p>Practice first? Run the <strong>training camp</strong> against any past
         season: <code>powderbench hindcast 2025-01-01 2025-01-31 --submission you.csv</code></p>
-      <p class="cta-row"><a class="cta" id="repo-link" href="https://github.com/andrewnakas/powderbench">GitHub repo & rules →</a></p>
+      <p class="cta-row">
+        <a class="cta" href="docs.html">Full documentation →</a>
+        <a class="cta ghost" id="repo-link" href="https://github.com/andrewnakas/powderbench">GitHub repo</a>
+      </p>
     </section>
   </main>
 
@@ -108,11 +184,13 @@
       <p>Ground truth: <a href="https://wcc.sc.egov.usda.gov/awdbRestApi/swagger-ui/index.html">USDA NRCS SNOTEL</a>,
         <a href="https://open-meteo.com/">ERA5 via Open-Meteo</a> (CC BY 4.0), and
         resort-published snow reports (per-resort attribution in the repo).
-        NWP baselines: Open-Meteo. Scores update daily at 16:00 UTC.</p>
+        NWP baselines: Open-Meteo. Scores update daily at 16:00 UTC ·
+        <a href="docs.html">Docs</a> · <a href="about.html">About</a></p>
     </div>
   </footer>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
