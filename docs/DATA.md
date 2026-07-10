@@ -69,12 +69,19 @@ Honest caveats, disclosed everywhere the trial appears:
 ## Observation feeds (southern)
 
 `src/powderbench/obsfeeds.py` records best-effort real observations next to
-model truth (never blocking resolution): a NIWA DataHub adapter that activates
-when `NIWA_API_KEY`/`NIWA_CUSTOMER_ID` secrets exist, and a DGA slot that
-ships disabled until a stable endpoint is identified. Once a feed runs clean
-for a station, that station's `truth_source` in `stations.yaml` can be flipped
-to promote it to real truth. Resort snow reports are **not** used: aggregators
-prohibit scraping and marketing totals are inflated and gameable.
+model truth (never blocking resolution). Once a feed runs clean for a station,
+that station's `truth_source` in `stations.yaml` can be flipped to promote it
+to real truth. Recon status (2026-07):
+
+| Feed | Source | Status |
+|---|---|---|
+| `snowyhydro` | Spencers Creek daily snow depth (site 00003, 1,830 m, Perisher/Thredbo massif), recovered from Snowy Hydro's daily HYPLOT chart PDF via vector-path extraction (~±2 cm) | **Live** — mapped to `perisher:AU:ERA5` |
+| `ina` | Argentina INA a5 open JSON API (`alerta.ina.gob.ar/a5`), 47 real snow-level telemetry stations incl. NIV Las Leñas (~1 km from our point) and NIV Túnel Internacional (Cristo Redentor pass, near Portillo) | **Implemented; upstream stale** — public sync ends mid-2024; lights up automatically if it resumes. 2022–24 data validates ERA5. |
+| `niwa` | NZ Snow & Ice Network via DataHub API | Activates when `NIWA_API_KEY`/`NIWA_CUSTOMER_ID` secrets exist |
+| `dga` | Chile DGA hourly nivometric telemetry | Disabled — real data exists but every public front (JSP portals, Shiny app, Angular observatorio) is app/session-gated |
+
+Resort snow reports are **not** used: aggregators prohibit scraping and
+marketing totals are inflated and gameable.
 
 ## The stations
 

@@ -7,16 +7,23 @@ data/obs/<league>/ and surfaced next to truth in round results. Once a feed
 proves stable for a station, that station's `truth_source` in stations.yaml
 can be flipped to promote it to actual truth (see truth_sources.py).
 
-Status of known southern sources (probed 2026-07):
-- Chile DGA / Observatorio Andino: real stations exist, but access is JSP
-  portals and an R Shiny websocket app — no stable REST endpoint found. The
-  DGA feed below ships disabled until a stable endpoint is identified.
-- NIWA (NZ) Snow & Ice Network: real stations behind the DataHub API
-  (customer id + key). The adapter activates when NIWA_API_KEY and
-  NIWA_CUSTOMER_ID are set.
+Status of known southern sources (recon 2026-07, see docs/DATA.md):
+- Argentina INA a5 (alerta.ina.gob.ar/a5): OPEN JSON API, 47 real "nivel de
+  nieve" telemetry stations across the Andes — incl. NIV Las Leñas ~1 km from
+  our las-lenas point and NIV Túnel Internacional near Portillo. Public data
+  currently ends mid-2024 (2022-24 usable for validating ERA5); the feed is
+  implemented and will light up automatically if their sync resumes.
+- Snowy Hydro (AU): daily snow depth at Spencers Creek (site 00003, 1830 m,
+  Perisher/Thredbo massif) published as a daily-regenerated HYPLOT chart PDF.
+  Values are recovered from the chart's vector path — approximate (±2 cm)
+  and fragile by nature, fine for reference columns.
+- Chile DGA: real hourly nivometric telemetry exists, but every public front
+  (JSP portals, Shiny app, Angular observatorio) hides the endpoint behind
+  app/session auth. Slot ships disabled.
+- NIWA (NZ) Snow & Ice Network: real stations behind the DataHub API. The
+  adapter activates when NIWA_API_KEY and NIWA_CUSTOMER_ID are set.
 - Resort snow reports: aggregators prohibit scraping and resort marketing
-  numbers are inflated/gameable — not used. Individual resorts with
-  legitimately public data can be added as feeds case-by-case.
+  numbers are inflated/gameable — not used.
 """
 
 from __future__ import annotations
@@ -25,7 +32,7 @@ import json
 import logging
 import os
 from dataclasses import dataclass
-from datetime import date
+from datetime import date, timedelta
 from typing import Callable
 
 import pandas as pd
@@ -58,14 +65,92 @@ def _niwa_fetch(begin: date, end: date) -> pd.DataFrame:
 
 
 def _dga_enabled() -> bool:
-    return False  # no stable endpoint found (Shiny/JSP portals only)
+    return False  # real telemetry exists but all public fronts are app/session-gated
 
 
 def _dga_fetch(begin: date, end: date) -> pd.DataFrame:
     raise NotImplementedError("DGA feed disabled: no stable public endpoint")
 
 
+# INA a5: series_id -> our station_id. NIV stations chosen for proximity to
+# registry points (Las Leñas ~1 km; Túnel Internacional ~7 km from Portillo,
+# same pass; Tronador ~20 km from Catedral; Martial ~20 km from Castor).
+INA_BASE = "https://alerta.ina.gob.ar/a5"
+INA_SERIES = {
+    33468: "las-lenas:AR:ERA5",       # NIV Aº de Las Leñas
+    32980: "portillo:CL:ERA5",        # NIV Túnel Internacional (Cristo Redentor pass)
+    33283: "catedral:AR:ERA5",        # NIV C. Tronador - Otto Meiling
+    44006: "castor:AR:ERA5",          # NIV Glaciar Martial (Ushuaia)
+}
+
+
+def _ina_enabled() -> bool:
+    return True
+
+
+def _ina_fetch(begin: date, end: date) -> pd.DataFrame:
+    """Daily fresh snow from INA snow-level (m) telemetry: positive day-over-day
+    delta of the daily-max level, converted to inches. Empty when the public
+    sync has no data for the window (currently: anything after mid-2024)."""
+    import requests
+
+    rows = []
+    for series_id, station_id in INA_SERIES.items():
+        resp = requests.get(
+            f"{INA_BASE}/obs/puntual/series/{series_id}/observaciones",
+            params={
+                "timestart": (begin - timedelta(days=1)).isoformat(),
+                "timeend": (end + timedelta(days=1)).isoformat(),
+                "limit": 2000,
+            },
+            timeout=60,
+        )
+        resp.raise_for_status()
+        payload = resp.json()
+        obs = payload if isinstance(payload, list) else payload.get("rows", [])
+        if not obs:
+            continue
+        df = pd.DataFrame(
+            {"ts": pd.to_datetime(o["timestart"]), "level_m": o.get("valor")} for o in obs
+        ).dropna()
+        daily_max = df.set_index("ts")["level_m"].resample("D").max()
+        delta_in = (daily_max.diff().clip(lower=0) * 39.3701).round(2)
+        for ts, snow in delta_in.items():
+            d = ts.date()
+            if begin <= d <= end and pd.notna(snow):
+                rows.append({"station_id": station_id, "date": d, "snow24_obs_in": float(snow)})
+    return pd.DataFrame(rows, columns=["station_id", "date", "snow24_obs_in"])
+
+
+SNOWY_PDF = "https://www.snowyhydro.com.au/wp-content/uploads/pdfs/watrel/00003SD.pdf"
+
+
+def _snowy_enabled() -> bool:
+    return True
+
+
+def _snowy_fetch(begin: date, end: date) -> pd.DataFrame:
+    """Spencers Creek daily snow depth, recovered from Snowy Hydro's
+    daily-regenerated HYPLOT chart PDF (May-Nov window, 0-300 cm axis).
+    Mapped to the Perisher registry point as reference data."""
+    from .snowy_pdf import extract_daily_depths
+
+    depths = extract_daily_depths(SNOWY_PDF)  # date -> depth_cm
+    if not depths:
+        return pd.DataFrame(columns=["station_id", "date", "snow24_obs_in"])
+    series = pd.Series(depths).sort_index()
+    delta_in = (series.diff().clip(lower=0) / 2.54).round(2)
+    rows = [
+        {"station_id": "perisher:AU:ERA5", "date": d, "snow24_obs_in": float(v)}
+        for d, v in delta_in.items()
+        if begin <= d <= end and pd.notna(v)
+    ]
+    return pd.DataFrame(rows, columns=["station_id", "date", "snow24_obs_in"])
+
+
 FEEDS: tuple[Feed, ...] = (
+    Feed("ina", "southern", _ina_enabled, _ina_fetch),
+    Feed("snowyhydro", "southern", _snowy_enabled, _snowy_fetch),
     Feed("niwa", "southern", _niwa_enabled, _niwa_fetch),
     Feed("dga", "southern", _dga_enabled, _dga_fetch),
 )
