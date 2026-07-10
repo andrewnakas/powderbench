@@ -77,7 +77,7 @@ to real truth. Recon status (2026-07):
 |---|---|---|
 | `snowyhydro` | Spencers Creek daily snow depth (site 00003, 1,830 m, Perisher/Thredbo massif), recovered from Snowy Hydro's daily HYPLOT chart PDF via vector-path extraction (~±2 cm) | **Live** — mapped to `perisher:AU:ERA5` |
 | `ina` | Argentina INA a5 open JSON API (`alerta.ina.gob.ar/a5`), 47 real snow-level telemetry stations incl. NIV Las Leñas (~1 km from our point) and NIV Túnel Internacional (Cristo Redentor pass, near Portillo) | **Implemented; upstream stale** — public sync ends mid-2024; lights up automatically if it resumes. 2022–24 data validates ERA5. |
-| `niwa` | NZ Snow & Ice Network via DataHub API | Activates when `NIWA_API_KEY`/`NIWA_CUSTOMER_ID` secrets exist |
+| `niwa` | NZ Snow & Ice Network via DataHub API | Activates when `NIWA_API_KEY`/`NIWA_CUSTOMER_ID` secrets exist. Per the DataHub Non-Commercial Use Licence, raw values are never committed to this repo or published — only stored privately at scoring time; published results carry Earth Sciences NZ attribution and their required disclaimer |
 | `dga` | Chile DGA hourly nivometric telemetry | Disabled — real data exists but every public front (JSP portals, Shiny app, Angular observatorio) is app/session-gated |
 
 Resort snow reports are **not** used: aggregators prohibit scraping and

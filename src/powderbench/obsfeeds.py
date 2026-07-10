@@ -48,6 +48,10 @@ class Feed:
     league: str
     enabled: Callable[[], bool]
     fetch: Callable[[date, date], pd.DataFrame]  # -> station_id, date, snow24_obs_in
+    # False = licence forbids republishing raw values (e.g. NIWA Non-Commercial
+    # Use Licence cl. 2a): store locally under data/obs/<league>/private/
+    # (gitignored) and keep out of committed round results entirely.
+    publish_raw: bool = True
 
 
 def _niwa_enabled() -> bool:
@@ -151,29 +155,39 @@ def _snowy_fetch(begin: date, end: date) -> pd.DataFrame:
 FEEDS: tuple[Feed, ...] = (
     Feed("ina", "southern", _ina_enabled, _ina_fetch),
     Feed("snowyhydro", "southern", _snowy_enabled, _snowy_fetch),
-    Feed("niwa", "southern", _niwa_enabled, _niwa_fetch),
+    Feed("niwa", "southern", _niwa_enabled, _niwa_fetch, publish_raw=False),
     Feed("dga", "southern", _dga_enabled, _dga_fetch),
 )
 
 
 def collect_observations(league_name: str, begin: date, end: date) -> pd.DataFrame:
-    """Run every enabled feed for a league; persist and return what came back.
-    Failures are logged, never raised — feeds must not block resolution."""
-    frames = []
+    """Run every enabled feed for a league; persist and return the publishable
+    part. Failures are logged, never raised — feeds must not block resolution.
+
+    Feeds with publish_raw=False are written only to data/obs/<league>/private/
+    (gitignored) and excluded from the returned frame, so their raw values
+    never reach committed round results or the site.
+    """
+    public, private = [], []
     for feed in FEEDS:
         if feed.league != league_name or not feed.enabled():
             continue
         try:
             df = feed.fetch(begin, end)
             df["feed"] = feed.name
-            frames.append(df)
+            (public if feed.publish_raw else private).append(df)
         except Exception:
             log.warning("obs feed %s failed; continuing without it", feed.name, exc_info=True)
-    if not frames:
-        return pd.DataFrame(columns=["station_id", "date", "snow24_obs_in", "feed"])
-    out = pd.concat(frames, ignore_index=True)
+
     obs_dir = data_dir() / "obs" / league_name
+    stem = f"{begin.isoformat()}_{end.isoformat()}.csv"
+    if private:
+        priv_dir = obs_dir / "private"
+        priv_dir.mkdir(parents=True, exist_ok=True)
+        pd.concat(private, ignore_index=True).to_csv(priv_dir / stem, index=False)
+    if not public:
+        return pd.DataFrame(columns=["station_id", "date", "snow24_obs_in", "feed"])
+    out = pd.concat(public, ignore_index=True)
     obs_dir.mkdir(parents=True, exist_ok=True)
-    path = obs_dir / f"{begin.isoformat()}_{end.isoformat()}.csv"
-    out.to_csv(path, index=False)
+    out.to_csv(obs_dir / stem, index=False)
     return out
