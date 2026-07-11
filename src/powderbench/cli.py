@@ -174,6 +174,15 @@ def build_history(
 
 
 @app.command()
+def build_snowhistory():
+    """Export the southern snow-station archive for the site's season explorer."""
+    from .snowhistory import build_snowhistory_site
+
+    files = build_snowhistory_site()
+    typer.echo(f"wrote {len(files)} files" if files else "no snowhistory catalog yet")
+
+
+@app.command()
 def scrape_resorts(
     only: Optional[str] = typer.Option(None, help="Scrape a single resort_id"),
     dry_run: bool = typer.Option(False, help="Fetch and parse but write nothing"),

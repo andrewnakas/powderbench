@@ -164,6 +164,44 @@ reports read systematically higher than ERA5, so early Powder Scores will look
 flattered vs climatology — identically for every team, hence fair. The
 climatology will be rebuilt from actual report history after a season or two.
 
+## Southern-hemisphere snow-station archive & census
+
+Beyond the leagues, `data/snowhistory/` keeps a tidy archive of every
+genuinely public SH snow-station series we've found (surfaced in the site's
+season explorer as "· Snowy Hydro / INA / Vic Alpine" entries; export via
+`powderbench build-snowhistory`). Reference and history only — never scoring
+truth. Networks committed (per-network licences in
+`data/snowhistory/catalog.yaml`):
+
+| Network | Stations | Coverage | Cadence | Licence |
+|---|---|---|---|---|
+| Snowy Hydro snow courses (AU) | Spencers Creek, Deep Creek, Three Mile Dam | **1954–present** | ~weekly, in season | none stated; public-benefit publication, attributed, removed on request |
+| Victorian Alpine Resorts (AU) | Mt Buller, Falls Creek, Mt Hotham, Mt Baw Baw, Lake Mountain, Mt Stirling | 1993–2017 (2018–2023 exists behind a Cloudflare wall — one manual download) | daily, Jun–Oct | **CC-BY 4.0** (Data Vic) |
+| INA nivológicas (AR) | 13 usable of a 47-station census (var_id 37, "nivel de nieve") | 2024 winter only — the public a5 API was pruned | daily max of telemetry | **CC-BY 4.0** (argentina.gob.ar) |
+
+Census of everything else public (recon 2026-07-11):
+
+- **SNIH/BDHI** (snih.hidricosargentina.gob.ar) — the canonical archive for
+  Argentina's RHN nivological history that the a5 API no longer serves;
+  stated free open access. **Top lead for deep AR history.**
+- **Environment Southland Hilltop** (odp.es.govt.nz) — the only open council
+  snow API in NZ: Upper Waikaia at Hyde Rock (Garvie Mtns, ~40 km from the
+  Remarkables), 10-min snow depth **and SWE**, live since 2026-04. Ready to
+  wire once the licence is confirmed with ES.
+- **Horizons Hilltop** (NZ) — Hautapu at Mounganui snow depth, stale since
+  2025-04; poll for revival.
+- **Chile DGA BNAConsultas** (snia.mop.gob.cl) — the real Chilean source:
+  nivométricas + rutas de nieve stations (Portillo 3000 m, Volcán Chillán,
+  Laguna Negra, …), multi-decadal depth + SWE, anonymous but behind a
+  stateful JSF form and with no licence text; wiring needs session-driving
+  plus an attribution decision.
+- **DGI Mendoza** — owns the classic Mendoza snow pillows (Toscas, Valle
+  Hermoso, Laguna Atuel, Laguna del Diamante, Pehuenche); publishes SWE in
+  daily PDF bulletins only. Needs contact or a PDF pipeline.
+- Dead ends for station snow: ECan/ORC/WCRC portals (SIN sites are
+  NIWA-operated — enquiry pending), datos.gob.cl, CR2 (model output, not
+  stations), SMN Argentina open feed (no snow variables).
+
 ## The stations
 
 `data/stations.yaml`: 45 active SNOTEL stations (stations league) chosen for (a)

@@ -212,6 +212,7 @@ function renderSnowfall() {
 
 /* ---- Season explorer: overlay any station-season cumulative curves ---- */
 let szn = { league: null, index: null, cache: {}, series: [] };
+let sznArchive = null; // southern snow-station archive (INA, Snowy Hydro, Data Vic, ...)
 
 function seasonSpanLabel(startYear, ssm) {
   if (ssm === 1) return String(startYear);
@@ -266,13 +267,14 @@ function drawSeasonChart() {
   });
 }
 
-async function sznStationData(slug) {
-  if (!szn.cache[slug]) szn.cache[slug] = await loadJSON(`data/seasons/${szn.league}/${slug}.json`);
-  return szn.cache[slug];
+async function sznStationData(dir, slug) {
+  const key = `${dir}/${slug}`;
+  if (!szn.cache[key]) szn.cache[key] = await loadJSON(`data/seasons/${dir}/${slug}.json`);
+  return szn.cache[key];
 }
 
-async function sznAdd(slug, year) {
-  const data = await sznStationData(slug);
+async function sznAdd(dir, slug, year) {
+  const data = await sznStationData(dir, slug);
   if (!data.seasons[year]) return;
   const label = `${data.resort} ${seasonSpanLabel(year, data.season_start_month)}`;
   if (szn.series.some((s) => s.label === label)) return;
@@ -290,17 +292,26 @@ async function initSeasons(name) {
     return;
   }
   section.style.display = "";
+  // southern leagues also get the public snow-station archive (same season axis)
+  let entries = szn.index.stations.map((st) => ({ ...st, dir: name }));
+  if (sznArchive && sznArchive.season_start_month === szn.index.season_start_month) {
+    entries = entries.concat(sznArchive.stations.map((st) => ({ ...st, dir: "southern-stations" })));
+  }
   const ssel = document.getElementById("szn-station");
   const ysel = document.getElementById("szn-year");
   ssel.innerHTML = "";
-  for (const st of szn.index.stations) {
+  for (const st of entries) {
     const opt = document.createElement("option");
-    opt.value = st.slug;
+    opt.value = `${st.dir}|${st.slug}`;
     opt.textContent = st.resort;
     ssel.appendChild(opt);
   }
+  const selected = () => {
+    const [dir, slug] = ssel.value.split("|");
+    return entries.find((s) => s.dir === dir && s.slug === slug);
+  };
   const fillYears = () => {
-    const st = szn.index.stations.find((s) => s.slug === ssel.value);
+    const st = selected();
     ysel.innerHTML = "";
     for (const y of [...st.seasons].reverse()) {
       const opt = document.createElement("option");
@@ -311,12 +322,15 @@ async function initSeasons(name) {
   };
   ssel.onchange = fillYears;
   fillYears();
-  document.getElementById("szn-add").onclick = () => sznAdd(ssel.value, ysel.value);
+  document.getElementById("szn-add").onclick = () => {
+    const st = selected();
+    sznAdd(st.dir, st.slug, ysel.value);
+  };
   document.getElementById("szn-clear").onclick = () => { szn.series = []; drawSeasonChart(); };
   // seed the chart: snowiest station's current + previous season
-  const top = szn.index.stations[0];
+  const top = entries[0];
   const years = [...top.seasons].reverse();
-  for (const y of years.slice(0, 2)) await sznAdd(top.slug, y);
+  for (const y of years.slice(0, 2)) await sznAdd(top.dir, top.slug, y);
 }
 
 /* ---- Resorts vs reanalysis (league-independent, drawn once) ---- */
@@ -503,6 +517,7 @@ async function selectLeague(name) {
       renderBoard(state.lb[btn.dataset.window], state.lb.generated_rounds);
     })
   );
+  try { sznArchive = await loadJSON("data/seasons/southern-stations/index.json"); } catch (e) { /* optional */ }
   const fromHash = location.hash.match(/^#league=(\w+)$/)?.[1];
   const initial =
     state.leagues.find((l) => l.name === fromHash) ||

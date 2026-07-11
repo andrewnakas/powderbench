@@ -1,0 +1,66 @@
+# Southern-hemisphere snow-station archive: every genuinely public station
+# series we've found, kept tidy in this repo and surfaced in the site's
+# season explorer. Reference/history only — never scoring truth.
+# Provenance and licence notes per network; takedown-on-request policy
+# applies (open an issue).
+networks:
+  snowyhydro:
+    name: "Snowy Hydro snow courses (NSW, Australia)"
+    short: "Snowy Hydro"
+    source: "https://www.snowyhydro.com.au/generation/live-data/snow-depths/"
+    variable: depth_cm
+    cadence: "~weekly snow-course readings, in season"
+    license: >-
+      No explicit licence; Snowy Hydro "supplies this information in good
+      faith for the benefit of the public" with a no-liability disclaimer.
+      Republished here minimally, with attribution; removed on request.
+
+  ina:
+    name: "INA Red Hidrológica — estaciones nivológicas (Argentina)"
+    short: "INA"
+    source: "https://alerta.ina.gob.ar/a5 (series var_id=37, nivel de nieve)"
+    variable: level_m
+    cadence: "daily max of telemetry snow level"
+    license: >-
+      CC-BY 4.0 (argentina.gob.ar terms; Ley 27275). Attribute "Instituto
+      Nacional del Agua (INA), Sistema de Información y Alerta Hidrológico".
+      NOTE: the public a5 API currently serves only the 2024 winter; the
+      deep RHN history lives in SNIH/BDHI (snih.hidricosargentina.gob.ar) —
+      follow-up lead for the full archive. Full 47-station census in
+      docs/DATA.md; 13 usable series committed here.
+
+  vicalpine:
+    name: "Victorian Alpine Resorts daily snow depths (Data Vic)"
+    short: "Vic Alpine"
+    source: "https://discover.data.vic.gov.au/dataset/victorian-alpine-resorts-daily-snow-depth-records-mount-buller"
+    variable: depth_cm
+    cadence: "daily staff measurements, Jun-Oct (avg of up to 4 snow plots)"
+    license: >-
+      CC-BY 4.0. Attribute "Alpine Resorts Victoria via Data Vic". Files here
+      cover 1993-2017 (Wayback mirror); the 2018-2023 update exists on
+      alpineresorts.vic.gov.au behind a Cloudflare challenge — one manual
+      browser download adds it.
+
+stations:
+  - { slug: spencers-creek, network: snowyhydro, name: "Spencers Creek", country: AU, lat: -36.429, lon: 148.350, elevation_m: 1830, first: 1954-06-10, last: 2026-07-07 }
+  - { slug: deep-creek, network: snowyhydro, name: "Deep Creek", country: AU, lat: -36.360, lon: 148.420, elevation_m: 1620, first: 1957-07-03, last: 2026-07-07 }
+  - { slug: three-mile-dam, network: snowyhydro, name: "Three Mile Dam", country: AU, lat: -35.870, lon: 148.610, elevation_m: 1460, first: 1955-06-25, last: 2026-07-06 }
+  - { slug: niv-alto-chubut, network: ina, name: "Alto Chubut", country: AR, lat: -41.6731, lon: -71.1142, first: 2024-07-02, last: 2024-09-20 }
+  - { slug: niv-ao-de-las-lenas-las-lena, network: ina, name: "Aº de Las Leñas", country: AR, lat: -35.1394, lon: -70.0917, first: 2024-07-05, last: 2024-09-05 }
+  - { slug: niv-c-trona-otto-meiling-met, network: ina, name: "C. Tronador — Otto Meiling", country: AR, lat: -41.1911, lon: -71.7881, first: 2024-07-03, last: 2024-09-20 }
+  - { slug: niv-carrenleufu-lago-guacho, network: ina, name: "Carrenleufú — Lago Guacho", country: AR, lat: -43.8289, lon: -71.4056, first: 2024-07-02, last: 2024-09-20 }
+  - { slug: niv-cerro-carreras, network: ina, name: "Cerro Carreras", country: AR, lat: -41.5519, lon: -71.2178, first: 2024-07-07, last: 2024-09-20 }
+  - { slug: niv-cerro-polleras, network: ina, name: "Cerro Polleras", country: AR, lat: -33.1475, lon: -69.8519, first: 2024-07-02, last: 2024-09-20 }
+  - { slug: niv-diamante-laguna-diamante, network: ina, name: "Laguna Diamante", country: AR, lat: -34.1989, lon: -69.6981, first: 2024-07-02, last: 2024-09-20 }
+  - { slug: niv-grande-paso-pehuenche, network: ina, name: "Paso Pehuenche", country: AR, lat: -35.9800, lon: -70.3942, first: 2024-07-02, last: 2024-09-20 }
+  - { slug: niv-grande-valle-hermoso, network: ina, name: "Valle Hermoso", country: AR, lat: -35.1422, lon: -70.2017, first: 2024-07-02, last: 2024-09-20 }
+  - { slug: niv-jachal-cerro-negro, network: ina, name: "Jáchal — Cerro Negro", country: AR, lat: -29.8906, lon: -69.5581, first: 2024-07-02, last: 2024-09-20 }
+  - { slug: niv-lago-la-plata, network: ina, name: "Lago La Plata", country: AR, lat: -44.9225, lon: -71.7878, first: 2024-07-02, last: 2024-09-20 }
+  - { slug: niv-picos-de-barroso, network: ina, name: "Picos de Barroso", country: AR, lat: -34.3075, lon: -69.9483, first: 2024-07-02, last: 2024-09-20 }
+  - { slug: niv-puntas-amarillas, network: ina, name: "Puntas Amarillas", country: AR, lat: -34.2306, lon: -69.5144, first: 2024-07-02, last: 2024-09-20 }
+  - { slug: mt-buller, network: vicalpine, name: "Mt Buller", country: AU, lat: -37.1462, lon: 146.4473, elevation_m: 1600, first: 1993-06-05, last: 2017-10-08 }
+  - { slug: falls-creek, network: vicalpine, name: "Falls Creek", country: AU, lat: -36.8655, lon: 147.2861, elevation_m: 1600, first: 1993-06-05, last: 2017-10-08 }
+  - { slug: mt-hotham, network: vicalpine, name: "Mt Hotham", country: AU, lat: -36.9764, lon: 147.1356, elevation_m: 1750, first: 1993-06-05, last: 2017-10-08 }
+  - { slug: mt-baw-baw, network: vicalpine, name: "Mt Baw Baw", country: AU, lat: -37.8380, lon: 146.2753, elevation_m: 1480, first: 1993-06-05, last: 2017-10-08 }
+  - { slug: lake-mountain, network: vicalpine, name: "Lake Mountain", country: AU, lat: -37.4830, lon: 145.8800, elevation_m: 1400, first: 1993-06-05, last: 2017-10-08 }
+  - { slug: mt-stirling, network: vicalpine, name: "Mt Stirling", country: AU, lat: -37.1260, lon: 146.4920, elevation_m: 1500, first: 1995-06-05, last: 2017-10-08 }
