@@ -6,7 +6,7 @@ Three independent leaderboards — one per kind of ground truth; results never m
 
 | | Stations | ERA5 | Resorts |
 |---|---|---|---|
-| Points | 45 SNOTEL | 23 ERA5 resort points | 5 resorts (growing) |
+| Points | 45 SNOTEL | 23 ERA5 resort points | 13 resorts (growing) |
 | Truth | Real telemetry | Model analysis | The resort's own published snow report |
 | Cutoff for round D | 00:00 UTC on D | **11:00 UTC on D−1** | **11:00 UTC on D−1** |
 | Resolves | D+3, 16:00 UTC | from D+8, 16:00 UTC (ERA5 archive lag) | D+3, 16:00 UTC |

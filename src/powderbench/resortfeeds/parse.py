@@ -91,6 +91,54 @@ def jsonld_value(*keys: str | int, type_filter: str | None = None) -> Parser:
     return parse
 
 
+def labeled_number(label: str, up: int = 3, pattern: str = rf"({_NUMBER})\s*cm") -> Parser:
+    """Number next to a text label in a stat grid (e.g. Webflow widgets:
+    value <h5>0cm</h5> … label <h5>Last 24hrs</h5> inside one wrapper). Finds
+    the exact label text, walks `up` parents to the wrapper, and pulls the
+    first pattern match from the wrapper's combined text."""
+
+    def parse(body: str) -> float | None:
+        from bs4 import BeautifulSoup
+
+        node = BeautifulSoup(body, "html.parser").find(
+            string=lambda t: t and t.strip().lower() == label.lower()
+        )
+        if node is None:
+            return None
+        el = node
+        for _ in range(up):
+            if el.parent is None:
+                break
+            el = el.parent
+        m = re.search(pattern, el.get_text(" ", strip=True))
+        return float(m.group(1).replace(",", ".")) if m else None
+
+    return parse
+
+
+def table_cell(row_label: str, col_header: str) -> Parser:
+    """Number from a table cell addressed by first-column row label and
+    column-header substring (case-insensitive). None when the cell holds no
+    number (e.g. a '-' placeholder)."""
+
+    def parse(body: str) -> float | None:
+        from bs4 import BeautifulSoup
+
+        for table in BeautifulSoup(body, "html.parser").find_all("table"):
+            rows = [[c.get_text(strip=True) for c in tr.find_all(["th", "td"])] for tr in table.find_all("tr")]
+            if not rows:
+                continue
+            cols = [i for i, h in enumerate(rows[0]) if col_header.lower() in h.lower()]
+            if not cols:
+                continue
+            for row in rows[1:]:
+                if row and row[0].strip().lower() == row_label.lower() and cols[0] < len(row):
+                    return _to_float(row[cols[0]])
+        return None
+
+    return parse
+
+
 def css_number(selector: str, pattern: str = f"({_NUMBER})") -> Parser:
     """First regex group from the text of the first element matching a CSS
     selector."""

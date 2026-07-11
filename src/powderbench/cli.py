@@ -105,6 +105,9 @@ def open_round(
     lg = get_league(league)
     # default: the round whose cutoff is ~24h away (cutoff sits days_before ahead of D)
     d = _parse_date(round_date) if round_date else date.today() + timedelta(days=1 + lg.cutoff_days_before)
+    if not lg.in_season(d):
+        typer.echo(f"{lg.name} is off-season for {d} — not opening a round")
+        return
     path = do_open(lg, d)
     typer.echo(f"opened {lg.name} round {d} -> {path}")
 
@@ -119,7 +122,12 @@ def baseline_submit(
     from .leagues import get_league
     from .rounds import submit_baselines
 
-    for team, path in submit_baselines(get_league(league), _parse_date(round_date), mode=mode).items():
+    lg = get_league(league)
+    d = _parse_date(round_date)
+    if not lg.in_season(d):
+        typer.echo(f"{lg.name} is off-season for {d} — no baselines to submit")
+        return
+    for team, path in submit_baselines(lg, d, mode=mode).items():
         typer.echo(f"{team}: {path}")
 
 

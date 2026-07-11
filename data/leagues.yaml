@@ -16,6 +16,7 @@ leagues:
     # ERA5 lands on the Open-Meteo archive with ~5 days lag; D+2 is final by D+8.
     resolve_after: { days: 8, hour_utc: 16 }
     season_start_month: 4 # southern snow year: Apr 1 - Mar 31
+    active_months: [5, 6, 7, 8, 9, 10] # austral winter
   - name: resorts
     label: "Resorts · Southern Hemisphere"
     status: live
@@ -27,6 +28,7 @@ leagues:
     # so D+3 16:00 UTC rides the existing resolve cron.
     resolve_after: { days: 3, hour_utc: 16 }
     season_start_month: 4 # southern snow year: Apr 1 - Mar 31
+    active_months: [5, 6, 7, 8, 9, 10] # austral winter
   - name: stations
     label: "Stations · Western US SNOTEL"
     status: live
@@ -34,3 +36,4 @@ leagues:
     cutoff: { days_before: 0, hour_utc: 0 }
     resolve_after: { days: 3, hour_utc: 15 }
     season_start_month: 10 # water year: Oct 1 - Sep 30
+    active_months: [10, 11, 12, 1, 2, 3, 4, 5] # Oct-May

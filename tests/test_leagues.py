@@ -41,6 +41,15 @@ def test_era5_maturity_waits_for_archive_lag():
     assert lg.matured_at_utc(d) == datetime(2026, 7, 28, 16, tzinfo=timezone.utc)
 
 
+def test_season_gating():
+    # off-season leagues stop opening rounds instead of grinding empty ones
+    assert not get_league("stations").in_season(date(2026, 7, 15))
+    assert get_league("stations").in_season(date(2026, 12, 15))
+    assert get_league("era5").in_season(date(2026, 7, 15))
+    assert get_league("resorts").in_season(date(2026, 7, 15))
+    assert not get_league("resorts").in_season(date(2026, 12, 15))
+
+
 def test_resorts_maturity_waits_for_last_morning_report():
     # snow24(D+2), the last day of the 72h window, appears in morning-of-D+3
     # local reports; the last publishers (Chile/Argentina, UTC-4/-3) are

@@ -25,6 +25,13 @@ class League:
     resolve_after_days: int
     resolve_after_hour_utc: int
     season_start_month: int
+    # calendar months when daily rounds open; None = year-round. Off-season
+    # leagues stop opening rounds (and the site marks them OFF-SEASON) instead
+    # of grinding out empty summer rounds.
+    active_months: tuple[int, ...] | None = None
+
+    def in_season(self, d: date) -> bool:
+        return self.active_months is None or d.month in self.active_months
 
     def cutoff_utc(self, round_date: date) -> datetime:
         d = round_date - timedelta(days=self.cutoff_days_before)
@@ -57,6 +64,7 @@ def load_leagues() -> tuple[League, ...]:
             resolve_after_days=entry["resolve_after"]["days"],
             resolve_after_hour_utc=entry["resolve_after"]["hour_utc"],
             season_start_month=entry["season_start_month"],
+            active_months=tuple(entry["active_months"]) if entry.get("active_months") else None,
         )
         for entry in raw["leagues"]
     )

@@ -70,6 +70,21 @@ is never fetched at resolve time.
 ## Current registry status
 
 See the table in [DATA.md](DATA.md) and the authoritative
-`registry.py` — every entry carries its own verdict and date. Unprobed
-southern-hemisphere candidates worth recon: Valle Nevado, La Parva, El
-Colorado (CL), Chapelco, Cerro Castor, Las Leñas, Caviahue (AR), Tūroa (NZ).
+`registry.py` — every entry carries its own verdict and date (13 live as of
+2026-07-11, all four countries covered).
+
+## Historical data leads (for backfilling, not yet wired)
+
+- **Victorian government daily snow-depth CSVs** — "Victorian Alpine Resorts
+  Daily Snow Depth Records" on Data Vic (CC-BY 4.0): Mt Buller, Falls Creek,
+  Mt Hotham, Mt Baw Baw, Lake Mountain, Mt Stirling, 1993–2023, staff-measured
+  daily depths. The CSV host sits behind a Cloudflare challenge; the 1993–2017
+  files are mirrored on the Wayback Machine. Wide spreadsheet format — needs
+  bespoke wrangling, but the licence is clean.
+- **Snowy Hydro snow-course archive** — Spencers Creek / Deep Creek / Three
+  Mile Dam, ~weekly measurements back to 1954, behind
+  `wp-content/themes/snowyhydro/inc/getData.php?yearA=&yearB=` (JSON). The
+  endpoint tarpits plain HTTP clients; one headless-browser session could pull
+  the full series.
+- Thredbo and NZSki publish no history (checked 2026-07-11); their archives
+  start with our scraper.

@@ -140,11 +140,21 @@ status (2026-07-10):
 | Resort | Endpoint | Verdict |
 |---|---|---|
 | Mt Hutt, Coronet Peak, The Remarkables (NZSki) | own weather-app JSON (azurefd.net) | **Live** — robots OK, no ToS scraping clause; season-total deltas |
+| Tūroa | own server-rendered page (pureturoa.nz) | **Live** — robots OK, no ToS scraping clause; 'Last 24hrs' stat |
+| Whakapapa | own SSR page `/report` (embedded app-state JSON) | **Live** — robots OK, no ToS scraping clause; per-location `snow24Hours` |
 | Thredbo | own XML feed `/feeds/snow-report/` | **Live** — robots OK, no ToS scraping clause; literal `snow24Hours` |
-| Cerro Catedral | operator's parte-diario API (Vía Bariloche) | **Live** — robots OK, no ToS scraping clause; per-sector `nieveUltimas24` |
+| Cerro Catedral, Chapelco, La Hoya | operator's parte-diario API (Vía Bariloche / BusPlus, exactly these 3 centros) | **Live** — no robots restrictions, no ToS scraping clause; per-sector `nieveUltimas24` |
+| Portillo | own server-rendered conditions table | **Live** — robots OK, no ToS page found; season-to-date deltas (Hotel area) |
+| Valle Nevado | own server-rendered report page | **Live** — robots OK, no scraping clause in /es/legal; mountain-wide 24h |
+| Antillanca | own WordPress REST endpoint (`wp-json/antillanca/v1/parte-diario`) | **Live** — robots OK; `nieve_24h` + depths + updated stamp |
+| Las Leñas | own server-rendered conditions table | **Live (self-activating)** — table currently publishes '-' placeholders → `no_report` until they resume |
+| Mt Buller | public JSON API found (api.mtbuller.com.au) | **Disabled pending permission** — ToS restricts republication without written approval |
 | Cardrona, Treble Cone | — | **Unusable**: site snow data is aggregator-fed (OpenSnow) |
 | Perisher, Falls Creek, Hotham | — | **Unusable** (conservative): Vail-owned, automated access treated as prohibited |
-| Whakapapa, Mt Buller, Portillo, Nevados de Chillán, Corralco | — | Recon incomplete: reports render client-side; candidates for headless onboarding |
+| Cerro Castor | — | **Unusable for snowfall**: publishes per-sector depth only (depth-delta mode possible later) |
+| El Colorado | — | **Unusable**: publishes no snowfall numbers |
+| La Parva | — | **Disabled (stale)**: clean structure but report frozen at 2026-01-19 |
+| Caviahue, Nevados de Chillán, Corralco | — | Recon incomplete: page broken / client-side rendering |
 
 Adding a resort: [RESORTS.md](RESORTS.md).
 
@@ -161,8 +171,8 @@ proximity to iconic ski terrain, (b) long records, (c) geographic spread —
 Wasatch, Colorado Rockies, Tetons, Beartooths, Montana, Idaho, Cascades,
 Sierra, New Mexico, Chugach. All SNOTEL metadata comes from the API, not
 hand-entry. Plus 23 era5 resort points (Chile, Argentina, NZ, Australia) with
-hand-curated coordinates, and 5 resorts-league points mirroring the era5
-coordinates of their resorts.
+hand-curated coordinates, and 13 resorts-league points (12 mirror era5
+coordinates; La Hoya stands alone).
 
 Station id formats: `<id>:<state>:SNTL` (e.g. `766:UT:SNTL` = Snowbird),
 `<slug>:<country>:ERA5` (e.g. `portillo:CL:ERA5`), and

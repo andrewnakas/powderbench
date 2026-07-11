@@ -29,7 +29,7 @@ station_id,horizon_h,snowfall_in
 - `snowfall_in`: inches, 0–200.
 
 Cover every station × 3 horizons for full coverage (stations: 45 × 3 = 135
-rows; era5: 23 × 3 = 69; resorts: 5 × 3 = 15). You can skip some, but ranking
+rows; era5: 23 × 3 = 69; resorts: 13 × 3 = 39). You can skip some, but ranking
 needs ≥70% average coverage.
 
 Optional columns:

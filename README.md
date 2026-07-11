@@ -12,7 +12,7 @@ automatically every round.
 |---|---|---|---|---|---|
 | **Stations** | 45 SNOTEL (Alta, Jackson, Baker, Cooke City…) | Real snow telemetry (NRCS SNOTEL) | Oct–May | 00:00 UTC on D | D+3 |
 | **ERA5** | 23 zones (Portillo, Las Leñas, Remarkables, Perisher…) | ERA5 model analysis (see [docs/DATA.md](docs/DATA.md)) | **Jun–Oct — live now** | 11:00 UTC on D−1 | ~D+8 |
-| **Resorts** | 5 resorts and growing (Mt Hutt, Coronet Peak, Remarkables, Thredbo, Catedral) | The resort's own published snow report, archived daily (see [docs/DATA.md](docs/DATA.md)) | **Jun–Oct — live now** | 11:00 UTC on D−1 | D+3 |
+| **Resorts** | 13 resorts and growing across NZ / AU / Chile / Argentina (Mt Hutt, Coronet Peak, Remarkables, Tūroa, Whakapapa, Thredbo, Catedral, Chapelco, La Hoya, Las Leñas, Portillo, Valle Nevado, Antillanca) | The resort's own published snow report, archived daily (see [docs/DATA.md](docs/DATA.md)) | **Jun–Oct — live now** | 11:00 UTC on D−1 | D+3 |
 
 It's contamination-free by construction: you're forecasting weather that
 hasn't happened yet. The ERA5 and Resorts leagues run all austral winter, so
@@ -109,7 +109,7 @@ archive, never the live sites.
 src/powderbench/       the engine: clients, truth adapters, QC, scoring, rounds
 src/powderbench/resortfeeds/   resort snow-report scrapers + snapshot archive
 data/leagues.yaml      league config (cutoffs, truth sources, maturity)
-data/stations.yaml     73 curated stations across the three leagues
+data/stations.yaml     81 curated stations across the three leagues
 data/rounds/<league>/  daily round manifests + resolved truth
 data/submissions/<league>/<round>/   one CSV per team — this is where your PR goes
 data/results/<league>/ per-round scores + leaderboard.json

@@ -17,6 +17,14 @@ FIXTURE_VALUES = {
     "remarkables": 33.0,
     "thredbo": 0.0,
     "catedral": 0.0,
+    "turoa": 0.0,
+    "whakapapa": 0.0,
+    "chapelco": 11.0,
+    "la-hoya": 1.0,
+    "portillo": 52.0,  # season-to-date (cumulative=True): deltas become daily snowfall
+    "valle-nevado": 0.0,
+    "antillanca": 0.0,
+    "las-lenas": None,  # table currently publishes '-' placeholders -> no_report
 }
 
 
