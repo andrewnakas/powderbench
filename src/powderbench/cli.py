@@ -153,6 +153,19 @@ def build_leaderboard(league: Optional[str] = typer.Option(None, "--league", "-l
 
 
 @app.command()
+def build_history(
+    league: str = LeagueOpt,
+    seasons: int = typer.Option(12, help="How many past seasons to export"),
+):
+    """Export per-station season history for the site's season explorer."""
+    from .leagues import get_league
+    from .site import build_history as build
+
+    files = build(get_league(league), seasons=seasons)
+    typer.echo(f"wrote {len(files)} files" if files else "league has no history source")
+
+
+@app.command()
 def scrape_resorts(
     only: Optional[str] = typer.Option(None, help="Scrape a single resort_id"),
     dry_run: bool = typer.Option(False, help="Fetch and parse but write nothing"),

@@ -28,6 +28,11 @@ jobs:
         run: |
           powderbench build-leaderboard
           powderbench build-site
+          # season-explorer series: resorts reads the local archive; era5/stations
+          # top-ups ride the API caches (one small window fetch per league)
+          for L in resorts era5 stations; do
+            powderbench build-history --league "$L" || true
+          done
       - name: Commit results
         run: |
           git config user.name "powderbench-bot"

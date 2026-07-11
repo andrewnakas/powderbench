@@ -1,20 +1,32 @@
 [
  {
-  "name": "stations",
-  "label": "Stations \u00b7 Western US SNOTEL",
-  "status": "live",
-  "truth_source": "snotel"
- },
- {
   "name": "era5",
   "label": "ERA5 \u00b7 Andes / NZ / AU",
   "status": "live",
-  "truth_source": "era5"
+  "truth_source": "era5",
+  "open_round": {
+   "round_id": "2026-07-12",
+   "cutoff_utc": "2026-07-11T11:00:00+00:00"
+  },
+  "last_resolved": "2026-06-28"
  },
  {
   "name": "resorts",
   "label": "Resorts \u00b7 Southern Hemisphere",
   "status": "live",
-  "truth_source": "resort"
+  "truth_source": "resort",
+  "open_round": {
+   "round_id": "2026-07-12",
+   "cutoff_utc": "2026-07-11T11:00:00+00:00"
+  },
+  "last_resolved": null
+ },
+ {
+  "name": "stations",
+  "label": "Stations \u00b7 Western US SNOTEL",
+  "status": "live",
+  "truth_source": "snotel",
+  "open_round": null,
+  "last_resolved": "2025-03-07"
  }
 ]

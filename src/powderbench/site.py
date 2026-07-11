@@ -11,7 +11,7 @@ from pathlib import Path
 
 from .leaderboard import leaderboard_path, round_results_dir
 from .leagues import League, load_leagues
-from .stations import data_dir, load_stations
+from .stations import data_dir, load_stations, station_ids
 
 RECENT_ROUNDS = 14
 
@@ -101,6 +101,108 @@ def _monthly_climatology(league: League) -> dict[str, list]:
     }
 
 
+def _league_round_status(league: League) -> tuple[dict | None, str | None]:
+    """(newest open round manifest info, last resolved round id) — lets the
+    site mark off-season leagues and pick a live default."""
+    open_round = None
+    rounds_root = data_dir() / "rounds" / league.name
+    if rounds_root.exists():
+        for rdir in sorted((p for p in rounds_root.iterdir() if p.is_dir()), reverse=True):
+            manifest = rdir / "round.json"
+            if not manifest.exists():
+                continue
+            r = json.loads(manifest.read_text())
+            if r.get("status") == "open":
+                open_round = {"round_id": r["round_id"], "cutoff_utc": r["cutoff_utc"]}
+                break
+    resolved = sorted(round_results_dir(league).glob("*.json"))
+    return open_round, (resolved[-1].stem if resolved else None)
+
+
+# history spans mirror the climatology builds, so the big fetch is a cache hit
+_HISTORY_SPANS = {"snotel": date(2015, 10, 1), "era5": date(1991, 1, 1)}
+_HISTORY_SPLIT = date(2025, 6, 30)
+
+
+def build_history(league: League, seasons: int = 12) -> list[Path]:
+    """Export per-station season-cumulative snowfall JSON for the site's
+    season explorer: site/data/seasons/<league>/<slug>.json + index.json.
+    Run manually (`powderbench build-history`) — history barely changes, and
+    the truth fetches ride the climatology cache."""
+    import pandas as pd
+
+    from .truth_sources import daily_truth
+
+    today = date.today()
+    ids = station_ids(league.name)
+    if league.truth_source == "resort":
+        # the scrape archive IS the history; it just starts young
+        from .resortfeeds import daily_from_archive
+
+        daily = daily_from_archive(today - timedelta(days=365 * seasons), today)
+        daily = daily.rename(columns={"snow24_in": "snow24"})
+    else:
+        frames = [daily_truth(league, ids, _HISTORY_SPANS[league.truth_source], _HISTORY_SPLIT)]
+        if today > _HISTORY_SPLIT:
+            frames.append(daily_truth(league, ids, _HISTORY_SPLIT + timedelta(days=1), today))
+        daily = pd.concat(frames, ignore_index=True)
+        daily = daily[daily["valid"]]
+
+    ssm = league.season_start_month
+    current_season = today.year if today.month >= ssm else today.year - 1
+    min_season = current_season - (seasons - 1)
+
+    out_dir = site_dir() / "data" / "seasons" / league.name
+    out_dir.mkdir(parents=True, exist_ok=True)
+    written, index = [], []
+    stations_by_id = {s.station_id: s for s in load_stations(league.name)}
+    for sid, grp in daily.groupby("station_id"):
+        st = stations_by_id.get(sid)
+        if st is None:
+            continue
+        per_season: dict[str, list] = {}
+        last_idx: dict[str, int] = {}
+        for d, snow in zip(grp["date"], grp["snow24"]):
+            season = d.year if d.month >= ssm else d.year - 1
+            if season < min_season:
+                continue
+            idx = (d - date(season, ssm, 1)).days
+            if not (0 <= idx < 365):
+                continue
+            key = str(season)
+            per_season.setdefault(key, [0.0] * 365)[idx] += float(snow)
+            last_idx[key] = max(last_idx.get(key, 0), idx)
+        cum_seasons = {}
+        for key, incs in sorted(per_season.items()):
+            total, cum = 0.0, []
+            for i, v in enumerate(incs):
+                total += v
+                cum.append(round(total, 1) if i <= last_idx[key] else None)
+            cum_seasons[key] = cum
+        payload = {
+            "station_id": sid,
+            "resort": st.resort,
+            "season_start_month": ssm,
+            "seasons": cum_seasons,
+        }
+        path = out_dir / f"{st.slug}.json"
+        path.write_text(json.dumps(payload))
+        written.append(path)
+        latest_total = next(
+            (max(v for v in cum_seasons[k] if v is not None) for k in sorted(cum_seasons, reverse=True)), 0
+        )
+        index.append(
+            {"slug": st.slug, "station_id": sid, "resort": st.resort,
+             "seasons": sorted(cum_seasons), "latest_total": latest_total}
+        )
+
+    index.sort(key=lambda e: -e["latest_total"])
+    index_path = out_dir / "index.json"
+    index_path.write_text(json.dumps({"season_start_month": ssm, "stations": index}, indent=1))
+    written.append(index_path)
+    return written
+
+
 def _resort_vs_era5(leagues: dict[str, League]) -> dict[str, dict]:
     """Per resort: the resort-claimed daily series next to ERA5 truth at the
     same coordinates — the public receipts behind the resorts league."""
@@ -132,10 +234,14 @@ def build_site() -> list[Path]:
         written.append(path)
 
     leagues = load_leagues()
-    emit(
-        "leagues.json",
-        [{"name": l.name, "label": l.label, "status": l.status, "truth_source": l.truth_source} for l in leagues],
-    )
+    league_meta = []
+    for l in leagues:
+        open_round, last_resolved = _league_round_status(l)
+        league_meta.append(
+            {"name": l.name, "label": l.label, "status": l.status, "truth_source": l.truth_source,
+             "open_round": open_round, "last_resolved": last_resolved}
+        )
+    emit("leagues.json", league_meta)
 
     for league in leagues:
         emit(f"stations-{league.name}.json", [asdict(s) for s in load_stations(league.name)])

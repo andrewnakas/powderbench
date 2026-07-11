@@ -4,8 +4,9 @@ from powderbench.leagues import get_league, load_leagues
 
 
 def test_leagues_load():
+    # southern-hemisphere leagues lead the display order during austral winter
     names = [l.name for l in load_leagues()]
-    assert names == ["stations", "era5", "resorts"]
+    assert names == ["era5", "resorts", "stations"]
     assert all(l.status == "live" for l in load_leagues())
     assert get_league("stations").truth_source == "snotel"
     assert get_league("era5").truth_source == "era5"

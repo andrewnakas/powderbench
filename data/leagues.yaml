@@ -1,17 +1,11 @@
 # PowderBench leagues, one per truth-source category. Each league has its own
 # stations, rounds, submissions, results, climatology, and cutoff/maturity
-# rules.
+# rules. Order = display order on the site (southern-hemisphere leagues first
+# while austral winter is the live season).
 #
 # cutoff: submissions for round D lock at (D - days_before) hour_utc:00 UTC.
 # resolve_after: a round matures for scoring at D + days, at hour_utc UTC.
 leagues:
-  - name: stations
-    label: "Stations · Western US SNOTEL"
-    status: live
-    truth_source: snotel
-    cutoff: { days_before: 0, hour_utc: 0 }
-    resolve_after: { days: 3, hour_utc: 15 }
-    season_start_month: 10 # water year: Oct 1 - Sep 30
   - name: era5
     label: "ERA5 · Andes / NZ / AU"
     status: live
@@ -33,3 +27,10 @@ leagues:
     # so D+3 16:00 UTC rides the existing resolve cron.
     resolve_after: { days: 3, hour_utc: 16 }
     season_start_month: 4 # southern snow year: Apr 1 - Mar 31
+  - name: stations
+    label: "Stations · Western US SNOTEL"
+    status: live
+    truth_source: snotel
+    cutoff: { days_before: 0, hour_utc: 0 }
+    resolve_after: { days: 3, hour_utc: 15 }
+    season_start_month: 10 # water year: Oct 1 - Sep 30

@@ -46,6 +46,13 @@ function drawChart(id, config) {
   return charts[id];
 }
 
+function leagueActive(lg) {
+  // live = an open round whose cutoff hasn't long passed, or a recent resolve
+  if (lg.open_round && new Date(lg.open_round.cutoff_utc) > Date.now() - 2 * 86400e3) return true;
+  if (lg.last_resolved && Date.now() - new Date(lg.last_resolved) < 21 * 86400e3) return true;
+  return false;
+}
+
 function renderLeagueBar() {
   const bar = document.getElementById("league-bar");
   bar.innerHTML = "";
@@ -53,7 +60,9 @@ function renderLeagueBar() {
     const btn = document.createElement("button");
     btn.className = "league-tab" + (lg.name === state.league ? " active" : "");
     btn.innerHTML =
-      lg.label + (lg.status === "trial" ? ' <span class="badge">TRIAL</span>' : "");
+      lg.label +
+      (lg.status === "trial" ? ' <span class="badge">TRIAL</span>' : "") +
+      (!leagueActive(lg) ? ' <span class="badge off">OFF-SEASON</span>' : "");
     btn.addEventListener("click", () => selectLeague(lg.name));
     bar.appendChild(btn);
   }
@@ -199,6 +208,115 @@ function renderSnowfall() {
   };
   sel.onchange = draw;
   draw();
+}
+
+/* ---- Season explorer: overlay any station-season cumulative curves ---- */
+let szn = { league: null, index: null, cache: {}, series: [] };
+
+function seasonSpanLabel(startYear, ssm) {
+  if (ssm === 1) return String(startYear);
+  const a = String(startYear).slice(2), b = String(+startYear + 1).slice(2);
+  return `’${a}–’${b}`;
+}
+
+function seasonDayLabels(ssm) {
+  const days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  const ticks = [], names = [];
+  let idx = 0;
+  for (let m = 0; m < 12 && idx < 365; m++) {
+    const month = (ssm - 1 + m) % 12;
+    for (let d = 1; d <= days[month] && idx < 365; d++, idx++) {
+      names.push(`${MONTHS[month]} ${d}`);
+      ticks.push(d === 1 ? MONTHS[month] : "");
+    }
+  }
+  return { ticks, names };
+}
+
+function drawSeasonChart() {
+  const ssm = szn.index.season_start_month;
+  const { ticks, names } = seasonDayLabels(ssm);
+  drawChart("szn-chart", {
+    type: "line",
+    data: {
+      labels: names,
+      datasets: szn.series.map((s, i) => ({
+        label: s.label,
+        data: s.data,
+        borderColor: PALETTE[i % PALETTE.length],
+        backgroundColor: PALETTE[i % PALETTE.length],
+        borderWidth: 2, pointRadius: 0, tension: 0.15, spanGaps: false,
+      })),
+    },
+    options: {
+      maintainAspectRatio: false,
+      interaction: { mode: "nearest", axis: "x", intersect: false },
+      scales: {
+        y: { title: { display: true, text: "cumulative inches" }, beginAtZero: true },
+        x: {
+          grid: { display: false },
+          ticks: {
+            autoSkip: false, maxRotation: 0,
+            callback: (v) => ticks[v] || null,
+          },
+        },
+      },
+      plugins: { legend: { labels: { boxWidth: 18, boxHeight: 3 } } },
+    },
+  });
+}
+
+async function sznStationData(slug) {
+  if (!szn.cache[slug]) szn.cache[slug] = await loadJSON(`data/seasons/${szn.league}/${slug}.json`);
+  return szn.cache[slug];
+}
+
+async function sznAdd(slug, year) {
+  const data = await sznStationData(slug);
+  if (!data.seasons[year]) return;
+  const label = `${data.resort} ${seasonSpanLabel(year, data.season_start_month)}`;
+  if (szn.series.some((s) => s.label === label)) return;
+  szn.series.push({ label, data: data.seasons[year] });
+  if (szn.series.length > 8) szn.series.shift();
+  drawSeasonChart();
+}
+
+async function initSeasons(name) {
+  const section = document.getElementById("seasons");
+  szn = { league: name, index: null, cache: {}, series: [] };
+  try { szn.index = await loadJSON(`data/seasons/${name}/index.json`); } catch (e) {
+    section.style.display = "none";
+    if (charts["szn-chart"]) { charts["szn-chart"].destroy(); delete charts["szn-chart"]; }
+    return;
+  }
+  section.style.display = "";
+  const ssel = document.getElementById("szn-station");
+  const ysel = document.getElementById("szn-year");
+  ssel.innerHTML = "";
+  for (const st of szn.index.stations) {
+    const opt = document.createElement("option");
+    opt.value = st.slug;
+    opt.textContent = st.resort;
+    ssel.appendChild(opt);
+  }
+  const fillYears = () => {
+    const st = szn.index.stations.find((s) => s.slug === ssel.value);
+    ysel.innerHTML = "";
+    for (const y of [...st.seasons].reverse()) {
+      const opt = document.createElement("option");
+      opt.value = y;
+      opt.textContent = seasonSpanLabel(y, szn.index.season_start_month);
+      ysel.appendChild(opt);
+    }
+  };
+  ssel.onchange = fillYears;
+  fillYears();
+  document.getElementById("szn-add").onclick = () => sznAdd(ssel.value, ysel.value);
+  document.getElementById("szn-clear").onclick = () => { szn.series = []; drawSeasonChart(); };
+  // seed the chart: snowiest station's current + previous season
+  const top = szn.index.stations[0];
+  const years = [...top.seasons].reverse();
+  for (const y of years.slice(0, 2)) await sznAdd(top.slug, y);
 }
 
 /* ---- Resorts vs reanalysis (league-independent, drawn once) ---- */
@@ -369,6 +487,7 @@ async function selectLeague(name) {
   renderSnowfall();
   renderClimo();
   renderArchive(state.history);
+  initSeasons(name);
 }
 
 (async () => {
@@ -385,7 +504,10 @@ async function selectLeague(name) {
     })
   );
   const fromHash = location.hash.match(/^#league=(\w+)$/)?.[1];
-  const initial = state.leagues.find((l) => l.name === fromHash) || state.leagues[0];
+  const initial =
+    state.leagues.find((l) => l.name === fromHash) ||
+    state.leagues.find(leagueActive) ||
+    state.leagues[0];
   await selectLeague(initial.name);
   try { initComparison(await loadJSON("data/resort-vs-era5.json")); } catch (e) {
     document.getElementById("receipts").style.display = "none";

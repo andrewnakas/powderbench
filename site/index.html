@@ -107,6 +107,22 @@
       <div class="chart-panel short"><canvas id="snow-chart"></canvas></div>
     </section>
 
+    <section id="seasons">
+      <h2>Season explorer</h2>
+      <p class="section-note">Cumulative snowfall through the season, from twelve years
+        of truth history. Add any station-season combinations to the chart — compare a
+        mountain against its own past, or against other mountains’ years.</p>
+      <div class="chart-controls">
+        <label for="szn-station">Station</label>
+        <select id="szn-station"></select>
+        <label for="szn-year">Season</label>
+        <select id="szn-year"></select>
+        <button class="tab" id="szn-add">Add to chart</button>
+        <button class="tab" id="szn-clear">Clear</button>
+      </div>
+      <div class="chart-panel"><canvas id="szn-chart"></canvas></div>
+    </section>
+
     <section id="receipts">
       <h2>Resorts vs. reanalysis</h2>
       <p class="section-note">The receipts: what each resort reported (the Resorts
