@@ -1,0 +1,5 @@
+# Team registry: team name -> GitHub login that owns it. A team is bound to
+# the login that first lands an auto-merged submission under that name; later
+# PRs for the same team from anyone else go to manual review. Maintainers may
+# edit by hand. Names starting with "baseline-" are reserved for the bots.
+teams: {}

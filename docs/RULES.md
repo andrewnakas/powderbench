@@ -36,7 +36,10 @@ numbers never leak into the other leagues' truth (see [DATA.md](DATA.md)).
   Optional: `p10,p25,p50,p75,p90` (all five or none, non-decreasing) and `prob_6in`.
 - A submission is **on time** iff its file first landed on `main` before the cutoff.
   GitHub sets merge timestamps — they cannot be forged by backdating commits. Open
-  PRs early; maintainers merge valid PRs as they come in.
+  PRs early; a bot verifies and **auto-merges valid submissions within minutes**
+  (see SUBMITTING.md). PRs the bot can't clear go to manual review.
+- A team name belongs to the GitHub account that first submits under it
+  (`data/teams.yaml`); submissions for someone else's team are never auto-merged.
 - Late or invalid submissions are scored in the round results for your own reference
   but are excluded from all leaderboard aggregation.
 - You may update your submission with another PR any time before the cutoff.

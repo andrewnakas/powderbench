@@ -1,0 +1,114 @@
+name: Auto-merge valid submissions
+# Verifies and merges competitor submission PRs without a human in the loop.
+#
+# SECURITY MODEL (this uses pull_request_target, so read carefully):
+# - We check out and run ONLY base-repo code. Nothing from the PR is executed.
+# - The PR head is fetched as data; the only files ever copied from it are
+#   ones matching the strict data/submissions/<league>/<round>/<team>.csv
+#   whitelist below, after the full diff has been inspected.
+# - Any deviation (extra files, deletions, renames, reserved/foreign team
+#   names, closed rounds, failed validation) leaves the PR for human review
+#   with an explanatory comment — it never fails "open".
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+    paths:
+      - "data/submissions/**"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency: automerge-pr-${{ github.event.pull_request.number }}
+
+jobs:
+  verify-and-merge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4 # base repo (main), never the PR
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e .
+      - name: Gate, validate, merge
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          AUTHOR: ${{ github.event.pull_request.user.login }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          review() {
+            gh pr comment "$PR" --body "🤖 Not auto-merged: $1 — a maintainer will take a look. (How auto-merge decides: docs/SUBMITTING.md.)" || true
+            echo "manual review: $1"
+            exit 0
+          }
+
+          git fetch -q origin "$HEAD_SHA"
+
+          TEAM=""
+          FILES=()
+          ROUNDS=""
+          while IFS=$'\t' read -r STATUS F; do
+            [ -n "$F" ] || review "empty diff"
+            [ "$STATUS" = "A" ] || [ "$STATUS" = "M" ] || review "unsupported change type ($STATUS on \`$F\`)"
+            if ! echo "$F" | grep -qE '^data/submissions/[a-z0-9-]+/[0-9]{4}-[0-9]{2}-[0-9]{2}/[a-z0-9][a-z0-9-]*\.csv$'; then
+              review "\`$F\` is outside \`data/submissions/<league>/<round>/<team>.csv\`"
+            fi
+            LEAGUE=$(echo "$F" | cut -d/ -f3)
+            ROUND=$(echo "$F" | cut -d/ -f4)
+            T=$(basename "$F" .csv)
+            case "$T" in baseline-*) review "team names starting with \`baseline-\` are reserved" ;; esac
+            if [ -n "$TEAM" ] && [ "$TEAM" != "$T" ]; then review "one team per PR (\`$TEAM\` vs \`$T\`)"; fi
+            TEAM="$T"
+            MANIFEST="data/rounds/$LEAGUE/$ROUND/round.json"
+            [ -f "$MANIFEST" ] || review "no such round: \`$LEAGUE/$ROUND\`"
+            [ "$(python -c "import json; print(json.load(open('$MANIFEST'))['status'])")" = "open" ] \
+              || review "round \`$LEAGUE/$ROUND\` has already resolved"
+            FILES+=("$F|$LEAGUE")
+            ROUNDS="$ROUNDS $LEAGUE/$ROUND"
+          done < <(git diff --name-status "origin/main...$HEAD_SHA")
+
+          [ -n "$TEAM" ] || review "no submission files in the diff"
+          [ "${#FILES[@]}" -le 3 ] || review "touches ${#FILES[@]} files (max 3: one round per league)"
+
+          # anti-impersonation: team name is bound to the login that first used it
+          CLAIMED=$(python -c "import yaml; print((yaml.safe_load(open('data/teams.yaml'))['teams'] or {}).get('$TEAM',''))")
+          if [ -n "$CLAIMED" ] && [ "$CLAIMED" != "$AUTHOR" ]; then
+            review "team \`$TEAM\` is registered to @$CLAIMED (this PR is from @$AUTHOR) — pick a different team name"
+          fi
+
+          # copy ONLY the whitelisted CSVs out of the PR head and validate them
+          for entry in "${FILES[@]}"; do
+            F="${entry%|*}"; LEAGUE="${entry#*|}"
+            git checkout -q "$HEAD_SHA" -- "$F"
+            powderbench validate "$F" --league "$LEAGUE" \
+              || review "\`$F\` failed validation — run \`powderbench validate $(basename "$F") --league $LEAGUE\` locally"
+          done
+
+          # first-time team: bind the name to this login before merging
+          if [ -z "$CLAIMED" ]; then
+            git restore -q --source=HEAD --staged --worktree -- data/submissions
+            python -c "
+          import yaml
+          p = 'data/teams.yaml'
+          d = yaml.safe_load(open(p))
+          d['teams'] = d.get('teams') or {}
+          d['teams']['$TEAM'] = '$AUTHOR'
+          yaml.safe_dump(d, open(p, 'w'), sort_keys=True)
+          "
+            git config user.name "powderbench-bot"
+            git config user.email "bot@users.noreply.github.com"
+            git add data/teams.yaml
+            git commit -q -m "Register team $TEAM -> @$AUTHOR"
+            git pull -q --rebase origin main
+            git push -q origin HEAD:main
+          fi
+
+          gh pr review "$PR" --approve --body "Valid \`$TEAM\` submission ✅" || true
+          gh pr merge "$PR" --squash \
+            --subject "Submission: $TEAM ($(echo $ROUNDS | xargs))" \
+            || review "validation passed but the merge failed (conflict with main? rebase your branch and push again)"
+          gh pr comment "$PR" --body "✅ **Merged automatically.** \`$TEAM\` is in for$(echo "$ROUNDS" | tr ' ' '\n' | sort -u | tr '\n' ' ')— on time iff this merge beat the round cutoff (the resolver checks the merge timestamp). Scores land when the round resolves. 🏔" || true
