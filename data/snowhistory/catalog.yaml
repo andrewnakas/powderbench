@@ -41,6 +41,19 @@ networks:
       alpineresorts.vic.gov.au behind a Cloudflare challenge — one manual
       browser download adds it.
 
+  snih:
+    name: "SNIH / RHN snow-pillow SWE (Argentina)"
+    short: "SNIH"
+    source: "https://snih.hidricosargentina.gob.ar (MuestraDatos.aspx, param 73 EAN snow pillow)"
+    variable: swe_mm
+    cadence: "daily snow-water-equivalent from snow pillows"
+    license: >-
+      CC-BY 4.0 (argentina.gob.ar terms; Ley 27275). Attribute "Sistema
+      Nacional de Información Hídrica (SNIH) — Red Hidrológica Nacional".
+      This is the deep archive the INA a5 API dropped: SWE ("altura EAN")
+      back to 1990 for the Mendoza/Neuquén pillow network. Plotted as peak
+      seasonal SWE (inches of water), not fresh-snow accumulation.
+
 stations:
   - { slug: spencers-creek, network: snowyhydro, name: "Spencers Creek", country: AU, lat: -36.429, lon: 148.350, elevation_m: 1830, first: 1954-06-10, last: 2026-07-07 }
   - { slug: deep-creek, network: snowyhydro, name: "Deep Creek", country: AU, lat: -36.360, lon: 148.420, elevation_m: 1620, first: 1957-07-03, last: 2026-07-07 }
@@ -58,9 +71,33 @@ stations:
   - { slug: niv-lago-la-plata, network: ina, name: "Lago La Plata", country: AR, lat: -44.9225, lon: -71.7878, first: 2024-07-02, last: 2024-09-20 }
   - { slug: niv-picos-de-barroso, network: ina, name: "Picos de Barroso", country: AR, lat: -34.3075, lon: -69.9483, first: 2024-07-02, last: 2024-09-20 }
   - { slug: niv-puntas-amarillas, network: ina, name: "Puntas Amarillas", country: AR, lat: -34.2306, lon: -69.5144, first: 2024-07-02, last: 2024-09-20 }
-  - { slug: mt-buller, network: vicalpine, name: "Mt Buller", country: AU, lat: -37.1462, lon: 146.4473, elevation_m: 1600, first: 1993-06-05, last: 2017-10-08 }
+  - { slug: mt-buller, network: vicalpine, name: "Mt Buller", country: AU, lat: -37.1462, lon: 146.4473, elevation_m: 1600, first: 1993-06-05, last: 2024-10-08 }
   - { slug: falls-creek, network: vicalpine, name: "Falls Creek", country: AU, lat: -36.8655, lon: 147.2861, elevation_m: 1600, first: 1993-06-05, last: 2017-10-08 }
   - { slug: mt-hotham, network: vicalpine, name: "Mt Hotham", country: AU, lat: -36.9764, lon: 147.1356, elevation_m: 1750, first: 1993-06-05, last: 2017-10-08 }
   - { slug: mt-baw-baw, network: vicalpine, name: "Mt Baw Baw", country: AU, lat: -37.8380, lon: 146.2753, elevation_m: 1480, first: 1993-06-05, last: 2017-10-08 }
   - { slug: lake-mountain, network: vicalpine, name: "Lake Mountain", country: AU, lat: -37.4830, lon: 145.8800, elevation_m: 1400, first: 1993-06-05, last: 2017-10-08 }
-  - { slug: mt-stirling, network: vicalpine, name: "Mt Stirling", country: AU, lat: -37.1260, lon: 146.4920, elevation_m: 1500, first: 1995-06-05, last: 2017-10-08 }
+  - { slug: mt-stirling, network: vicalpine, name: "Mt Stirling", country: AU, lat: -37.1260, lon: 146.4920, elevation_m: 1500, first: 1995-06-05, last: 2023-09-03 }
+  - { slug: laguna-diamante-swe-73, network: snih, name: "Laguna Diamante", country: AR, variable: swe_mm, lat: -34.1989, lon: -69.6981, elevation_m: 3301, first: 1990-05-01, last: 2023-12-17 }
+  - { slug: grande-valle-hermoso-swe-73, network: snih, name: "Grande - Valle Hermoso", country: AR, variable: swe_mm, lat: -35.1422, lon: -70.2016, elevation_m: 2253, first: 1990-05-01, last: 2023-11-30 }
+  - { slug: laguna-atuel-swe-73, network: snih, name: "Laguna Atuel", country: AR, variable: swe_mm, lat: -34.5111, lon: -70.0459, elevation_m: 3423, first: 1990-05-01, last: 2024-02-04 }
+  - { slug: toscas-swe-73, network: snih, name: "Toscas", country: AR, variable: swe_mm, lat: -33.1642, lon: -69.8886, elevation_m: 2950, first: 1990-05-01, last: 2023-09-11 }
+  - { slug: paso-pehuenche-swe-73, network: snih, name: "Paso Pehuenche", country: AR, variable: swe_mm, lat: -35.9799, lon: -70.3940, elevation_m: 2555, first: 1999-06-01, last: 2023-12-22 }
+  - { slug: cerro-negro-swe-73, network: snih, name: "Cerro Negro", country: AR, variable: swe_mm, lat: -29.8906, lon: -69.5581, elevation_m: 4142, first: 2010-06-10, last: 2023-11-17 }
+  - { slug: lago-guacho-swe-73, network: snih, name: "Lago Guacho", country: AR, variable: swe_mm, lat: -43.8289, lon: -71.4054, elevation_m: 1165, first: 2015-06-01, last: 2024-11-22 }
+  - { slug: las-lenas-swe-73, network: snih, name: "Las Leñas", country: AR, variable: swe_mm, lat: -35.1396, lon: -70.0918, elevation_m: 2470, first: 2015-06-01, last: 2023-11-30 }
+  - { slug: tunel-internacional-swe-73, network: snih, name: "Túnel Internacional", country: AR, variable: swe_mm, lat: -32.8135, lon: -70.0576, first: 2020-02-13, last: 2023-11-17 }
+  - { slug: lago-la-plata-swe-73, network: snih, name: "Lago La Plata", country: AR, variable: swe_mm, lat: -44.9225, lon: -71.7878, elevation_m: -999, first: 2021-05-03, last: 2024-11-05 }
+  - { slug: cerro-carreras-swe-73, network: snih, name: "Cerro Carreras", country: AR, variable: swe_mm, lat: -41.5519, lon: -71.2178, elevation_m: -999, first: 2021-05-04, last: 2024-11-22 }
+  - { slug: cerro-tronador-otto-meiling-swe-73, network: snih, name: "Cerro Tronador - Otto Meiling", country: AR, variable: swe_mm, lat: -41.1911, lon: -71.7881, elevation_m: -999, first: 2021-05-01, last: 2024-11-05 }
+  - { slug: paso-de-agua-negra-swe-73, network: snih, name: "Paso de Agua Negra", country: AR, variable: swe_mm, lat: -30.1894, lon: -69.8016, elevation_m: 4450, first: 2020-05-01, last: 2023-11-17 }
+  - { slug: puntas-amarillas-swe-73, network: snih, name: "Puntas Amarillas", country: AR, variable: swe_mm, lat: -34.2305, lon: -69.5143, elevation_m: 3655, first: 2020-02-13, last: 2023-11-17 }
+  - { slug: cerro-piltriquitron-swe-73, network: snih, name: "Cerro Piltriquitrón", country: AR, variable: swe_mm, lat: -41.9689, lon: -71.4697, elevation_m: 999, first: 2021-05-01, last: 2024-01-16 }
+  - { slug: la-hoya-swe-73, network: snih, name: "La Hoya", country: AR, variable: swe_mm, lat: -42.8325, lon: -71.2536, first: 2020-05-01, last: 2023-09-15 }
+  - { slug: nacimiento-chubut-swe-73, network: snih, name: "Nacimiento (Chubut)", country: AR, variable: swe_mm, lat: -41.6731, lon: -71.1142, first: 2020-05-01, last: 2023-10-31 }
+  - { slug: las-lagrimas-swe-73, network: snih, name: "Las Lágrimas", country: AR, variable: swe_mm, lat: -34.7702, lon: -70.2243, elevation_m: 2817, first: 2021-05-01, last: 2023-09-21 }
+  - { slug: el-azufre-swe-73, network: snih, name: "El Azufre", country: AR, variable: swe_mm, lat: -35.2611, lon: -70.4769, elevation_m: -999, first: 2021-05-01, last: 2023-08-23 }
+  - { slug: cerro-polleras-swe-73, network: snih, name: "Cerro Polleras", country: AR, variable: swe_mm, lat: -33.1475, lon: -69.8519, elevation_m: -999, first: 2022-04-02, last: 2023-11-17 }
+  - { slug: cerro-zeballos-swe-73, network: snih, name: "Cerro Zeballos", country: AR, variable: swe_mm, lat: -47.0408, lon: -71.8011, elevation_m: -999, first: 2023-04-01, last: 2024-10-31 }
+  - { slug: laguna-la-negra-swe-73, network: snih, name: "Laguna La Negra", country: AR, variable: swe_mm, lat: -36.2044, lon: -70.4056, elevation_m: -999, first: 2021-05-01, last: 2022-10-18 }
+  - { slug: lago-del-desierto-el-creston-swe-73, network: snih, name: "Lago del Desierto - El Crestón", country: AR, variable: swe_mm, lat: -49.0800, lon: -72.9150, elevation_m: -999, first: 2023-04-01, last: 2024-10-04 }
+  - { slug: picos-de-barroso-swe-73, network: snih, name: "Picos de Barroso", country: AR, variable: swe_mm, lat: -34.3075, lon: -69.9483, elevation_m: -999, first: 2022-04-02, last: 2023-11-17 }

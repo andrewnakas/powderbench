@@ -5,6 +5,7 @@
    "slug": "spencers-creek",
    "station_id": "spencers-creek",
    "resort": "Spencers Creek \u00b7 Snowy Hydro",
+   "metric": "cumulative snow",
    "seasons": [
     "1954",
     "1955",
@@ -86,6 +87,7 @@
    "slug": "three-mile-dam",
    "station_id": "three-mile-dam",
    "resort": "Three Mile Dam \u00b7 Snowy Hydro",
+   "metric": "cumulative snow",
    "seasons": [
     "1955",
     "1956",
@@ -166,6 +168,7 @@
    "slug": "deep-creek",
    "station_id": "deep-creek",
    "resort": "Deep Creek \u00b7 Snowy Hydro",
+   "metric": "cumulative snow",
    "seasons": [
     "1957",
     "1958",
@@ -241,9 +244,96 @@
    "latest_total": 2.6
   },
   {
+   "slug": "laguna-diamante-swe-73",
+   "station_id": "laguna-diamante-swe-73",
+   "resort": "Laguna Diamante \u00b7 SNIH",
+   "metric": "peak SWE",
+   "seasons": [
+    "1990",
+    "1991",
+    "1992",
+    "1993",
+    "1994",
+    "1995",
+    "1996",
+    "1997",
+    "1998",
+    "1999",
+    "2000",
+    "2001",
+    "2002",
+    "2003",
+    "2004",
+    "2005",
+    "2006",
+    "2007",
+    "2008",
+    "2009",
+    "2010",
+    "2011",
+    "2012",
+    "2013",
+    "2014",
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023"
+   ],
+   "latest_total": 16.9
+  },
+  {
+   "slug": "grande-valle-hermoso-swe-73",
+   "station_id": "grande-valle-hermoso-swe-73",
+   "resort": "Grande - Valle Hermoso \u00b7 SNIH",
+   "metric": "peak SWE",
+   "seasons": [
+    "1990",
+    "1991",
+    "1992",
+    "1993",
+    "1994",
+    "1995",
+    "1996",
+    "1997",
+    "1998",
+    "1999",
+    "2000",
+    "2001",
+    "2002",
+    "2003",
+    "2004",
+    "2005",
+    "2006",
+    "2007",
+    "2008",
+    "2009",
+    "2010",
+    "2011",
+    "2012",
+    "2013",
+    "2014",
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023"
+   ],
+   "latest_total": 28.5
+  },
+  {
    "slug": "mt-buller",
    "station_id": "mt-buller",
    "resort": "Mt Buller \u00b7 Vic Alpine",
+   "metric": "cumulative snow",
    "seasons": [
     "1993",
     "1994",
@@ -269,14 +359,141 @@
     "2014",
     "2015",
     "2016",
-    "2017"
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023",
+    "2024"
    ],
-   "latest_total": 87.0
+   "latest_total": 38.6
+  },
+  {
+   "slug": "laguna-atuel-swe-73",
+   "station_id": "laguna-atuel-swe-73",
+   "resort": "Laguna Atuel \u00b7 SNIH",
+   "metric": "peak SWE",
+   "seasons": [
+    "1990",
+    "1991",
+    "1993",
+    "1994",
+    "1995",
+    "1996",
+    "1998",
+    "1999",
+    "2000",
+    "2001",
+    "2002",
+    "2003",
+    "2004",
+    "2005",
+    "2006",
+    "2007",
+    "2008",
+    "2009",
+    "2010",
+    "2011",
+    "2012",
+    "2013",
+    "2014",
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023"
+   ],
+   "latest_total": 48.5
+  },
+  {
+   "slug": "toscas-swe-73",
+   "station_id": "toscas-swe-73",
+   "resort": "Toscas \u00b7 SNIH",
+   "metric": "peak SWE",
+   "seasons": [
+    "1990",
+    "1991",
+    "1992",
+    "1993",
+    "1994",
+    "1995",
+    "1997",
+    "1998",
+    "2000",
+    "2001",
+    "2002",
+    "2003",
+    "2004",
+    "2005",
+    "2006",
+    "2007",
+    "2008",
+    "2009",
+    "2010",
+    "2012",
+    "2013",
+    "2014",
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023"
+   ],
+   "latest_total": 14.5
+  },
+  {
+   "slug": "mt-stirling",
+   "station_id": "mt-stirling",
+   "resort": "Mt Stirling \u00b7 Vic Alpine",
+   "metric": "cumulative snow",
+   "seasons": [
+    "1995",
+    "1996",
+    "1997",
+    "1998",
+    "1999",
+    "2000",
+    "2001",
+    "2002",
+    "2003",
+    "2004",
+    "2005",
+    "2006",
+    "2007",
+    "2008",
+    "2009",
+    "2010",
+    "2011",
+    "2012",
+    "2013",
+    "2014",
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023"
+   ],
+   "latest_total": 46.1
   },
   {
    "slug": "falls-creek",
    "station_id": "falls-creek",
    "resort": "Falls Creek \u00b7 Vic Alpine",
+   "metric": "cumulative snow",
    "seasons": [
     "1993",
     "1994",
@@ -310,6 +527,7 @@
    "slug": "mt-hotham",
    "station_id": "mt-hotham",
    "resort": "Mt Hotham \u00b7 Vic Alpine",
+   "metric": "cumulative snow",
    "seasons": [
     "1993",
     "1994",
@@ -343,6 +561,7 @@
    "slug": "mt-baw-baw",
    "station_id": "mt-baw-baw",
    "resort": "Mt Baw Baw \u00b7 Vic Alpine",
+   "metric": "cumulative snow",
    "seasons": [
     "1993",
     "1994",
@@ -376,6 +595,7 @@
    "slug": "lake-mountain",
    "station_id": "lake-mountain",
    "resort": "Lake Mountain \u00b7 Vic Alpine",
+   "metric": "cumulative snow",
    "seasons": [
     "1993",
     "1994",
@@ -406,18 +626,14 @@
    "latest_total": 65.0
   },
   {
-   "slug": "mt-stirling",
-   "station_id": "mt-stirling",
-   "resort": "Mt Stirling \u00b7 Vic Alpine",
+   "slug": "paso-pehuenche-swe-73",
+   "station_id": "paso-pehuenche-swe-73",
+   "resort": "Paso Pehuenche \u00b7 SNIH",
+   "metric": "peak SWE",
    "seasons": [
-    "1995",
-    "1996",
-    "1997",
-    "1998",
     "1999",
     "2000",
     "2001",
-    "2002",
     "2003",
     "2004",
     "2005",
@@ -432,14 +648,277 @@
     "2014",
     "2015",
     "2016",
-    "2017"
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023"
    ],
-   "latest_total": 55.9
+   "latest_total": 46.5
+  },
+  {
+   "slug": "cerro-negro-swe-73",
+   "station_id": "cerro-negro-swe-73",
+   "resort": "Cerro Negro \u00b7 SNIH",
+   "metric": "peak SWE",
+   "seasons": [
+    "2010",
+    "2011",
+    "2012",
+    "2013",
+    "2014",
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023"
+   ],
+   "latest_total": 3.0
+  },
+  {
+   "slug": "lago-guacho-swe-73",
+   "station_id": "lago-guacho-swe-73",
+   "resort": "Lago Guacho \u00b7 SNIH",
+   "metric": "peak SWE",
+   "seasons": [
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023",
+    "2024"
+   ],
+   "latest_total": 2.4
+  },
+  {
+   "slug": "las-lenas-swe-73",
+   "station_id": "las-lenas-swe-73",
+   "resort": "Las Le\u00f1as \u00b7 SNIH",
+   "metric": "peak SWE",
+   "seasons": [
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023"
+   ],
+   "latest_total": 24.8
+  },
+  {
+   "slug": "tunel-internacional-swe-73",
+   "station_id": "tunel-internacional-swe-73",
+   "resort": "T\u00fanel Internacional \u00b7 SNIH",
+   "metric": "peak SWE",
+   "seasons": [
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023"
+   ],
+   "latest_total": 6.8
+  },
+  {
+   "slug": "puntas-amarillas-swe-73",
+   "station_id": "puntas-amarillas-swe-73",
+   "resort": "Puntas Amarillas \u00b7 SNIH",
+   "metric": "peak SWE",
+   "seasons": [
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023"
+   ],
+   "latest_total": 9.6
+  },
+  {
+   "slug": "lago-la-plata-swe-73",
+   "station_id": "lago-la-plata-swe-73",
+   "resort": "Lago La Plata \u00b7 SNIH",
+   "metric": "peak SWE",
+   "seasons": [
+    "2021",
+    "2022",
+    "2023",
+    "2024"
+   ],
+   "latest_total": 20.5
+  },
+  {
+   "slug": "cerro-carreras-swe-73",
+   "station_id": "cerro-carreras-swe-73",
+   "resort": "Cerro Carreras \u00b7 SNIH",
+   "metric": "peak SWE",
+   "seasons": [
+    "2021",
+    "2022",
+    "2023",
+    "2024"
+   ],
+   "latest_total": 15.0
+  },
+  {
+   "slug": "cerro-tronador-otto-meiling-swe-73",
+   "station_id": "cerro-tronador-otto-meiling-swe-73",
+   "resort": "Cerro Tronador - Otto Meiling \u00b7 SNIH",
+   "metric": "peak SWE",
+   "seasons": [
+    "2021",
+    "2022",
+    "2023",
+    "2024"
+   ],
+   "latest_total": 22.0
+  },
+  {
+   "slug": "paso-de-agua-negra-swe-73",
+   "station_id": "paso-de-agua-negra-swe-73",
+   "resort": "Paso de Agua Negra \u00b7 SNIH",
+   "metric": "peak SWE",
+   "seasons": [
+    "2020",
+    "2021",
+    "2022",
+    "2023"
+   ],
+   "latest_total": 3.7
+  },
+  {
+   "slug": "la-hoya-swe-73",
+   "station_id": "la-hoya-swe-73",
+   "resort": "La Hoya \u00b7 SNIH",
+   "metric": "peak SWE",
+   "seasons": [
+    "2020",
+    "2021",
+    "2022",
+    "2023"
+   ],
+   "latest_total": 2.2
+  },
+  {
+   "slug": "cerro-piltriquitron-swe-73",
+   "station_id": "cerro-piltriquitron-swe-73",
+   "resort": "Cerro Piltriquitr\u00f3n \u00b7 SNIH",
+   "metric": "peak SWE",
+   "seasons": [
+    "2021",
+    "2022",
+    "2023"
+   ],
+   "latest_total": 4.6
+  },
+  {
+   "slug": "nacimiento-chubut-swe-73",
+   "station_id": "nacimiento-chubut-swe-73",
+   "resort": "Nacimiento (Chubut) \u00b7 SNIH",
+   "metric": "peak SWE",
+   "seasons": [
+    "2020",
+    "2021",
+    "2023"
+   ],
+   "latest_total": 18.0
+  },
+  {
+   "slug": "las-lagrimas-swe-73",
+   "station_id": "las-lagrimas-swe-73",
+   "resort": "Las L\u00e1grimas \u00b7 SNIH",
+   "metric": "peak SWE",
+   "seasons": [
+    "2021",
+    "2022",
+    "2023"
+   ],
+   "latest_total": 39.8
+  },
+  {
+   "slug": "el-azufre-swe-73",
+   "station_id": "el-azufre-swe-73",
+   "resort": "El Azufre \u00b7 SNIH",
+   "metric": "peak SWE",
+   "seasons": [
+    "2021",
+    "2022",
+    "2023"
+   ],
+   "latest_total": 30.3
+  },
+  {
+   "slug": "cerro-polleras-swe-73",
+   "station_id": "cerro-polleras-swe-73",
+   "resort": "Cerro Polleras \u00b7 SNIH",
+   "metric": "peak SWE",
+   "seasons": [
+    "2022",
+    "2023"
+   ],
+   "latest_total": 21.7
+  },
+  {
+   "slug": "cerro-zeballos-swe-73",
+   "station_id": "cerro-zeballos-swe-73",
+   "resort": "Cerro Zeballos \u00b7 SNIH",
+   "metric": "peak SWE",
+   "seasons": [
+    "2023",
+    "2024"
+   ],
+   "latest_total": 2.6
+  },
+  {
+   "slug": "laguna-la-negra-swe-73",
+   "station_id": "laguna-la-negra-swe-73",
+   "resort": "Laguna La Negra \u00b7 SNIH",
+   "metric": "peak SWE",
+   "seasons": [
+    "2021",
+    "2022"
+   ],
+   "latest_total": 1.5
+  },
+  {
+   "slug": "lago-del-desierto-el-creston-swe-73",
+   "station_id": "lago-del-desierto-el-creston-swe-73",
+   "resort": "Lago del Desierto - El Crest\u00f3n \u00b7 SNIH",
+   "metric": "peak SWE",
+   "seasons": [
+    "2023",
+    "2024"
+   ],
+   "latest_total": 10.0
+  },
+  {
+   "slug": "picos-de-barroso-swe-73",
+   "station_id": "picos-de-barroso-swe-73",
+   "resort": "Picos de Barroso \u00b7 SNIH",
+   "metric": "peak SWE",
+   "seasons": [
+    "2022",
+    "2023"
+   ],
+   "latest_total": 10.4
   },
   {
    "slug": "niv-alto-chubut",
    "station_id": "niv-alto-chubut",
    "resort": "Alto Chubut \u00b7 INA",
+   "metric": "cumulative snow",
    "seasons": [
     "2024"
    ],
@@ -449,6 +928,7 @@
    "slug": "niv-ao-de-las-lenas-las-lena",
    "station_id": "niv-ao-de-las-lenas-las-lena",
    "resort": "A\u00ba de Las Le\u00f1as \u00b7 INA",
+   "metric": "cumulative snow",
    "seasons": [
     "2024"
    ],
@@ -458,6 +938,7 @@
    "slug": "niv-c-trona-otto-meiling-met",
    "station_id": "niv-c-trona-otto-meiling-met",
    "resort": "C. Tronador \u2014 Otto Meiling \u00b7 INA",
+   "metric": "cumulative snow",
    "seasons": [
     "2024"
    ],
@@ -467,6 +948,7 @@
    "slug": "niv-carrenleufu-lago-guacho",
    "station_id": "niv-carrenleufu-lago-guacho",
    "resort": "Carrenleuf\u00fa \u2014 Lago Guacho \u00b7 INA",
+   "metric": "cumulative snow",
    "seasons": [
     "2024"
    ],
@@ -476,6 +958,7 @@
    "slug": "niv-cerro-carreras",
    "station_id": "niv-cerro-carreras",
    "resort": "Cerro Carreras \u00b7 INA",
+   "metric": "cumulative snow",
    "seasons": [
     "2024"
    ],
@@ -485,6 +968,7 @@
    "slug": "niv-cerro-polleras",
    "station_id": "niv-cerro-polleras",
    "resort": "Cerro Polleras \u00b7 INA",
+   "metric": "cumulative snow",
    "seasons": [
     "2024"
    ],
@@ -494,6 +978,7 @@
    "slug": "niv-diamante-laguna-diamante",
    "station_id": "niv-diamante-laguna-diamante",
    "resort": "Laguna Diamante \u00b7 INA",
+   "metric": "cumulative snow",
    "seasons": [
     "2024"
    ],
@@ -503,6 +988,7 @@
    "slug": "niv-grande-paso-pehuenche",
    "station_id": "niv-grande-paso-pehuenche",
    "resort": "Paso Pehuenche \u00b7 INA",
+   "metric": "cumulative snow",
    "seasons": [
     "2024"
    ],
@@ -512,6 +998,7 @@
    "slug": "niv-grande-valle-hermoso",
    "station_id": "niv-grande-valle-hermoso",
    "resort": "Valle Hermoso \u00b7 INA",
+   "metric": "cumulative snow",
    "seasons": [
     "2024"
    ],
@@ -521,6 +1008,7 @@
    "slug": "niv-jachal-cerro-negro",
    "station_id": "niv-jachal-cerro-negro",
    "resort": "J\u00e1chal \u2014 Cerro Negro \u00b7 INA",
+   "metric": "cumulative snow",
    "seasons": [
     "2024"
    ],
@@ -530,6 +1018,7 @@
    "slug": "niv-lago-la-plata",
    "station_id": "niv-lago-la-plata",
    "resort": "Lago La Plata \u00b7 INA",
+   "metric": "cumulative snow",
    "seasons": [
     "2024"
    ],
@@ -539,6 +1028,7 @@
    "slug": "niv-picos-de-barroso",
    "station_id": "niv-picos-de-barroso",
    "resort": "Picos de Barroso \u00b7 INA",
+   "metric": "cumulative snow",
    "seasons": [
     "2024"
    ],
@@ -548,6 +1038,7 @@
    "slug": "niv-puntas-amarillas",
    "station_id": "niv-puntas-amarillas",
    "resort": "Puntas Amarillas \u00b7 INA",
+   "metric": "cumulative snow",
    "seasons": [
     "2024"
    ],

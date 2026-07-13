@@ -178,23 +178,25 @@ truth. Networks committed (per-network licences in
 | Snowy Hydro snow courses (AU) | Spencers Creek, Deep Creek, Three Mile Dam | **1954–present** | ~weekly, in season | none stated; public-benefit publication, attributed, removed on request |
 | Victorian Alpine Resorts (AU) | Mt Buller, Falls Creek, Mt Hotham, Mt Baw Baw, Lake Mountain, Mt Stirling | 1993–2017 (2018–2023 exists behind a Cloudflare wall — one manual download) | daily, Jun–Oct | **CC-BY 4.0** (Data Vic) |
 | INA nivológicas (AR) | 13 usable of a 47-station census (var_id 37, "nivel de nieve") | 2024 winter only — the public a5 API was pruned | daily max of telemetry | **CC-BY 4.0** (argentina.gob.ar) |
+| SNIH / RHN snow pillows (AR) | 24 SWE series (param 73, snow pillows) | **1990–present** (deep archive the a5 API dropped) | daily SWE | **CC-BY 4.0** (argentina.gob.ar) |
 
 Census of everything else public (recon 2026-07-11):
 
-- **SNIH/BDHI** (snih.hidricosargentina.gob.ar) — the canonical archive for
-  Argentina's RHN nivological history that the a5 API no longer serves;
-  stated free open access. **Top lead for deep AR history.**
+- **SNIH** (snih.hidricosargentina.gob.ar) — **harvested**: the RHN snow-pillow
+  SWE archive back to 1990 (24 series, `MuestraDatos.aspx/LeerDatosHistoricos`
+  param 73). The snow *depth* series (param 70) are near-empty; SWE is the dense
+  record. Snow-course depth spot-readings remain sparse.
 - **Environment Southland Hilltop** (odp.es.govt.nz) — the only open council
   snow API in NZ: Upper Waikaia at Hyde Rock (Garvie Mtns, ~40 km from the
   Remarkables), 10-min snow depth **and SWE**, live since 2026-04. Ready to
   wire once the licence is confirmed with ES.
 - **Horizons Hilltop** (NZ) — Hautapu at Mounganui snow depth, stale since
   2025-04; poll for revival.
-- **Chile DGA BNAConsultas** (snia.mop.gob.cl) — the real Chilean source:
-  nivométricas + rutas de nieve stations (Portillo 3000 m, Volcán Chillán,
-  Laguna Negra, …), multi-decadal depth + SWE, anonymous but behind a
-  stateful JSF form and with no licence text; wiring needs session-driving
-  plus an attribution decision.
+- **Chile DGA BNAConsultas** (snia.mop.gob.cl) — **105-station snow inventory
+  captured** (31 rutas de nieve + 74 nieves/glaciares, incl. Portillo, Laguna
+  Negra, Volcán Chillán), but the time series sit behind a **reCAPTCHA-gated**
+  JSF export — no anonymous machine path. Needs a human solving the captcha or a
+  bulk-export request to dga@mop.gov.cl. Inventory + access notes staged for that.
 - **DGI Mendoza** — owns the classic Mendoza snow pillows (Toscas, Valle
   Hermoso, Laguna Atuel, Laguna del Diamante, Pehuenche); publishes SWE in
   daily PDF bulletins only. Needs contact or a PDF pipeline.
