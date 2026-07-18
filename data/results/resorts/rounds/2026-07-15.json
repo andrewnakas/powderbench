@@ -1,0 +1,106 @@
+{
+ "round_id": "2026-07-15",
+ "league": "resorts",
+ "resolved_utc": "2026-07-18T16:58:41+00:00",
+ "observations_72h": null,
+ "qc": {
+  "station_horizons_valid": 33,
+  "station_horizons_voided": 6
+ },
+ "biggest_24h": {
+  "station_id": "catedral:AR:RESORT",
+  "resort": "Catedral Alta Patagonia",
+  "inches": 11.8
+ },
+ "teams": {
+  "baseline-climatology": {
+   "n_scorable": 33,
+   "n_scored": 33,
+   "coverage": 1.0,
+   "mae": 4.3223,
+   "rmse": 11.0074,
+   "bias": -3.9833,
+   "mae_by_horizon": {
+    "24": 1.581,
+    "48": 7.8932,
+    "72": 3.2161
+   },
+   "powder_score": -0.0,
+   "pinball": 1.9083,
+   "n_pinball": 33,
+   "brier6": 0.0741,
+   "n_brier6": 12,
+   "late": false
+  },
+  "baseline-gfs": {
+   "n_scorable": 33,
+   "n_scored": 33,
+   "coverage": 1.0,
+   "mae": 3.5189,
+   "rmse": 8.6481,
+   "bias": -2.8688,
+   "mae_by_horizon": {
+    "24": 1.5527,
+    "48": 5.8514,
+    "72": 3.0307
+   },
+   "powder_score": 18.59,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-openmeteo": {
+   "n_scorable": 33,
+   "n_scored": 33,
+   "coverage": 1.0,
+   "mae": 3.3867,
+   "rmse": 7.5807,
+   "bias": -2.1264,
+   "mae_by_horizon": {
+    "24": 1.803,
+    "48": 5.0647,
+    "72": 3.2609
+   },
+   "powder_score": 21.65,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-persistence": {
+   "n_scorable": 33,
+   "n_scored": 33,
+   "coverage": 1.0,
+   "mae": 4.1148,
+   "rmse": 10.3586,
+   "bias": -3.2567,
+   "mae_by_horizon": {
+    "24": 1.4758,
+    "48": 7.6758,
+    "72": 2.8856
+   },
+   "powder_score": 4.8,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-zeros": {
+   "n_scorable": 33,
+   "n_scored": 33,
+   "coverage": 1.0,
+   "mae": 4.3294,
+   "rmse": 11.2691,
+   "bias": -4.3294,
+   "mae_by_horizon": {
+    "24": 1.5742,
+    "48": 7.8725,
+    "72": 3.2789
+   },
+   "powder_score": -0.16,
+   "pinball": 2.1647,
+   "n_pinball": 33,
+   "brier6": 0.0833,
+   "n_brier6": 12,
+   "late": false
+  }
+ }
+}
