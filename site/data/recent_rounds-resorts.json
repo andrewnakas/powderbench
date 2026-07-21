@@ -653,5 +653,111 @@
     "late": false
    }
   }
+ },
+ {
+  "round_id": "2026-07-18",
+  "league": "resorts",
+  "resolved_utc": "2026-07-21T17:20:46+00:00",
+  "observations_72h": null,
+  "qc": {
+   "station_horizons_valid": 38,
+   "station_horizons_voided": 1
+  },
+  "biggest_24h": {
+   "station_id": "las-lenas:AR:RESORT",
+   "resort": "Las Le\u00f1as",
+   "inches": 23.6
+  },
+  "teams": {
+   "baseline-climatology": {
+    "n_scorable": 38,
+    "n_scored": 38,
+    "coverage": 1.0,
+    "mae": 6.8317,
+    "rmse": 13.9725,
+    "bias": -6.4248,
+    "mae_by_horizon": {
+     "24": 3.6967,
+     "48": 7.686,
+     "72": 9.3024
+    },
+    "powder_score": -0.0,
+    "pinball": 3.0295,
+    "n_pinball": 38,
+    "brier6": 0.2073,
+    "n_brier6": 13,
+    "late": false
+   },
+   "baseline-gfs": {
+    "n_scorable": 38,
+    "n_scored": 38,
+    "coverage": 1.0,
+    "mae": 4.6752,
+    "rmse": 8.6775,
+    "bias": -2.8504,
+    "mae_by_horizon": {
+     "24": 3.3002,
+     "48": 4.719,
+     "72": 6.1172
+    },
+    "powder_score": 31.57,
+    "pinball": null,
+    "brier6": null,
+    "late": false
+   },
+   "baseline-openmeteo": {
+    "n_scorable": 38,
+    "n_scored": 38,
+    "coverage": 1.0,
+    "mae": 4.712,
+    "rmse": 9.2933,
+    "bias": -4.3393,
+    "mae_by_horizon": {
+     "24": 2.9648,
+     "48": 5.0053,
+     "72": 6.287
+    },
+    "powder_score": 31.03,
+    "pinball": null,
+    "brier6": null,
+    "late": false
+   },
+   "baseline-persistence": {
+    "n_scorable": 38,
+    "n_scored": 35,
+    "coverage": 0.9211,
+    "mae": 3.4446,
+    "rmse": 8.3238,
+    "bias": -1.644,
+    "mae_by_horizon": {
+     "24": 1.1825,
+     "48": 3.9725,
+     "72": 5.3364
+    },
+    "powder_score": 27.23,
+    "pinball": null,
+    "brier6": null,
+    "late": false
+   },
+   "baseline-zeros": {
+    "n_scorable": 38,
+    "n_scored": 38,
+    "coverage": 1.0,
+    "mae": 6.7958,
+    "rmse": 14.1519,
+    "bias": -6.7958,
+    "mae_by_horizon": {
+     "24": 3.6946,
+     "48": 7.6615,
+     "72": 9.2175
+    },
+    "powder_score": 0.53,
+    "pinball": 3.3979,
+    "n_pinball": 38,
+    "brier6": 0.2308,
+    "n_brier6": 13,
+    "late": false
+   }
+  }
  }
 ]
