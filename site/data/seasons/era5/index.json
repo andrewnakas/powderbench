@@ -2,46 +2,6 @@
  "season_start_month": 4,
  "stations": [
   {
-   "slug": "catedral",
-   "station_id": "catedral:AR:ERA5",
-   "resort": "Catedral Alta Patagonia",
-   "seasons": [
-    "2015",
-    "2016",
-    "2017",
-    "2018",
-    "2019",
-    "2020",
-    "2021",
-    "2022",
-    "2023",
-    "2024",
-    "2025",
-    "2026"
-   ],
-   "latest_total": 42.9
-  },
-  {
-   "slug": "las-lenas",
-   "station_id": "las-lenas:AR:ERA5",
-   "resort": "Las Le\u00f1as",
-   "seasons": [
-    "2015",
-    "2016",
-    "2017",
-    "2018",
-    "2019",
-    "2020",
-    "2021",
-    "2022",
-    "2023",
-    "2024",
-    "2025",
-    "2026"
-   ],
-   "latest_total": 41.9
-  },
-  {
    "slug": "corralco",
    "station_id": "corralco:CL:ERA5",
    "resort": "Corralco / Lonquimay",
@@ -59,7 +19,7 @@
     "2025",
     "2026"
    ],
-   "latest_total": 41.8
+   "latest_total": 50.1
   },
   {
    "slug": "caviahue",
@@ -79,7 +39,47 @@
     "2025",
     "2026"
    ],
-   "latest_total": 36.9
+   "latest_total": 49.1
+  },
+  {
+   "slug": "las-lenas",
+   "station_id": "las-lenas:AR:ERA5",
+   "resort": "Las Le\u00f1as",
+   "seasons": [
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023",
+    "2024",
+    "2025",
+    "2026"
+   ],
+   "latest_total": 44.2
+  },
+  {
+   "slug": "catedral",
+   "station_id": "catedral:AR:ERA5",
+   "resort": "Catedral Alta Patagonia",
+   "seasons": [
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023",
+    "2024",
+    "2025",
+    "2026"
+   ],
+   "latest_total": 43.7
   },
   {
    "slug": "chapelco",
@@ -99,7 +99,7 @@
     "2025",
     "2026"
    ],
-   "latest_total": 31.7
+   "latest_total": 34.7
   },
   {
    "slug": "valle-nevado",
@@ -119,7 +119,47 @@
     "2025",
     "2026"
    ],
-   "latest_total": 29.9
+   "latest_total": 32.0
+  },
+  {
+   "slug": "portillo",
+   "station_id": "portillo:CL:ERA5",
+   "resort": "Ski Portillo",
+   "seasons": [
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023",
+    "2024",
+    "2025",
+    "2026"
+   ],
+   "latest_total": 27.1
+  },
+  {
+   "slug": "penitentes",
+   "station_id": "penitentes:AR:ERA5",
+   "resort": "Penitentes",
+   "seasons": [
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023",
+    "2024",
+    "2025",
+    "2026"
+   ],
+   "latest_total": 26.3
   },
   {
    "slug": "castor",
@@ -139,7 +179,7 @@
     "2025",
     "2026"
    ],
-   "latest_total": 25.7
+   "latest_total": 26.2
   },
   {
    "slug": "mt-hutt",
@@ -162,46 +202,6 @@
    "latest_total": 25.5
   },
   {
-   "slug": "portillo",
-   "station_id": "portillo:CL:ERA5",
-   "resort": "Ski Portillo",
-   "seasons": [
-    "2015",
-    "2016",
-    "2017",
-    "2018",
-    "2019",
-    "2020",
-    "2021",
-    "2022",
-    "2023",
-    "2024",
-    "2025",
-    "2026"
-   ],
-   "latest_total": 25.4
-  },
-  {
-   "slug": "penitentes",
-   "station_id": "penitentes:AR:ERA5",
-   "resort": "Penitentes",
-   "seasons": [
-    "2015",
-    "2016",
-    "2017",
-    "2018",
-    "2019",
-    "2020",
-    "2021",
-    "2022",
-    "2023",
-    "2024",
-    "2025",
-    "2026"
-   ],
-   "latest_total": 24.3
-  },
-  {
    "slug": "nevados-chillan",
    "station_id": "nevados-chillan:CL:ERA5",
    "resort": "Nevados de Chill\u00e1n",
@@ -219,7 +219,7 @@
     "2025",
     "2026"
    ],
-   "latest_total": 16.9
+   "latest_total": 24.0
   },
   {
    "slug": "antillanca",
@@ -239,7 +239,7 @@
     "2025",
     "2026"
    ],
-   "latest_total": 16.3
+   "latest_total": 16.6
   },
   {
    "slug": "coronet-peak",
@@ -259,7 +259,7 @@
     "2025",
     "2026"
    ],
-   "latest_total": 11.7
+   "latest_total": 12.7
   },
   {
    "slug": "remarkables",
@@ -279,7 +279,7 @@
     "2025",
     "2026"
    ],
-   "latest_total": 11.7
+   "latest_total": 12.7
   },
   {
    "slug": "cardrona",
@@ -299,7 +299,7 @@
     "2025",
     "2026"
    ],
-   "latest_total": 8.2
+   "latest_total": 8.4
   },
   {
    "slug": "treble-cone",
@@ -319,7 +319,7 @@
     "2025",
     "2026"
    ],
-   "latest_total": 8.2
+   "latest_total": 8.4
   },
   {
    "slug": "thredbo",

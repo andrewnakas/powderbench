@@ -759,5 +759,111 @@
     "late": false
    }
   }
+ },
+ {
+  "round_id": "2026-07-19",
+  "league": "resorts",
+  "resolved_utc": "2026-07-22T17:20:41+00:00",
+  "observations_72h": null,
+  "qc": {
+   "station_horizons_valid": 37,
+   "station_horizons_voided": 2
+  },
+  "biggest_24h": {
+   "station_id": "portillo:CL:RESORT",
+   "resort": "Ski Portillo",
+   "inches": 20.1
+  },
+  "teams": {
+   "baseline-climatology": {
+    "n_scorable": 37,
+    "n_scored": 37,
+    "coverage": 1.0,
+    "mae": 5.6511,
+    "rmse": 11.8052,
+    "bias": -5.3494,
+    "mae_by_horizon": {
+     "24": 3.9701,
+     "48": 7.2573,
+     "72": 5.7395
+    },
+    "powder_score": 0.0,
+    "pinball": 2.4907,
+    "n_pinball": 37,
+    "brier6": 0.2777,
+    "n_brier6": 13,
+    "late": false
+   },
+   "baseline-gfs": {
+    "n_scorable": 37,
+    "n_scored": 37,
+    "coverage": 1.0,
+    "mae": 4.3718,
+    "rmse": 8.2048,
+    "bias": -4.3361,
+    "mae_by_horizon": {
+     "24": 3.9457,
+     "48": 5.0047,
+     "72": 4.1274
+    },
+    "powder_score": 22.64,
+    "pinball": null,
+    "brier6": null,
+    "late": false
+   },
+   "baseline-openmeteo": {
+    "n_scorable": 37,
+    "n_scored": 37,
+    "coverage": 1.0,
+    "mae": 3.5264,
+    "rmse": 6.1698,
+    "bias": -3.4906,
+    "mae_by_horizon": {
+     "24": 3.3118,
+     "48": 4.1142,
+     "72": 3.0851
+    },
+    "powder_score": 37.6,
+    "pinball": null,
+    "brier6": null,
+    "late": false
+   },
+   "baseline-persistence": {
+    "n_scorable": 37,
+    "n_scored": 35,
+    "coverage": 0.9459,
+    "mae": 6.3777,
+    "rmse": 16.9227,
+    "bias": 5.3646,
+    "mae_by_horizon": {
+     "24": 2.985,
+     "48": 7.0533,
+     "72": 9.3418
+    },
+    "powder_score": -20.27,
+    "pinball": null,
+    "brier6": null,
+    "late": false
+   },
+   "baseline-zeros": {
+    "n_scorable": 37,
+    "n_scored": 37,
+    "coverage": 1.0,
+    "mae": 5.7132,
+    "rmse": 11.9371,
+    "bias": -5.7132,
+    "mae_by_horizon": {
+     "24": 3.9669,
+     "48": 7.2369,
+     "72": 5.9764
+    },
+    "powder_score": -1.1,
+    "pinball": 2.8566,
+    "n_pinball": 37,
+    "brier6": 0.3077,
+    "n_brier6": 13,
+    "late": false
+   }
+  }
  }
 ]
