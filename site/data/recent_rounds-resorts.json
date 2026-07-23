@@ -865,5 +865,111 @@
     "late": false
    }
   }
+ },
+ {
+  "round_id": "2026-07-20",
+  "league": "resorts",
+  "resolved_utc": "2026-07-23T17:26:01+00:00",
+  "observations_72h": null,
+  "qc": {
+   "station_horizons_valid": 36,
+   "station_horizons_voided": 3
+  },
+  "biggest_24h": {
+   "station_id": "valle-nevado:CL:RESORT",
+   "resort": "Valle Nevado / Tres Valles",
+   "inches": 15.3
+  },
+  "teams": {
+   "baseline-climatology": {
+    "n_scorable": 36,
+    "n_scored": 36,
+    "coverage": 1.0,
+    "mae": 4.1219,
+    "rmse": 9.2672,
+    "bias": -3.8539,
+    "mae_by_horizon": {
+     "24": 3.323,
+     "48": 4.6746,
+     "72": 4.463
+    },
+    "powder_score": -0.0,
+    "pinball": 1.856,
+    "n_pinball": 36,
+    "brier6": 0.2117,
+    "n_brier6": 13,
+    "late": false
+   },
+   "baseline-gfs": {
+    "n_scorable": 36,
+    "n_scored": 36,
+    "coverage": 1.0,
+    "mae": 1.6955,
+    "rmse": 3.5924,
+    "bias": -1.2879,
+    "mae_by_horizon": {
+     "24": 1.114,
+     "48": 1.3179,
+     "72": 2.7947
+    },
+    "powder_score": 58.87,
+    "pinball": null,
+    "brier6": null,
+    "late": false
+   },
+   "baseline-openmeteo": {
+    "n_scorable": 36,
+    "n_scored": 36,
+    "coverage": 1.0,
+    "mae": 2.2254,
+    "rmse": 4.9562,
+    "bias": -1.9669,
+    "mae_by_horizon": {
+     "24": 1.3154,
+     "48": 2.3663,
+     "72": 3.1472
+    },
+    "powder_score": 46.01,
+    "pinball": null,
+    "brier6": null,
+    "late": false
+   },
+   "baseline-persistence": {
+    "n_scorable": 36,
+    "n_scored": 36,
+    "coverage": 1.0,
+    "mae": 8.9789,
+    "rmse": 20.8962,
+    "bias": 7.8189,
+    "mae_by_horizon": {
+     "24": 5.8454,
+     "48": 11.0242,
+     "72": 10.4509
+    },
+    "powder_score": -117.84,
+    "pinball": null,
+    "brier6": null,
+    "late": false
+   },
+   "baseline-zeros": {
+    "n_scorable": 36,
+    "n_scored": 36,
+    "coverage": 1.0,
+    "mae": 4.2206,
+    "rmse": 9.359,
+    "bias": -4.2206,
+    "mae_by_horizon": {
+     "24": 3.27,
+     "48": 4.7892,
+     "72": 4.7236
+    },
+    "powder_score": -2.4,
+    "pinball": 2.1103,
+    "n_pinball": 36,
+    "brier6": 0.2308,
+    "n_brier6": 13,
+    "late": false
+   }
+  }
  }
 ]
