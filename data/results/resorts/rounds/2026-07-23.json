@@ -1,0 +1,106 @@
+{
+ "round_id": "2026-07-23",
+ "league": "resorts",
+ "resolved_utc": "2026-07-26T17:02:10+00:00",
+ "observations_72h": null,
+ "qc": {
+  "station_horizons_valid": 35,
+  "station_horizons_voided": 4
+ },
+ "biggest_24h": {
+  "station_id": "portillo:CL:RESORT",
+  "resort": "Ski Portillo",
+  "inches": 9.8
+ },
+ "teams": {
+  "baseline-climatology": {
+   "n_scorable": 35,
+   "n_scored": 35,
+   "coverage": 1.0,
+   "mae": 8.8588,
+   "rmse": 14.0736,
+   "bias": -8.8241,
+   "mae_by_horizon": {
+    "24": 2.9586,
+    "48": 10.1852,
+    "72": 13.8483
+   },
+   "powder_score": -0.0,
+   "pinball": 3.8546,
+   "n_pinball": 35,
+   "brier6": 0.1523,
+   "n_brier6": 12,
+   "late": false
+  },
+  "baseline-gfs": {
+   "n_scorable": 35,
+   "n_scored": 35,
+   "coverage": 1.0,
+   "mae": 6.4292,
+   "rmse": 10.0547,
+   "bias": -5.6647,
+   "mae_by_horizon": {
+    "24": 1.8006,
+    "48": 7.5202,
+    "72": 10.2885
+   },
+   "powder_score": 27.43,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-openmeteo": {
+   "n_scorable": 35,
+   "n_scored": 35,
+   "coverage": 1.0,
+   "mae": 5.6493,
+   "rmse": 9.1323,
+   "bias": -4.4152,
+   "mae_by_horizon": {
+    "24": 1.4101,
+    "48": 6.6645,
+    "72": 9.1663
+   },
+   "powder_score": 36.23,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-persistence": {
+   "n_scorable": 35,
+   "n_scored": 35,
+   "coverage": 1.0,
+   "mae": 8.6051,
+   "rmse": 13.8278,
+   "bias": -5.2326,
+   "mae_by_horizon": {
+    "24": 3.1483,
+    "48": 9.875,
+    "72": 13.1727
+   },
+   "powder_score": 2.86,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-zeros": {
+   "n_scorable": 35,
+   "n_scored": 35,
+   "coverage": 1.0,
+   "mae": 9.1797,
+   "rmse": 14.5915,
+   "bias": -9.1797,
+   "mae_by_horizon": {
+    "24": 3.0183,
+    "48": 10.4667,
+    "72": 14.4973
+   },
+   "powder_score": -3.62,
+   "pinball": 4.5899,
+   "n_pinball": 35,
+   "brier6": 0.1667,
+   "n_brier6": 12,
+   "late": false
+  }
+ }
+}
