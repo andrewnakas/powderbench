@@ -1,111 +1,5 @@
 [
  {
-  "round_id": "2026-07-12",
-  "league": "resorts",
-  "resolved_utc": "2026-07-15T17:18:42+00:00",
-  "observations_72h": null,
-  "qc": {
-   "station_horizons_valid": 34,
-   "station_horizons_voided": 5
-  },
-  "biggest_24h": {
-   "station_id": "thredbo:AU:RESORT",
-   "resort": "Thredbo",
-   "inches": 5.5
-  },
-  "teams": {
-   "baseline-climatology": {
-    "n_scorable": 34,
-    "n_scored": 34,
-    "coverage": 1.0,
-    "mae": 1.2392,
-    "rmse": 2.3908,
-    "bias": -1.0659,
-    "mae_by_horizon": {
-     "24": 0.7576,
-     "48": 1.2548,
-     "72": 1.7983
-    },
-    "powder_score": -0.0,
-    "pinball": 0.5023,
-    "n_pinball": 34,
-    "brier6": 0.001,
-    "n_brier6": 12,
-    "late": false
-   },
-   "baseline-gfs": {
-    "n_scorable": 34,
-    "n_scored": 34,
-    "coverage": 1.0,
-    "mae": 0.9293,
-    "rmse": 1.7733,
-    "bias": -0.3793,
-    "mae_by_horizon": {
-     "24": 0.4123,
-     "48": 0.888,
-     "72": 1.5994
-    },
-    "powder_score": 25.01,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-openmeteo": {
-    "n_scorable": 34,
-    "n_scored": 34,
-    "coverage": 1.0,
-    "mae": 1.0434,
-    "rmse": 1.8145,
-    "bias": -0.227,
-    "mae_by_horizon": {
-     "24": 0.3181,
-     "48": 1.1322,
-     "72": 1.8073
-    },
-    "powder_score": 15.8,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-persistence": {
-    "n_scorable": 34,
-    "n_scored": 31,
-    "coverage": 0.9118,
-    "mae": 2.0316,
-    "rmse": 3.7153,
-    "bias": -0.6097,
-    "mae_by_horizon": {
-     "24": 1.1809,
-     "48": 2.0036,
-     "72": 3.1056
-    },
-    "powder_score": -51.43,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-zeros": {
-    "n_scorable": 34,
-    "n_scored": 34,
-    "coverage": 1.0,
-    "mae": 1.4121,
-    "rmse": 2.7849,
-    "bias": -1.4121,
-    "mae_by_horizon": {
-     "24": 0.7542,
-     "48": 1.3117,
-     "72": 2.322
-    },
-    "powder_score": -13.95,
-    "pinball": 0.706,
-    "n_pinball": 34,
-    "brier6": 0.0,
-    "n_brier6": 12,
-    "late": false
-   }
-  }
- },
- {
   "round_id": "2026-07-13",
   "league": "resorts",
   "resolved_utc": "2026-07-16T17:17:23+00:00",
@@ -1498,6 +1392,112 @@
     "n_pinball": 36,
     "brier6": 0.3846,
     "n_brier6": 13,
+    "late": false
+   }
+  }
+ },
+ {
+  "round_id": "2026-07-26",
+  "league": "resorts",
+  "resolved_utc": "2026-07-29T17:15:47+00:00",
+  "observations_72h": null,
+  "qc": {
+   "station_horizons_valid": 35,
+   "station_horizons_voided": 4
+  },
+  "biggest_24h": {
+   "station_id": "catedral:AR:RESORT",
+   "resort": "Catedral Alta Patagonia",
+   "inches": 23.6
+  },
+  "teams": {
+   "baseline-climatology": {
+    "n_scorable": 35,
+    "n_scored": 35,
+    "coverage": 1.0,
+    "mae": 8.4707,
+    "rmse": 18.0279,
+    "bias": -8.3472,
+    "mae_by_horizon": {
+     "24": 4.1838,
+     "48": 8.2904,
+     "72": 13.3441
+    },
+    "powder_score": 0.0,
+    "pinball": 3.8837,
+    "n_pinball": 35,
+    "brier6": 0.2337,
+    "n_brier6": 12,
+    "late": false
+   },
+   "baseline-gfs": {
+    "n_scorable": 35,
+    "n_scored": 35,
+    "coverage": 1.0,
+    "mae": 7.0167,
+    "rmse": 15.7178,
+    "bias": -6.0665,
+    "mae_by_horizon": {
+     "24": 3.0391,
+     "48": 6.6013,
+     "72": 11.8092
+    },
+    "powder_score": 17.17,
+    "pinball": null,
+    "brier6": null,
+    "late": false
+   },
+   "baseline-openmeteo": {
+    "n_scorable": 35,
+    "n_scored": 35,
+    "coverage": 1.0,
+    "mae": 7.1604,
+    "rmse": 15.9191,
+    "bias": -6.3546,
+    "mae_by_horizon": {
+     "24": 3.3458,
+     "48": 7.0815,
+     "72": 11.4078
+    },
+    "powder_score": 15.47,
+    "pinball": null,
+    "brier6": null,
+    "late": false
+   },
+   "baseline-persistence": {
+    "n_scorable": 35,
+    "n_scored": 35,
+    "coverage": 1.0,
+    "mae": 8.542,
+    "rmse": 12.4333,
+    "bias": 0.5974,
+    "mae_by_horizon": {
+     "24": 4.5625,
+     "48": 8.5667,
+     "72": 12.8564
+    },
+    "powder_score": -0.84,
+    "pinball": null,
+    "brier6": null,
+    "late": false
+   },
+   "baseline-zeros": {
+    "n_scorable": 35,
+    "n_scored": 35,
+    "coverage": 1.0,
+    "mae": 8.6846,
+    "rmse": 18.4068,
+    "bias": -8.6846,
+    "mae_by_horizon": {
+     "24": 4.2,
+     "48": 8.4983,
+     "72": 13.78
+    },
+    "powder_score": -2.52,
+    "pinball": 4.3423,
+    "n_pinball": 35,
+    "brier6": 0.25,
+    "n_brier6": 12,
     "late": false
    }
   }
