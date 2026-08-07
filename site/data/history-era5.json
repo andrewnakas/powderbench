@@ -436,5 +436,43 @@
    "baseline-persistence": -81.96,
    "baseline-zeros": -8.72
   }
+ },
+ {
+  "round_id": "2026-07-29",
+  "biggest_24h": {
+   "station_id": "las-lenas:AR:ERA5",
+   "resort": "Las Le\u00f1as",
+   "inches": 4.7
+  },
+  "qc": {
+   "station_horizons_valid": 69,
+   "station_horizons_voided": 0
+  },
+  "teams": {
+   "baseline-climatology": -0.0,
+   "baseline-gfs": -23.84,
+   "baseline-openmeteo": 11.07,
+   "baseline-persistence": -14.09,
+   "baseline-zeros": -13.68
+  }
+ },
+ {
+  "round_id": "2026-07-30",
+  "biggest_24h": {
+   "station_id": "catedral:AR:ERA5",
+   "resort": "Catedral Alta Patagonia",
+   "inches": 9.7
+  },
+  "qc": {
+   "station_horizons_valid": 58,
+   "station_horizons_voided": 11
+  },
+  "teams": {
+   "baseline-climatology": 0.0,
+   "baseline-gfs": -4.51,
+   "baseline-openmeteo": -40.01,
+   "baseline-persistence": 27.94,
+   "baseline-zeros": -8.66
+  }
  }
 ]
