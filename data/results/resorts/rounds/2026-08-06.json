@@ -1,0 +1,106 @@
+{
+ "round_id": "2026-08-06",
+ "league": "resorts",
+ "resolved_utc": "2026-08-09T16:35:56+00:00",
+ "observations_72h": null,
+ "qc": {
+  "station_horizons_valid": 35,
+  "station_horizons_voided": 4
+ },
+ "biggest_24h": {
+  "station_id": "la-hoya:AR:RESORT",
+  "resort": "La Hoya / Esquel",
+  "inches": 15.8
+ },
+ "teams": {
+  "baseline-climatology": {
+   "n_scorable": 35,
+   "n_scored": 35,
+   "coverage": 1.0,
+   "mae": 8.2162,
+   "rmse": 15.3206,
+   "bias": -8.1327,
+   "mae_by_horizon": {
+    "24": 3.7113,
+    "48": 8.3808,
+    "72": 12.9509
+   },
+   "powder_score": -0.0,
+   "pinball": 3.6787,
+   "n_pinball": 35,
+   "brier6": 0.2356,
+   "n_brier6": 12,
+   "late": false
+  },
+  "baseline-gfs": {
+   "n_scorable": 35,
+   "n_scored": 35,
+   "coverage": 1.0,
+   "mae": 6.8555,
+   "rmse": 12.1871,
+   "bias": -5.4035,
+   "mae_by_horizon": {
+    "24": 4.3912,
+    "48": 6.3782,
+    "72": 10.0646
+   },
+   "powder_score": 16.56,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-openmeteo": {
+   "n_scorable": 35,
+   "n_scored": 35,
+   "coverage": 1.0,
+   "mae": 6.731,
+   "rmse": 11.8691,
+   "bias": -5.0145,
+   "mae_by_horizon": {
+    "24": 4.2992,
+    "48": 6.4102,
+    "72": 9.7338
+   },
+   "powder_score": 18.08,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-persistence": {
+   "n_scorable": 35,
+   "n_scored": 35,
+   "coverage": 1.0,
+   "mae": 9.6946,
+   "rmse": 15.011,
+   "bias": -3.8026,
+   "mae_by_horizon": {
+    "24": 4.4283,
+    "48": 9.9067,
+    "72": 15.2082
+   },
+   "powder_score": -17.99,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-zeros": {
+   "n_scorable": 35,
+   "n_scored": 35,
+   "coverage": 1.0,
+   "mae": 8.5271,
+   "rmse": 15.9216,
+   "bias": -8.5271,
+   "mae_by_horizon": {
+    "24": 3.7733,
+    "48": 8.5967,
+    "72": 13.6373
+   },
+   "powder_score": -3.78,
+   "pinball": 4.2636,
+   "n_pinball": 35,
+   "brier6": 0.25,
+   "n_brier6": 12,
+   "late": false
+  }
+ }
+}
