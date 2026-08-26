@@ -1,0 +1,106 @@
+{
+ "round_id": "2026-08-23",
+ "league": "resorts",
+ "resolved_utc": "2026-08-26T16:48:41+00:00",
+ "observations_72h": null,
+ "qc": {
+  "station_horizons_valid": 35,
+  "station_horizons_voided": 4
+ },
+ "biggest_24h": {
+  "station_id": "la-hoya:AR:RESORT",
+  "resort": "La Hoya / Esquel",
+  "inches": 15.8
+ },
+ "teams": {
+  "baseline-climatology": {
+   "n_scorable": 35,
+   "n_scored": 35,
+   "coverage": 1.0,
+   "mae": 4.5553,
+   "rmse": 11.3019,
+   "bias": -4.3088,
+   "mae_by_horizon": {
+    "24": 1.681,
+    "48": 3.3326,
+    "72": 9.0247
+   },
+   "powder_score": -0.0,
+   "pinball": 2.1069,
+   "n_pinball": 35,
+   "brier6": 0.0824,
+   "n_brier6": 12,
+   "late": false
+  },
+  "baseline-gfs": {
+   "n_scorable": 35,
+   "n_scored": 35,
+   "coverage": 1.0,
+   "mae": 4.9019,
+   "rmse": 11.1691,
+   "bias": -2.7604,
+   "mae_by_horizon": {
+    "24": 2.3989,
+    "48": 3.6927,
+    "72": 8.9516
+   },
+   "powder_score": -7.61,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-openmeteo": {
+   "n_scorable": 35,
+   "n_scored": 35,
+   "coverage": 1.0,
+   "mae": 4.3737,
+   "rmse": 10.5989,
+   "bias": -2.8596,
+   "mae_by_horizon": {
+    "24": 1.6296,
+    "48": 3.5599,
+    "72": 8.2551
+   },
+   "powder_score": 3.99,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-persistence": {
+   "n_scorable": 35,
+   "n_scored": 35,
+   "coverage": 1.0,
+   "mae": 1.9234,
+   "rmse": 5.8412,
+   "bias": -1.9234,
+   "mae_by_horizon": {
+    "24": 0.3283,
+    "48": 0.4917,
+    "72": 5.2255
+   },
+   "powder_score": 57.78,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-zeros": {
+   "n_scorable": 35,
+   "n_scored": 35,
+   "coverage": 1.0,
+   "mae": 4.6234,
+   "rmse": 11.5475,
+   "bias": -4.6234,
+   "mae_by_horizon": {
+    "24": 1.6408,
+    "48": 3.1167,
+    "72": 9.5209
+   },
+   "powder_score": -1.5,
+   "pinball": 2.3117,
+   "n_pinball": 35,
+   "brier6": 0.0833,
+   "n_brier6": 12,
+   "late": false
+  }
+ }
+}
