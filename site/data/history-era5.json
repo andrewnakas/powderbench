@@ -825,5 +825,24 @@
    "station_horizons_voided": 69
   },
   "teams": {}
+ },
+ {
+  "round_id": "2026-08-19",
+  "biggest_24h": {
+   "station_id": "castor:AR:ERA5",
+   "resort": "Cerro Castor",
+   "inches": 0.2
+  },
+  "qc": {
+   "station_horizons_valid": 69,
+   "station_horizons_voided": 0
+  },
+  "teams": {
+   "baseline-climatology": -0.01,
+   "baseline-gfs": 64.91,
+   "baseline-openmeteo": 62.39,
+   "baseline-persistence": -261.04,
+   "baseline-zeros": 84.69
+  }
  }
 ]
