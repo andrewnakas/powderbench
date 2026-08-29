@@ -1,0 +1,106 @@
+{
+ "round_id": "2026-08-26",
+ "league": "resorts",
+ "resolved_utc": "2026-08-29T19:14:51+00:00",
+ "observations_72h": null,
+ "qc": {
+  "station_horizons_valid": 35,
+  "station_horizons_voided": 4
+ },
+ "biggest_24h": {
+  "station_id": "catedral:AR:RESORT",
+  "resort": "Catedral Alta Patagonia",
+  "inches": 23.6
+ },
+ "teams": {
+  "baseline-climatology": {
+   "n_scorable": 35,
+   "n_scored": 35,
+   "coverage": 1.0,
+   "mae": 11.7523,
+   "rmse": 19.9124,
+   "bias": -11.7523,
+   "mae_by_horizon": {
+    "24": 6.1113,
+    "48": 11.7375,
+    "72": 17.9223
+   },
+   "powder_score": 0.0,
+   "pinball": 5.266,
+   "n_pinball": 35,
+   "brier6": 0.3953,
+   "n_brier6": 12,
+   "late": false
+  },
+  "baseline-gfs": {
+   "n_scorable": 35,
+   "n_scored": 35,
+   "coverage": 1.0,
+   "mae": 8.0904,
+   "rmse": 15.3995,
+   "bias": -5.7168,
+   "mae_by_horizon": {
+    "24": 3.6462,
+    "48": 8.1681,
+    "72": 12.8537
+   },
+   "powder_score": 31.16,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-openmeteo": {
+   "n_scorable": 35,
+   "n_scored": 35,
+   "coverage": 1.0,
+   "mae": 9.1016,
+   "rmse": 16.9473,
+   "bias": -5.3515,
+   "mae_by_horizon": {
+    "24": 4.6099,
+    "48": 9.4633,
+    "72": 13.6071
+   },
+   "powder_score": 22.55,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-persistence": {
+   "n_scorable": 35,
+   "n_scored": 35,
+   "coverage": 1.0,
+   "mae": 9.0797,
+   "rmse": 17.5435,
+   "bias": -8.9683,
+   "mae_by_horizon": {
+    "24": 4.6608,
+    "48": 9.3175,
+    "72": 13.6409
+   },
+   "powder_score": 22.74,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-zeros": {
+   "n_scorable": 35,
+   "n_scored": 35,
+   "coverage": 1.0,
+   "mae": 12.0043,
+   "rmse": 20.29,
+   "bias": -12.0043,
+   "mae_by_horizon": {
+    "24": 6.1367,
+    "48": 11.9442,
+    "72": 18.4709
+   },
+   "powder_score": -2.14,
+   "pinball": 6.0021,
+   "n_pinball": 35,
+   "brier6": 0.4167,
+   "n_brier6": 12,
+   "late": false
+  }
+ }
+}
