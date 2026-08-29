@@ -1,0 +1,167 @@
+{
+ "round_id": "2026-08-20",
+ "league": "era5",
+ "resolved_utc": "2026-08-29T00:26:23+00:00",
+ "observations_72h": [
+  {
+   "station_id": "antillanca:CL:ERA5",
+   "feed": "resorts",
+   "snow24_obs_in": 0.0
+  },
+  {
+   "station_id": "catedral:AR:ERA5",
+   "feed": "resorts",
+   "snow24_obs_in": 0.0
+  },
+  {
+   "station_id": "chapelco:AR:ERA5",
+   "feed": "resorts",
+   "snow24_obs_in": 0.0
+  },
+  {
+   "station_id": "coronet-peak:NZ:ERA5",
+   "feed": "resorts",
+   "snow24_obs_in": 0.0
+  },
+  {
+   "station_id": "mt-hutt:NZ:ERA5",
+   "feed": "resorts",
+   "snow24_obs_in": 0.78
+  },
+  {
+   "station_id": "perisher:AU:ERA5",
+   "feed": "snowyhydro",
+   "snow24_obs_in": 0.0
+  },
+  {
+   "station_id": "portillo:CL:ERA5",
+   "feed": "resorts",
+   "snow24_obs_in": 0.0
+  },
+  {
+   "station_id": "remarkables:NZ:ERA5",
+   "feed": "resorts",
+   "snow24_obs_in": 1.97
+  },
+  {
+   "station_id": "thredbo:AU:ERA5",
+   "feed": "resorts",
+   "snow24_obs_in": 0.0
+  },
+  {
+   "station_id": "turoa:NZ:ERA5",
+   "feed": "resorts",
+   "snow24_obs_in": 0.0
+  },
+  {
+   "station_id": "valle-nevado:CL:ERA5",
+   "feed": "resorts",
+   "snow24_obs_in": 0.0
+  },
+  {
+   "station_id": "whakapapa:NZ:ERA5",
+   "feed": "resorts",
+   "snow24_obs_in": 0.0
+  }
+ ],
+ "qc": {
+  "station_horizons_valid": 58,
+  "station_horizons_voided": 11
+ },
+ "biggest_24h": {
+  "station_id": "castor:AR:ERA5",
+  "resort": "Cerro Castor",
+  "inches": 1.0
+ },
+ "teams": {
+  "baseline-climatology": {
+   "n_scorable": 58,
+   "n_scored": 58,
+   "coverage": 1.0,
+   "mae": 0.1856,
+   "rmse": 0.3471,
+   "bias": 0.1171,
+   "mae_by_horizon": {
+    "24": 0.0743,
+    "48": 0.2966,
+    "72": 0.1861
+   },
+   "powder_score": -0.01,
+   "pinball": 0.1397,
+   "n_pinball": 58,
+   "brier6": 0.0016,
+   "n_brier6": 23,
+   "late": false
+  },
+  "baseline-gfs": {
+   "n_scorable": 58,
+   "n_scored": 58,
+   "coverage": 1.0,
+   "mae": 0.1601,
+   "rmse": 0.8754,
+   "bias": 0.1231,
+   "mae_by_horizon": {
+    "24": 0.03,
+    "48": 0.024,
+    "72": 0.6705
+   },
+   "powder_score": 13.73,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-openmeteo": {
+   "n_scorable": 58,
+   "n_scored": 58,
+   "coverage": 1.0,
+   "mae": 0.2585,
+   "rmse": 1.1661,
+   "bias": 0.2585,
+   "mae_by_horizon": {
+    "24": 0.0264,
+    "48": 0.0324,
+    "72": 1.1368
+   },
+   "powder_score": -39.29,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-persistence": {
+   "n_scorable": 58,
+   "n_scored": 58,
+   "coverage": 1.0,
+   "mae": 0.2019,
+   "rmse": 0.4666,
+   "bias": 0.1174,
+   "mae_by_horizon": {
+    "24": 0.1797,
+    "48": 0.3295,
+    "72": 0.0
+   },
+   "powder_score": -8.79,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-zeros": {
+   "n_scorable": 58,
+   "n_scored": 58,
+   "coverage": 1.0,
+   "mae": 0.0423,
+   "rmse": 0.2301,
+   "bias": -0.0423,
+   "mae_by_horizon": {
+    "24": 0.0455,
+    "48": 0.0611,
+    "72": 0.0
+   },
+   "powder_score": 77.21,
+   "pinball": 0.0211,
+   "n_pinball": 58,
+   "brier6": 0.0,
+   "n_brier6": 23,
+   "late": false
+  }
+ }
+}
