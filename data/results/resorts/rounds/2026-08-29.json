@@ -1,0 +1,106 @@
+{
+ "round_id": "2026-08-29",
+ "league": "resorts",
+ "resolved_utc": "2026-09-01T19:14:37+00:00",
+ "observations_72h": null,
+ "qc": {
+  "station_horizons_valid": 34,
+  "station_horizons_voided": 5
+ },
+ "biggest_24h": {
+  "station_id": "chapelco:AR:RESORT",
+  "resort": "Chapelco",
+  "inches": 27.6
+ },
+ "teams": {
+  "baseline-climatology": {
+   "n_scorable": 34,
+   "n_scored": 34,
+   "coverage": 1.0,
+   "mae": 10.8973,
+   "rmse": 20.3096,
+   "bias": -10.8762,
+   "mae_by_horizon": {
+    "24": 6.2727,
+    "48": 10.7103,
+    "72": 16.6712
+   },
+   "powder_score": -0.0,
+   "pinball": 4.9622,
+   "n_pinball": 34,
+   "brier6": 0.2348,
+   "n_brier6": 12,
+   "late": false
+  },
+  "baseline-gfs": {
+   "n_scorable": 34,
+   "n_scored": 34,
+   "coverage": 1.0,
+   "mae": 9.4607,
+   "rmse": 17.3276,
+   "bias": -8.4336,
+   "mae_by_horizon": {
+    "24": 5.0751,
+    "48": 9.0744,
+    "72": 15.1871
+   },
+   "powder_score": 13.18,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-openmeteo": {
+   "n_scorable": 34,
+   "n_scored": 34,
+   "coverage": 1.0,
+   "mae": 10.0751,
+   "rmse": 18.2469,
+   "bias": -8.594,
+   "mae_by_horizon": {
+    "24": 5.8584,
+    "48": 10.1052,
+    "72": 15.099
+   },
+   "powder_score": 7.54,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-persistence": {
+   "n_scorable": 34,
+   "n_scored": 34,
+   "coverage": 1.0,
+   "mae": 4.8282,
+   "rmse": 7.6974,
+   "bias": 0.8453,
+   "mae_by_horizon": {
+    "24": 3.7075,
+    "48": 4.7567,
+    "72": 6.259
+   },
+   "powder_score": 55.69,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-zeros": {
+   "n_scorable": 34,
+   "n_scored": 34,
+   "coverage": 1.0,
+   "mae": 11.1044,
+   "rmse": 20.6927,
+   "bias": -11.1044,
+   "mae_by_horizon": {
+    "24": 6.2992,
+    "48": 10.925,
+    "72": 17.086
+   },
+   "powder_score": -1.9,
+   "pinball": 5.5522,
+   "n_pinball": 34,
+   "brier6": 0.25,
+   "n_brier6": 12,
+   "late": false
+  }
+ }
+}
