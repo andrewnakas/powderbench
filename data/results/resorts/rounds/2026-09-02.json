@@ -1,0 +1,106 @@
+{
+ "round_id": "2026-09-02",
+ "league": "resorts",
+ "resolved_utc": "2026-09-05T17:58:04+00:00",
+ "observations_72h": null,
+ "qc": {
+  "station_horizons_valid": 36,
+  "station_horizons_voided": 3
+ },
+ "biggest_24h": {
+  "station_id": "la-hoya:AR:RESORT",
+  "resort": "La Hoya / Esquel",
+  "inches": 15.8
+ },
+ "teams": {
+  "baseline-climatology": {
+   "n_scorable": 36,
+   "n_scored": 36,
+   "coverage": 1.0,
+   "mae": 3.9266,
+   "rmse": 10.3607,
+   "bias": -3.7061,
+   "mae_by_horizon": {
+    "24": 2.8811,
+    "48": 3.2797,
+    "72": 5.8679
+   },
+   "powder_score": 0.0,
+   "pinball": 1.8093,
+   "n_pinball": 36,
+   "brier6": 0.1466,
+   "n_brier6": 13,
+   "late": false
+  },
+  "baseline-gfs": {
+   "n_scorable": 36,
+   "n_scored": 36,
+   "coverage": 1.0,
+   "mae": 4.1377,
+   "rmse": 10.1517,
+   "bias": -2.8422,
+   "mae_by_horizon": {
+    "24": 2.7351,
+    "48": 3.7288,
+    "72": 6.2414
+   },
+   "powder_score": -5.38,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-openmeteo": {
+   "n_scorable": 36,
+   "n_scored": 36,
+   "coverage": 1.0,
+   "mae": 3.6266,
+   "rmse": 9.8945,
+   "bias": -2.4051,
+   "mae_by_horizon": {
+    "24": 2.2639,
+    "48": 3.0877,
+    "72": 5.8251
+   },
+   "powder_score": 7.64,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-persistence": {
+   "n_scorable": 36,
+   "n_scored": 36,
+   "coverage": 1.0,
+   "mae": 7.1839,
+   "rmse": 15.7471,
+   "bias": 6.3533,
+   "mae_by_horizon": {
+    "24": 3.6038,
+    "48": 7.0858,
+    "72": 11.5218
+   },
+   "powder_score": -82.95,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-zeros": {
+   "n_scorable": 36,
+   "n_scored": 36,
+   "coverage": 1.0,
+   "mae": 3.9369,
+   "rmse": 10.4394,
+   "bias": -3.9369,
+   "mae_by_horizon": {
+    "24": 2.8769,
+    "48": 3.2808,
+    "72": 5.9055
+   },
+   "powder_score": -0.26,
+   "pinball": 1.9685,
+   "n_pinball": 36,
+   "brier6": 0.1538,
+   "n_brier6": 13,
+   "late": false
+  }
+ }
+}
