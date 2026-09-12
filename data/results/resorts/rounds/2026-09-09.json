@@ -1,0 +1,106 @@
+{
+ "round_id": "2026-09-09",
+ "league": "resorts",
+ "resolved_utc": "2026-09-12T18:10:41+00:00",
+ "observations_72h": null,
+ "qc": {
+  "station_horizons_valid": 35,
+  "station_horizons_voided": 4
+ },
+ "biggest_24h": {
+  "station_id": "remarkables:NZ:RESORT",
+  "resort": "The Remarkables",
+  "inches": 17.7
+ },
+ "teams": {
+  "baseline-climatology": {
+   "n_scorable": 35,
+   "n_scored": 35,
+   "coverage": 1.0,
+   "mae": 5.9165,
+   "rmse": 11.6043,
+   "bias": -5.6771,
+   "mae_by_horizon": {
+    "24": 3.4565,
+    "48": 6.2197,
+    "72": 8.2695
+   },
+   "powder_score": 0.0,
+   "pinball": 2.7238,
+   "n_pinball": 35,
+   "brier6": 0.1656,
+   "n_brier6": 12,
+   "late": false
+  },
+  "baseline-gfs": {
+   "n_scorable": 35,
+   "n_scored": 35,
+   "coverage": 1.0,
+   "mae": 5.2996,
+   "rmse": 10.4643,
+   "bias": -4.1846,
+   "mae_by_horizon": {
+    "24": 3.1924,
+    "48": 5.1241,
+    "72": 7.7898
+   },
+   "powder_score": 10.43,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-openmeteo": {
+   "n_scorable": 35,
+   "n_scored": 35,
+   "coverage": 1.0,
+   "mae": 5.2115,
+   "rmse": 10.6151,
+   "bias": -4.5311,
+   "mae_by_horizon": {
+    "24": 3.2867,
+    "48": 5.3585,
+    "72": 7.1509
+   },
+   "powder_score": 11.92,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-persistence": {
+   "n_scorable": 35,
+   "n_scored": 35,
+   "coverage": 1.0,
+   "mae": 3.69,
+   "rmse": 6.4467,
+   "bias": -2.4746,
+   "mae_by_horizon": {
+    "24": 2.4608,
+    "48": 4.0692,
+    "72": 4.6173
+   },
+   "powder_score": 37.63,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-zeros": {
+   "n_scorable": 35,
+   "n_scored": 35,
+   "coverage": 1.0,
+   "mae": 5.85,
+   "rmse": 11.6618,
+   "bias": -5.85,
+   "mae_by_horizon": {
+    "24": 3.445,
+    "48": 6.1692,
+    "72": 8.1255
+   },
+   "powder_score": 1.12,
+   "pinball": 2.925,
+   "n_pinball": 35,
+   "brier6": 0.1667,
+   "n_brier6": 12,
+   "late": false
+  }
+ }
+}
