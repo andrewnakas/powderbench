@@ -1,0 +1,106 @@
+{
+ "round_id": "2026-09-12",
+ "league": "resorts",
+ "resolved_utc": "2026-09-15T19:33:06+00:00",
+ "observations_72h": null,
+ "qc": {
+  "station_horizons_valid": 36,
+  "station_horizons_voided": 3
+ },
+ "biggest_24h": {
+  "station_id": "la-hoya:AR:RESORT",
+  "resort": "La Hoya / Esquel",
+  "inches": 15.8
+ },
+ "teams": {
+  "baseline-climatology": {
+   "n_scorable": 36,
+   "n_scored": 36,
+   "coverage": 1.0,
+   "mae": 2.8408,
+   "rmse": 9.7939,
+   "bias": -2.5001,
+   "mae_by_horizon": {
+    "24": 1.3959,
+    "48": 2.8094,
+    "72": 4.3171
+   },
+   "powder_score": 0.0,
+   "pinball": 1.3987,
+   "n_pinball": 36,
+   "brier6": 0.0829,
+   "n_brier6": 12,
+   "late": false
+  },
+  "baseline-gfs": {
+   "n_scorable": 36,
+   "n_scored": 36,
+   "coverage": 1.0,
+   "mae": 2.6931,
+   "rmse": 9.8232,
+   "bias": -2.6364,
+   "mae_by_horizon": {
+    "24": 1.3913,
+    "48": 2.6877,
+    "72": 4.0002
+   },
+   "powder_score": 5.2,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-openmeteo": {
+   "n_scorable": 36,
+   "n_scored": 36,
+   "coverage": 1.0,
+   "mae": 2.7077,
+   "rmse": 9.8234,
+   "bias": -2.631,
+   "mae_by_horizon": {
+    "24": 1.3707,
+    "48": 2.7199,
+    "72": 4.0324
+   },
+   "powder_score": 4.69,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-persistence": {
+   "n_scorable": 36,
+   "n_scored": 36,
+   "coverage": 1.0,
+   "mae": 1.705,
+   "rmse": 3.4875,
+   "bias": 1.575,
+   "mae_by_horizon": {
+    "24": 0.885,
+    "48": 1.705,
+    "72": 2.525
+   },
+   "powder_score": 39.98,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-zeros": {
+   "n_scorable": 36,
+   "n_scored": 36,
+   "coverage": 1.0,
+   "mae": 2.69,
+   "rmse": 9.8244,
+   "bias": -2.69,
+   "mae_by_horizon": {
+    "24": 1.3775,
+    "48": 2.69,
+    "72": 4.0025
+   },
+   "powder_score": 5.31,
+   "pinball": 1.345,
+   "n_pinball": 36,
+   "brier6": 0.0833,
+   "n_brier6": 12,
+   "late": false
+  }
+ }
+}
