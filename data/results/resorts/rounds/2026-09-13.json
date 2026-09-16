@@ -1,0 +1,106 @@
+{
+ "round_id": "2026-09-13",
+ "league": "resorts",
+ "resolved_utc": "2026-09-16T19:24:02+00:00",
+ "observations_72h": null,
+ "qc": {
+  "station_horizons_valid": 36,
+  "station_horizons_voided": 3
+ },
+ "biggest_24h": {
+  "station_id": "la-hoya:AR:RESORT",
+  "resort": "La Hoya / Esquel",
+  "inches": 15.8
+ },
+ "teams": {
+  "baseline-climatology": {
+   "n_scorable": 36,
+   "n_scored": 36,
+   "coverage": 1.0,
+   "mae": 2.7892,
+   "rmse": 9.7931,
+   "bias": -2.4455,
+   "mae_by_horizon": {
+    "24": 1.3274,
+    "48": 2.7571,
+    "72": 4.2831
+   },
+   "powder_score": -0.0,
+   "pinball": 1.3869,
+   "n_pinball": 36,
+   "brier6": 0.0832,
+   "n_brier6": 12,
+   "late": false
+  },
+  "baseline-gfs": {
+   "n_scorable": 36,
+   "n_scored": 36,
+   "coverage": 1.0,
+   "mae": 2.6327,
+   "rmse": 9.8219,
+   "bias": -2.6173,
+   "mae_by_horizon": {
+    "24": 1.3172,
+    "48": 2.6297,
+    "72": 3.9513
+   },
+   "powder_score": 5.61,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-openmeteo": {
+   "n_scorable": 36,
+   "n_scored": 36,
+   "coverage": 1.0,
+   "mae": 2.6403,
+   "rmse": 9.8223,
+   "bias": -2.6097,
+   "mae_by_horizon": {
+    "24": 1.3125,
+    "48": 2.625,
+    "72": 3.9834
+   },
+   "powder_score": 5.34,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-persistence": {
+   "n_scorable": 36,
+   "n_scored": 36,
+   "coverage": 1.0,
+   "mae": 1.5767,
+   "rmse": 4.3828,
+   "bias": 1.5767,
+   "mae_by_horizon": {
+    "24": 0.7883,
+    "48": 1.5767,
+    "72": 2.365
+   },
+   "powder_score": 43.47,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-zeros": {
+   "n_scorable": 36,
+   "n_scored": 36,
+   "coverage": 1.0,
+   "mae": 2.625,
+   "rmse": 9.8219,
+   "bias": -2.625,
+   "mae_by_horizon": {
+    "24": 1.3125,
+    "48": 2.625,
+    "72": 3.9375
+   },
+   "powder_score": 5.89,
+   "pinball": 1.3125,
+   "n_pinball": 36,
+   "brier6": 0.0833,
+   "n_brier6": 12,
+   "late": false
+  }
+ }
+}
