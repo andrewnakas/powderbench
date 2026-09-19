@@ -1,0 +1,106 @@
+{
+ "round_id": "2026-09-16",
+ "league": "resorts",
+ "resolved_utc": "2026-09-19T18:27:04+00:00",
+ "observations_72h": null,
+ "qc": {
+  "station_horizons_valid": 35,
+  "station_horizons_voided": 4
+ },
+ "biggest_24h": {
+  "station_id": "la-hoya:AR:RESORT",
+  "resort": "La Hoya / Esquel",
+  "inches": 15.8
+ },
+ "teams": {
+  "baseline-climatology": {
+   "n_scorable": 35,
+   "n_scored": 35,
+   "coverage": 1.0,
+   "mae": 4.1488,
+   "rmse": 10.3198,
+   "bias": -3.9426,
+   "mae_by_horizon": {
+    "24": 2.6676,
+    "48": 4.0373,
+    "72": 5.8864
+   },
+   "powder_score": 0.0,
+   "pinball": 1.9286,
+   "n_pinball": 35,
+   "brier6": 0.1658,
+   "n_brier6": 12,
+   "late": false
+  },
+  "baseline-gfs": {
+   "n_scorable": 35,
+   "n_scored": 35,
+   "coverage": 1.0,
+   "mae": 3.4268,
+   "rmse": 10.0895,
+   "bias": -2.1464,
+   "mae_by_horizon": {
+    "24": 1.5766,
+    "48": 3.4886,
+    "72": 5.3777
+   },
+   "powder_score": 17.4,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-openmeteo": {
+   "n_scorable": 35,
+   "n_scored": 35,
+   "coverage": 1.0,
+   "mae": 3.3093,
+   "rmse": 10.0501,
+   "bias": -3.2598,
+   "mae_by_horizon": {
+    "24": 2.1002,
+    "48": 3.122,
+    "72": 4.8325
+   },
+   "powder_score": 20.24,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-persistence": {
+   "n_scorable": 35,
+   "n_scored": 35,
+   "coverage": 1.0,
+   "mae": 1.3843,
+   "rmse": 2.8554,
+   "bias": -1.3843,
+   "mae_by_horizon": {
+    "24": 1.3458,
+    "48": 1.3458,
+    "72": 1.4682
+   },
+   "powder_score": 66.63,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-zeros": {
+   "n_scorable": 35,
+   "n_scored": 35,
+   "coverage": 1.0,
+   "mae": 4.0843,
+   "rmse": 10.3623,
+   "bias": -4.0843,
+   "mae_by_horizon": {
+    "24": 2.6583,
+    "48": 3.9708,
+    "72": 5.7636
+   },
+   "powder_score": 1.56,
+   "pinball": 2.0421,
+   "n_pinball": 35,
+   "brier6": 0.1667,
+   "n_brier6": 12,
+   "late": false
+  }
+ }
+}
