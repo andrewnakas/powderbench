@@ -1533,5 +1533,24 @@
    "station_horizons_voided": 69
   },
   "teams": {}
+ },
+ {
+  "round_id": "2026-09-26",
+  "biggest_24h": {
+   "station_id": "catedral:AR:ERA5",
+   "resort": "Catedral Alta Patagonia",
+   "inches": 0.1
+  },
+  "qc": {
+   "station_horizons_valid": 22,
+   "station_horizons_voided": 47
+  },
+  "teams": {
+   "baseline-climatology": 0.04,
+   "baseline-gfs": -194.37,
+   "baseline-openmeteo": -105.92,
+   "baseline-persistence": -38.37,
+   "baseline-zeros": -5.95
+  }
  }
 ]

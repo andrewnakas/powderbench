@@ -1,0 +1,106 @@
+{
+ "round_id": "2026-10-01",
+ "league": "resorts",
+ "resolved_utc": "2026-10-04T19:17:52+00:00",
+ "observations_72h": null,
+ "qc": {
+  "station_horizons_valid": 36,
+  "station_horizons_voided": 3
+ },
+ "biggest_24h": {
+  "station_id": "chapelco:AR:RESORT",
+  "resort": "Chapelco",
+  "inches": 0.8
+ },
+ "teams": {
+  "baseline-climatology": {
+   "n_scorable": 36,
+   "n_scored": 36,
+   "coverage": 1.0,
+   "mae": 0.5104,
+   "rmse": 1.4967,
+   "bias": -0.4524,
+   "mae_by_horizon": {
+    "24": 0.0658,
+    "48": 0.5321,
+    "72": 0.9334
+   },
+   "powder_score": 0.01,
+   "pinball": 0.2081,
+   "n_pinball": 36,
+   "brier6": 0.0,
+   "n_brier6": 12,
+   "late": false
+  },
+  "baseline-gfs": {
+   "n_scorable": 36,
+   "n_scored": 36,
+   "coverage": 1.0,
+   "mae": 0.432,
+   "rmse": 1.007,
+   "bias": 0.0065,
+   "mae_by_horizon": {
+    "24": 0.0865,
+    "48": 0.4604,
+    "72": 0.749
+   },
+   "powder_score": 15.37,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-openmeteo": {
+   "n_scorable": 36,
+   "n_scored": 36,
+   "coverage": 1.0,
+   "mae": 1.4141,
+   "rmse": 2.9462,
+   "bias": 0.8815,
+   "mae_by_horizon": {
+    "24": 0.1186,
+    "48": 1.5972,
+    "72": 2.5265
+   },
+   "powder_score": -177.03,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-persistence": {
+   "n_scorable": 36,
+   "n_scored": 36,
+   "coverage": 1.0,
+   "mae": 3.1506,
+   "rmse": 9.9454,
+   "bias": 2.0994,
+   "mae_by_horizon": {
+    "24": 1.3783,
+    "48": 3.1833,
+    "72": 4.89
+   },
+   "powder_score": -517.23,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-zeros": {
+   "n_scorable": 36,
+   "n_scored": 36,
+   "coverage": 1.0,
+   "mae": 0.5256,
+   "rmse": 1.5627,
+   "bias": -0.5256,
+   "mae_by_horizon": {
+    "24": 0.0658,
+    "48": 0.5583,
+    "72": 0.9525
+   },
+   "powder_score": -2.97,
+   "pinball": 0.2628,
+   "n_pinball": 36,
+   "brier6": 0.0,
+   "n_brier6": 12,
+   "late": false
+  }
+ }
+}
