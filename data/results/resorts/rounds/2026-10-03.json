@@ -1,0 +1,106 @@
+{
+ "round_id": "2026-10-03",
+ "league": "resorts",
+ "resolved_utc": "2026-10-06T20:49:02+00:00",
+ "observations_72h": null,
+ "qc": {
+  "station_horizons_valid": 34,
+  "station_horizons_voided": 5
+ },
+ "biggest_24h": {
+  "station_id": "catedral:AR:RESORT",
+  "resort": "Catedral Alta Patagonia",
+  "inches": 3.9
+ },
+ "teams": {
+  "baseline-climatology": {
+   "n_scorable": 34,
+   "n_scored": 34,
+   "coverage": 1.0,
+   "mae": 2.4917,
+   "rmse": 7.5671,
+   "bias": -2.4494,
+   "mae_by_horizon": {
+    "24": 0.3942,
+    "48": 1.6097,
+    "72": 5.6618
+   },
+   "powder_score": -0.0,
+   "pinball": 1.1175,
+   "n_pinball": 34,
+   "brier6": 0.0,
+   "n_brier6": 12,
+   "late": false
+  },
+  "baseline-gfs": {
+   "n_scorable": 34,
+   "n_scored": 34,
+   "coverage": 1.0,
+   "mae": 1.9294,
+   "rmse": 6.0516,
+   "bias": -1.1432,
+   "mae_by_horizon": {
+    "24": 0.4371,
+    "48": 1.1791,
+    "72": 4.3078
+   },
+   "powder_score": 22.57,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-openmeteo": {
+   "n_scorable": 34,
+   "n_scored": 34,
+   "coverage": 1.0,
+   "mae": 3.4293,
+   "rmse": 7.4733,
+   "bias": 0.0936,
+   "mae_by_horizon": {
+    "24": 1.2019,
+    "48": 2.9185,
+    "72": 6.3698
+   },
+   "powder_score": -37.63,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-persistence": {
+   "n_scorable": 34,
+   "n_scored": 34,
+   "coverage": 1.0,
+   "mae": 4.5406,
+   "rmse": 10.9849,
+   "bias": 2.4071,
+   "mae_by_horizon": {
+    "24": 2.5917,
+    "48": 4.5109,
+    "72": 6.6964
+   },
+   "powder_score": -82.23,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-zeros": {
+   "n_scorable": 34,
+   "n_scored": 34,
+   "coverage": 1.0,
+   "mae": 2.5253,
+   "rmse": 7.6566,
+   "bias": -2.5253,
+   "mae_by_horizon": {
+    "24": 0.3942,
+    "48": 1.6473,
+    "72": 5.7282
+   },
+   "powder_score": -1.35,
+   "pinball": 1.2626,
+   "n_pinball": 34,
+   "brier6": 0.0,
+   "n_brier6": 12,
+   "late": false
+  }
+ }
+}
