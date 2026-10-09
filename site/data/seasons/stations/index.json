@@ -2,26 +2,6 @@
  "season_start_month": 10,
  "stations": [
   {
-   "slug": "white-pass",
-   "station_id": "692:WA:SNTL",
-   "resort": "White Pass",
-   "seasons": [
-    "2015",
-    "2016",
-    "2017",
-    "2018",
-    "2019",
-    "2020",
-    "2021",
-    "2022",
-    "2023",
-    "2024",
-    "2025",
-    "2026"
-   ],
-   "latest_total": 3.0
-  },
-  {
    "slug": "alyeska",
    "station_id": "1103:AK:SNTL",
    "resort": "Alyeska",
@@ -62,40 +42,6 @@
    "latest_total": 2.0
   },
   {
-   "slug": "mt-hood",
-   "station_id": "651:OR:SNTL",
-   "resort": "Mt. Hood / Timberline",
-   "seasons": [
-    "2015",
-    "2016",
-    "2017",
-    "2018",
-    "2019",
-    "2020",
-    "2021",
-    "2022",
-    "2023",
-    "2024",
-    "2025",
-    "2026"
-   ],
-   "latest_total": 2.0
-  },
-  {
-   "slug": "alta-atwater",
-   "station_id": "1308:UT:SNTL",
-   "resort": "Alta",
-   "seasons": [
-    "2021",
-    "2022",
-    "2023",
-    "2024",
-    "2025",
-    "2026"
-   ],
-   "latest_total": 1.0
-  },
-  {
    "slug": "winter-park",
    "station_id": "335:CO:SNTL",
    "resort": "Winter Park",
@@ -116,49 +62,9 @@
    "latest_total": 1.0
   },
   {
-   "slug": "brundage",
-   "station_id": "370:ID:SNTL",
-   "resort": "Brundage",
-   "seasons": [
-    "2015",
-    "2016",
-    "2017",
-    "2018",
-    "2019",
-    "2020",
-    "2021",
-    "2022",
-    "2023",
-    "2024",
-    "2025",
-    "2026"
-   ],
-   "latest_total": 1.0
-  },
-  {
-   "slug": "sun-valley",
-   "station_id": "490:ID:SNTL",
-   "resort": "Sun Valley / Galena",
-   "seasons": [
-    "2015",
-    "2016",
-    "2017",
-    "2018",
-    "2019",
-    "2020",
-    "2021",
-    "2022",
-    "2023",
-    "2024",
-    "2025",
-    "2026"
-   ],
-   "latest_total": 1.0
-  },
-  {
-   "slug": "crystal",
-   "station_id": "642:WA:SNTL",
-   "resort": "Crystal Mountain",
+   "slug": "crested-butte",
+   "station_id": "737:CO:SNTL",
+   "resort": "Crested Butte",
    "seasons": [
     "2015",
     "2016",
@@ -256,6 +162,20 @@
    "latest_total": 0.0
   },
   {
+   "slug": "alta-atwater",
+   "station_id": "1308:UT:SNTL",
+   "resort": "Alta",
+   "seasons": [
+    "2021",
+    "2022",
+    "2023",
+    "2024",
+    "2025",
+    "2026"
+   ],
+   "latest_total": 0.0
+  },
+  {
    "slug": "powder-mountain",
    "station_id": "332:UT:SNTL",
    "resort": "Powder Mountain / Snowbasin",
@@ -316,6 +236,26 @@
    "latest_total": 0.0
   },
   {
+   "slug": "brundage",
+   "station_id": "370:ID:SNTL",
+   "resort": "Brundage",
+   "seasons": [
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023",
+    "2024",
+    "2025",
+    "2026"
+   ],
+   "latest_total": 0.0
+  },
+  {
    "slug": "copper",
    "station_id": "415:CO:SNTL",
    "resort": "Copper Mountain",
@@ -339,6 +279,26 @@
    "slug": "cooke-city",
    "station_id": "480:MT:SNTL",
    "resort": "Cooke City / Beartooths",
+   "seasons": [
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023",
+    "2024",
+    "2025",
+    "2026"
+   ],
+   "latest_total": 0.0
+  },
+  {
+   "slug": "sun-valley",
+   "station_id": "490:ID:SNTL",
+   "resort": "Sun Valley / Galena",
    "seasons": [
     "2015",
     "2016",
@@ -476,6 +436,46 @@
    "latest_total": 0.0
   },
   {
+   "slug": "crystal",
+   "station_id": "642:WA:SNTL",
+   "resort": "Crystal Mountain",
+   "seasons": [
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023",
+    "2024",
+    "2025",
+    "2026"
+   ],
+   "latest_total": 0.0
+  },
+  {
+   "slug": "mt-hood",
+   "station_id": "651:OR:SNTL",
+   "resort": "Mt. Hood / Timberline",
+   "seasons": [
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023",
+    "2024",
+    "2025",
+    "2026"
+   ],
+   "latest_total": 0.0
+  },
+  {
    "slug": "mt-rose",
    "station_id": "652:NV:SNTL",
    "resort": "Mt. Rose",
@@ -576,9 +576,9 @@
    "latest_total": 0.0
   },
   {
-   "slug": "silverton",
-   "station_id": "713:CO:SNTL",
-   "resort": "Silverton",
+   "slug": "white-pass",
+   "station_id": "692:WA:SNTL",
+   "resort": "White Pass",
    "seasons": [
     "2015",
     "2016",
@@ -596,9 +596,9 @@
    "latest_total": 0.0
   },
   {
-   "slug": "crested-butte",
-   "station_id": "737:CO:SNTL",
-   "resort": "Crested Butte",
+   "slug": "silverton",
+   "station_id": "713:CO:SNTL",
+   "resort": "Silverton",
    "seasons": [
     "2015",
     "2016",

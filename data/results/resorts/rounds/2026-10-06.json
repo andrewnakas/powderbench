@@ -1,0 +1,106 @@
+{
+ "round_id": "2026-10-06",
+ "league": "resorts",
+ "resolved_utc": "2026-10-09T20:35:27+00:00",
+ "observations_72h": null,
+ "qc": {
+  "station_horizons_valid": 32,
+  "station_horizons_voided": 7
+ },
+ "biggest_24h": {
+  "station_id": "valle-nevado:CL:RESORT",
+  "resort": "Valle Nevado / Tres Valles",
+  "inches": 30.3
+ },
+ "teams": {
+  "baseline-climatology": {
+   "n_scorable": 32,
+   "n_scored": 32,
+   "coverage": 1.0,
+   "mae": 6.8365,
+   "rmse": 18.2184,
+   "bias": -6.7478,
+   "mae_by_horizon": {
+    "24": 4.9382,
+    "48": 8.5791,
+    "72": 7.0079
+   },
+   "powder_score": 0.0,
+   "pinball": 3.3408,
+   "n_pinball": 32,
+   "brier6": 0.179,
+   "n_brier6": 11,
+   "late": false
+  },
+  "baseline-gfs": {
+   "n_scorable": 32,
+   "n_scored": 32,
+   "coverage": 1.0,
+   "mae": 5.3402,
+   "rmse": 14.5825,
+   "bias": -5.0698,
+   "mae_by_horizon": {
+    "24": 3.5243,
+    "48": 6.8888,
+    "72": 5.6342
+   },
+   "powder_score": 21.89,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-openmeteo": {
+   "n_scorable": 32,
+   "n_scored": 32,
+   "coverage": 1.0,
+   "mae": 4.2085,
+   "rmse": 11.5761,
+   "bias": -3.5867,
+   "mae_by_horizon": {
+    "24": 2.8428,
+    "48": 4.897,
+    "72": 4.9534
+   },
+   "powder_score": 38.44,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-persistence": {
+   "n_scorable": 32,
+   "n_scored": 32,
+   "coverage": 1.0,
+   "mae": 7.4181,
+   "rmse": 18.4752,
+   "bias": -5.9406,
+   "mae_by_horizon": {
+    "24": 5.2245,
+    "48": 9.1618,
+    "72": 7.913
+   },
+   "powder_score": -8.51,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-zeros": {
+   "n_scorable": 32,
+   "n_scored": 32,
+   "coverage": 1.0,
+   "mae": 6.8275,
+   "rmse": 18.2979,
+   "bias": -6.8275,
+   "mae_by_horizon": {
+    "24": 4.9382,
+    "48": 8.5891,
+    "72": 6.968
+   },
+   "powder_score": 0.13,
+   "pinball": 3.4138,
+   "n_pinball": 32,
+   "brier6": 0.1818,
+   "n_brier6": 11,
+   "late": false
+  }
+ }
+}
