@@ -1,0 +1,157 @@
+{
+ "round_id": "2026-10-05",
+ "league": "era5",
+ "resolved_utc": "2026-10-13T21:03:27+00:00",
+ "observations_72h": [
+  {
+   "station_id": "antillanca:CL:ERA5",
+   "feed": "resorts",
+   "snow24_obs_in": 0.0
+  },
+  {
+   "station_id": "catedral:AR:ERA5",
+   "feed": "resorts",
+   "snow24_obs_in": 0.0
+  },
+  {
+   "station_id": "chapelco:AR:ERA5",
+   "feed": "resorts",
+   "snow24_obs_in": 2.37
+  },
+  {
+   "station_id": "mt-hutt:NZ:ERA5",
+   "feed": "resorts",
+   "snow24_obs_in": 0.0
+  },
+  {
+   "station_id": "portillo:CL:ERA5",
+   "feed": "resorts",
+   "snow24_obs_in": 61.42
+  },
+  {
+   "station_id": "remarkables:NZ:ERA5",
+   "feed": "resorts",
+   "snow24_obs_in": 0.0
+  },
+  {
+   "station_id": "thredbo:AU:ERA5",
+   "feed": "resorts",
+   "snow24_obs_in": 0.0
+  },
+  {
+   "station_id": "turoa:NZ:ERA5",
+   "feed": "resorts",
+   "snow24_obs_in": 0.0
+  },
+  {
+   "station_id": "valle-nevado:CL:ERA5",
+   "feed": "resorts",
+   "snow24_obs_in": 75.58
+  },
+  {
+   "station_id": "whakapapa:NZ:ERA5",
+   "feed": "resorts",
+   "snow24_obs_in": 0.0
+  }
+ ],
+ "qc": {
+  "station_horizons_valid": 58,
+  "station_horizons_voided": 11
+ },
+ "biggest_24h": {
+  "station_id": "penitentes:AR:ERA5",
+  "resort": "Penitentes",
+  "inches": 5.8
+ },
+ "teams": {
+  "baseline-climatology": {
+   "n_scorable": 58,
+   "n_scored": 58,
+   "coverage": 1.0,
+   "mae": 1.0468,
+   "rmse": 2.801,
+   "bias": -1.0211,
+   "mae_by_horizon": {
+    "24": 0.8028,
+    "48": 1.8105,
+    "72": 0.0506
+   },
+   "powder_score": -0.0,
+   "pinball": 0.4702,
+   "n_pinball": 58,
+   "brier6": 0.0001,
+   "n_brier6": 23,
+   "late": false
+  },
+  "baseline-gfs": {
+   "n_scorable": 58,
+   "n_scored": 58,
+   "coverage": 1.0,
+   "mae": 1.0292,
+   "rmse": 2.8425,
+   "bias": 0.3146,
+   "mae_by_horizon": {
+    "24": 0.6998,
+    "48": 1.8956,
+    "72": 0.0
+   },
+   "powder_score": 1.68,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-openmeteo": {
+   "n_scorable": 58,
+   "n_scored": 58,
+   "coverage": 1.0,
+   "mae": 1.4687,
+   "rmse": 4.2246,
+   "bias": 1.3527,
+   "mae_by_horizon": {
+    "24": 0.4685,
+    "48": 3.2244,
+    "72": 0.0207
+   },
+   "powder_score": -40.31,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-persistence": {
+   "n_scorable": 58,
+   "n_scored": 58,
+   "coverage": 1.0,
+   "mae": 1.1489,
+   "rmse": 2.7655,
+   "bias": -0.8686,
+   "mae_by_horizon": {
+    "24": 0.8555,
+    "48": 1.9411,
+    "72": 0.1929
+   },
+   "powder_score": -9.75,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-zeros": {
+   "n_scorable": 58,
+   "n_scored": 58,
+   "coverage": 1.0,
+   "mae": 1.0453,
+   "rmse": 2.8209,
+   "bias": -1.0453,
+   "mae_by_horizon": {
+    "24": 0.8028,
+    "48": 1.8333,
+    "72": 0.0
+   },
+   "powder_score": 0.14,
+   "pinball": 0.5227,
+   "n_pinball": 58,
+   "brier6": 0.0,
+   "n_brier6": 23,
+   "late": false
+  }
+ }
+}
