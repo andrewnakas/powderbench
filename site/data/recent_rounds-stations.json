@@ -1,109 +1,5 @@
 [
  {
-  "round_id": "2025-03-02",
-  "resolved_utc": "2026-07-09T18:03:10+00:00",
-  "qc": {
-   "station_horizons_valid": 132,
-   "station_horizons_voided": 0
-  },
-  "biggest_24h": {
-   "station_id": "848:CA:SNTL",
-   "resort": "Ward Creek / West Shore",
-   "inches": 6.0
-  },
-  "teams": {
-   "baseline-climatology": {
-    "n_scorable": 132,
-    "n_scored": 132,
-    "coverage": 1.0,
-    "mae": 2.3977,
-    "rmse": 3.9353,
-    "bias": -2.0341,
-    "mae_by_horizon": {
-     "24": 0.5682,
-     "48": 2.8636,
-     "72": 3.7614
-    },
-    "powder_score": 0.0,
-    "pinball": 0.791,
-    "n_pinball": 132,
-    "brier6": 0.0243,
-    "n_brier6": 44,
-    "late": false
-   },
-   "baseline-gfs": {
-    "n_scorable": 132,
-    "n_scored": 132,
-    "coverage": 1.0,
-    "mae": 1.9737,
-    "rmse": 3.5809,
-    "bias": -1.7549,
-    "mae_by_horizon": {
-     "24": 0.2768,
-     "48": 2.2096,
-     "72": 3.4347
-    },
-    "powder_score": 17.68,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-openmeteo": {
-    "n_scorable": 132,
-    "n_scored": 132,
-    "coverage": 1.0,
-    "mae": 2.0082,
-    "rmse": 3.6095,
-    "bias": -1.7204,
-    "mae_by_horizon": {
-     "24": 0.2849,
-     "48": 2.2572,
-     "72": 3.4824
-    },
-    "powder_score": 16.25,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-persistence": {
-    "n_scorable": 132,
-    "n_scored": 132,
-    "coverage": 1.0,
-    "mae": 2.5833,
-    "rmse": 4.2968,
-    "bias": -2.5833,
-    "mae_by_horizon": {
-     "24": 0.5682,
-     "48": 2.7727,
-     "72": 4.4091
-    },
-    "powder_score": -7.74,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-zeros": {
-    "n_scorable": 132,
-    "n_scored": 132,
-    "coverage": 1.0,
-    "mae": 2.5833,
-    "rmse": 4.2968,
-    "bias": -2.5833,
-    "mae_by_horizon": {
-     "24": 0.5682,
-     "48": 2.7727,
-     "72": 4.4091
-    },
-    "powder_score": -7.74,
-    "pinball": 1.2917,
-    "n_pinball": 132,
-    "brier6": 0.0227,
-    "n_brier6": 44,
-    "late": false
-   }
-  }
- },
- {
   "round_id": "2025-03-03",
   "resolved_utc": "2026-07-09T18:03:11+00:00",
   "qc": {
@@ -740,6 +636,22 @@
    "station_id": "370:ID:SNTL",
    "resort": "Brundage",
    "inches": 2.0
+  },
+  "teams": {}
+ },
+ {
+  "round_id": "2026-10-11",
+  "league": "stations",
+  "resolved_utc": "2026-10-14T20:01:10+00:00",
+  "observations_72h": null,
+  "qc": {
+   "station_horizons_valid": 132,
+   "station_horizons_voided": 3
+  },
+  "biggest_24h": {
+   "station_id": "365:MT:SNTL",
+   "resort": "Bridger Bowl",
+   "inches": 14.0
   },
   "teams": {}
  }
