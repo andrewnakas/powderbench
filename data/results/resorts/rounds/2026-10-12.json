@@ -1,0 +1,106 @@
+{
+ "round_id": "2026-10-12",
+ "league": "resorts",
+ "resolved_utc": "2026-10-15T19:43:59+00:00",
+ "observations_72h": null,
+ "qc": {
+  "station_horizons_valid": 30,
+  "station_horizons_voided": 9
+ },
+ "biggest_24h": {
+  "station_id": "chapelco:AR:RESORT",
+  "resort": "Chapelco",
+  "inches": 0.8
+ },
+ "teams": {
+  "baseline-climatology": {
+   "n_scorable": 30,
+   "n_scored": 30,
+   "coverage": 1.0,
+   "mae": 0.3278,
+   "rmse": 0.7508,
+   "bias": -0.2551,
+   "mae_by_horizon": {
+    "24": 0.079,
+    "48": 0.4023,
+    "72": 0.502
+   },
+   "powder_score": -0.01,
+   "pinball": 0.1243,
+   "n_pinball": 30,
+   "brier6": 0.0,
+   "n_brier6": 10,
+   "late": false
+  },
+  "baseline-gfs": {
+   "n_scorable": 30,
+   "n_scored": 30,
+   "coverage": 1.0,
+   "mae": 1.1591,
+   "rmse": 2.3648,
+   "bias": 0.8431,
+   "mae_by_horizon": {
+    "24": 1.0739,
+    "48": 1.1539,
+    "72": 1.2494
+   },
+   "powder_score": -253.64,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-openmeteo": {
+   "n_scorable": 30,
+   "n_scored": 30,
+   "coverage": 1.0,
+   "mae": 0.3704,
+   "rmse": 0.7205,
+   "bias": -0.0636,
+   "mae_by_horizon": {
+    "24": 0.3049,
+    "48": 0.3609,
+    "72": 0.4455
+   },
+   "powder_score": -13.01,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-persistence": {
+   "n_scorable": 30,
+   "n_scored": 30,
+   "coverage": 1.0,
+   "mae": 0.1573,
+   "rmse": 0.6093,
+   "bias": -0.1573,
+   "mae_by_horizon": {
+    "24": 0.0,
+    "48": 0.236,
+    "72": 0.236
+   },
+   "powder_score": 52.01,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-zeros": {
+   "n_scorable": 30,
+   "n_scored": 30,
+   "coverage": 1.0,
+   "mae": 0.3153,
+   "rmse": 0.814,
+   "bias": -0.3153,
+   "mae_by_horizon": {
+    "24": 0.079,
+    "48": 0.394,
+    "72": 0.473
+   },
+   "powder_score": 3.8,
+   "pinball": 0.1577,
+   "n_pinball": 30,
+   "brier6": 0.0,
+   "n_brier6": 10,
+   "late": false
+  }
+ }
+}
