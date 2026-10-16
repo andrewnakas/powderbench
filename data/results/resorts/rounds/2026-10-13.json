@@ -1,0 +1,106 @@
+{
+ "round_id": "2026-10-13",
+ "league": "resorts",
+ "resolved_utc": "2026-10-16T19:22:29+00:00",
+ "observations_72h": null,
+ "qc": {
+  "station_horizons_valid": 30,
+  "station_horizons_voided": 9
+ },
+ "biggest_24h": {
+  "station_id": "valle-nevado:CL:RESORT",
+  "resort": "Valle Nevado / Tres Valles",
+  "inches": 2.4
+ },
+ "teams": {
+  "baseline-climatology": {
+   "n_scorable": 30,
+   "n_scored": 30,
+   "coverage": 1.0,
+   "mae": 0.4716,
+   "rmse": 0.9402,
+   "bias": -0.4027,
+   "mae_by_horizon": {
+    "24": 0.315,
+    "48": 0.3995,
+    "72": 0.7003
+   },
+   "powder_score": -0.0,
+   "pinball": 0.1856,
+   "n_pinball": 30,
+   "brier6": 0.0,
+   "n_brier6": 10,
+   "late": false
+  },
+  "baseline-gfs": {
+   "n_scorable": 30,
+   "n_scored": 30,
+   "coverage": 1.0,
+   "mae": 0.5414,
+   "rmse": 1.053,
+   "bias": -0.185,
+   "mae_by_horizon": {
+    "24": 0.2406,
+    "48": 0.4161,
+    "72": 0.9676
+   },
+   "powder_score": -14.8,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-openmeteo": {
+   "n_scorable": 30,
+   "n_scored": 30,
+   "coverage": 1.0,
+   "mae": 0.4396,
+   "rmse": 0.8798,
+   "bias": -0.3732,
+   "mae_by_horizon": {
+    "24": 0.2848,
+    "48": 0.3638,
+    "72": 0.6701
+   },
+   "powder_score": 6.79,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-persistence": {
+   "n_scorable": 30,
+   "n_scored": 30,
+   "coverage": 1.0,
+   "mae": 0.3017,
+   "rmse": 0.8284,
+   "bias": -0.3017,
+   "mae_by_horizon": {
+    "24": 0.236,
+    "48": 0.236,
+    "72": 0.433
+   },
+   "powder_score": 36.03,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-zeros": {
+   "n_scorable": 30,
+   "n_scored": 30,
+   "coverage": 1.0,
+   "mae": 0.4597,
+   "rmse": 0.9887,
+   "bias": -0.4597,
+   "mae_by_horizon": {
+    "24": 0.315,
+    "48": 0.394,
+    "72": 0.67
+   },
+   "powder_score": 2.52,
+   "pinball": 0.2298,
+   "n_pinball": 30,
+   "brier6": 0.0,
+   "n_brier6": 10,
+   "late": false
+  }
+ }
+}
