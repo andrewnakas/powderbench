@@ -1,0 +1,106 @@
+{
+ "round_id": "2026-10-16",
+ "league": "resorts",
+ "resolved_utc": "2026-10-19T20:59:55+00:00",
+ "observations_72h": null,
+ "qc": {
+  "station_horizons_valid": 30,
+  "station_horizons_voided": 9
+ },
+ "biggest_24h": {
+  "station_id": "turoa:NZ:RESORT",
+  "resort": "T\u016broa / Ruapehu",
+  "inches": 2.0
+ },
+ "teams": {
+  "baseline-climatology": {
+   "n_scorable": 30,
+   "n_scored": 30,
+   "coverage": 1.0,
+   "mae": 0.5268,
+   "rmse": 1.203,
+   "bias": -0.4385,
+   "mae_by_horizon": {
+    "24": 0.276,
+    "48": 0.5838,
+    "72": 0.7206
+   },
+   "powder_score": -0.0,
+   "pinball": 0.2516,
+   "n_pinball": 30,
+   "brier6": 0.0,
+   "n_brier6": 10,
+   "late": false
+  },
+  "baseline-gfs": {
+   "n_scorable": 30,
+   "n_scored": 30,
+   "coverage": 1.0,
+   "mae": 0.8419,
+   "rmse": 1.7925,
+   "bias": 0.5259,
+   "mae_by_horizon": {
+    "24": 0.7804,
+    "48": 0.8332,
+    "72": 0.9122
+   },
+   "powder_score": -59.81,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-openmeteo": {
+   "n_scorable": 30,
+   "n_scored": 30,
+   "coverage": 1.0,
+   "mae": 0.7594,
+   "rmse": 1.5225,
+   "bias": 0.4434,
+   "mae_by_horizon": {
+    "24": 0.6482,
+    "48": 0.657,
+    "72": 0.9729
+   },
+   "powder_score": -44.15,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-persistence": {
+   "n_scorable": 30,
+   "n_scored": 30,
+   "coverage": 1.0,
+   "mae": 0.8003,
+   "rmse": 1.94,
+   "bias": 0.1437,
+   "mae_by_horizon": {
+    "24": 0.433,
+    "48": 0.866,
+    "72": 1.102
+   },
+   "powder_score": -51.92,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-zeros": {
+   "n_scorable": 30,
+   "n_scored": 30,
+   "coverage": 1.0,
+   "mae": 0.4863,
+   "rmse": 1.2064,
+   "bias": -0.4863,
+   "mae_by_horizon": {
+    "24": 0.276,
+    "48": 0.552,
+    "72": 0.631
+   },
+   "powder_score": 7.69,
+   "pinball": 0.2432,
+   "n_pinball": 30,
+   "brier6": 0.0,
+   "n_brier6": 10,
+   "late": false
+  }
+ }
+}
