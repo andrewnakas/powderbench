@@ -143,18 +143,31 @@ def all_baselines(league: League, target_day: date, mode: str = "live") -> dict[
     """All baseline submissions for a round, keyed by team name."""
     from .truth_sources import daily_truth
 
-    obs_daily = daily_truth(
-        league,
-        station_ids(league.name),
-        target_day - timedelta(days=PERSISTENCE_LOOKBACK_DAYS),
-        target_day - timedelta(days=1),
-    )
+    def safe(team, fn):
+        # one model/API outage must never cost the round its other baselines
+        try:
+            return fn()
+        except Exception:
+            log.warning("%s failed for %s/%s", team, league.name, target_day, exc_info=True)
+            return pd.DataFrame()
+
+    def persistence():
+        obs_daily = daily_truth(
+            league,
+            station_ids(league.name),
+            target_day - timedelta(days=PERSISTENCE_LOOKBACK_DAYS),
+            target_day - timedelta(days=1),
+        )
+        return persistence_prediction(target_day, obs_daily)
+
     subs = {
         "baseline-zeros": zeros_prediction(league),
-        CLIMO_TEAM: climatology.climatology_prediction(target_day, league),
-        "baseline-persistence": persistence_prediction(target_day, obs_daily),
-        "baseline-openmeteo": openmeteo_prediction(league, target_day, "best_match", mode),
-        "baseline-gfs": openmeteo_prediction(league, target_day, "gfs_seamless", mode, featured_only=True),
+        CLIMO_TEAM: safe(CLIMO_TEAM, lambda: climatology.climatology_prediction(target_day, league)),
+        "baseline-persistence": safe("baseline-persistence", persistence),
+        "baseline-openmeteo": safe("baseline-openmeteo",
+                                   lambda: openmeteo_prediction(league, target_day, "best_match", mode)),
+        "baseline-gfs": safe("baseline-gfs", lambda: openmeteo_prediction(
+            league, target_day, "gfs_seamless", mode, featured_only=True)),
     }
     subs.update(model_baselines(league, target_day, mode))
     if mode == "live" and _in_conus(league):

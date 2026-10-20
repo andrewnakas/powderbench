@@ -31,6 +31,14 @@ def load_hindcast_submission(path: Path | str) -> dict[date, pd.DataFrame]:
     return {d: g.drop(columns=["round_date"]) for d, g in df.groupby("round_date")}
 
 
+def _safe(fn) -> pd.DataFrame:
+    try:
+        return fn()
+    except Exception:
+        log.warning("hindcast baseline failed", exc_info=True)
+        return pd.DataFrame()
+
+
 def run_hindcast(
     league: League,
     begin: date,
@@ -64,8 +72,10 @@ def run_hindcast(
                     "baseline-zeros": baselines.zeros_prediction(league).query("station_id in @ids"),
                     baselines.CLIMO_TEAM: climo_pred,
                     "baseline-persistence": baselines.persistence_prediction(day, daily),
-                    "baseline-openmeteo": baselines.openmeteo_prediction(league, day, "best_match", "hindcast", featured_only),
-                    "baseline-gfs": baselines.openmeteo_prediction(league, day, "gfs_seamless", "hindcast", featured_only),
+                    "baseline-openmeteo": _safe(lambda: baselines.openmeteo_prediction(
+                        league, day, "best_match", "hindcast", featured_only)),
+                    "baseline-gfs": _safe(lambda: baselines.openmeteo_prediction(
+                        league, day, "gfs_seamless", "hindcast", featured_only)),
                 }
             )
             subs.update(baselines.model_baselines(league, day, "hindcast"))
