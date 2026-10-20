@@ -335,6 +335,15 @@ baseline submissions double as the archive. Needs `pip install -e .[grib]`.
   (featured stations only — Open-Meteo bills per location, and the free daily
   budget can't cover several models × thousands of stations), submitted 45
   minutes before the cutoff.
+- **Model roster** (featured stations, `baselines.MODEL_BASELINES`):
+  `baseline-ecmwf` (ECMWF IFS 0.25°), `baseline-aifs` (ECMWF's AI model),
+  `baseline-icon` (DWD), `baseline-gem` (Environment Canada), `baseline-ukmo`
+  (Met Office); US leagues add `baseline-nbm` (NOAA National Blend) and
+  `baseline-hrrr` (3 km, 48h range — scored on h24/h48 only); Alps leagues add
+  `baseline-arome` (Météo-France). Models that don't run in a region are
+  skipped. JMA/KMA via Open-Meteo returned no usable snowfall (2026-10).
+- **`baseline-consensus`**: the median of all NWP baselines per
+  station-horizon (≥3 models) — the "beat the crowd" target.
 - **Hindcast**: `historical-forecast-api.open-meteo.com` — the archive of what
   models actually predicted at the time (available from ~2021). Lead times in
   the archive are short, so hindcast NWP skill at 48h/72h is optimistic;

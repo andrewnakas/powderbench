@@ -68,6 +68,8 @@ def run_hindcast(
                     "baseline-gfs": baselines.openmeteo_prediction(league, day, "gfs_seamless", "hindcast", featured_only),
                 }
             )
+            subs.update(baselines.model_baselines(league, day, "hindcast"))
+            subs[baselines.CONSENSUS_TEAM] = baselines.consensus_prediction(subs)
         for team, by_round in submissions.items():
             if day in by_round:
                 subs[team] = by_round[day]

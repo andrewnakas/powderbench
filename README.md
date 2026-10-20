@@ -28,9 +28,11 @@ May–Oct, so there is always something to forecast — and always a model to be
 
 ## Why this is fun
 
-- **A clear villain.** The Open-Meteo/GFS baselines are good — and in the US
-  leagues so is **NOAA WPC's official snowfall forecast** (`baseline-wpc`, full
-  percentiles and powder-day odds). Climatology scores
+- **A whole rogues' gallery.** Every round, the world's weather models submit
+  automatically: ECMWF IFS and its AI model AIFS, GFS, ICON, GEM, UKMO, NOAA's
+  NBM and HRRR in the US, Météo-France AROME in the Alps — plus NOAA WPC's
+  official snowfall percentiles (`baseline-wpc`) and a `baseline-consensus`
+  median of them all. Beat the crowd. Climatology scores
   0 by definition; the models score ~+25 to +30. If you can out-forecast a global
   weather model at Alta, the leaderboard will say so, publicly.
 - **Powder Alerts.** A probabilistic side-game: what's the chance of a 6"+ day?
