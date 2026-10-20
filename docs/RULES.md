@@ -88,6 +88,20 @@ regional specialists and full-network ML models get to shine. A round's station
 set is frozen when the round opens (`round.json`), so registry growth never
 changes an open round.
 
+## Storm Mode (event contests)
+
+When a big storm lines up, a maintainer opens a **storm-total event**
+(`powderbench open-event`): a region of one league, a window of 1–7
+station-local days, and a cutoff (by default 24 h before the league's normal
+cutoff for the first storm day). Predict the **window total** at each station:
+`data/submissions/events/<event_id>/<team>.csv` with `station_id,snowfall_in`
+(optional `p10..p90`). Truth is the league's QC'd daily truth summed over the
+window — a station counts only if *every* day is valid. Scored with MAE and the
+Powder Score against a climatology storm (the sum of each day's climatological
+mean), alongside each weather model's storm total and their consensus. The same
+on-time rule applies (first landed on `main` before the cutoff). Event PRs are
+merged by a maintainer rather than the auto-merge bot.
+
 ## Ranking eligibility
 
 - Ranked teams need **≥5 resolved rounds** at **≥70% average coverage** of

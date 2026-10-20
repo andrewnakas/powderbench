@@ -551,7 +551,32 @@ async function selectLeague(name) {
   initSeasons(name);
 }
 
+function renderStorms(events) {
+  const section = document.getElementById("storms");
+  if (!events || !events.length) { section.style.display = "none"; return; }
+  section.style.display = "";
+  const list = document.getElementById("storm-list");
+  list.innerHTML = "";
+  for (const e of events.slice(0, 6)) {
+    const div = document.createElement("div");
+    div.className = "storm-card";
+    const when = e.start === e.end ? e.start : `${e.start} → ${e.end}`;
+    let body = e.status === "open"
+      ? `<p>Open · cutoff ${e.cutoff_utc.replace("T", " ").slice(0, 16)} UTC · ${e.n_stations} stations ·
+           submit <code>data/submissions/events/${e.event_id}/&lt;team&gt;.csv</code> (station_id, snowfall_in)</p>`
+      : `<p>${e.biggest_total ? `Biggest: ${e.biggest_total.inches}″ at ${e.biggest_total.station_id}` : "Scored"}</p>`;
+    if (e.board) {
+      body += "<table><thead><tr><th>Team</th><th>Powder Score</th><th>MAE</th></tr></thead><tbody>" +
+        e.board.slice(0, 8).map((b) => `<tr><td class="team">${b.team}</td><td>${fmt(b.powder_score, 1)}</td><td>${fmt(b.mae)}</td></tr>`).join("") +
+        "</tbody></table>";
+    }
+    div.innerHTML = `<h3>${e.title} <span class="badge">${e.league}</span></h3><p class="fine">${when}</p>${body}`;
+    list.appendChild(div);
+  }
+}
+
 (async () => {
+  try { renderStorms(await loadJSON("data/events.json")); } catch (e) { /* no events yet */ }
   try {
     state.leagues = await loadJSON("data/leagues.json");
   } catch (e) {

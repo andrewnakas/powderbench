@@ -264,6 +264,40 @@ def scrape_resorts(
     typer.echo(f"wrote {path}")
 
 
+@app.command()
+def open_event(
+    title: str,
+    start: str = typer.Option(..., help="First storm day (station-local), YYYY-MM-DD"),
+    end: str = typer.Option(..., help="Last storm day, YYYY-MM-DD (window <= 7 days)"),
+    league: str = LeagueOpt,
+    bbox: Optional[str] = typer.Option(None, help="min_lat,min_lon,max_lat,max_lon (default: whole league)"),
+    cutoff_hours_before: int = typer.Option(24, help="Hours before the league's own cutoff for `start`"),
+):
+    """Storm Mode: open a storm-total contest over a region."""
+    from .events import open_event as do_open
+
+    box = tuple(float(x) for x in bbox.split(",")) if bbox else None
+    typer.echo(f"opened {do_open(title, league, _parse_date(start), _parse_date(end), box, cutoff_hours_before)}")
+
+
+@app.command()
+def event_baselines(event_id: str, mode: str = typer.Option("live", help="live | hindcast")):
+    """Write the model storm-total baselines for an event."""
+    from .events import load_event, submit_event_baselines
+
+    for p in submit_event_baselines(load_event(event_id), mode):
+        typer.echo(f"wrote {p}")
+
+
+@app.command()
+def resolve_events():
+    """Score every storm event whose window has matured."""
+    from .events import resolve_matured_events
+
+    for eid in resolve_matured_events():
+        typer.echo(f"resolved event {eid}")
+
+
 UPSTREAM = "andrewnakas/powderbench"
 
 

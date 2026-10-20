@@ -29,7 +29,9 @@ jobs:
           key: api-cache-${{ github.run_id }}
           restore-keys: api-cache-
       - name: Resolve matured rounds
-        run: powderbench resolve
+        run: |
+          powderbench resolve
+          powderbench resolve-events || true
       - name: Rebuild leaderboard and site data
         run: |
           powderbench build-leaderboard
@@ -43,7 +45,7 @@ jobs:
         run: |
           git config user.name "powderbench-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add data/rounds data/results site/data site/api
+          git add data/rounds data/results data/events site/data site/api
           git diff --cached --quiet || git commit -m "Resolve rounds & update leaderboard"
           git pull --rebase origin main
           git push

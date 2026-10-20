@@ -279,8 +279,33 @@ def build_site() -> list[Path]:
         emit(f"climo-{league.name}.json", _monthly_climatology(league))
 
     emit("resort-vs-era5.json", _resort_vs_era5({l.name: l for l in leagues}))
+    emit("events.json", _events())
     written += build_api(leagues)
     return written
+
+
+def _events() -> list[dict]:
+    """Storm Mode: every event, newest first, with its scoreboard once resolved."""
+    root = data_dir() / "events"
+    out = []
+    if not root.exists():
+        return out
+    for d in sorted(root.iterdir(), reverse=True):
+        mpath = d / "event.json"
+        if not mpath.exists():
+            continue
+        m = json.loads(mpath.read_text())
+        entry = {k: m.get(k) for k in ("event_id", "title", "league", "start", "end", "cutoff_utc", "status")}
+        entry["n_stations"] = len(m.get("stations", []))
+        res = data_dir() / "results" / "events" / f"{d.name}.json"
+        if res.exists():
+            r = json.loads(res.read_text())
+            board = [{"team": t, "powder_score": v.get("powder_score"), "mae": v.get("mae"), "n": v.get("n_scored")}
+                     for t, v in r["teams"].items() if not v.get("invalid") and not v.get("late")]
+            entry["board"] = sorted(board, key=lambda b: -(b["powder_score"] if b["powder_score"] is not None else -1e9))
+            entry["biggest_total"] = r.get("biggest_total")
+        out.append(entry)
+    return out
 
 
 REPO_RAW = "https://raw.githubusercontent.com/andrewnakas/powderbench/main"

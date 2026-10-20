@@ -172,3 +172,7 @@ select, input[type="search"] {
 
 #station-search { flex: 1 1 260px; min-width: 0; }
 .board-controls { flex-wrap: wrap; }
+
+.storm-card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; margin-bottom: 12px; }
+.storm-card h3 { margin: 0 0 4px; }
+.storm-card table { width: 100%; font-size: 14px; }
