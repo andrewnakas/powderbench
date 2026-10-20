@@ -10,7 +10,7 @@ them.
 
 from __future__ import annotations
 
-from .parse import json_path, json_row, labeled_number, regex_number, table_cell
+from .parse import css_number, json_path, json_row, labeled_number, regex_number, table_cell
 from .spec import ResortSpec
 
 # Vía Bariloche's BusPlus API serves exactly three centros: CA (Catedral),
@@ -19,6 +19,22 @@ from .spec import ResortSpec
 # avalanche object, so parsers must match sectors by name, never by index.
 _BUSPLUS = "https://ws.busplus.com.ar/centrosesqui/partediario/climas?Centro={code}"
 _BUSPLUS_KEY = {"PUBLIC-KEY": "ij877HGyh74U&mmwsYH"}
+
+
+def _mt_hood_meadows_parse(body: str) -> float | None:
+    """skihood.com's report API lists snow zones (Base Area, Mid-Mountain);
+    match the zone by name, never by index. Value in centimetres."""
+    import json
+
+    zones = json.loads(body)["data"]["snow"]["snowZones"]
+    for z in zones:
+        if z.get("name") == "Mid-Mountain":
+            v = (z.get("freshSnowFallDepth24H") or {}).get("value")
+            return None if v is None else float(v)
+    return None
+
+
+_NA_REVIEW = "2026-10-20: robots.txt allows the page (PowderBench UA); "
 
 
 def _whakapapa_parse(body: str) -> float | None:
@@ -423,5 +439,179 @@ REGISTRY: tuple[ResortSpec, ...] = (
         url="https://corralco.com/montana/",
         parse=_not_scraped,
         notes="2026-07-10 recon incomplete: no live daily snow report found on the site (marketing copy only).",
+    ),
+
+    # ---- North America (resorts-na league; scraped 16:30 + 20:30 UTC) ----
+    ResortSpec(
+        resort_id="alta",
+        station_id="alta:US:RESORT",
+        country="US",
+        tz="America/Denver",
+        url="https://www.alta.com/weather",
+        parse=regex_number(r'"last24":"([\d.]+)"'),
+        unit="in",
+        report_hour_local=7,
+        enabled=True,
+        verified=_NA_REVIEW + "only /api/, /sumo/, /banzai/ disallowed. No terms of use published "
+        "(/terms, /terms-of-use, /legal 404); privacy policy has no automated-access clause. Value = "
+        "Alta's own server-rendered conditions block (dated_at 07:00), separate from the OpenSnow forecast widget.",
+        notes="Alta snow-study 24h new snow (window.Alta conditions.last24); year_to_date also present.",
+    ),
+    ResortSpec(
+        resort_id="mt-baker",
+        station_id="mt-baker:US:RESORT",
+        country="US",
+        tz="America/Los_Angeles",
+        url="https://www.mtbaker.us/snow-report/",
+        parse=css_number(".conditions-stat_snow_24"),
+        unit="in",
+        report_hour_local=8,
+        enabled=True,
+        verified=_NA_REVIEW + "only privacy/cookie policies exist, no scraping clause. First-party "
+        "WordPress snow-report block (Feb 2026 snapshot: 24h 14\", 'Last Updated 8:12 AM').",
+        notes="Upper reference = Pan Dome (5,020 ft). Block is absent off-season -> no_report.",
+    ),
+    ResortSpec(
+        resort_id="timberline",
+        station_id="timberline:US:RESORT",
+        country="US",
+        tz="America/Los_Angeles",
+        url="https://timberlinelodge.com/conditions/",
+        parse=regex_number(r'conditions__item-data"?>\s*(\d+(?:\.\d+)?)\s*<span[^>]*>[^<]*</span>\s*</div>'
+                           r'\s*<div class="?conditions__item-label"?>\s*24 Hours'),
+        unit="in",
+        report_hour_local=6,
+        enabled=True,
+        verified=_NA_REVIEW + "Crawl-delay 10 (we fetch twice a day). No terms page (404); privacy and "
+        "hotel policies have no scraping clause. First-party conditions block (Snow-Forecast only linked).",
+        notes="Measured at the lodge (6,000 ft). Pattern anchored on the '24 Hours' label cell — the naive "
+        "label parser read the '24' in the label itself.",
+    ),
+    ResortSpec(
+        resort_id="mt-hood-meadows",
+        station_id="mt-hood-meadows:US:RESORT",
+        country="US",
+        tz="America/Los_Angeles",
+        url="https://www.skihood.com/api/weather/report?includeResortInfo=true&includeSnowInfo=true",
+        parse=_mt_hood_meadows_parse,
+        unit="cm",
+        report_hour_local=6,
+        enabled=True,
+        verified=_NA_REVIEW + "robots allows all. Only skier 'rules of use' and privacy pages exist — no "
+        "scraping/republication clause. Endpoint on the resort's own domain; schema resembles a resort-data "
+        "vendor (Lumiplan-style), i.e. the resort's own entry tool, not an aggregator.",
+        notes="Mid-Mountain (6,546 ft) zone, matched by name.",
+    ),
+    ResortSpec(
+        resort_id="sugar-bowl",
+        station_id="sugar-bowl:US:RESORT",
+        country="US",
+        tz="America/Los_Angeles",
+        url="https://www.sugarbowl.com/conditions",
+        parse=css_number('[data-update-id="conditions_snow_24hr_summit"]'),
+        unit="in",
+        report_hour_local=7,
+        enabled=True,
+        verified=_NA_REVIEW + "footer 'Terms & Conditions' link is a 404; privacy policy has no scraping "
+        "clause. First-party server-rendered conditions (data-update-id spans).",
+        notes="Summit 24h new snow; base and YTD spans also present.",
+    ),
+    ResortSpec(
+        resort_id="loveland",
+        station_id="loveland:US:RESORT",
+        country="US",
+        tz="America/Denver",
+        url="https://skiloveland.com/snow-report/",
+        parse=regex_number(r'id="report-5-24-hour"[^>]*>\s*(\d+(?:\.\d+)?)'),
+        unit="in",
+        report_hour_local=6,
+        enabled=True,
+        verified=_NA_REVIEW + "robots 'Disallow:' empty. No terms or privacy pages (404). Hand-entered "
+        "first-party report table; OpenSnow supplies only the separate forecast widget.",
+        notes="The 5:00 AM report's 24 HOUR cell (an 8:00 AM update follows; earliest scrape wins).",
+    ),
+    ResortSpec(
+        resort_id="telluride",
+        station_id="telluride:US:RESORT",
+        country="US",
+        tz="America/Denver",
+        url="https://tellurideskiresort.com/snow-report/",
+        parse=regex_number(r'Last 24 hours</span>\s*<span>\s*<strong>\s*(\d+(?:\.\d+)?)'),
+        unit="in",
+        report_hour_local=8,
+        enabled=True,
+        verified=_NA_REVIEW + "Crawl-delay 10. No terms page (404); privacy policy has no scraping clause. "
+        "Value from the resort's own tsr-report totals block; 'Powered by OpenSnow' labels only the "
+        "embedded forecast post.",
+        notes="Last 24 hours (tsr-report-app-snow-totals).",
+    ),
+    ResortSpec(
+        resort_id="whitefish",
+        station_id="whitefish:US:RESORT",
+        country="US",
+        tz="America/Denver",
+        url="https://skiwhitefish.com/snowreport/",
+        parse=regex_number(r'<h5[^>]*>\s*(\d+(?:\.\d+)?)\s*(?:"|&quot;|&#8243;|&#8221;|”|″)\s*</h5>\s*<p[^>]*>\s*Past 24 Hours'),
+        unit="in",
+        notes="2026-10-20 held: first-party page, robots OK, site /policies has no clause, but the parent "
+        "group's terms (foleyentertainmentgroup.com/terms-of-use) returned 403 — unverified, so disabled. "
+        "Parser verified on Wayback (24h 10\" vs 7-day 25\").",
+    ),
+    ResortSpec(
+        resort_id="mt-rose",
+        station_id="mt-rose:US:RESORT",
+        country="US",
+        tz="America/Los_Angeles",
+        url="https://skirose.com/snow-report/",
+        parse=_not_scraped,
+        notes="2026-10-20 rejected for accuracy: 'New Snow' means since the last report (not a fixed 24h) "
+        "and can be a range.",
+    ),
+    ResortSpec(
+        resort_id="jackson-hole",
+        station_id="jackson-hole:US:RESORT",
+        country="US",
+        tz="America/Denver",
+        url="https://jacksonhole-prod.zaneray.com/api/snow.json",
+        parse=_not_scraped,
+        notes="2026-10-20 held: clean first-party JSON (Bridger-Teton study plots) but terms forbid "
+        "retransmitting/redistributing content without written permission — on the outreach list.",
+    ),
+    ResortSpec(
+        resort_id="snowbird",
+        station_id="snowbird:US:RESORT",
+        country="US",
+        tz="America/Denver",
+        url="https://api.snowbird.com/api/v1/dor/drupal/snow-reports",
+        parse=_not_scraped,
+        notes="2026-10-20 rejected: POWDR terms ban automated access (also Copper, Eldora, Killington, Mt Bachelor).",
+    ),
+    ResortSpec(
+        resort_id="brighton",
+        station_id="brighton:US:RESORT",
+        country="US",
+        tz="America/Denver",
+        url="https://www.brightonresort.com/api/reportpal?resortName=br&useReportPal=true",
+        parse=_not_scraped,
+        notes="2026-10-20 rejected: Boyne terms ban scraping (also Big Sky, Sugarloaf, Sunday River).",
+    ),
+    ResortSpec(
+        resort_id="mammoth",
+        station_id="mammoth:US:RESORT",
+        country="US",
+        tz="America/Los_Angeles",
+        url="https://www.mammothmountain.com/",
+        parse=_not_scraped,
+        notes="2026-10-20 rejected: Alterra terms ban bots/scraping (also Palisades, Solitude, Crystal, "
+        "Steamboat, Winter Park, Sugarbush, Tremblant, A-Basin). Vail resorts rejected by policy.",
+    ),
+    ResortSpec(
+        resort_id="sierra-at-tahoe",
+        station_id="sierra-at-tahoe:US:RESORT",
+        country="US",
+        tz="America/Los_Angeles",
+        url="https://www.sierraattahoe.com/weather-snow-report/",
+        parse=_not_scraped,
+        notes="2026-10-20 rejected: snow summary 'Powered by OpenSnow' (aggregator-fed).",
     ),
 )

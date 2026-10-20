@@ -65,7 +65,19 @@ def attributed_date(scraped_utc: datetime, spec: ResortSpec) -> date:
     return (local - timedelta(hours=spec.report_hour_local)).date() - timedelta(days=1)
 
 
-def scrape_all(now_utc: datetime | None = None, only: str | None = None) -> Path:
+NORTH = {"US", "CA"}
+
+
+def in_hemisphere(spec, hemisphere: str | None) -> bool:
+    """hemisphere: 'N', 'S' or None (all). Each run slot covers one side, so
+    every site is still fetched at most twice a day."""
+    if hemisphere is None:
+        return True
+    north = spec.country in NORTH
+    return north if hemisphere.upper() == "N" else not north
+
+
+def scrape_all(now_utc: datetime | None = None, only: str | None = None, hemisphere: str | None = None) -> Path:
     """Fetch every enabled resort spec and write one snapshot CSV. One row per
     resort, failures included; a single bad site never blocks the run."""
     from .http import polite_get, robots_allowed
@@ -73,7 +85,7 @@ def scrape_all(now_utc: datetime | None = None, only: str | None = None) -> Path
     now_utc = now_utc or datetime.now(timezone.utc)
     rows = []
     for spec in REGISTRY:
-        if not spec.enabled or (only and spec.resort_id != only):
+        if not spec.enabled or (only and spec.resort_id != only) or not in_hemisphere(spec, hemisphere):
             continue
         # status starts at the failure mode of the *next* step, so an exception
         # anywhere leaves the row telling us how far the scrape got

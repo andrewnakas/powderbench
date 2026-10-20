@@ -25,6 +25,14 @@ FIXTURE_VALUES = {
     "valle-nevado": 0.0,
     "antillanca": 0.0,
     "las-lenas": None,  # table currently publishes '-' placeholders -> no_report
+    # North America: Feb 2026 Wayback snapshots (Mt Hood Meadows: live off-season API)
+    "alta": 4.0,
+    "mt-baker": 14.0,
+    "timberline": 0.0,
+    "mt-hood-meadows": 0.0,
+    "sugar-bowl": 9.0,
+    "loveland": 0.0,
+    "telluride": 0.0,
 }
 
 
@@ -195,3 +203,12 @@ def test_resort_truth_dispatch(monkeypatch, tmp_path):
         assert not out.loc["catedral:AR:RESORT", "valid"]
     finally:
         stations_mod._all_stations.cache_clear()
+
+
+def test_hemisphere_slots_cap_fetches_at_two_a_day():
+    """South resorts run at 13:00 + 20:30, north at 16:30 + 20:30 UTC."""
+    north = [s for s in REGISTRY if s.enabled and archive.in_hemisphere(s, "N")]
+    south = [s for s in REGISTRY if s.enabled and archive.in_hemisphere(s, "S")]
+    assert north and south and not {s.resort_id for s in north} & {s.resort_id for s in south}
+    assert {s.country for s in north} <= archive.NORTH
+    assert all(archive.in_hemisphere(s, None) for s in REGISTRY)

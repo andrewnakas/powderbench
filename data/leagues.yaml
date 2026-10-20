@@ -25,6 +25,16 @@ leagues:
     resolve_after: { days: 6, hour_utc: 16 }
     season_start_month: 10 # water year
     active_months: [10, 11, 12, 1, 2, 3, 4, 5]
+  - name: resorts-na
+    label: "Resorts · North America"
+    status: trial
+    truth_source: resort
+    cutoff: { days_before: 0, hour_utc: 0 } # before every NA local day starts
+    # day D+2's snow is in the morning report of D+3, scraped 16:30 UTC; D+4
+    # 16:00 leaves a full day of slack for late or missed scrapes
+    resolve_after: { days: 4, hour_utc: 16 }
+    season_start_month: 10
+    active_months: [11, 12, 1, 2, 3, 4]
   - name: alps
     label: "Alps · measured new snow"
     status: trial

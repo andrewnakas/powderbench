@@ -67,6 +67,28 @@ is never fetched at resolve time.
    (ERA5-derived until report history exists), flip `enabled=True`, and open
    a PR.
 
+## Scrape schedule
+
+Each site is fetched at most twice a day: southern-hemisphere resorts at 13:00
+and 20:30 UTC, North American resorts at 16:30 and 20:30 UTC (after their
+05:00–09:00 local morning reports). `powderbench scrape-resorts --hemisphere N|S`.
+
+## North America (2026-10-20 recon)
+
+Enabled (resorts-na league): Alta, Mt Baker, Timberline, Mt Hood Meadows,
+Sugar Bowl, Loveland, Telluride — every parser verified against a February 2026
+Wayback snapshot of the live page (Mt Hood Meadows: live API structure).
+Held: Whitefish (parent-company terms unreachable), Jackson Hole and Grand
+Targhee (terms forbid redistribution without permission — on
+[OUTREACH.md](OUTREACH.md)), Mt Rose ("new snow" isn't a fixed 24h).
+Rejected by terms of use: Alterra (Mammoth, Palisades, Solitude, Crystal,
+Steamboat, Winter Park, Sugarbush, Tremblant, A-Basin), POWDR (Snowbird,
+Copper, Eldora, Killington, Mt Bachelor), Boyne (Brighton, Big Sky, Sugarloaf,
+Sunday River), Bridger Bowl; Vail resorts by policy; Sierra-at-Tahoe
+(OpenSnow-fed). Not yet reconned: Sun Valley, Schweitzer, Brundage, the
+Canadian Rockies/Interior resorts, Jay Peak, Mad River Glen, Smugglers' Notch,
+Bolton Valley, Whiteface, Le Massif, Mt Bohemia.
+
 ## Current registry status
 
 See the table in [DATA.md](DATA.md) and the authoritative

@@ -1,8 +1,10 @@
 name: Scrape resort snow reports
 on:
   schedule:
-    - cron: "30 20 * * *" # Oceania morning: 08:30 NZST / 06:30 AEST (next local day)
-    - cron: "0 13 * * *" # South America morning: 09:00 CLT / 10:00 ART; re-catches Oceania
+    # every site is fetched at most twice a day: south at 13:00 + 20:30, north at 16:30 + 20:30
+    - cron: "30 20 * * *" # all: Oceania morning (08:30 NZST / 06:30 AEST); North America re-check
+    - cron: "0 13 * * *" # south: South America morning (09:00 CLT / 10:00 ART); re-catches Oceania
+    - cron: "30 16 * * *" # north: after the 05:00-09:00 local morning reports (09:30 MT / 08:30 PT)
   workflow_dispatch:
 
 permissions:
@@ -20,7 +22,12 @@ jobs:
           python-version: "3.12"
       - run: pip install -e .
       - name: Scrape
-        run: powderbench scrape-resorts
+        run: |
+          case "$(echo "${{ github.event.schedule }}" | awk '{print $2}')" in
+            13) powderbench scrape-resorts --hemisphere S ;;
+            16) powderbench scrape-resorts --hemisphere N ;;
+            *) powderbench scrape-resorts ;;
+          esac
       - name: Commit snapshots
         run: |
           git config user.name "powderbench-bot"

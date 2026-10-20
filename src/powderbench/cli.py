@@ -243,6 +243,7 @@ def build_snowhistory():
 def scrape_resorts(
     only: Optional[str] = typer.Option(None, help="Scrape a single resort_id"),
     dry_run: bool = typer.Option(False, help="Fetch and parse but write nothing"),
+    hemisphere: Optional[str] = typer.Option(None, help="N | S: only that side's resorts (default: all)"),
 ):
     """Scrape enabled resort snow reports into data/resortreports/raw/."""
     from .resortfeeds import REGISTRY, scrape_all
@@ -259,7 +260,7 @@ def scrape_resorts(
             value = spec.parse(polite_get(spec.url, headers=dict(spec.headers) if spec.headers else None).text)
             typer.echo(f"{spec.resort_id}: {value} {spec.unit}" if value is not None else f"{spec.resort_id}: no report")
         return
-    path = scrape_all(only=only)
+    path = scrape_all(only=only, hemisphere=hemisphere)
     typer.echo(f"wrote {path}")
 
 

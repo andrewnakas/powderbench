@@ -455,3 +455,11 @@ stations:
   - { station_id: "valle-nevado:CL:RESORT", slug: valle-nevado, name: "Valle Nevado", resort: "Valle Nevado / Tres Valles", region: "Santiago Andes, Chile", state: CL, elevation_ft: 9925, latitude: -33.3560, longitude: -70.2490, league: resorts }
   - { station_id: "antillanca:CL:RESORT", slug: antillanca, name: "Antillanca", resort: "Antillanca", region: "Los Lagos, Chile", state: CL, elevation_ft: 3940, latitude: -40.7710, longitude: -72.1530, league: resorts }
   - { station_id: "las-lenas:AR:RESORT", slug: las-lenas, name: "Las Leñas", resort: "Las Leñas", region: "Mendoza Andes, Argentina", state: AR, elevation_ft: 11250, latitude: -35.1450, longitude: -70.0810, league: resorts }
+  # North American resort snow reports (resorts-na league; docs/RESORTS.md)
+  - { station_id: "alta:US:RESORT", slug: alta, name: "Alta (Collins study plot)", resort: "Alta", region: "Wasatch, UT", state: UT, elevation_ft: 9662, latitude: 40.5884, longitude: -111.6386, league: resorts-na }
+  - { station_id: "mt-baker:US:RESORT", slug: mt-baker, name: "Mt Baker (Pan Dome)", resort: "Mt Baker", region: "North Cascades, WA", state: WA, elevation_ft: 5020, latitude: 48.8572, longitude: -121.6646, league: resorts-na }
+  - { station_id: "timberline:US:RESORT", slug: timberline, name: "Timberline Lodge", resort: "Timberline", region: "Mt Hood, OR", state: OR, elevation_ft: 6000, latitude: 45.3311, longitude: -121.7110, league: resorts-na }
+  - { station_id: "mt-hood-meadows:US:RESORT", slug: mt-hood-meadows, name: "Mt Hood Meadows (Mid-Mountain)", resort: "Mt Hood Meadows", region: "Mt Hood, OR", state: OR, elevation_ft: 6546, latitude: 45.3317, longitude: -121.6648, league: resorts-na }
+  - { station_id: "sugar-bowl:US:RESORT", slug: sugar-bowl, name: "Sugar Bowl (Summit)", resort: "Sugar Bowl", region: "Tahoe, CA", state: CA, elevation_ft: 8383, latitude: 39.3046, longitude: -120.3349, league: resorts-na }
+  - { station_id: "loveland:US:RESORT", slug: loveland, name: "Loveland", resort: "Loveland", region: "Continental Divide, CO", state: CO, elevation_ft: 11000, latitude: 39.6800, longitude: -105.8979, league: resorts-na }
+  - { station_id: "telluride:US:RESORT", slug: telluride, name: "Telluride", resort: "Telluride", region: "San Juans, CO", state: CO, elevation_ft: 11000, latitude: 37.9367, longitude: -107.8123, league: resorts-na }
