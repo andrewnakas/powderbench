@@ -71,6 +71,17 @@ Score yourself against any past period — the baselines run automatically:
 # add your own: --submission my.csv --team me   (CSV needs a round_date column)
 ```
 
+## Training data
+
+- **Snowpack & avalanche data:** [`nakas/powderbench-snowpack`](https://huggingface.co/datasets/nakas/powderbench-snowpack)
+  on Hugging Face mirrors the open data avalanche forecasters work from —
+  Météo-France SAFRAN-Crocus snowpack simulations (1958–) and ski-resort
+  observer network, Norway's Varsom warning archive, SLF/EnviDat danger levels,
+  SNOWPACK features and avalanche records. Each source keeps its own licence
+  (built by `scripts/snowpack/harvest.py`, refreshed weekly).
+- **Truth history:** every league's QC'd daily truth comes out of
+  `powderbench hindcast` / `daily_truth` for any past window.
+
 ## Scoring
 
 | Track | Metric | Field(s) |

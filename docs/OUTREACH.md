@@ -20,6 +20,10 @@ entry before anything is enabled.
 | 8 | Alterra Mountain Co. | Mammoth, Palisades, Steamboat, Winter Park, … snow reports | corporate communications | not sent | | |
 | 9 | Mt Buller (AU) | `api.mtbuller.com.au` weather widget | resort marketing | not sent | | ToS: republication needs written approval |
 | 10 | Jackson Hole, Snowbird, Mt Baker, Big Sky | Resort snow reports / study plots | snow safety / marketing | not sent | | Independent resorts — likeliest yeses |
+| 11 | Avalanche Canada (research) | Bulletin archive (~2011+), Mountain Information Network reports, weather stations, SNOWPACK model dashboard — for the snowpack training dataset | research@avalanche.ca | not sent | | Terms: no reproduction without written consent; Data Sharing Policy routes research/batch requests here (may need a signed agreement) |
+| 12 | SnowPilot | 50k+ snow-pit profiles (CAAML), 2015– | SnowPilot team (snowpilot.org contact) | not sent | | No licence posted; "readily shared with researchers"; site 403s bots |
+| 13 | SLF (data service) | Pérez-Guillén et al. 2022 danger-level ML dataset (EnviDat 330, "WSL data policy"), bulletin archive 1998– | data@slf.ch | not sent | | CC BY data already mirrored; this asks for the restricted sets |
+| 14 | National Avalanche Center / CAIC | avalanche.org forecast archive + observations API (Origin-allowlisted), CAIC field reports | NAC (avalanche.org) / CAIC | not sent | | CAIC ToS bans robots/data mining |
 
 Status values: `not sent` → `sent` → `replied` → `granted` / `declined`.
 On `declined`: record it, keep the source disabled, never re-litigate.

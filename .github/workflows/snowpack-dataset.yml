@@ -1,0 +1,41 @@
+name: Snowpack training dataset
+# Mirrors open snowpack / avalanche-forecasting data (scripts/snowpack/harvest.py)
+# to the Hugging Face dataset nakas/powderbench-snowpack. Needs the repo secret
+# HF_TOKEN (a Hugging Face *write* token for the nakas account).
+on:
+  schedule:
+    - cron: "17 3 * * 1" # weekly, Monday 03:17 UTC: picks up new seasons/days
+  workflow_dispatch:
+    inputs:
+      only:
+        description: "Optional single config to harvest (default: all)"
+        required: false
+
+permissions:
+  contents: read
+
+concurrency: snowpack-dataset
+
+jobs:
+  harvest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests huggingface_hub
+      - name: Restore previous mirror (resume, skip unchanged files)
+        uses: actions/cache@v4
+        with:
+          path: _snowpack
+          key: snowpack-${{ github.run_id }}
+          restore-keys: snowpack-
+      - name: Harvest and upload
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          if [ -z "$HF_TOKEN" ]; then echo "::error::set the HF_TOKEN repo secret first"; exit 1; fi
+          ONLY="${{ github.event.inputs.only }}"
+          python scripts/snowpack/harvest.py --out _snowpack ${ONLY:+--only "$ONLY"} --upload
