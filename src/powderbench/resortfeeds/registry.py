@@ -10,6 +10,8 @@ them.
 
 from __future__ import annotations
 
+import re
+
 from .parse import css_number, json_path, json_row, labeled_number, regex_number, table_cell
 from .spec import ResortSpec
 
@@ -32,6 +34,54 @@ def _mt_hood_meadows_parse(body: str) -> float | None:
             v = (z.get("freshSnowFallDepth24H") or {}).get("value")
             return None if v is None else float(v)
     return None
+
+
+_NUMBER = r"\d+(?:\.\d+)?"
+
+
+def _reading(raw: str | None) -> float | None:
+    """A snow-report cell -> number. 'Trace' -> 0 (as for observer networks);
+    a range ('2"-4"') -> its midpoint (the honest point estimate; the upper
+    bound would bias high); '4"+' -> 4; 'N/A' or blank -> None."""
+    if raw is None:
+        return None
+    text = re.sub(r"<[^>]+>|&[a-z]+;|&#\d+;", " ", raw).strip()
+    if re.fullmatch(r"(?i)(trace|tr|t)\.?", text):
+        return 0.0
+    nums = re.findall(_NUMBER, text)
+    if not nums:
+        return None
+    if len(nums) >= 2 and re.search(r"\d\s*(?:\"|”|″)?\s*(?:-|–|to)\s*\d", text):
+        return round((float(nums[0]) + float(nums[1])) / 2, 2)
+    return float(nums[0])
+
+
+def _cell(pattern: str):
+    """Regex whose group 1 is the raw report cell, read with _reading."""
+
+    def parse(body: str) -> float | None:
+        m = re.search(pattern, body, re.S)
+        return _reading(m.group(1)) if m else None
+
+    return parse
+
+
+def _red_mountain_parse(body: str) -> float | None:
+    """api.redresort.com/report/full: the patrol's MountainReport. Off-season
+    it keeps last April's numbers with SummerMode=true -> no report."""
+    import json
+
+    rep = json.loads(body).get("MountainReport") or {}
+    if rep.get("SummerMode"):
+        return None
+    v = rep.get("Metric24hours")
+    return None if v is None else float(v)
+
+
+def _red_mountain_time(body: str) -> str | None:
+    import json
+
+    return (json.loads(body).get("MountainReport") or {}).get("DateTime")
 
 
 _NA_REVIEW = "2026-10-20: robots.txt allows the page (PowderBench UA); "
@@ -235,7 +285,9 @@ REGISTRY: tuple[ResortSpec, ...] = (
             "scraping clause; report is server-rendered on their own page "
             "(no aggregator feed detected)"
         ),
-        notes="Mountain-wide 24h value ('0cm / 0in' format); page updates intraday ~14:00 CLT, so the 20:30 UTC scrape is the fresh capture.",
+        notes="Mountain-wide 24h value ('0cm / 0in' format); page updates intraday ~14:00 CLT, so the 20:30 UTC scrape is the fresh capture. "
+        "2026-10-20 re-check: owner Mountain Capital Partners bans robots on brianhead.com, but vallenevado.com's own "
+        "/es/legal/ page and 2026 Terminos y Condiciones PDF contain no robots/scraping/reproduction clause.",
     ),
     ResortSpec(
         resort_id="antillanca",
@@ -613,5 +665,255 @@ REGISTRY: tuple[ResortSpec, ...] = (
         url="https://www.sierraattahoe.com/weather-snow-report/",
         parse=_not_scraped,
         notes="2026-10-20 rejected: snow summary 'Powered by OpenSnow' (aggregator-fed).",
+    ),
+    ResortSpec(
+        resort_id="lake-louise",
+        station_id="lake-louise:CA:RESORT",
+        country="CA",
+        tz="America/Edmonton",
+        url="https://www.skilouise.com/snow-conditions/",
+        parse=_cell('Upper Mountain Snowfall</b>.{0,4000}?<h4 class="obj-text active" data-switch="c">\\s*<strong[^>]*>([^<]{0,40})</strong>\\s*<small class="small">cm</small>\\s*</h4>\\s*<h4 class="obj-text d-none" data-switch="f">\\s*<strong[^>]*>[^<]*</strong>\\s*<small class="small">in</small>\\s*</h4>\\s*<p>\\s*<span class="obj-text d-block">\\s*Last 24 Hours'),
+        unit="cm",
+        report_hour_local=5,
+        enabled=True,
+        verified="2026-10-20: " + "robots 'Disallow:' empty. No terms of use (/terms, /terms-of-use, /legal redirect home); privacy policy and SMS terms have no scraping clause. First-party server-rendered, hand-entered snowfall blocks (Upper/Mid/Lower); RWDI supplies only the forecast. Wayback 2026-02-17: Upper 24h 12 cm (overnight 12, 48h 13, 7d 24, stamped 4:50 am); 2026-03-01: 14 (48h 24, 7d 42).",
+        notes="Upper Mountain 'Last 24 Hours' (cm).",
+    ),
+    ResortSpec(
+        resort_id="marmot-basin",
+        station_id="marmot-basin:CA:RESORT",
+        country="CA",
+        tz="America/Edmonton",
+        url="https://www.skimarmot.com/mountain/weather-conditions/",
+        parse=_cell('<div class="weather-key">Last 24 Hours</div>\\s*<div class="weather-value">([^<]{0,40})</div>'),
+        unit="cm",
+        report_hour_local=7,
+        enabled=True,
+        verified="2026-10-20: " + "robots disallows only /clientadmin. No terms of use (404); privacy policy has no scraping clause. First-party server-rendered snow-report panel; RWDI supplies only the forecast. Wayback 2025-03-27: Last 24 Hours 6 cm (base 112, season 277, 'Updated … 6:55 a.m.'); 'Trace' reads as 0.",
+        notes="Single 'Last 24 Hours' figure; no 48h/7d on the page.",
+    ),
+    ResortSpec(
+        resort_id="le-massif",
+        station_id="le-massif:CA:RESORT",
+        country="CA",
+        tz="America/Toronto",
+        url="https://www.lemassif.com/en/the-mountain/winter/snow-weather-webcams",
+        parse=_cell('<div class="t-large f-w-bold">\\s*24 Hours\\s*</div>\\s*<div class="t-c-aqua-light value">\\s*<span class="metric-value">([^<]{0,40})<span class="unit">\\s*cm'),
+        unit="cm",
+        report_hour_local=6,
+        enabled=True,
+        verified="2026-10-20: " + "Drupal default robots (page allowed). No website terms of use (404); /en/terms_conditions covers tickets/passes only. First-party Snowfall block (Since 6am / 24h / 48h / 7d / season); snow-forecast.com supplies only a separate forecast table. Wayback 2026-01-17: 24h 3 cm (48h 15, 7d 26, 'Updated: Jan 17 - 6:00am').",
+        notes='24 Hours (cm).',
+    ),
+    ResortSpec(
+        resort_id="jay-peak",
+        station_id="jay-peak:US:RESORT",
+        country="US",
+        tz="America/New_York",
+        url="https://digital.jaypeakresort.com/conditions/snow-report/snow-report/",
+        parse=_cell('<dt>\\s*Last 24 Hours\\s*</dt>\\s*<dd>([^<]{0,60})</dd>'),
+        unit="in",
+        report_hour_local=8,
+        enabled=True,
+        verified="2026-10-20: " + 'robots allows the page and the iframe host (digital.jaypeakresort.com: Allow: /). No terms of use published (404); /resort/policies and privacy policy have no scraping clause; parent Pacific Group Resorts publishes none. First-party SnowReport block on the resort\'s own subdomain. Wayback 2025-12-16: 24h \'2"-4"\' (48h 6, 7d 46); 2026-03-05: 0 / 1 / 5.',
+        notes="Ranges read as the midpoint ('2-4' -> 3).",
+    ),
+    ResortSpec(
+        resort_id="bolton-valley",
+        station_id="bolton-valley:US:RESORT",
+        country="US",
+        tz="America/New_York",
+        url="https://snow.boltonvalley.com/snow-report/",
+        parse=_cell('<dd>([^<]{0,60})</dd>\\s*<dt>\\s*Last 24 Hours\\s*</dt>'),
+        unit="in",
+        report_hour_local=9,
+        enabled=True,
+        verified="2026-10-20: " + 'robots: snow.boltonvalley.com Allow: / (Crawl-delay 10; we fetch twice a day). No terms of use (404); footer links only privacy/accessibility. First-party snow-report subdomain (same platform as Jay Peak). Wayback 2026-01-23: 24h \'3-5"\' (48h 10, 7d 10); 2026-02-17: 0 / 0 / 11.',
+        notes="Ranges read as the midpoint ('3-5' -> 4).",
+    ),
+    ResortSpec(
+        resort_id="wolf-creek",
+        station_id="wolf-creek:US:RESORT",
+        country="US",
+        tz="America/Denver",
+        url="https://wolfcreekski.com/wcs-snow-report/",
+        parse=_cell('snow-report-left-text"[^>]*>\\s*24 hours\\s*</div>\\s*<div[^>]*snow-report-right-text[^>]*>\\s*<span[^>]*>([^<]{0,40})</span>'),
+        unit="in",
+        report_hour_local=6,
+        enabled=True,
+        verified="2026-10-20: " + "robots 'Disallow:' empty. No terms of use (/terms, /terms-of-use, /terms-and-conditions, /legal, /terms-of-service all 404). Wolf Creek's own patroller-signed snow report ('Updated: <date> - <time>'). Wayback 2026-02-11: 24h 2 (48h 2, 72h 2); 2026-02-15: 0 (48h 8).",
+        notes='Every report is also archived as a WordPress post (snowreport sitemap) — a possible backfill source.',
+    ),
+    ResortSpec(
+        resort_id="brundage",
+        station_id="brundage:US:RESORT",
+        country="US",
+        tz="America/Boise",
+        url="https://brundage.com/on-the-mountain/snow-report/",
+        parse=_cell('Lakeview \\(7,400&#039;\\)</div>\\s*<ul>\\s*<li>24 Hours:([^<]{0,40})</li>'),
+        unit="in",
+        report_hour_local=6,
+        enabled=True,
+        verified="2026-10-20: " + 'robots \'Disallow:\' empty. No terms of use (404); privacy policy and policies page have no scraping clause. First-party WordPress weather box (Base 6,050\' / Lakeview 7,400\' x 24/48/72h/1-week); OpenSnow powers only the separate forecast tab. Wayback 2026-01-08: Lakeview 24h 4" (48h 6, 1-week 26).',
+        notes='Lakeview (7,400 ft) 24 Hours.',
+    ),
+    ResortSpec(
+        resort_id="bogus-basin",
+        station_id="bogus-basin:US:RESORT",
+        country="US",
+        tz="America/Boise",
+        url="https://bogusbasin.org/your-mountain/conditions-webcams/",
+        parse=_cell('<dt class="is-style-pre-header">24H</dt>\\s*<dd>\\s*<span class="value">([^<]{0,40})</span>'),
+        unit="in",
+        report_hour_local=6,
+        enabled=True,
+        verified="2026-10-20: " + 'robots blocks only events/wp-admin. No terms of use (404); /restrictions-policies and privacy policy have no scraping clause. First-party \'Snow Totals\' block (12H/24H/48H/7-day/season, \'Last update … 5:57 AM\'); snowforecast.com credited only for the forecast. Wayback 2026-01-05: 24H 3" (12H 1, 48H 6, 7-day 6).',
+        notes='24H.',
+    ),
+    ResortSpec(
+        resort_id="mission-ridge",
+        station_id="mission-ridge:US:RESORT",
+        country="US",
+        tz="America/Los_Angeles",
+        url="https://www.missionridge.com/mountain-report/",
+        parse=_cell('<td class="title">24 hr snow</td>\\s*<td class="summit">([^<]{0,40})</td>'),
+        unit="in",
+        report_hour_local=6,
+        enabled=True,
+        verified="2026-10-20: " + 'robots \'Disallow:\' empty, Crawl-delay 10. No terms of use (404); privacy and mountain policies have no scraping clause. First-party conditions table (Summit/Midway/Base: overnight/24/48 hr, ~5:40-6:00 AM), NWAC-partnered instruments. Wayback 2026-02-08: summit 24h 2.5" (overnight 0.5, 48h 2.5).',
+        notes="Summit column; 'Trace' reads as 0.",
+    ),
+    ResortSpec(
+        resort_id="49-degrees-north",
+        station_id="49-degrees-north:US:RESORT",
+        country="US",
+        tz="America/Los_Angeles",
+        url="https://www.ski49n.com/mountain-info/expanded-conditions",
+        parse=_cell('<h3>Summit</h3>\\s*</div>\\s*</div>\\s*<div class="col-md-3 col-lg-2">\\s*<div class="box">\\s*<h4>12 Hours</h4>\\s*<h3>[^<]*</h3>\\s*</div>\\s*</div>\\s*<div class="col-md-3 col-lg-2">\\s*<div class="box">\\s*<h4>24 Hours</h4>\\s*<h3>([^<]{0,40})</h3>'),
+        unit="in",
+        report_hour_local=6,
+        enabled=True,
+        verified="2026-10-20: " + 'robots allows all. Site /terms has no scraping/automated-access ban (only no-damage/overburden and \'not obtain … through any means not intentionally made available\' — a public page fetched twice daily). First-party conditions grid (Base/Summit x 12/24/48/72h, \'Last updated … 5:51am\'). Wayback 2026-03-06: summit 24h 1" (12h Trace, 48h 1, 72h 1).',
+        notes="Summit 24 Hours; 'Trace' reads as 0.",
+    ),
+    ResortSpec(
+        resort_id="mt-spokane",
+        station_id="mt-spokane:US:RESORT",
+        country="US",
+        tz="America/Los_Angeles",
+        url="https://www.mtspokane.com/conditions",
+        parse=_cell('New Snow in Last 24 Hours</td>\\s*<td class="cell"[^>]*>([^<]{0,40})</td>'),
+        unit="in",
+        report_hour_local=5,
+        enabled=True,
+        verified="2026-10-20: " + 'robots allows all. No terms of use (404); /policies has no scraping clause. Hand-edited first-party conditions table posted 5am daily. Wayback 2026-02-25: 24h 4" (48h 4).',
+        notes='\'4"+\' reads as 4; \'N/A\' -> no report.',
+    ),
+    ResortSpec(
+        resort_id="red-mountain",
+        station_id="red-mountain:CA:RESORT",
+        country="CA",
+        tz="America/Vancouver",
+        url="https://api.redresort.com/report/full",
+        parse=_red_mountain_parse,
+        report_time=_red_mountain_time,
+        unit="cm",
+        report_hour_local=8,
+        enabled=True,
+        verified="2026-10-20: www.redresort.com robots disallows only wpforms uploads; api.redresort.com has no "
+        "robots.txt (404). Terms and Conditions contain no scraping/automated-access/redistribution clause (lawful "
+        "use, no interference only). The resort's own report API (staff-entered MountainReport) behind /report/. "
+        "Wayback 2026-02-16: Metric24hours 1 cm (48h 10, 7d 10).",
+        notes="Freshness-gated on MountainReport.DateTime (stale reports never count); SummerMode -> no report.",
+    ),
+    ResortSpec(
+        resort_id="revelstoke",
+        station_id="revelstoke:CA:RESORT",
+        country="CA",
+        tz="America/Vancouver",
+        url="https://example.invalid/revelstoke",
+        parse=_not_scraped,
+        notes="2026-10-20 held: clean first-party block, no terms, but the 24h value is rolling (block has a 'Last Hour' field) with no report timestamp — can't attribute it to a day.",
+    ),
+    ResortSpec(
+        resort_id="panorama",
+        station_id="panorama:CA:RESORT",
+        country="CA",
+        tz="America/Edmonton",
+        url="https://example.invalid/panorama",
+        parse=_not_scraped,
+        notes="2026-10-20 held: parser ready, but late posts (10:09 MST) can miss the scrape and the page needs a freshness gate on 'Updated at'.",
+    ),
+    ResortSpec(
+        resort_id="monarch",
+        station_id="monarch:US:RESORT",
+        country="US",
+        tz="America/Denver",
+        url="https://example.invalid/monarch",
+        parse=_not_scraped,
+        notes="2026-10-20 held: parser ready, but captures show stale reports (Mar 29 report still up in April) — needs a 'Last Updated' freshness gate.",
+    ),
+    ResortSpec(
+        resort_id="big-white",
+        station_id="big-white:CA:RESORT",
+        country="CA",
+        tz="America/Vancouver",
+        url="https://example.invalid/big-white",
+        parse=_not_scraped,
+        notes="2026-10-20 held: first-party, no website terms, but a Trademark Policy prohibits use of its 'intellectual property' without consent — ask.",
+    ),
+    ResortSpec(
+        resort_id="sun-peaks",
+        station_id="sun-peaks:CA:RESORT",
+        country="CA",
+        tz="America/Vancouver",
+        url="https://example.invalid/sun-peaks",
+        parse=_not_scraped,
+        notes='2026-10-20 held: terms require prior written consent for commercial use of content — outreach.',
+    ),
+    ResortSpec(
+        resort_id="fernie",
+        station_id="fernie:CA:RESORT",
+        country="CA",
+        tz="America/Edmonton",
+        url="https://example.invalid/fernie",
+        parse=_not_scraped,
+        notes='2026-10-20 held: RCR terms (Fernie, Kicking Horse, Kimberley, Nakiska) forbid redistribution without written permission — outreach.',
+    ),
+    ResortSpec(
+        resort_id="smugglers-notch",
+        station_id="smugglers-notch:US:RESORT",
+        country="US",
+        tz="America/New_York",
+        url="https://example.invalid/smugglers-notch",
+        parse=_not_scraped,
+        notes="2026-10-20 held: 'New Snowfall' is overnight, not 24h.",
+    ),
+    ResortSpec(
+        resort_id="whiteface",
+        station_id="whiteface:US:RESORT",
+        country="US",
+        tz="America/New_York",
+        url="https://example.invalid/whiteface",
+        parse=_not_scraped,
+        notes='2026-10-20 held: Cloudflare challenge on every request (getting past it = circumvention).',
+    ),
+    ResortSpec(
+        resort_id="sun-valley",
+        station_id="sun-valley:US:RESORT",
+        country="US",
+        tz="America/Boise",
+        url="https://example.invalid/sun-valley",
+        parse=_not_scraped,
+        notes='2026-10-20 held: privacy policy binds visitors to an unpublished Terms of Service (also Snowbasin) — ask Earl Holding.',
+    ),
+    ResortSpec(
+        resort_id="taos",
+        station_id="taos:US:RESORT",
+        country="US",
+        tz="America/Denver",
+        url="https://example.invalid/taos",
+        parse=_not_scraped,
+        notes='2026-10-20 rejected: OpenSnow-fed widget and terms ban bots (also Aspen Snowmass: personal-use terms; Brian Head/MCP: robots banned; Schweitzer: Alterra; Mt Washington BC: OpenSnow).',
     ),
 )

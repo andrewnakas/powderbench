@@ -33,6 +33,19 @@ FIXTURE_VALUES = {
     "sugar-bowl": 9.0,
     "loveland": 0.0,
     "telluride": 0.0,
+    # 2026-10-20 second recon (Wayback captures; ranges -> midpoint)
+    "lake-louise": 12.0,
+    "marmot-basin": 6.0,
+    "le-massif": 3.0,
+    "jay-peak": 3.0,
+    "bolton-valley": 4.0,
+    "wolf-creek": 2.0,
+    "brundage": 4.0,
+    "bogus-basin": 3.0,
+    "mission-ridge": 2.5,
+    "49-degrees-north": 1.0,
+    "mt-spokane": 4.0,
+    "red-mountain": 1.0,
 }
 
 
@@ -212,3 +225,29 @@ def test_hemisphere_slots_cap_fetches_at_two_a_day():
     assert north and south and not {s.resort_id for s in north} & {s.resort_id for s in south}
     assert {s.country for s in north} <= archive.NORTH
     assert all(archive.in_hemisphere(s, None) for s in REGISTRY)
+
+
+def test_reading_trace_ranges_and_marks():
+    from powderbench.resortfeeds.registry import _reading
+
+    assert _reading("Trace") == 0.0 and _reading("T") == 0.0
+    assert _reading('2"-4"') == 3.0 and _reading("3 - 5&quot;") == 4.0
+    assert _reading('4"+') == 4.0 and _reading("12 cm") == 12.0
+    assert _reading("N/A") is None and _reading("") is None
+
+
+def test_stale_report_is_never_counted(tmp_path, monkeypatch):
+    """A report timestamped >30h before the scrape is archived as stale."""
+    import json
+
+    body = json.dumps({"MountainReport": {"SummerMode": False, "Metric24hours": 9,
+                                          "DateTime": "2026-02-10T08:00:00-08:00"}})
+    spec = _spec(url="https://example.com/r.json", parse=lambda b: 9.0,
+                 report_time=lambda b: json.loads(b)["MountainReport"]["DateTime"])
+    monkeypatch.setattr(archive, "REGISTRY", (spec,))
+    monkeypatch.setattr(rhttp, "robots_allowed", lambda url: True)
+    monkeypatch.setattr(rhttp, "polite_get", lambda url, headers=None: SimpleNamespace(text=body))
+    monkeypatch.setattr(archive, "raw_dir", lambda: tmp_path)
+    fresh = pd.read_csv(archive.scrape_all(now_utc=datetime(2026, 2, 10, 20, tzinfo=timezone.utc)))
+    stale = pd.read_csv(archive.scrape_all(now_utc=datetime(2026, 2, 12, 20, tzinfo=timezone.utc)))
+    assert fresh["status"].iloc[0] == "ok" and stale["status"].iloc[0] == "stale"

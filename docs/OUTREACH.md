@@ -23,6 +23,7 @@ entry before anything is enabled.
 | 11 | Avalanche Canada (research) | Bulletin archive (~2011+), Mountain Information Network reports, weather stations, SNOWPACK model dashboard — for the snowpack training dataset | research@avalanche.ca | not sent | | Terms: no reproduction without written consent; Data Sharing Policy routes research/batch requests here (may need a signed agreement) |
 | 12 | SnowPilot | 50k+ snow-pit profiles (CAAML), 2015– | SnowPilot team (snowpilot.org contact) | not sent | | No licence posted; "readily shared with researchers"; site 403s bots |
 | 13 | SLF (data service) | Pérez-Guillén et al. 2022 danger-level ML dataset (EnviDat 330, "WSL data policy"), bulletin archive 1998– | data@slf.ch | not sent | | CC BY data already mirrored; this asks for the restricted sets |
+| 15 | RCR (Fernie, Kicking Horse, Kimberley, Nakiska), Sun Peaks, Big White, Whitewater, Mt Bohemia, Beaver Mountain, Earl Holding (Sun Valley, Snowbasin), Aspen Snowmass | Resort snow reports (parsers ready for most) | marketing / snow safety | not sent | | Terms require written permission or are unpublished |
 | 14 | National Avalanche Center / CAIC | avalanche.org forecast archive + observations API (Origin-allowlisted), CAIC field reports | NAC (avalanche.org) / CAIC | not sent | | CAIC ToS bans robots/data mining |
 
 Status values: `not sent` → `sent` → `replied` → `granted` / `declined`.

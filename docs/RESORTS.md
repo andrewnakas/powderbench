@@ -75,9 +75,20 @@ and 20:30 UTC, North American resorts at 16:30 and 20:30 UTC (after their
 
 ## North America (2026-10-20 recon)
 
-Enabled (resorts-na league): Alta, Mt Baker, Timberline, Mt Hood Meadows,
-Sugar Bowl, Loveland, Telluride — every parser verified against a February 2026
-Wayback snapshot of the live page (Mt Hood Meadows: live API structure).
+Enabled (resorts-na league, 19): Alta, Mt Baker, Timberline, Mt Hood Meadows,
+Sugar Bowl, Loveland, Telluride, Lake Louise, Marmot Basin, Red Mountain,
+Le Massif, Jay Peak, Bolton Valley, Wolf Creek, Brundage, Bogus Basin, Mission
+Ridge, 49 Degrees North, Mt Spokane — every parser verified against winter
+Wayback snapshots of the live page, cross-checked against the page's own
+48h/7-day figures. Reading rules: "Trace" = 0; a range ("2-4") = its midpoint;
+`4"+` = 4. A spec may declare `report_time`: a report more than 30 h old at
+scrape time is archived as `stale` and never counted (Red Mountain).
+Also held: Revelstoke (rolling 24h, no timestamp), Panorama and Monarch (need
+a freshness gate), Big White (IP clause), Sun Peaks, RCR resorts (Fernie,
+Kicking Horse, Kimberley, Nakiska), Whitewater, Mt Bohemia, Beaver Mountain,
+Sun Valley/Snowbasin (permission), Smugglers' Notch (overnight, not 24h), Mad
+River Glen (undefined window), Whiteface (Cloudflare challenge), Powderhorn,
+Lookout Pass, Silver Mountain, Sunshine Village (re-check in season).
 Held: Whitefish (parent-company terms unreachable), Jackson Hole and Grand
 Targhee (terms forbid redistribution without permission — on
 [OUTREACH.md](OUTREACH.md)), Mt Rose ("new snow" isn't a fixed 24h).
@@ -85,9 +96,9 @@ Rejected by terms of use: Alterra (Mammoth, Palisades, Solitude, Crystal,
 Steamboat, Winter Park, Sugarbush, Tremblant, A-Basin), POWDR (Snowbird,
 Copper, Eldora, Killington, Mt Bachelor), Boyne (Brighton, Big Sky, Sugarloaf,
 Sunday River), Bridger Bowl; Vail resorts by policy; Sierra-at-Tahoe
-(OpenSnow-fed). Not yet reconned: Sun Valley, Schweitzer, Brundage, the
-Canadian Rockies/Interior resorts, Jay Peak, Mad River Glen, Smugglers' Notch,
-Bolton Valley, Whiteface, Le Massif, Mt Bohemia.
+(OpenSnow-fed), Taos (OpenSnow widget + bot ban), Aspen Snowmass
+(personal-use terms), Brian Head (MCP bot ban), Schweitzer (Alterra), Mt
+Washington BC (OpenSnow).
 
 ## Current registry status
 

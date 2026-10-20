@@ -35,7 +35,7 @@ import pandas as pd
 
 from ..stations import data_dir
 from .registry import REGISTRY
-from .spec import ResortSpec
+from .spec import MAX_REPORT_AGE_H, ResortSpec
 
 log = logging.getLogger(__name__)
 
@@ -52,6 +52,7 @@ STATUS_NO_REPORT = "no_report"
 STATUS_PARSE_FAILED = "parse_failed"
 STATUS_HTTP_ERROR = "http_error"
 STATUS_ROBOTS_BLOCKED = "robots_blocked"
+STATUS_STALE = "stale"
 
 _STEM_RE = re.compile(r"^(\d{4}-\d{2}-\d{2})T\d{4}Z$")
 
@@ -107,7 +108,11 @@ def scrape_all(now_utc: datetime | None = None, only: str | None = None, hemisph
                 resp = polite_get(spec.url, headers=dict(spec.headers) if spec.headers else None)
                 row["status"] = STATUS_PARSE_FAILED
                 value = spec.parse(resp.text)
-                if value is None:
+                stamp = spec.report_time(resp.text) if spec.report_time else None
+                if stamp and now_utc - datetime.fromisoformat(stamp) > timedelta(hours=MAX_REPORT_AGE_H):
+                    row["status"] = STATUS_STALE
+                    row["value_raw"] = f"{value} @ {stamp}"
+                elif value is None:
                     row["status"] = STATUS_NO_REPORT
                 else:
                     row["value_raw"] = str(value)

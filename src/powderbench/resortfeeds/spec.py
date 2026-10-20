@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from typing import Callable, Mapping
 
 CM_PER_IN = 2.54
+MAX_REPORT_AGE_H = 30
 
 
 @dataclass(frozen=True)
@@ -28,6 +29,11 @@ class ResortSpec:
     verified: str | None = None
     headers: Mapping[str, str] | None = None
     notes: str = ""
+    # Optional: body -> the report's own timestamp (ISO 8601 with offset). A
+    # report older than MAX_REPORT_AGE_H at scrape time is archived as
+    # "stale" and never counted — a resort that didn't update must not have
+    # yesterday's 24h figure credited to today.
+    report_time: Callable[[str], str | None] | None = None
 
     def to_inches(self, value: float) -> float:
         """Reported value -> inches, clamped to >= 0."""
