@@ -37,10 +37,13 @@ def run_hindcast(
     end: date,
     submissions: dict[str, dict[date, pd.DataFrame]] | None = None,
     include_baselines: bool = True,
+    featured_only: bool = False,
 ) -> pd.DataFrame:
-    """Score every round day in [begin, end]. Returns per-(team, round) metric rows."""
+    """Score every round day in [begin, end]. Returns per-(team, round) metric rows.
+    featured_only scores just the headline stations (and keeps the Open-Meteo
+    archive calls small on full-network leagues)."""
     submissions = submissions or {}
-    ids = station_ids(league.name)
+    ids = station_ids(league.name, featured_only=featured_only)
     daily = daily_truth(
         league, ids,
         begin - timedelta(days=baselines.PERSISTENCE_LOOKBACK_DAYS),
@@ -53,15 +56,16 @@ def run_hindcast(
     while day <= end:
         truth_day = truth.window_truth(daily, day)
         climo_pred = climatology.climatology_prediction(day, league, climo)
+        climo_pred = climo_pred[climo_pred["station_id"].isin(ids)]
         subs: dict[str, pd.DataFrame] = {}
         if include_baselines:
             subs.update(
                 {
-                    "baseline-zeros": baselines.zeros_prediction(league),
+                    "baseline-zeros": baselines.zeros_prediction(league).query("station_id in @ids"),
                     baselines.CLIMO_TEAM: climo_pred,
                     "baseline-persistence": baselines.persistence_prediction(day, daily),
-                    "baseline-openmeteo": baselines.openmeteo_prediction(league, day, "best_match", "hindcast"),
-                    "baseline-gfs": baselines.openmeteo_prediction(league, day, "gfs_seamless", "hindcast"),
+                    "baseline-openmeteo": baselines.openmeteo_prediction(league, day, "best_match", "hindcast", featured_only),
+                    "baseline-gfs": baselines.openmeteo_prediction(league, day, "gfs_seamless", "hindcast", featured_only),
                 }
             )
         for team, by_round in submissions.items():

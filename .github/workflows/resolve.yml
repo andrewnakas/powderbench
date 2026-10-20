@@ -22,6 +22,12 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install -e .
+      - uses: actions/cache@v4
+        with:
+          # immutable (3+ days old) API responses: history rebuilds stay warm
+          path: data/cache
+          key: api-cache-${{ github.run_id }}
+          restore-keys: api-cache-
       - name: Resolve matured rounds
         run: powderbench resolve
       - name: Rebuild leaderboard and site data
@@ -30,14 +36,14 @@ jobs:
           powderbench build-site
           # season-explorer series: resorts reads the local archive; era5/stations
           # top-ups ride the API caches (one small window fetch per league)
-          for L in resorts era5 stations; do
+          for L in $(powderbench leagues); do
             powderbench build-history --league "$L" || true
           done
       - name: Commit results
         run: |
           git config user.name "powderbench-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add data/rounds data/results site/data
+          git add data/rounds data/results site/data site/api
           git diff --cached --quiet || git commit -m "Resolve rounds & update leaderboard"
           git pull --rebase origin main
           git push

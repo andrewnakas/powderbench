@@ -6,7 +6,7 @@ import csv
 import json
 import shutil
 from dataclasses import asdict
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 from .leaderboard import leaderboard_path, round_results_dir
@@ -35,12 +35,17 @@ def _daily_truth_series(league: League) -> dict[str, dict[str, list]]:
     {station_id: {"dates": [...], "in": [...]}}. The resorts league reads its
     scrape archive instead (its truth source), so charts work from day one."""
     series: dict[str, dict[str, list]] = {}
+    # per-station daily series are for the featured stations' charts; the
+    # full network would be multi-MB of eagerly-loaded JSON
+    keep = set(station_ids(league.name, featured_only=True))
     if league.truth_source == "resort":
         from .resortfeeds import daily_from_archive
 
         today = date.today()
         obs = daily_from_archive(today - timedelta(days=400), today)
         for r in obs.itertuples():
+            if r.station_id not in keep:
+                continue
             s = series.setdefault(r.station_id, {"dates": [], "in": []})
             s["dates"].append(r.date.isoformat())
             s["in"].append(round(float(r.snow24_in), 2))
@@ -52,7 +57,7 @@ def _daily_truth_series(league: League) -> dict[str, dict[str, list]]:
             continue
         with tpath.open() as f:
             for row in csv.DictReader(f):
-                if row["horizon_h"] == "24" and row["valid"] == "True":
+                if row["horizon_h"] == "24" and row["valid"] == "True" and row["station_id"] in keep:
                     s = series.setdefault(row["station_id"], {"dates": [], "in": []})
                     s["dates"].append(rdir.name)
                     s["in"].append(round(float(row["truth_in"]), 2))
@@ -85,16 +90,18 @@ def _monthly_climatology(league: League) -> dict[str, list]:
     path = data_dir() / league.climatology_path
     if not path.exists():
         return {}
+    import pandas as pd
+
+    climo = pd.read_csv(path, usecols=["station_id", "doy", "h24_mean"]).dropna(subset=["h24_mean"])
+    # the heatmap is for the featured stations; the full network would be
+    # thousands of DOM rows
+    climo = climo[climo["station_id"].isin(set(station_ids(league.name, featured_only=True)))]
     sums: dict[str, list[list[float]]] = {}
-    with path.open() as f:
-        for row in csv.DictReader(f):
-            v = row.get("h24_mean")
-            if not v:
-                continue
-            m = _doy_month(int(row["doy"]))
-            sums.setdefault(row["station_id"], [[0.0, 0] for _ in range(12)])
-            sums[row["station_id"]][m][0] += float(v)
-            sums[row["station_id"]][m][1] += 1
+    for sid, doy, v in zip(climo["station_id"], climo["doy"], climo["h24_mean"]):
+        m = _doy_month(int(doy))
+        sums.setdefault(sid, [[0.0, 0] for _ in range(12)])
+        sums[sid][m][0] += float(v)
+        sums[sid][m][1] += 1
     return {
         sid: [round(total / n, 3) if n else None for total, n in months]
         for sid, months in sums.items()
@@ -119,8 +126,8 @@ def _league_round_status(league: League) -> tuple[dict | None, str | None]:
     return open_round, (resolved[-1].stem if resolved else None)
 
 
-# history spans mirror the climatology builds, so the big fetch is a cache hit
-_HISTORY_SPANS = {"snotel": date(2015, 10, 1), "era5": date(1991, 1, 1)}
+# history spans mirror the climatology builds (TruthSource.history_begin), so
+# the big fetch is a cache hit
 _HISTORY_SPLIT = date(2025, 6, 30)
 
 
@@ -131,18 +138,20 @@ def build_history(league: League, seasons: int = 12) -> list[Path]:
     the truth fetches ride the climatology cache."""
     import pandas as pd
 
-    from .truth_sources import daily_truth
+    from .truth_sources import daily_truth, get_source
 
     today = date.today()
-    ids = station_ids(league.name)
-    if league.truth_source == "resort":
+    # featured stations only: ~1k season files rewritten daily would bloat git
+    ids = station_ids(league.name, featured_only=True)
+    history_begin = get_source(league.truth_source).history_begin
+    if history_begin is None:
         # the scrape archive IS the history; it just starts young
         from .resortfeeds import daily_from_archive
 
         daily = daily_from_archive(today - timedelta(days=365 * seasons), today)
         daily = daily.rename(columns={"snow24_in": "snow24"})
     else:
-        frames = [daily_truth(league, ids, _HISTORY_SPANS[league.truth_source], _HISTORY_SPLIT)]
+        frames = [daily_truth(league, ids, history_begin, _HISTORY_SPLIT)]
         if today > _HISTORY_SPLIT:
             frames.append(daily_truth(league, ids, _HISTORY_SPLIT + timedelta(days=1), today))
         daily = pd.concat(frames, ignore_index=True)
@@ -228,23 +237,32 @@ def build_site() -> list[Path]:
     out_dir.mkdir(parents=True, exist_ok=True)
     written = []
 
-    def emit(name: str, payload) -> None:
+    def emit(name: str, payload, compact: bool = False) -> None:
         path = out_dir / name
-        path.write_text(json.dumps(payload, indent=1))
+        path.write_text(json.dumps(payload, separators=(",", ":")) if compact else json.dumps(payload, indent=1))
         written.append(path)
+
+    from .truth_sources import get_source
 
     leagues = load_leagues()
     league_meta = []
     for l in leagues:
         open_round, last_resolved = _league_round_status(l)
+        src = get_source(l.truth_source)
         league_meta.append(
             {"name": l.name, "label": l.label, "status": l.status, "truth_source": l.truth_source,
+             "truth_note": src.note, "measured": src.measured,
+             "n_stations": len(load_stations(l.name)),
+             "n_featured": len(load_stations(l.name, featured_only=True)),
              "open_round": open_round, "last_resolved": last_resolved}
         )
     emit("leagues.json", league_meta)
 
     for league in leagues:
-        emit(f"stations-{league.name}.json", [asdict(s) for s in load_stations(league.name)])
+        # compact + no empty fields: full-network leagues list thousands of stations
+        emit(f"stations-{league.name}.json",
+             [{k: v for k, v in asdict(s).items() if v is not None} for s in load_stations(league.name)],
+             compact=True)
 
         lb = leaderboard_path(league)
         if lb.exists():
@@ -261,4 +279,62 @@ def build_site() -> list[Path]:
         emit(f"climo-{league.name}.json", _monthly_climatology(league))
 
     emit("resort-vs-era5.json", _resort_vs_era5({l.name: l for l in leagues}))
+    written += build_api(leagues)
     return written
+
+
+REPO_RAW = "https://raw.githubusercontent.com/andrewnakas/powderbench/main"
+
+
+def build_api(leagues) -> list[Path]:
+    """Agent-facing static API (site/api/v1/): every open round with its
+    cutoff, station lists and the exact submission path — so a bot never has
+    to scrape the site or walk the repo."""
+    from .truth_sources import get_source
+
+    api = site_dir() / "api" / "v1"
+    api.mkdir(parents=True, exist_ok=True)
+    now = datetime.now(timezone.utc)
+    rounds = []
+    for lg in leagues:
+        root = data_dir() / "rounds" / lg.name
+        if not root.exists():
+            continue
+        for rdir in sorted(p for p in root.iterdir() if p.is_dir()):
+            mpath = rdir / "round.json"
+            if not mpath.exists():
+                continue
+            m = json.loads(mpath.read_text())
+            # still accepting forecasts (unresolved rounds past cutoff are just waiting on truth)
+            if m.get("status") != "open" or datetime.fromisoformat(m["cutoff_utc"]) <= now:
+                continue
+            rounds.append({
+                "league": lg.name,
+                "round_id": m["round_id"],
+                "cutoff_utc": m["cutoff_utc"],
+                "target_days": m.get("target_days"),
+                "horizons_h": m.get("horizons_h"),
+                "truth_source": lg.truth_source,
+                "measured_new_snow": get_source(lg.truth_source).measured,
+                "n_stations": len(m.get("stations", [])),
+                "n_featured": len(m.get("featured") or m.get("stations", [])),
+                "manifest_url": f"{REPO_RAW}/data/rounds/{lg.name}/{m['round_id']}/round.json",
+                "stations_url": f"https://powderbench.com/data/stations-{lg.name}.json",
+                "submission_path": f"data/submissions/{lg.name}/{m['round_id']}/<your-team>.csv",
+            })
+    payload = {
+        "generated_utc": now.isoformat(timespec="seconds"),
+        "note": "refreshed daily ~16 UTC; the round manifest (manifest_url) is canonical",
+        "submission_schema": {
+            "required": {"station_id": "str", "horizon_h": "24|48|72 (cumulative from round day D)",
+                         "snowfall_in": "inches, 0-200"},
+            "optional": {"p10,p25,p50,p75,p90": "all five or none, non-decreasing",
+                         "prob_6in": "P(>=6in) on horizon-24 rows, 0-1"},
+            "coverage_rule": ">=70% of featured station-horizons to be ranked",
+            "how": "open a PR adding submission_path before cutoff_utc; a bot validates and auto-merges",
+        },
+        "open_rounds": rounds,
+    }
+    path = api / "open-rounds.json"
+    path.write_text(json.dumps(payload, indent=1))
+    return [path]

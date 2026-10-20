@@ -22,6 +22,7 @@ const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "
 
 let map = null;
 let markerLayer = null;
+let markers = {};
 const charts = {};
 let state = { league: null, leagues: [], lb: null, stations: [], snowfall: {}, history: [], climo: {} };
 
@@ -436,28 +437,73 @@ function renderArchive(history) {
 
 function renderMap(stations) {
   if (!map) {
-    map = L.map("map", { scrollWheelZoom: false });
-    L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
-      maxZoom: 12,
+    // canvas renderer: thousands of network stations stay smooth
+    map = L.map("map", { scrollWheelZoom: false, preferCanvas: true });
+    // keyless dark basemap (CARTO's now answers every tile with "API KEY REQUIRED")
+    L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}", {
+      attribution: "Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ",
+      maxZoom: 16,
     }).addTo(map);
   }
   if (markerLayer) markerLayer.remove();
   markerLayer = L.layerGroup();
   const pts = [];
-  for (const s of stations) {
-    pts.push([s.latitude, s.longitude]);
-    L.circleMarker([s.latitude, s.longitude], {
-      radius: 6, color: "#7cc4ff", weight: 1.5, fillColor: "#7cc4ff", fillOpacity: 0.5,
-    })
+  const featured = (s) => (s.tier || "featured") === "featured";
+  markers = {};
+  // network stations first so the featured ones draw on top
+  for (const s of [...stations].sort((a, b) => featured(a) - featured(b))) {
+    const f = featured(s);
+    if (f) pts.push([s.latitude, s.longitude]);
+    markers[s.station_id] = L.circleMarker([s.latitude, s.longitude], f
+      ? { radius: 6, color: "#7cc4ff", weight: 1.5, fillColor: "#7cc4ff", fillOpacity: 0.55 }
+      : { radius: 3, color: "#7ee2a8", weight: 0, fillColor: "#7ee2a8", fillOpacity: 0.45 })
       .bindPopup(
         `<strong>${s.resort}</strong><br>${s.name} · ${s.station_id}<br>` +
-        `${s.region} · ${Math.round(s.elevation_ft).toLocaleString()} ft`
+        `${s.region} · ${Math.round(s.elevation_ft).toLocaleString()} ft` +
+        (s.network ? ` · ${s.network}` : "") + (f ? "<br><em>featured (ranked)</em>" : "")
       )
       .addTo(markerLayer);
   }
   markerLayer.addTo(map);
+  if (!pts.length) pts.push(...stations.map((s) => [s.latitude, s.longitude]));
   if (pts.length) map.fitBounds(L.latLngBounds(pts).pad(0.15));
+
+  const nFeat = stations.filter(featured).length;
+  document.getElementById("station-count").textContent = nFeat < stations.length
+    ? `${stations.length.toLocaleString()} stations · ${nFeat} featured (big dots) are ranked`
+    : `${stations.length.toLocaleString()} stations`;
+  const list = document.getElementById("station-list");
+  list.innerHTML = "";
+  for (const s of stations) {
+    const o = document.createElement("option");
+    o.value = `${s.resort} · ${s.name} · ${s.region} · ${s.station_id}`;
+    list.appendChild(o);
+  }
+}
+
+function findStation(q) {
+  const sid = q.split(" · ").pop();
+  const m = markers[sid];
+  if (m) { map.setView(m.getLatLng(), 10); m.openPopup(); }
+}
+
+function renderTrackOptions() {
+  const sel = document.getElementById("board-track");
+  const keep = sel.value;
+  sel.innerHTML = '<option value="">Headline (featured stations)</option>';
+  const tracks = Object.keys(state.lb.tracks || {});
+  const label = (t) => (t === "full" ? "Full network" : t.startsWith("region:") ? `Region · ${t.slice(7)}` : t);
+  for (const t of tracks.sort((a, b) => (a === "full" ? -1 : b === "full" ? 1 : a.localeCompare(b)))) {
+    sel.appendChild(Object.assign(document.createElement("option"), { value: t, textContent: label(t) }));
+  }
+  sel.value = tracks.includes(keep) ? keep : "";
+  sel.style.display = tracks.length ? "" : "none";
+}
+
+function renderCurrentBoard() {
+  const track = document.getElementById("board-track").value;
+  if (track) renderBoard((state.lb.tracks || {})[track], state.lb.generated_rounds);
+  else renderBoard(state.lb[activeWindow()], state.lb.generated_rounds);
 }
 
 function activeWindow() {
@@ -469,7 +515,7 @@ async function selectLeague(name) {
   if (location.hash.startsWith("#league=")) history.replaceState(null, "", `#league=${name}`);
   renderLeagueBar();
   const lg = state.leagues.find((l) => l.name === name);
-  document.getElementById("truth-note").textContent = TRUTH_NOTES[lg.truth_source] || "";
+  document.getElementById("truth-note").textContent = lg.truth_note || TRUTH_NOTES[lg.truth_source] || "";
 
   try {
     state.stations = await loadJSON(`data/stations-${name}.json`);
@@ -478,7 +524,8 @@ async function selectLeague(name) {
 
   state.lb = { season: [], last30: [], generated_rounds: 0 };
   try { state.lb = await loadJSON(`data/leaderboard-${name}.json`); } catch (e) { /* pre-season */ }
-  renderBoard(state.lb[activeWindow()], state.lb.generated_rounds);
+  renderTrackOptions();
+  renderCurrentBoard();
 
   // "Nobody is beating the models. Yet." — flip the line if someone actually is.
   const ranked = (state.lb.season || []).filter((t) => t.eligible && !t.is_baseline);
@@ -514,9 +561,12 @@ async function selectLeague(name) {
     btn.addEventListener("click", () => {
       document.querySelectorAll(".tab").forEach((b) => b.classList.remove("active"));
       btn.classList.add("active");
-      renderBoard(state.lb[btn.dataset.window], state.lb.generated_rounds);
+      document.getElementById("board-track").value = "";
+      renderCurrentBoard();
     })
   );
+  document.getElementById("board-track").addEventListener("change", renderCurrentBoard);
+  document.getElementById("station-search").addEventListener("change", (e) => findStation(e.target.value));
   try { sznArchive = await loadJSON("data/seasons/southern-stations/index.json"); } catch (e) { /* optional */ }
   const fromHash = location.hash.match(/^#league=(\w+)$/)?.[1];
   const initial =

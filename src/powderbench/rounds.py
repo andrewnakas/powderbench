@@ -56,6 +56,7 @@ def open_round(league: League, d: date) -> Path:
         "target_days": [(d + timedelta(days=i)).isoformat() for i in range(3)],
         "horizons_h": list(HORIZONS),
         "stations": station_ids(league.name),
+        "featured": station_ids(league.name, featured_only=True),
         "status": "open",
         "opened_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
     }
@@ -106,15 +107,29 @@ def _first_commit_utc(path: Path) -> datetime | None:
         return None
 
 
+def round_station_ids(league: League, d: date) -> list[str]:
+    """The round's station set: the manifest snapshot taken at open time
+    (falls back to the live registry for rounds opened before snapshots)."""
+    manifest = round_dir(league, d) / "round.json"
+    if manifest.exists():
+        snap = json.loads(manifest.read_text()).get("stations")
+        if snap:
+            return list(snap)
+    return station_ids(league.name)
+
+
 def resolve_round(league: League, d: date, enforce_deadline: bool = True) -> dict | None:
     """Score all submissions for round d against QC'd truth. Returns the round
     result payload, or None if the round hasn't matured."""
     if not league.matured(d):
         return None
-    daily = daily_truth(league, station_ids(league.name), d - timedelta(days=1), d + timedelta(days=2))
+    rdir = round_dir(league, d)
+    ids = round_station_ids(league, d)
+    registry = by_id(league.name)
+    stations = [registry[sid] for sid in ids if sid in registry]
+    daily = daily_truth(league, ids, d - timedelta(days=1), d + timedelta(days=2))
     truth_d = truth.window_truth(daily, d)
 
-    rdir = round_dir(league, d)
     rdir.mkdir(parents=True, exist_ok=True)
     truth_d.to_csv(rdir / "truth.csv", index=False)
 
@@ -123,11 +138,11 @@ def resolve_round(league: League, d: date, enforce_deadline: bool = True) -> dic
     teams: dict[str, dict] = {}
     for sub_path in sorted(submissions_dir(league, d).glob("*.csv")):
         team = sub_path.stem
-        res = validate_submission(sub_path, league=league)
+        res = validate_submission(sub_path, league=league, round_stations=ids)
         if not res.ok:
             teams[team] = {"invalid": True, "errors": res.errors}
             continue
-        metrics = scoring.score_round(pd.read_csv(sub_path), truth_d, climo_pred=climo_pred)
+        metrics = scoring.score_tracks(pd.read_csv(sub_path), truth_d, climo_pred, stations)
         if enforce_deadline and not team.startswith("baseline-"):
             landed = _first_commit_utc(sub_path)
             metrics["late"] = landed is None or landed > deadline

@@ -2,15 +2,15 @@
 
 ## Leagues
 
-Three independent leaderboards — one per kind of ground truth; results never mix:
+Independent leaderboards — one per kind of ground truth; results never mix:
 
-| | Stations | ERA5 | Resorts |
-|---|---|---|---|
-| Points | 45 SNOTEL | 23 ERA5 resort points | 13 resorts (growing) |
-| Truth | Real telemetry | Model analysis | The resort's own published snow report |
-| Cutoff for round D | 00:00 UTC on D | **11:00 UTC on D−1** | **11:00 UTC on D−1** |
-| Resolves | D+3, 16:00 UTC | from D+8, 16:00 UTC (ERA5 archive lag) | D+3, 16:00 UTC |
-| Season | Oct 1 – Sep 30 | Apr 1 – Mar 31 | Apr 1 – Mar 31 |
+| | Stations | Observers (trial) | ERA5 | Resorts |
+|---|---|---|---|---|
+| Points | ~865 SNOTEL (45 featured) | ~2,000 COOP + CoCoRaHS mountain observers (~85 featured) | 23 ERA5 resort points | 13 resorts (growing) |
+| Truth | Snow-depth telemetry (Δdepth, SWE-checked) | **Measured** new snow on an observer's snowboard | Model analysis | The resort's own published snow report |
+| Cutoff for round D | 00:00 UTC on D | 00:00 UTC on D | **11:00 UTC on D−1** | **11:00 UTC on D−1** |
+| Resolves | D+3, 16:00 UTC | D+6, 16:00 UTC (report latency) | from D+8, 16:00 UTC (ERA5 archive lag) | D+3, 16:00 UTC |
+| Season | Oct 1 – Sep 30 | Oct 1 – Sep 30 | Apr 1 – Mar 31 | Apr 1 – Mar 31 |
 
 Each league is named for its truth source, because the truth *is* the game:
 telemetry rewards nowcasting real snow, reanalysis rewards matching a model's
@@ -46,7 +46,8 @@ numbers never leak into the other leagues' truth (see [DATA.md](DATA.md)).
 
 ## Ground truth and QC
 
-- Stations truth is the QC'd SNOTEL snow-depth delta; era5 truth is ERA5
+- Stations truth is the QC'd SNOTEL snow-depth delta; observers truth is the
+  measured new snow (GHCN-Daily `SNOW`) from the next morning's report; era5 truth is ERA5
   daily snowfall at the station's coordinates; resorts truth is the resort's
   archived snow report (see [DATA.md](DATA.md)).
 - A station-day is **voided for everyone** when data misbehaves — stations:
@@ -61,17 +62,37 @@ numbers never leak into the other leagues' truth (see [DATA.md](DATA.md)).
 
 - **Powder Score** (headline): `100 × (1 − MAE_you / MAE_climatology)`, where
   climatology's MAE is computed **on exactly the station-horizons you predicted** —
-  partial coverage can't cherry-pick easy stations for an edge.
+  partial coverage can't cherry-pick easy stations for an edge. (A station whose
+  climatology is still being built drops out of the comparison for everyone.)
   0 = climatology. The NWP baselines run ~+25 to +30.
 - **Probabilistic track**: mean pinball loss over the five quantiles.
 - **Powder Alert track**: Brier score on the event "≥6 inches in the 24h window",
   from your `prob_6in`.
 - Season aggregates are the mean of your per-round scores.
 
+## Featured stations, the full network, and regions
+
+Big leagues carry two kinds of station:
+
+- **Featured** stations (the marquee ski zones — big dots on the map) are the
+  **headline leaderboard**. Coverage, eligibility and the headline Powder Score
+  are all measured on them.
+- **Network** stations (the rest of the league) are optional. Forecast them and
+  you also appear on the side tracks:
+  - **Full network** — every station in the league;
+  - **Region · …** — one board per region (Wasatch, Tahoe, Colorado…), scored
+    on the stations you forecast there.
+
+Side tracks use the same Powder Score, eligibility bar and QC; they're where
+regional specialists and full-network ML models get to shine. A round's station
+set is frozen when the round opens (`round.json`), so registry growth never
+changes an open round.
+
 ## Ranking eligibility
 
 - Ranked teams need **≥5 resolved rounds** at **≥70% average coverage** of
-  station-horizons. Everyone else is listed unranked until they qualify.
+  featured station-horizons (for a side track: of that track's stations).
+  Everyone else is listed unranked until they qualify.
 - Baselines (`baseline-*`) are ranked like anyone else. Beat them.
 
 ## Fair play

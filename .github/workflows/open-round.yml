@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       league:
-        description: "League (stations | era5 | resorts)"
+        description: "League name (see data/leagues.yaml)"
         required: true
         default: "stations"
       round_date:
@@ -31,8 +31,10 @@ jobs:
         run: |
           LEAGUES="${{ github.event.inputs.league }}"
           if [ -z "$LEAGUES" ]; then
-            # 11:05 run covers the shared 11:00-UTC-cutoff leagues; 00:05 covers stations
-            [ "$(date -u +%H)" -ge 6 ] && LEAGUES="era5 resorts" || LEAGUES="stations"
+            # each cron slot opens the leagues whose cutoff hour it is (leagues.yaml)
+            # the *scheduled* slot, not the clock: runs often start 30-60 min late
+            SLOT_HOUR=$(echo "${{ github.event.schedule }}" | awk '{print $2}')
+            LEAGUES=$(powderbench leagues --due open --hour "$SLOT_HOUR")
           fi
           FAILED=0
           for LEAGUE in $LEAGUES; do

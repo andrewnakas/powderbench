@@ -67,12 +67,13 @@ jobs:
             [ -f "$MANIFEST" ] || review "no such round: \`$LEAGUE/$ROUND\`"
             [ "$(python -c "import json; print(json.load(open('$MANIFEST'))['status'])")" = "open" ] \
               || review "round \`$LEAGUE/$ROUND\` has already resolved"
-            FILES+=("$F|$LEAGUE")
+            FILES+=("$F|$LEAGUE|$ROUND")
             ROUNDS="$ROUNDS $LEAGUE/$ROUND"
           done < <(git diff --name-status "origin/main...$HEAD_SHA")
 
           [ -n "$TEAM" ] || review "no submission files in the diff"
-          [ "${#FILES[@]}" -le 3 ] || review "touches ${#FILES[@]} files (max 3: one round per league)"
+          MAX_FILES=$(powderbench leagues | wc -l)
+          [ "${#FILES[@]}" -le "$MAX_FILES" ] || review "touches ${#FILES[@]} files (max $MAX_FILES: one round per league)"
 
           # anti-impersonation: team name is bound to the login that first used it
           CLAIMED=$(python -c "import yaml; print((yaml.safe_load(open('data/teams.yaml'))['teams'] or {}).get('$TEAM',''))")
@@ -82,9 +83,9 @@ jobs:
 
           # copy ONLY the whitelisted CSVs out of the PR head and validate them
           for entry in "${FILES[@]}"; do
-            F="${entry%|*}"; LEAGUE="${entry#*|}"
+            IFS='|' read -r F LEAGUE ROUND <<< "$entry"
             git checkout -q "$HEAD_SHA" -- "$F"
-            powderbench validate "$F" --league "$LEAGUE" \
+            powderbench validate "$F" --league "$LEAGUE" --round-date "$ROUND" \
               || review "\`$F\` failed validation — run \`powderbench validate $(basename "$F") --league $LEAGUE\` locally"
           done
 

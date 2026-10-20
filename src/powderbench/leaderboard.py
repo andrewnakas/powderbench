@@ -89,8 +89,24 @@ def load_round_results(league: League | str = "stations") -> pd.DataFrame:
                 continue  # scored for the team's own reference, never ranked
             row = {"team": team, "round": payload["round_id"], **metrics}
             row.pop("mae_by_horizon", None)
+            row.pop("tracks", None)
             rows.append(row)
     return pd.DataFrame(rows)
+
+
+def load_track_results(league: League | str = "stations") -> dict[str, pd.DataFrame]:
+    """{track: (team, round) metric rows} for the full-network and regional
+    side tracks (see scoring.score_tracks)."""
+    league = get_league(league) if isinstance(league, str) else league
+    rows: dict[str, list[dict]] = {}
+    for path in sorted(round_results_dir(league).glob("*.json")):
+        payload = json.loads(path.read_text())
+        for team, metrics in payload["teams"].items():
+            if metrics.get("invalid") or metrics.get("late"):
+                continue
+            for track, m in (metrics.get("tracks") or {}).items():
+                rows.setdefault(track, []).append({"team": team, "round": payload["round_id"], **m})
+    return {track: pd.DataFrame(r) for track, r in rows.items()}
 
 
 def build_leaderboard(league: League | str = "stations", season_start: date | None = None) -> dict:
@@ -107,6 +123,14 @@ def build_leaderboard(league: League | str = "stations", season_start: date | No
         last30 = rows[rows["round"].isin(round_ids[-30:])]
         out["last30"] = _records(aggregate(last30, min_rounds=min(MIN_ROUNDS, len(round_ids[-30:]))))
         out["rounds"] = round_ids
+        tracks = {}
+        for track, trows in sorted(load_track_results(league).items()):
+            if season_start is not None:
+                trows = trows[trows["round"] >= season_start.isoformat()]
+            if len(trows):
+                tracks[track] = _records(aggregate(trows))
+        if tracks:
+            out["tracks"] = tracks
     path = leaderboard_path(league)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(out, indent=1, default=str))

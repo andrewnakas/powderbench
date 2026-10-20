@@ -28,6 +28,10 @@ ARCHIVE_URL = "https://archive-api.open-meteo.com/v1/archive"
 CM_PER_INCH = 2.54
 TIMEOUT = 120
 BATCH_SIZE = 25
+# free tier: ~600 location-calls/min (a 25-location request counts 25), so
+# space uncached requests to stay under it when a league has thousands of stations
+MIN_INTERVAL_S = BATCH_SIZE * 60 / 600 + 0.1
+_last_request = [0.0]
 
 NWP_MODELS = ("best_match", "gfs_seamless")
 
@@ -42,7 +46,11 @@ def _get(url: str, params: dict, cacheable: bool) -> list | dict:
     cache = _cache_path(key)
     if cacheable and cache.exists():
         return json.loads(cache.read_text())
-    for attempt in range(4):
+    for attempt in range(5):
+        wait_for = _last_request[0] + MIN_INTERVAL_S - time.monotonic()
+        if wait_for > 0:
+            time.sleep(wait_for)
+        _last_request[0] = time.monotonic()
         try:
             resp = requests.get(url, params=params, timeout=TIMEOUT)
             if resp.status_code >= 500 or resp.status_code == 429:
@@ -50,9 +58,10 @@ def _get(url: str, params: dict, cacheable: bool) -> list | dict:
             resp.raise_for_status()
             break
         except (requests.HTTPError, requests.ConnectionError, requests.Timeout) as exc:
-            if attempt == 3:
+            if attempt == 4:
                 raise
-            wait = 10 * 2**attempt
+            limited = getattr(getattr(exc, "response", None), "status_code", None) == 429
+            wait = 60 if limited else 10 * 2**attempt  # 429 = the per-minute window
             log.warning("Open-Meteo request failed (%s), retrying in %ss", exc, wait)
             time.sleep(wait)
     payload = resp.json()

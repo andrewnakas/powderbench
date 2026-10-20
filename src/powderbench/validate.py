@@ -35,9 +35,16 @@ class ValidationResult:
         return "\n".join(lines)
 
 
-def validate_submission(path: Path | str, league: object = None) -> ValidationResult:
+def validate_submission(path: Path | str, league: object = None,
+                        round_stations: list[str] | None = None) -> ValidationResult:
     """league: League object or league name; default stations. The submission
-    is checked against that league's station registry."""
+    is checked against that league's station registry — or, when given, the
+    round manifest's station snapshot, so registry changes never alter an
+    already-open round.
+
+    Coverage (the ranking gate) is measured on the league's featured
+    stations; forecasting the rest of the network is optional and feeds the
+    full-network and regional tracks."""
     league_name = getattr(league, "name", league) or "stations"
     res = ValidationResult(ok=True)
     try:
@@ -50,7 +57,8 @@ def validate_submission(path: Path | str, league: object = None) -> ValidationRe
     if missing:
         return ValidationResult(ok=False, errors=[f"missing required columns: {sorted(missing)}"])
 
-    known = set(station_ids(league_name))
+    known = set(round_stations) if round_stations is not None else set(station_ids(league_name))
+    featured = known & set(station_ids(league_name, featured_only=True)) or known
     bad_stations = sorted(set(df["station_id"]) - known)
     if bad_stations:
         res.errors.append(f"unknown station_id(s): {bad_stations[:5]}")
@@ -88,8 +96,8 @@ def validate_submission(path: Path | str, league: object = None) -> ValidationRe
         if ((p < 0) | (p > 1)).any():
             res.errors.append("prob_6in must be within [0, 1]")
 
-    expected = len(known) * len(HORIZONS)
-    valid_rows = df[df["station_id"].isin(known) & df["horizon_h"].isin(HORIZONS)]
+    expected = len(featured) * len(HORIZONS)
+    valid_rows = df[df["station_id"].isin(featured) & df["horizon_h"].isin(HORIZONS)]
     res.coverage = len(valid_rows.drop_duplicates(["station_id", "horizon_h"])) / expected
     if res.coverage < MIN_COVERAGE:
         res.warnings.append(

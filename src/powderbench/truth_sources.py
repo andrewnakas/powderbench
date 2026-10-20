@@ -19,7 +19,9 @@ real feeds (NIWA, DGA) get promoted per-station once they prove stable.
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from datetime import date, timedelta
+from typing import Callable
 
 import pandas as pd
 
@@ -33,7 +35,8 @@ QC_MISSING = truth.QC_MISSING
 
 
 def _era5_daily(station_ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
-    stations = [s for s in load_stations(league.name) if s.station_id in set(station_ids)]
+    wanted = set(station_ids)
+    stations = [s for s in load_stations(league.name) if s.station_id in wanted]
     raw = era5_daily_snowfall(stations, begin, end)
     raw = raw.rename(columns={"snowfall_in": "snow24"})
     raw["valid"] = raw["snow24"].notna()
@@ -79,25 +82,115 @@ def _resort_daily(station_ids: list[str], begin: date, end: date) -> pd.DataFram
     return pd.DataFrame(rows, columns=["station_id", "date", "snow24", "valid", "qc_flag"])
 
 
+@dataclass(frozen=True)
+class TruthSource:
+    """One ground-truth network. `fetch(ids, league, begin, end)` returns the
+    shared (station_id, date, snow24, valid, qc_flag) frame.
+
+    history_begin: where the site's season explorer starts reading.
+    climatology: default (begin, end) for build-climatology, and the source the
+        climatology is built from (None = itself; resorts have no report
+        history, so theirs comes from ERA5 at the same coordinates).
+    measured: True when the network records new snow directly (an observer's
+        board, a manual HN); False when snow24 is derived from depth deltas.
+    """
+
+    name: str
+    fetch: Callable[[list[str], League, date, date], pd.DataFrame]
+    history_begin: date | None
+    climatology: tuple[date, date]
+    measured: bool
+    note: str
+    climatology_source: str | None = None
+
+
+TRUTH_SOURCES: dict[str, TruthSource] = {}
+
+
+def register(source: TruthSource) -> TruthSource:
+    TRUTH_SOURCES[source.name] = source
+    return source
+
+
+def get_source(name: str) -> TruthSource:
+    try:
+        return TRUTH_SOURCES[name]
+    except KeyError:
+        raise ValueError(f"unknown truth source: {name!r} (have {sorted(TRUTH_SOURCES)})") from None
+
+
+_CLIM_END = date(2025, 6, 30)
+
+register(TruthSource(
+    name="snotel",
+    fetch=lambda ids, league, b, e: _snotel_daily(ids, b, e),
+    history_begin=date(2015, 10, 1),
+    climatology=(date(2015, 10, 1), _CLIM_END),
+    measured=False,
+    note=(
+        "Ground truth comes from NRCS SNOTEL telemetry — automated snow pillows and depth "
+        "sensors high in the mountains, QC’d and voided (for everyone) when sensors glitch. "
+        "Hover a marker for the station behind each zone."
+    ),
+))
+register(TruthSource(
+    name="era5",
+    fetch=_era5_daily,
+    history_begin=date(1991, 1, 1),
+    climatology=(date(1991, 1, 1), _CLIM_END),
+    measured=False,
+    note=(
+        "Truth is ERA5 model analysis at each resort’s coordinates (no public "
+        "southern-hemisphere station API exists — real feeds get promoted as they become "
+        "available). Scores resolve about a week after each round."
+    ),
+))
+register(TruthSource(
+    name="resort",
+    fetch=lambda ids, league, b, e: _resort_daily(ids, b, e),
+    history_begin=None,  # the scrape archive is the history
+    climatology=(date(1991, 1, 1), _CLIM_END),
+    climatology_source="era5",
+    measured=True,
+    note=(
+        "Truth is each resort’s own published snow report, archived twice daily from the "
+        "resort’s site. Resort numbers run generous — but every team is scored against the "
+        "same report, so it’s a fair fight; cross-check the ERA5 league for the reanalysis view."
+    ),
+))
+
+
+def _ghcnd_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
+    from .networks import ghcnd
+
+    return ghcnd.daily(ids, begin, end)
+
+
+register(TruthSource(
+    name="ghcnd",
+    fetch=_ghcnd_daily,
+    history_begin=date(2016, 10, 1),
+    climatology=(date(2016, 10, 1), _CLIM_END),
+    measured=True,
+    note=(
+        "Truth is measured new snow from volunteer and NWS observers (CoCoRaHS + NWS COOP, "
+        "via NOAA GHCN-Daily): a person, a snowboard and a ruler every morning. A day's "
+        "snow is the next morning's report. Scores resolve ~6 days after each round, once "
+        "late reports are in."
+    ),
+))
+
+
 def daily_truth(league: League, station_ids: list[str], begin: date, end: date) -> pd.DataFrame:
     """QC'd daily snowfall for [begin, end], dispatched by truth source.
     Stations with a per-station override are fetched from their own source."""
-    overrides: dict[str, list[str]] = {}
+    wanted = set(station_ids)
+    groups: dict[str, list[str]] = {}
     for s in load_stations(league.name):
-        if s.station_id in set(station_ids):
-            source = s.truth_source or league.truth_source
-            overrides.setdefault(source, []).append(s.station_id)
+        if s.station_id in wanted:
+            groups.setdefault(s.truth_source or league.truth_source, []).append(s.station_id)
 
-    frames = []
-    for source, ids in overrides.items():
-        if source == "snotel":
-            frames.append(_snotel_daily(ids, begin, end))
-        elif source == "era5":
-            frames.append(_era5_daily(ids, league, begin, end))
-        elif source == "resort":
-            frames.append(_resort_daily(ids, begin, end))
-        else:
-            raise ValueError(f"unknown truth source: {source!r}")
+    frames = [get_source(source).fetch(ids, league, begin, end) for source, ids in groups.items()]
     if not frames:
         return pd.DataFrame(columns=["station_id", "date", "snow24", "valid", "qc_flag"])
     return pd.concat(frames, ignore_index=True)

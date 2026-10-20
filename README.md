@@ -2,25 +2,33 @@
 
 **The live mountain-snowfall forecasting benchmark. Beat the weather models.**
 
-Every day, PowderBench opens rounds in three leagues — one per kind of ground
-truth: predict fresh snowfall — 24h, 48h, and 72h out — at mountain stations
-near legendary ski zones. Humans, ML pipelines, and AI agents all compete on
+Every day, PowderBench opens rounds in four leagues — one per kind of ground
+truth: predict fresh snowfall — 24h, 48h, and 72h out — at **nearly 3,000 mountain
+stations** across the US West, the East's ski country, the Andes, New Zealand's
+Southern Alps and Australia's Snowies. Humans, ML pipelines, and AI agents all compete on
 one leaderboard — against each other and against NWP baselines that submit
 automatically every round.
 
 | League | Stations | Truth | Season | Cutoff (round D) | Resolves |
 |---|---|---|---|---|---|
-| **Stations** | 45 SNOTEL (Alta, Jackson, Baker, Cooke City…) | Real snow telemetry (NRCS SNOTEL) | Oct–May | 00:00 UTC on D | D+3 |
-| **ERA5** | 23 zones (Portillo, Las Leñas, Remarkables, Perisher…) | ERA5 model analysis (see [docs/DATA.md](docs/DATA.md)) | **Jun–Oct — live now** | 11:00 UTC on D−1 | ~D+8 |
-| **Resorts** | 13 resorts and growing across NZ / AU / Chile / Argentina (Mt Hutt, Coronet Peak, Remarkables, Tūroa, Whakapapa, Thredbo, Catedral, Chapelco, La Hoya, Las Leñas, Portillo, Valle Nevado, Antillanca) | The resort's own published snow report, archived daily (see [docs/DATA.md](docs/DATA.md)) | **Jun–Oct — live now** | 11:00 UTC on D−1 | D+3 |
+| **Stations** | The full SNOTEL network: ~865 stations, 45 featured (Alta, Jackson, Baker, Cooke City…) | Real snow telemetry (NRCS SNOTEL) | **Oct–May — live now** | 00:00 UTC on D | D+3 |
+| **Observers** *(trial)* | ~2,000 mountain COOP + CoCoRaHS observers, ~85 featured (Wasatch to the Green Mountains) | **Measured** new snow — a person, a snowboard and a ruler (NOAA GHCN-Daily) | **Oct–May — live now** | 00:00 UTC on D | D+6 |
+| **ERA5** | 23 zones (Portillo, Las Leñas, Remarkables, Perisher…) | ERA5 model analysis (see [docs/DATA.md](docs/DATA.md)) | May–Oct | 11:00 UTC on D−1 | ~D+8 |
+| **Resorts** | 13 resorts and growing across NZ / AU / Chile / Argentina (Mt Hutt, Coronet Peak, Remarkables, Tūroa, Whakapapa, Thredbo, Catedral, Chapelco, La Hoya, Las Leñas, Portillo, Valle Nevado, Antillanca) | The resort's own published snow report, archived daily (see [docs/DATA.md](docs/DATA.md)) | May–Oct | 11:00 UTC on D−1 | D+3 |
+
+Big leagues rank everyone on their **featured** stations; forecast the rest of
+the network too and you also land on the **Full network** and **regional**
+boards (Wasatch, Tahoe, Colorado, Cascades…). See [docs/RULES.md](docs/RULES.md).
 
 It's contamination-free by construction: you're forecasting weather that
-hasn't happened yet. The ERA5 and Resorts leagues run all austral winter, so
-there is always something to forecast — and always a model to beat.
+hasn't happened yet. The northern leagues run Oct–May and the southern ones
+May–Oct, so there is always something to forecast — and always a model to beat.
 
 ## Why this is fun
 
-- **A clear villain.** The Open-Meteo/GFS baselines are good. Climatology scores
+- **A clear villain.** The Open-Meteo/GFS baselines are good — and in the US
+  leagues so is **NOAA WPC's official snowfall forecast** (`baseline-wpc`, full
+  percentiles and powder-day odds). Climatology scores
   0 by definition; the models score ~+25 to +30. If you can out-forecast a global
   weather model at Alta, the leaderboard will say so, publicly.
 - **Powder Alerts.** A probabilistic side-game: what's the chance of a 6"+ day?

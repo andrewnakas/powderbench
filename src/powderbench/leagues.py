@@ -47,7 +47,10 @@ class League:
 
     @property
     def climatology_path(self) -> str:
-        return f"climatology/{self.name}.csv"
+        """Relative to data/. Large (full-network) leagues store it gzipped;
+        the plain .csv is read when that's what's committed."""
+        gz = f"climatology/{self.name}.csv.gz"
+        return gz if (data_dir() / gz).exists() else f"climatology/{self.name}.csv"
 
 
 @lru_cache(maxsize=1)

@@ -56,9 +56,12 @@ def persistence_prediction(target_day: date, obs_daily: pd.DataFrame) -> pd.Data
     return pd.DataFrame(rows)
 
 
-def openmeteo_prediction(league: League, target_day: date, model: str = "best_match", mode: str = "live") -> pd.DataFrame:
-    """NWP baseline: cumulative daily snowfall over the round's 3 target days."""
-    stations = list(load_stations(league.name))
+def openmeteo_prediction(league: League, target_day: date, model: str = "best_match", mode: str = "live",
+                         featured_only: bool = False) -> pd.DataFrame:
+    """NWP baseline: cumulative daily snowfall over the round's 3 target days.
+    featured_only keeps secondary models inside Open-Meteo's free daily call
+    budget (it bills per location) once leagues run thousands of stations."""
+    stations = list(load_stations(league.name, featured_only=featured_only))
     end = target_day + timedelta(days=2)
     fetch = openmeteo.forecast_daily_snowfall if mode == "live" else openmeteo.hindcast_daily_snowfall
     daily = fetch(stations, target_day, end, model=model)
@@ -76,6 +79,10 @@ def openmeteo_prediction(league: League, target_day: date, model: str = "best_ma
     return pd.DataFrame(rows)
 
 
+def _in_conus(league: League) -> bool:
+    return any(24 <= s.latitude <= 50 and -125 <= s.longitude <= -66 for s in load_stations(league.name))
+
+
 def all_baselines(league: League, target_day: date, mode: str = "live") -> dict[str, pd.DataFrame]:
     """All baseline submissions for a round, keyed by team name."""
     from .truth_sources import daily_truth
@@ -91,6 +98,13 @@ def all_baselines(league: League, target_day: date, mode: str = "live") -> dict[
         CLIMO_TEAM: climatology.climatology_prediction(target_day, league),
         "baseline-persistence": persistence_prediction(target_day, obs_daily),
         "baseline-openmeteo": openmeteo_prediction(league, target_day, "best_match", mode),
-        "baseline-gfs": openmeteo_prediction(league, target_day, "gfs_seamless", mode),
+        "baseline-gfs": openmeteo_prediction(league, target_day, "gfs_seamless", mode, featured_only=True),
     }
+    if mode == "live" and _in_conus(league):
+        from .wpc import wpc_prediction
+
+        try:
+            subs["baseline-wpc"] = wpc_prediction(list(load_stations(league.name)), target_day)
+        except Exception:
+            log.warning("WPC baseline failed for %s/%s", league.name, target_day, exc_info=True)
     return {k: v for k, v in subs.items() if len(v)}

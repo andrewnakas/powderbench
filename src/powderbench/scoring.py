@@ -67,14 +67,19 @@ def score_round(pred: pd.DataFrame, truth: pd.DataFrame, climo_pred: pd.DataFram
 
     metrics["powder_score"] = None
     if climo_pred is not None:
-        ref = merged[["station_id", "horizon_h", "truth_in"]].merge(
-            climo_pred[["station_id", "horizon_h", "snowfall_in"]],
+        # skill is measured on the rows climatology also covers: a station
+        # still building its climatology drops out of the comparison for
+        # every team alike instead of voiding everyone's score
+        ref = merged[["station_id", "horizon_h", "truth_in", "snowfall_in"]].merge(
+            climo_pred[["station_id", "horizon_h", "snowfall_in"]].rename(columns={"snowfall_in": "climo_in"}),
             on=["station_id", "horizon_h"], how="inner",
         )
-        if len(ref) == len(merged):
-            mae_ref = float((ref["snowfall_in"] - ref["truth_in"]).abs().mean())
-            ps = powder_score(metrics["mae"], mae_ref)
+        if len(ref):
+            mae_team = float((ref["snowfall_in"] - ref["truth_in"]).abs().mean())
+            mae_ref = float((ref["climo_in"] - ref["truth_in"]).abs().mean())
+            ps = powder_score(mae_team, mae_ref)
             metrics["powder_score"] = None if ps is None else round(ps, 2)
+            metrics["n_skill"] = int(len(ref))
 
     metrics["pinball"] = None
     qcols = [c for c in QUANTILE_COLS.values() if c in merged.columns]
@@ -99,4 +104,42 @@ def score_round(pred: pd.DataFrame, truth: pd.DataFrame, climo_pred: pd.DataFram
             ]
             metrics["brier6"] = round(sum(scores) / len(scores), 4)
             metrics["n_brier6"] = int(len(h24))
+    return metrics
+
+
+TRACK_FULL = "full"
+REGION_PREFIX = "region:"
+MIN_REGION_STATIONS = 3
+_TRACK_KEYS = ("n_scorable", "n_scored", "coverage", "mae", "powder_score", "bias")
+
+
+def score_tracks(pred: pd.DataFrame, truth: pd.DataFrame, climo_pred: pd.DataFrame | None,
+                 stations: list) -> dict:
+    """Headline metrics on the league's featured stations, plus slim side
+    tracks: `full` (every station, when the league has non-featured ones) and
+    one `region:<name>` track per region with enough stations.
+
+    stations: Station objects in this round (the manifest snapshot)."""
+    featured = {s.station_id for s in stations if s.featured}
+    in_featured = truth["station_id"].isin(featured)
+    metrics = score_round(pred[pred["station_id"].isin(featured)], truth[in_featured], climo_pred)
+
+    tracks: dict[str, dict] = {}
+    if len(featured) < len(stations):
+        full = score_round(pred, truth, climo_pred)
+        tracks[TRACK_FULL] = {k: full.get(k) for k in _TRACK_KEYS}
+    regions: dict[str, set[str]] = {}
+    for s in stations:
+        regions.setdefault(s.region, set()).add(s.station_id)
+    if len(regions) > 1:
+        for region, ids in sorted(regions.items()):
+            if len(ids) < MIN_REGION_STATIONS:
+                continue
+            sub = pred[pred["station_id"].isin(ids)]
+            if not len(sub):
+                continue
+            r = score_round(sub, truth[truth["station_id"].isin(ids)], climo_pred)
+            tracks[REGION_PREFIX + region] = {k: r.get(k) for k in _TRACK_KEYS}
+    if tracks:
+        metrics["tracks"] = tracks
     return metrics

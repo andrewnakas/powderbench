@@ -40,7 +40,7 @@ jobs:
           if created > cutoff:
               print(f'::warning file=$f::PR opened after the $LEAGUE/$ROUND cutoff ({cutoff:%Y-%m-%d %H:%M} UTC) — scored but flagged late')
           "
-            powderbench validate "$f" --league "$LEAGUE" || FAIL=1
+            powderbench validate "$f" --league "$LEAGUE" --round-date "$ROUND" || FAIL=1
             echo "::endgroup::"
           done
           exit $FAIL

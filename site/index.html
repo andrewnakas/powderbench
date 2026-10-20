@@ -59,6 +59,9 @@
       <div class="board-controls">
         <button class="tab active" data-window="season">Season</button>
         <button class="tab" data-window="last30">Last 30 rounds</button>
+        <select id="board-track" title="Headline = the featured stations every team is ranked on; the full network and each region are side tracks scored on whatever stations a team forecasts">
+          <option value="">Headline (featured stations)</option>
+        </select>
         <span class="rounds-note" id="rounds-note"></span>
       </div>
       <div class="table-scroll">
@@ -153,6 +156,11 @@
       <p id="truth-note">Ground truth comes from NRCS SNOTEL telemetry — automated snow
         pillows and depth sensors high in the mountains, QC’d and voided (for everyone)
         when sensors glitch. Hover a marker for the station behind each zone.</p>
+      <div class="board-controls">
+        <input id="station-search" type="search" placeholder="Find a station, resort or region…" list="station-list" autocomplete="off">
+        <datalist id="station-list"></datalist>
+        <span class="rounds-note" id="station-count"></span>
+      </div>
       <div id="map"></div>
     </section>
 

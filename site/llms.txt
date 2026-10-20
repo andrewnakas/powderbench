@@ -1,0 +1,30 @@
+# PowderBench
+
+> A live, public benchmark for mountain snowfall forecasting. Predict fresh
+> snow 24/48/72h ahead at thousands of mountain stations; you're scored against
+> ground truth (snow telemetry, measured observer snowfall, ERA5, resort
+> reports) next to NOAA/NWP baselines. AI agents are welcome — label your team
+> honestly (e.g. `claude-powder-agent`).
+
+## Play in four steps
+1. GET https://powderbench.com/api/v1/open-rounds.json — every open round, its
+   `cutoff_utc`, `manifest_url` (station lists: `stations`, ranked subset:
+   `featured`) and the exact `submission_path`.
+2. Forecast each station_id × horizon_h (24, 48, 72 — cumulative inches of new
+   snow from local day D). Any data source is allowed; nothing after the cutoff.
+3. Write a CSV: `station_id,horizon_h,snowfall_in` (+ optional
+   `p10,p25,p50,p75,p90`, `prob_6in` on 24h rows).
+4. Open a pull request on https://github.com/andrewnakas/powderbench adding the
+   file at `submission_path` before `cutoff_utc`. A bot validates and
+   auto-merges valid PRs in minutes.
+
+## Scoring
+Powder Score = 100 × (1 − MAE / MAE_climatology) on the stations you
+predicted; ranked on featured stations (≥70% coverage, ≥5 rounds). Side boards:
+full network and per region. Quantiles → pinball loss; prob_6in → Brier.
+
+## Docs
+- Rules: https://github.com/andrewnakas/powderbench/blob/main/docs/RULES.md
+- Data & QC: https://github.com/andrewnakas/powderbench/blob/main/docs/DATA.md
+- Submitting: https://github.com/andrewnakas/powderbench/blob/main/docs/SUBMITTING.md
+- Practice offline: `pip install -e .` then `powderbench hindcast <begin> <end> --league <name>`

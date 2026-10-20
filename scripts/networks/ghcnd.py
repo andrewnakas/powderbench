@@ -1,0 +1,145 @@
+"""Generate data/stations/ghcnd.csv: US mountain observer stations (NWS COOP +
+CoCoRaHS) that measure new snowfall (GHCN-Daily element SNOW), for the
+`observers` league.
+
+Selection (all from NCEI's published inventory + station list):
+  - reports SNOW, active through the current year, first SNOW <= MAX_FIRST_YEAR
+    (enough seasons for a climatology)
+  - mountain sites: elevation >= WEST_MIN_M west of 100W, >= EAST_MIN_M east
+    of it (Adirondacks/Greens/Whites/Appalachian ski country)
+  - region: nearest curated SNOTEL zone within REGION_RADIUS_KM, else state
+
+Featured (ranked set): per curated region, up to FEATURED_PER_REGION of the
+highest stations within REGION_RADIUS_KM — plus the eastern ski-country picks.
+
+Second pass: once `powderbench build-climatology --league observers` has run,
+re-running this script drops stations whose record is too thin for a winter
+climatology (< MIN_WINTER_DOYS Dec-Feb days with an h24 climatology) and only
+features stations with a solid one.
+
+    python scripts/networks/ghcnd.py
+"""
+
+from __future__ import annotations
+
+import csv
+import math
+import sys
+import time
+from datetime import date
+from pathlib import Path
+
+import requests
+import yaml
+
+ROOT = Path(__file__).resolve().parents[2]
+OUT = ROOT / "data" / "stations" / "ghcnd.csv"
+BASE = "https://www.ncei.noaa.gov/pub/data/ghcn/daily/"
+WEST_MIN_M = 1500
+EAST_MIN_M = 500
+MAX_FIRST_YEAR = 2020
+REGION_RADIUS_KM = 60
+FEATURED_PER_REGION = 3
+CLIMO = ROOT / "data" / "climatology" / "observers.csv.gz"
+MIN_WINTER_DOYS = 60  # of the ~90 Dec-Feb days-of-year
+FIELDS = ["station_id", "slug", "name", "resort", "region", "state", "elevation_ft",
+          "latitude", "longitude", "league", "tier", "network", "external_id"]
+EAST_REGIONS = {  # state -> ski-country region label for the east
+    "VT": "Green Mountains, VT", "NH": "White Mountains, NH", "ME": "Western Maine",
+    "NY": "Adirondacks / Catskills, NY", "MA": "Berkshires, MA", "PA": "Poconos / Laurel Highlands, PA",
+    "WV": "Allegheny Highlands, WV", "VA": "Blue Ridge, VA", "NC": "Southern Appalachians",
+    "TN": "Southern Appalachians", "MI": "Upper Michigan", "WI": "Northwoods, WI", "MN": "Arrowhead, MN",
+}
+
+
+def fetch_text(name: str) -> str:
+    for attempt in range(6):
+        try:
+            r = requests.get(BASE + name, timeout=300)
+            r.raise_for_status()
+            return r.text
+        except requests.RequestException as exc:
+            print(f"retry {name}: {exc}", file=sys.stderr)
+            time.sleep(5 * (attempt + 1))
+    raise SystemExit(f"could not download {name}")
+
+
+def km(lat1, lon1, lat2, lon2) -> float:
+    p = math.pi / 180
+    a = (math.sin((lat2 - lat1) * p / 2) ** 2
+         + math.cos(lat1 * p) * math.cos(lat2 * p) * math.sin((lon2 - lon1) * p / 2) ** 2)
+    return 12742 * math.asin(math.sqrt(a))
+
+
+def main() -> int:
+    this_year = date.today().year
+    snow = {}
+    for line in fetch_text("ghcnd-inventory.txt").splitlines():
+        if line[31:35] == "SNOW":
+            first, last = int(line[36:40]), int(line[41:45])
+            if line.startswith("US") and last >= this_year and first <= MAX_FIRST_YEAR:
+                snow[line[:11]] = first
+
+    solid = None
+    if CLIMO.exists():
+        import pandas as pd
+
+        c = pd.read_csv(CLIMO, usecols=["station_id", "doy", "h24_mean"]).dropna()
+        winter = c[(c["doy"] <= 59) | (c["doy"] >= 335)]
+        counts = winter.groupby("station_id").size()
+        solid = set(counts[counts >= MIN_WINTER_DOYS].index)
+        print(f"climatology pass: {len(solid)} stations with a solid winter record")
+
+    curated = [s for s in yaml.safe_load((ROOT / "data" / "stations.yaml").read_text())["stations"]
+               if s.get("league", "stations") == "stations"]
+    picked = []
+    for line in fetch_text("ghcnd-stations.txt").splitlines():
+        gid = line[:11]
+        if gid not in snow:
+            continue
+        lat, lon, elev = float(line[12:20]), float(line[21:30]), float(line[31:37])
+        state, name = line[38:40].strip(), line[41:71].strip().title()
+        if elev < (WEST_MIN_M if lon < -100 else EAST_MIN_M):
+            continue
+        if solid is not None and f"{gid}:{state}:GHCND" not in solid:
+            continue
+        near = min(curated, key=lambda c: km(lat, lon, c["latitude"], c["longitude"]))
+        dist = km(lat, lon, near["latitude"], near["longitude"])
+        if dist <= REGION_RADIUS_KM:
+            region = near["region"]
+        elif lon >= -100:
+            region = EAST_REGIONS.get(state, state)
+        else:
+            region = state
+        picked.append({
+            "station_id": f"{gid}:{state}:GHCND", "slug": f"ghcnd-{gid.lower()}", "name": name,
+            "resort": near["resort"] if dist <= REGION_RADIUS_KM else name, "region": region,
+            "state": state, "elevation_ft": round(elev * 3.28084), "latitude": lat, "longitude": lon,
+            "league": "observers", "tier": "network",
+            "network": "CoCoRaHS" if gid.startswith("US1") else "COOP", "external_id": gid,
+            "_dist": dist,
+        })
+
+    # featured: the highest few per region (curated zones + eastern ski country)
+    by_region: dict[str, list[dict]] = {}
+    for p in picked:
+        if p["_dist"] <= REGION_RADIUS_KM or p["region"] in EAST_REGIONS.values():
+            by_region.setdefault(p["region"], []).append(p)
+    for group in by_region.values():
+        for p in sorted(group, key=lambda r: -r["elevation_ft"])[:FEATURED_PER_REGION]:
+            p["tier"] = "featured"
+
+    picked.sort(key=lambda r: (r["state"], r["name"]))
+    OUT.parent.mkdir(parents=True, exist_ok=True)
+    with OUT.open("w", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=FIELDS, extrasaction="ignore")
+        w.writeheader()
+        w.writerows(picked)
+    n_feat = sum(p["tier"] == "featured" for p in picked)
+    nets = {n: sum(p["network"] == n for p in picked) for n in ("COOP", "CoCoRaHS")}
+    print(f"{len(snow)} active US SNOW stations -> {len(picked)} mountain ({nets}), {n_feat} featured -> {OUT}")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

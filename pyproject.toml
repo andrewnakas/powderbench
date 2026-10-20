@@ -21,6 +21,8 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0"]
+# GRIB decoding for the WPC/NBM/NDFD baselines (binary wheels bundle ecCodes)
+grib = ["eccodes>=2.37"]
 
 [project.scripts]
 powderbench = "powderbench.cli:app"

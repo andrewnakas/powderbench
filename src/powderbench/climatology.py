@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import logging
 from datetime import date
+from functools import lru_cache
 
 import pandas as pd
 
@@ -42,14 +43,12 @@ def _window_sums(daily: pd.DataFrame) -> pd.DataFrame:
     return pd.concat(frames, ignore_index=True)
 
 
-def build_climatology(league: League, begin: date, end: date) -> pd.DataFrame:
-    """Fetch the league's truth history in [begin, end] and compute per-station
-    day-of-year stats per horizon. Writes data/climatology/<league>.csv."""
-    from .truth_sources import daily_truth
+CLIMO_BATCH = 200
 
-    ids = station_ids(league.name)
-    log.info("[%s] fetching %d stations %s..%s", league.name, len(ids), begin, end)
-    daily = daily_truth(league, ids, begin, end)
+
+def _climatology_rows(daily: pd.DataFrame) -> list[dict]:
+    if not len(daily):
+        return []
     sums = _window_sums(daily)
     sums["doy"] = pd.to_datetime(sums["date"]).dt.dayofyear.clip(upper=365)
 
@@ -70,17 +69,40 @@ def build_climatology(league: League, begin: date, end: date) -> pd.DataFrame:
                 if h == 24:
                     row["h24_p6freq"] = round(float((vals >= POWDER_ALERT_INCHES).mean()), 4)
             rows.append(row)
+    return rows
+
+
+def build_climatology(league: League, begin: date, end: date) -> pd.DataFrame:
+    """Fetch the league's truth history in [begin, end] and compute per-station
+    day-of-year stats per horizon. Writes data/climatology/<league>.csv."""
+    from .truth_sources import daily_truth
+
+    ids = station_ids(league.name)
+    log.info("[%s] fetching %d stations %s..%s", league.name, len(ids), begin, end)
+    rows = []
+    # station batches bound memory: ~1k stations x 10 years is millions of rows
+    for i in range(0, len(ids), CLIMO_BATCH):
+        batch = ids[i : i + CLIMO_BATCH]
+        log.info("[%s] stations %d-%d of %d", league.name, i + 1, i + len(batch), len(ids))
+        rows += _climatology_rows(daily_truth(league, batch, begin, end))
     climo = pd.DataFrame(rows)
-    out = data_dir() / league.climatology_path
+    out = data_dir() / f"climatology/{league.name}.csv.gz"
     out.parent.mkdir(parents=True, exist_ok=True)
     climo.to_csv(out, index=False)
+    (data_dir() / f"climatology/{league.name}.csv").unlink(missing_ok=True)
+    _read_climatology.cache_clear()
     log.info("wrote %s (%d rows)", out, len(climo))
     return climo
 
 
 def load_climatology(league: League | str) -> pd.DataFrame:
     league = get_league(league) if isinstance(league, str) else league
-    return pd.read_csv(data_dir() / league.climatology_path)
+    return _read_climatology(str(data_dir() / league.climatology_path))
+
+
+@lru_cache(maxsize=8)
+def _read_climatology(path: str) -> pd.DataFrame:
+    return pd.read_csv(path)
 
 
 def climatology_prediction(target_day: date, league: League | str, climo: pd.DataFrame | None = None) -> pd.DataFrame:
@@ -89,19 +111,21 @@ def climatology_prediction(target_day: date, league: League | str, climo: pd.Dat
     climo = load_climatology(league) if climo is None else climo
     doy = min(target_day.timetuple().tm_yday, 365)
     day = climo[climo["doy"] == doy]
-    rows = []
-    for _, r in day.iterrows():
-        for h in HORIZONS:
-            if pd.isna(r.get(f"h{h}_mean")):
-                continue
-            row = {
-                "station_id": r["station_id"],
-                "horizon_h": h,
-                "snowfall_in": r[f"h{h}_p50"],
-            }
-            for q, col in QUANTILE_COLS.items():
-                row[col] = r[f"h{h}_{col}"]
-            if h == 24:
-                row["prob_6in"] = r["h24_p6freq"]
-            rows.append(row)
-    return pd.DataFrame(rows)
+    frames = []
+    for h in HORIZONS:
+        if f"h{h}_mean" not in day.columns:
+            continue
+        sub = day[day[f"h{h}_mean"].notna()]
+        frame = pd.DataFrame({"station_id": sub["station_id"].values, "horizon_h": h,
+                              "snowfall_in": sub[f"h{h}_p50"].values})
+        for col in QUANTILE_COLS.values():
+            frame[col] = sub[f"h{h}_{col}"].values
+        if h == 24:
+            frame["prob_6in"] = sub["h24_p6freq"].values
+        frames.append(frame)
+    if not frames:
+        return pd.DataFrame(columns=["station_id", "horizon_h", "snowfall_in"])
+    out = pd.concat(frames, ignore_index=True)
+    order = {sid: i for i, sid in enumerate(day["station_id"])}
+    out["_o"] = out["station_id"].map(order)
+    return out.sort_values(["_o", "horizon_h"]).drop(columns="_o").reset_index(drop=True)

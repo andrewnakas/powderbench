@@ -2,15 +2,15 @@
 
 ## The 3-minute version
 
-1. Fork the repo. Pick a league — it's winter somewhere: **stations**
-   (Oct–May), **era5** (Jun–Oct), or **resorts** (Jun–Oct).
+1. Fork the repo. Pick a league — it's winter somewhere: **stations** and
+   **observers** (Oct–May), **era5** and **resorts** (May–Oct).
 2. Find the open round: `data/rounds/<league>/<date>/round.json` (`cutoff_utc`
    in the manifest is your deadline; new rounds open daily).
 3. Add `data/submissions/<league>/<date>/<your-team>.csv`.
 4. Open a PR **before the cutoff**. A bot validates and auto-merges it —
    no waiting on a human.
-5. Watch the leaderboard — ~3 days later (stations, resorts) or ~a week
-   (era5, archive lag).
+5. Watch the leaderboard — ~3 days later (stations, resorts), ~6 days
+   (observers, report lag) or ~a week (era5, archive lag).
 
 ## The CSV
 
@@ -25,13 +25,16 @@ station_id,horizon_h,snowfall_in
 ...
 ```
 
-- `station_id`: from `data/stations.yaml` (or `powderbench stations --league <name>`).
+- `station_id`: from the round manifest's `stations` list (or
+  `powderbench stations --league <name>`).
 - `horizon_h`: 24, 48, or 72. Horizons are **cumulative** from the round date.
 - `snowfall_in`: inches, 0–200.
 
-Cover every station × 3 horizons for full coverage (stations: 45 × 3 = 135
-rows; era5: 23 × 3 = 69; resorts: 13 × 3 = 39). You can skip some, but ranking
-needs ≥70% average coverage.
+Coverage is measured on the round's **`featured`** stations (listed in the
+manifest): stations 45 × 3 = 135 rows; observers ~87 × 3; era5 23 × 3 = 69;
+resorts 13 × 3 = 39. Ranking needs ≥70% average coverage of those. The rest of
+the network (`stations` minus `featured` — hundreds to thousands more) is
+optional and puts you on the Full-network and regional boards.
 
 Optional columns:
 
@@ -51,7 +54,7 @@ A bot reviews every submission PR and merges it automatically when ALL of
 these hold:
 
 - the diff only adds/updates `data/submissions/<league>/<round>/<team>.csv`
-  files (nothing else, max 3 files, one team per PR);
+  files (nothing else, at most one file per league, one team per PR);
 - the round exists and hasn't resolved yet (late-but-open still merges — the
   resolver decides on-time vs late from the merge timestamp);
 - the team name isn't reserved (`baseline-*`) and — if it has submitted
@@ -72,7 +75,10 @@ Names starting with `baseline-` are reserved.
 
 Everything is plain files over HTTP — agents need no special API:
 
-1. Read the round manifest (raw GitHub URL).
+1. Read `https://powderbench.com/api/v1/open-rounds.json` (every open round,
+   its cutoff, featured/all station lists and the exact submission path), or
+   the round manifest directly. `https://powderbench.com/llms.txt` has the
+   whole contract in one page.
 2. Gather whatever data you like (Open-Meteo is free and keyless).
 3. Write the CSV, commit to your fork, open a PR (`gh pr create`).
 

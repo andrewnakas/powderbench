@@ -30,11 +30,21 @@ def stations(league: str = LeagueOpt):
 
 
 @app.command()
-def validate(submission: Path, league: str = LeagueOpt):
+def validate(
+    submission: Path,
+    league: str = LeagueOpt,
+    round_date: Optional[str] = typer.Option(None, help="Check against that round's frozen station set"),
+):
     """Validate a submission CSV (schema, ranges, coverage)."""
     from .validate import validate_submission
 
-    res = validate_submission(submission, league=league)
+    round_stations = None
+    if round_date:
+        from .leagues import get_league
+        from .rounds import round_station_ids
+
+        round_stations = round_station_ids(get_league(league), _parse_date(round_date))
+    res = validate_submission(submission, league=league, round_stations=round_stations)
     typer.echo(res.summary())
     raise typer.Exit(0 if res.ok else 1)
 
@@ -49,18 +59,17 @@ def build_climatology(
     from .climatology import build_climatology as build
     from .leagues import get_league
 
-    lg = get_league(league)
-    defaults = {
-        "snotel": ("2015-10-01", "2025-06-30"),
-        "era5": ("1991-01-01", "2025-06-30"),
-        # resorts league has no report history yet: the reference climatology
-        # is ERA5 at the resort coordinates (see docs/DATA.md caveat)
-        "resort": ("1991-01-01", "2025-06-30"),
-    }[lg.truth_source]
-    if lg.truth_source == "resort":
-        from dataclasses import replace
+    from dataclasses import replace
 
-        lg = replace(lg, truth_source="era5")
+    from .truth_sources import get_source
+
+    lg = get_league(league)
+    src = get_source(lg.truth_source)
+    defaults = tuple(d.isoformat() for d in src.climatology)
+    if src.climatology_source:
+        # e.g. the resorts league has no report history yet: its reference
+        # climatology is ERA5 at the resort coordinates (docs/DATA.md caveat)
+        lg = replace(lg, truth_source=src.climatology_source)
     build(lg, _parse_date(begin or defaults[0]), _parse_date(end or defaults[1]))
 
 
@@ -72,6 +81,7 @@ def hindcast(
     submission: Optional[Path] = typer.Option(None, help="CSV with round_date column"),
     team: str = typer.Option("you", help="Team name for your submission"),
     out: Optional[Path] = typer.Option(None, help="Write per-round metrics CSV here"),
+    featured_only: bool = typer.Option(False, help="Score only the league's featured (headline) stations"),
 ):
     """Training camp: score baselines (and optionally your forecasts) on past days."""
     from .hindcast import load_hindcast_submission, run_hindcast
@@ -80,7 +90,7 @@ def hindcast(
 
     lg = get_league(league)
     subs = {team: load_hindcast_submission(submission)} if submission else {}
-    rows = run_hindcast(lg, _parse_date(begin), _parse_date(end), submissions=subs)
+    rows = run_hindcast(lg, _parse_date(begin), _parse_date(end), submissions=subs, featured_only=featured_only)
     if not len(rows):
         typer.echo("no scorable rounds in range")
         raise typer.Exit(1)
@@ -113,8 +123,42 @@ def open_round(
 
 
 @app.command()
+def leagues(
+    due: Optional[str] = typer.Option(None, help="open | baselines: only leagues whose cron slot is --hour"),
+    hour: Optional[int] = typer.Option(None, help="UTC hour of the cron run (default: now)"),
+):
+    """List league names (one per line) — workflows loop over this instead of
+    hardcoding league lists. open runs in the cutoff hour (for the round ~24h
+    ahead); baselines run in the hour before the cutoff."""
+    from .leagues import load_leagues
+
+    from datetime import timezone
+
+    h = datetime.now(timezone.utc).hour if hour is None else hour
+    for lg in load_leagues():
+        if due == "open" and lg.cutoff_hour_utc != h:
+            continue
+        if due == "baselines" and (lg.cutoff_hour_utc - 1) % 24 != h:
+            continue
+        typer.echo(lg.name)
+
+
+def _next_cutoff_round(lg) -> date:
+    """The round whose submission cutoff comes next. Looks back 2h so a cron
+    run that starts late (past the cutoff) still targets its own round —
+    baselines are exempt from the late flag."""
+    from datetime import timezone
+
+    now = datetime.now(timezone.utc) - timedelta(hours=2)
+    d = now.date() - timedelta(days=1)
+    while lg.cutoff_utc(d) <= now:
+        d += timedelta(days=1)
+    return d
+
+
+@app.command()
 def baseline_submit(
-    round_date: str,
+    round_date: Optional[str] = typer.Argument(None, help="Default: the round with the next cutoff"),
     league: str = LeagueOpt,
     mode: str = typer.Option("live", help="live | hindcast (dry runs)"),
 ):
@@ -123,7 +167,7 @@ def baseline_submit(
     from .rounds import submit_baselines
 
     lg = get_league(league)
-    d = _parse_date(round_date)
+    d = _parse_date(round_date) if round_date else _next_cutoff_round(lg)
     if not lg.in_season(d):
         typer.echo(f"{lg.name} is off-season for {d} — no baselines to submit")
         return

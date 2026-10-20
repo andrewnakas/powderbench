@@ -125,7 +125,7 @@ footer { border-top: 1px solid var(--line); margin-top: 48px; padding: 20px 0; c
 .chart-panel.short { height: 300px; }
 .chart-controls { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
 .chart-controls label { color: var(--muted); font-size: 14px; }
-select {
+select, input[type="search"] {
   background: var(--panel); color: var(--ink); border: 1px solid var(--line);
   border-radius: 6px; padding: 6px 10px; font: inherit; font-size: 14px; max-width: 100%;
 }
@@ -169,3 +169,6 @@ select {
   .chart-panel { height: 300px; }
   .nav-links a { padding: 6px 7px; }
 }
+
+#station-search { flex: 1 1 260px; min-width: 0; }
+.board-controls { flex-wrap: wrap; }
