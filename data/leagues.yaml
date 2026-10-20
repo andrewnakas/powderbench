@@ -15,7 +15,7 @@ leagues:
     season_start_month: 10 # water year: Oct 1 - Sep 30
     active_months: [10, 11, 12, 1, 2, 3, 4, 5] # Oct-May
   - name: observers
-    label: "Observers · US measured new snow"
+    label: "Observers · North America measured new snow"
     status: trial
     truth_source: ghcnd
     # same clock as the stations league: day D starts at local midnight
@@ -25,6 +25,18 @@ leagues:
     resolve_after: { days: 6, hour_utc: 16 }
     season_start_month: 10 # water year
     active_months: [10, 11, 12, 1, 2, 3, 4, 5]
+  - name: alps
+    label: "Alps · measured new snow"
+    status: trial
+    truth_source: slf
+    # Swiss local day D starts 23:00 UTC D-1 (CET) / 22:00 UTC (CEST): a
+    # 21:00 UTC cutoff on D-1 precedes both
+    cutoff: { days_before: 1, hour_utc: 21 }
+    # day D+2's snow is read at 07:00 local on D+3; SLF's live API has it the
+    # same morning, the bulk archive by D+4 — D+4 16:00 rides the resolve cron
+    resolve_after: { days: 4, hour_utc: 16 }
+    season_start_month: 10 # hydrological year, as SLF
+    active_months: [11, 12, 1, 2, 3, 4, 5]
   - name: era5
     label: "ERA5 · Andes / NZ / AU"
     status: live

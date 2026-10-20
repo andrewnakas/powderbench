@@ -3,6 +3,7 @@ on:
   schedule:
     - cron: "5 0 * * *" # stations: open tomorrow's round (~24h window to 00:00 UTC cutoff)
     - cron: "5 11 * * *" # era5 + resorts: open D+2 (~24h window to the 11:00 UTC D+1 cutoff)
+    - cron: "5 21 * * *" # alps: open D+2 (~24h window to the 21:00 UTC D+1 cutoff)
   workflow_dispatch:
     inputs:
       league:

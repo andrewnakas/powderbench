@@ -122,6 +122,11 @@ def open_round(
     typer.echo(f"opened {lg.name} round {d} -> {path}")
 
 
+# GitHub cron starts 30 min to 3 h late; baselines must still use only
+# information available before the cutoff, so they run well ahead of it
+BASELINE_LEAD_H = 3
+
+
 @app.command()
 def leagues(
     due: Optional[str] = typer.Option(None, help="open | baselines: only leagues whose cron slot is --hour"),
@@ -129,7 +134,7 @@ def leagues(
 ):
     """List league names (one per line) — workflows loop over this instead of
     hardcoding league lists. open runs in the cutoff hour (for the round ~24h
-    ahead); baselines run in the hour before the cutoff."""
+    ahead); baselines run BASELINE_LEAD_H hours before the cutoff."""
     from .leagues import load_leagues
 
     from datetime import timezone
@@ -138,7 +143,7 @@ def leagues(
     for lg in load_leagues():
         if due == "open" and lg.cutoff_hour_utc != h:
             continue
-        if due == "baselines" and (lg.cutoff_hour_utc - 1) % 24 != h:
+        if due == "baselines" and (lg.cutoff_hour_utc - BASELINE_LEAD_H) % 24 != h:
             continue
         typer.echo(lg.name)
 

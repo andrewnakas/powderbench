@@ -119,13 +119,14 @@ def test_powder_score_survives_missing_climatology():
 def test_leagues_due_by_cutoff_hour():
     from typer.testing import CliRunner
 
+    from powderbench import cli
     from powderbench.cli import app
 
     run = lambda *a: CliRunner().invoke(app, ["leagues", *a]).stdout.split()
     by_cutoff = {lg.name: lg.cutoff_hour_utc for lg in load_leagues()}
     for lg, h in by_cutoff.items():
         assert lg in run("--due", "open", "--hour", str(h))
-        assert lg in run("--due", "baselines", "--hour", str((h - 1) % 24))
+        assert lg in run("--due", "baselines", "--hour", str((h - cli.BASELINE_LEAD_H) % 24))
         assert lg not in run("--due", "open", "--hour", str((h + 5) % 24))
     assert sorted(run()) == sorted(by_cutoff)
 

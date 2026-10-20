@@ -4,13 +4,13 @@
 
 Independent leaderboards — one per kind of ground truth; results never mix:
 
-| | Stations | Observers (trial) | ERA5 | Resorts |
-|---|---|---|---|---|
-| Points | ~865 SNOTEL (45 featured) | ~2,000 COOP + CoCoRaHS mountain observers (~85 featured) | 23 ERA5 resort points | 13 resorts (growing) |
-| Truth | Snow-depth telemetry (Δdepth, SWE-checked) | **Measured** new snow on an observer's snowboard | Model analysis | The resort's own published snow report |
-| Cutoff for round D | 00:00 UTC on D | 00:00 UTC on D | **11:00 UTC on D−1** | **11:00 UTC on D−1** |
-| Resolves | D+3, 16:00 UTC | D+6, 16:00 UTC (report latency) | from D+8, 16:00 UTC (ERA5 archive lag) | D+3, 16:00 UTC |
-| Season | Oct 1 – Sep 30 | Oct 1 – Sep 30 | Apr 1 – Mar 31 | Apr 1 – Mar 31 |
+| | Stations | Observers (trial) | Alps (trial) | ERA5 | Resorts |
+|---|---|---|---|---|---|
+| Points | ~865 SNOTEL (45 featured) | ~1,260 US COOP + CoCoRaHS mountain observers + Canadian ECCC stations (~90 featured) | ~100 SLF study plots + IMIS (Swiss Alps) | 23 ERA5 resort points | 13 resorts (growing) |
+| Truth | Snow-depth telemetry (Δdepth, SWE-checked) | **Measured** new snow on an observer's snowboard | Measured 24h new snow (SLF) | Model analysis | The resort's own published snow report |
+| Cutoff for round D | 00:00 UTC on D | 00:00 UTC on D | **21:00 UTC on D−1** | **11:00 UTC on D−1** | **11:00 UTC on D−1** |
+| Resolves | D+3, 16:00 UTC | D+6, 16:00 UTC (report latency) | D+4, 16:00 UTC | from D+8, 16:00 UTC (ERA5 archive lag) | D+3, 16:00 UTC |
+| Season | Oct 1 – Sep 30 | Oct 1 – Sep 30 | Oct 1 – Sep 30 (rounds Nov–May) | Apr 1 – Mar 31 | Apr 1 – Mar 31 |
 
 Each league is named for its truth source, because the truth *is* the game:
 telemetry rewards nowcasting real snow, reanalysis rewards matching a model's

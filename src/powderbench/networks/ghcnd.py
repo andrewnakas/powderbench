@@ -5,12 +5,12 @@ attributed in docs/DATA.md).
 Unlike SNOTEL (snow24 derived from depth deltas), SNOW is *measured* new snow
 on a snowboard, so this is the truth for the `observers` league.
 
-Observation-day alignment: COOP and CoCoRaHS observers read the board in the
-morning (~07:00 local), and GHCN files the reading under the observation
-date. So the GHCN value dated D+1 is the snow that fell over local day D —
-we score day D against the D+1 report. (A minority of COOP sites observe in
-the afternoon; for them this attribution is ~half a day early. That's a known,
-documented caveat and is the same for every competitor.)
+Observation-day alignment: most COOP and CoCoRaHS observers read the board in
+the morning (~07:00 local) and GHCN files it under the observation date, so
+the value dated D+1 is the snow of local day D. Some observe in the evening
+(value dated D). Each station's offset is fitted from its own record against
+ERA5 (networks/attribution.py) and stored as `day_offset` in the station
+file; stations whose fit is ambiguous are left out.
 
 Access: NCEI Access Data Service (keyless, JSON). Latency: CoCoRaHS lands in
 ~1 day, COOP keyed forms can take longer; the league resolves at D+6.
@@ -62,7 +62,7 @@ def _get(params: dict, cacheable: bool) -> list:
                 raise requests.HTTPError(str(resp.status_code), response=resp)
             resp.raise_for_status()
             break
-        except (requests.HTTPError, requests.ConnectionError, requests.Timeout) as exc:
+        except requests.RequestException as exc:  # incl. dropped/truncated responses
             if attempt == RETRIES - 1:
                 raise
             wait = min(5 * 2**attempt, 60)
@@ -126,10 +126,15 @@ def fetch_snow(station_ids: list[str], begin: date, end: date) -> pd.DataFrame:
     return pd.DataFrame(rows, columns=["station_id", "date", "snow_in", "qflag"])
 
 
-def daily(station_ids: list[str], begin: date, end: date) -> pd.DataFrame:
-    """Truth frame for local days [begin, end]: day D <- the report filed D+1."""
-    raw = fetch_snow(station_ids, begin + timedelta(days=1), end + timedelta(days=1))
-    have = {(r.station_id, r.date - timedelta(days=1)): (r.snow_in, r.qflag) for r in raw.itertuples()}
+def daily(station_ids: list[str], begin: date, end: date, offsets: dict[str, int] | None = None) -> pd.DataFrame:
+    """Truth frame for local days [begin, end]: day D <- the report filed
+    D+offset (per station; default 1 = morning observer)."""
+    offsets = offsets or {}
+    lo = min([DEFAULT_OFFSET, *offsets.values()])
+    hi = max([DEFAULT_OFFSET, *offsets.values()])
+    raw = fetch_snow(station_ids, begin + timedelta(days=lo), end + timedelta(days=hi))
+    have = {(r.station_id, r.date - timedelta(days=offsets.get(r.station_id, DEFAULT_OFFSET))): (r.snow_in, r.qflag)
+            for r in raw.itertuples()}
     rows = []
     for sid in station_ids:
         for i in range((end - begin).days + 1):
@@ -151,3 +156,4 @@ def daily(station_ids: list[str], begin: date, end: date) -> pd.DataFrame:
 
 
 QC_SOURCE_QC = "source_qc_failed"
+DEFAULT_OFFSET = 1

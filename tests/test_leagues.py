@@ -5,7 +5,7 @@ from powderbench.leagues import get_league, load_leagues
 
 def test_leagues_load():
     names = [l.name for l in load_leagues()]
-    assert sorted(names) == ["era5", "observers", "resorts", "stations"]
+    assert {"stations", "observers", "alps", "era5", "resorts"} <= set(names)
     assert all(l.status in ("live", "trial") for l in load_leagues())
     assert get_league("stations").truth_source == "snotel"
     assert get_league("era5").truth_source == "era5"

@@ -43,7 +43,7 @@ FEATURED_PER_REGION = 3
 CLIMO = ROOT / "data" / "climatology" / "observers.csv.gz"
 MIN_WINTER_DOYS = 60  # of the ~90 Dec-Feb days-of-year
 FIELDS = ["station_id", "slug", "name", "resort", "region", "state", "elevation_ft",
-          "latitude", "longitude", "league", "tier", "network", "external_id"]
+          "latitude", "longitude", "league", "tier", "network", "external_id", "day_offset"]
 EAST_REGIONS = {  # state -> ski-country region label for the east
     "VT": "Green Mountains, VT", "NH": "White Mountains, NH", "ME": "Western Maine",
     "NY": "Adirondacks / Catskills, NY", "MA": "Berkshires, MA", "PA": "Poconos / Laurel Highlands, PA",
@@ -69,6 +69,40 @@ def km(lat1, lon1, lat2, lon2) -> float:
     a = (math.sin((lat2 - lat1) * p / 2) ** 2
          + math.cos(lat1 * p) * math.cos(lat2 * p) * math.sin((lon2 - lon1) * p / 2) ** 2)
     return 12742 * math.asin(math.sqrt(a))
+
+
+def fit_day_offsets(rows: list[dict]) -> list[dict]:
+    """Fit each station's observation-day offset against ERA5 over the last two
+    winters (powderbench.networks.attribution); drop stations without a clear fit."""
+    sys.path.insert(0, str(ROOT / "src"))
+    import pandas as pd
+
+    from powderbench.networks import attribution, ghcnd
+    from powderbench.openmeteo import era5_daily_snowfall
+    from powderbench.stations import Station
+
+    today = date.today()
+    last = today.year if today.month >= 4 else today.year - 1
+    sts = [Station(**{k: r[k] for k in ("station_id", "slug", "name", "resort", "region", "state",
+                                        "elevation_ft", "latitude", "longitude")}) for r in rows]
+    reps, mods = [], []
+    for b, e in attribution.winters(last):
+        raw = ghcnd.fetch_snow([s.station_id for s in sts], b, e)
+        reps.append(raw[raw["qflag"] == ""])
+        mods.append(era5_daily_snowfall(sts, b, e))
+    # GHCN dates a reading by when it was taken: same day (evening) or next
+    # morning are possible; "before it fell" (-1) means a misdated record
+    fits = attribution.fit_offsets(pd.concat(reps), pd.concat(mods), allowed=(0, 1))
+    kept = []
+    counts = {}
+    for r in rows:
+        off = fits.get(r["station_id"], {}).get("offset")
+        counts[off] = counts.get(off, 0) + 1
+        if off is not None:
+            r["day_offset"] = off
+            kept.append(r)
+    print(f"day-offset fit: {counts} (None = no clear fit -> dropped)")
+    return kept
 
 
 def main() -> int:
@@ -119,6 +153,8 @@ def main() -> int:
             "network": "CoCoRaHS" if gid.startswith("US1") else "COOP", "external_id": gid,
             "_dist": dist,
         })
+
+    picked = fit_day_offsets(picked)
 
     # featured: the highest few per region (curated zones + eastern ski country)
     by_region: dict[str, list[dict]] = {}

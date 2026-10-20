@@ -45,6 +45,9 @@ class Station:
     tier: str | None = None  # featured | network; None -> featured (curated YAML)
     network: str | None = None  # e.g. SNTL, CDEC, GHCND
     external_id: str | None = None  # the network's own id, when it differs
+    # observer networks: truth for local day D is the report dated D+day_offset
+    # (fitted per station against ERA5 — see networks/attribution.py)
+    day_offset: int | None = None
 
     @property
     def featured(self) -> bool:
@@ -53,6 +56,7 @@ class Station:
 
 _FIELDS = {f.name: f for f in fields(Station)}
 _FLOATS = {"elevation_ft", "latitude", "longitude"}
+_INTS = {"day_offset"}
 
 
 def _from_row(row: dict, default_tier: str | None) -> Station:
@@ -63,7 +67,7 @@ def _from_row(row: dict, default_tier: str | None) -> Station:
     for k, v in row.items():
         if v == "" or v is None:
             continue
-        clean[k] = float(v) if k in _FLOATS else v
+        clean[k] = float(v) if k in _FLOATS else int(v) if k in _INTS else v
     clean.setdefault("tier", default_tier)
     return Station(**clean)
 

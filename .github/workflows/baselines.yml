@@ -1,8 +1,11 @@
 name: Baseline submissions
 on:
   schedule:
-    - cron: "15 23 * * *" # stations: 45 min before tomorrow's 00:00 UTC cutoff
-    - cron: "15 10 * * *" # era5 + resorts: 45 min before today's 11:00 UTC cutoff (round D = tomorrow)
+    # each slot is 3h before a league cutoff (powderbench leagues --due baselines):
+    # GitHub cron starts up to ~3h late, and baselines must not see post-cutoff data
+    - cron: "15 21 * * *" # stations + observers: 00:00 UTC cutoff
+    - cron: "15 8 * * *" # era5 + resorts: 11:00 UTC cutoff (round D = tomorrow)
+    - cron: "15 18 * * *" # alps: 21:00 UTC cutoff
   workflow_dispatch:
     inputs:
       league:

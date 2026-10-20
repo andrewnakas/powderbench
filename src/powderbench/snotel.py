@@ -48,7 +48,7 @@ def _get(url: str, params: dict, cacheable: bool) -> list:
                 raise requests.HTTPError(f"{resp.status_code}", response=resp)
             resp.raise_for_status()
             break
-        except (requests.HTTPError, requests.ConnectionError, requests.Timeout) as exc:
+        except requests.RequestException as exc:  # incl. dropped/truncated responses
             if attempt == RETRIES - 1:
                 raise
             wait = min(5 * 2**attempt, 60)

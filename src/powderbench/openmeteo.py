@@ -57,7 +57,7 @@ def _get(url: str, params: dict, cacheable: bool) -> list | dict:
                 raise requests.HTTPError(f"{resp.status_code}", response=resp)
             resp.raise_for_status()
             break
-        except (requests.HTTPError, requests.ConnectionError, requests.Timeout) as exc:
+        except requests.RequestException as exc:  # incl. dropped/truncated responses
             if attempt == 4:
                 raise
             limited = getattr(getattr(exc, "response", None), "status_code", None) == 429

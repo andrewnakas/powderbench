@@ -59,13 +59,28 @@ Data Service. COOP data is US public domain; CoCoRaHS data is CC BY 3.0
   with records back to ≤2020, at mountain elevations (≥1,500 m west of 100°W,
   ≥500 m east of it — Adirondacks, Greens, Whites, Appalachians), then — after
   the climatology build — only stations with a solid winter record (an h24
-  climatology on ≥60 of the ~90 Dec–Feb days). ~2,000 stations.
+  climatology on ≥60 of the ~90 Dec–Feb days) and a clear day-attribution fit (below). ~1,260 stations.
   **Featured**: the three highest per curated ski zone and per eastern
   ski-country region.
-- **Day alignment**: observers read the board ~07:00 local and GHCN files it
-  under the observation date, so **local day D ← the report dated D+1**. A
-  minority of COOP sites observe in the afternoon; for them the attribution is
-  about half a day early. Same for every competitor; documented, not corrected.
+- **Day alignment — fitted per station.** Observers file a reading under the
+  date they took it, but read the board at different times (morning observers:
+  the snow fell the day before; evening observers: same day). A one-day error
+  shifts every storm, so `scripts/networks/*.py` fit each station's
+  `day_offset` (local day D ← report dated D+offset) by correlating its last
+  two winters of reports against ERA5 daily snowfall at its coordinates for
+  shifts −1/0/+1 (`powderbench/networks/attribution.py`). A station is kept
+  only if the best shift correlates ≥0.4 **and** beats the runner-up by ≥0.1 —
+  stations that don't track storms, or are ambiguous, are dropped. Most US
+  observers fit +1 (morning); most ECCC stations fit 0.
+- **Canada (ECCC)**: measured `TOTAL_SNOW` (cm) from ECCC's climate-daily OGC
+  API (Open Government Licence – Canada), `scripts/networks/eccc.py` →
+  `data/stations/eccc.csv` (`truth_source: eccc`). Only 8 mountain stations
+  still measure snowfall daily — Whistler Roundhouse, Silver Star, Grouse
+  Mountain, Kananaskis and Barkerville are featured. Most automatic stations
+  don't measure snowfall; one reported a constant 0 all winter (dropped by the
+  fit). QC voids flags M (missing), A (accumulated over several days) and E
+  (estimated); trace = 0. ECCC packs station coordinates as DD.MMSS — decoded
+  explicitly.
 - **QC** (voided for everyone): no report (observers often leave the field
   blank on dry days — blank is never treated as zero), any NCEI quality flag,
   negative values or >48". Trace (`T`) counts as 0.
@@ -78,15 +93,34 @@ Data Service. COOP data is US public domain; CoCoRaHS data is CC BY 3.0
 | Source | Status | Why |
 |---|---|---|
 | NRCS SNOTEL, full network | **live** (stations) | ~865 stations with depth + SWE |
-| NOAA GHCN-Daily SNOW (COOP + CoCoRaHS) | **live, trial** (observers) | measured new snow, ~2,000 mountain sites. Hindcast gate (featured, 2026-02-01..14): GFS/Open-Meteo +25.1, zeros +12.8, climatology 0, persistence −51 |
+| NOAA GHCN-Daily SNOW (COOP + CoCoRaHS) | **live, trial** (observers) | measured new snow, ~1,260 timing-verified mountain sites. Hindcast gate (featured, 2026-02-01..14): GFS/Open-Meteo +25.1, zeros +12.8, climatology 0, persistence −51 |
 | NOAA WPC PWPF | **live** (`baseline-wpc`) | official NWS snowfall percentiles |
 | CDEC snow pillows (CA DWR) | **deferred** | CDEC's *daily* depth isn't the midnight reading (runs above the 00:00 hourly value during storms — looks like a daily mean), so day-to-day deltas would smear storms across days. Doing it right means hourly data with a smoothed local-midnight reading (~1,200 requests for a climatology). Also seen: depth < SWE at MB3 (impossible) → needs a density QC. ~60 non-NRCS pillows with depth. |
 | BC ASWS (OGL-BC) | next | current-season CSVs + separate archive |
-| ECCC climate-daily `TOTAL_SNOW` (OGL-Canada) | next | measured new snow, Canadian observers |
+| ECCC climate-daily `TOTAL_SNOW` (OGL-Canada) | **live, trial** (observers) | 8 mountain stations still measure snowfall daily (Whistler, Silver Star, Grouse, Kananaskis, Barkerville featured) |
 | IEM real-time COOP/CoCoRaHS | next | same-day provisional observers truth |
 | NWS Local Storm Reports (IEM) | planned | storm-total "Storm Mode" events |
 | Synoptic / NWAC / UAC / CAIC / Avalanche Canada | permission requested | see [OUTREACH.md](OUTREACH.md) |
 | OnTheSnow, OpenSnow, Snow-Forecast, Skiresort.info | rejected | ToS prohibit scraping/redistribution |
+
+## Ground truth: measured new snow, Swiss Alps (alps league)
+
+The alps league scores against **HN — the 24h height of new snow** published by
+the WSL Institute for Snow and Avalanche Research **SLF** (CC BY 4.0; data ©
+SLF, www.slf.ch), from `measurement-data.slf.ch` (daily-regenerated archive,
+records to the 1930s) topped up by the live `measurement-api.slf.ch` for the
+last week.
+
+- **Manual study plots** (`:SLF`): an observer's snowboard at ~07:00 local
+  (`measure_date` 06:00 UTC) — the gold standard; ~100 plots, featured ones at
+  Zermatt, Saas-Fee, Verbier, Crans-Montana, St. Moritz, Davos, Klosters,
+  Arosa, Laax, Engelberg, Andermatt, Grindelwald, Mürren, Wengen, Adelboden…
+- **IMIS automatic stations** (`:IMIS`): HN_1D derived by SLF from the
+  snow-depth sensor; network tier.
+- Day attribution fitted per station like the observers league; QC voids
+  missing values, SLF's negative sentinels and >48".
+- Season Nov–May; cutoff 21:00 UTC on D−1 (before Swiss local midnight in
+  both CET and CEST); resolves D+4.
 
 ## Ground truth: ERA5 analysis (era5 league)
 
@@ -293,6 +327,9 @@ baseline submissions double as the archive. Needs `pip install -e .[grib]`.
 
 [Open-Meteo](https://open-meteo.com/) (CC BY 4.0, no key):
 
+- **Timing**: baselines run 3 hours before each league's cutoff — GitHub's
+  scheduler routinely starts jobs 30 min–3 h late, and a baseline must never
+  see forecasts issued after the cutoff its competitors faced.
 - **Live rounds**: `/v1/forecast` at each station's coordinates and elevation,
   daily `snowfall_sum`, models `best_match` (every station) and `gfs_seamless`
   (featured stations only — Open-Meteo bills per location, and the free daily

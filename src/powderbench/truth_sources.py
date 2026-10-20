@@ -160,10 +160,22 @@ register(TruthSource(
 ))
 
 
+def _offsets(league: League, ids: list[str]) -> dict[str, int]:
+    wanted = set(ids)
+    return {s.station_id: s.day_offset for s in load_stations(league.name)
+            if s.station_id in wanted and s.day_offset is not None}
+
+
 def _ghcnd_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
     from .networks import ghcnd
 
-    return ghcnd.daily(ids, begin, end)
+    return ghcnd.daily(ids, begin, end, _offsets(league, ids))
+
+
+def _eccc_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
+    from .networks import eccc
+
+    return eccc.daily(ids, begin, end, _offsets(league, ids))
 
 
 register(TruthSource(
@@ -177,6 +189,40 @@ register(TruthSource(
         "via NOAA GHCN-Daily): a person, a snowboard and a ruler every morning. A day's "
         "snow is the next morning's report. Scores resolve ~6 days after each round, once "
         "late reports are in."
+    ),
+))
+
+
+register(TruthSource(
+    name="eccc",
+    fetch=_eccc_daily,
+    history_begin=date(2016, 10, 1),
+    climatology=(date(2016, 10, 1), _CLIM_END),
+    measured=True,
+    note=(
+        "Truth is measured new snow from Environment and Climate Change Canada's staffed "
+        "climate stations (TOTAL_SNOW), the Canadian counterpart of the US observer network."
+    ),
+))
+
+
+def _slf_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
+    from .networks import slf
+
+    return slf.daily(ids, begin, end, _offsets(league, ids))
+
+
+register(TruthSource(
+    name="slf",
+    fetch=_slf_daily,
+    history_begin=date(2010, 10, 1),
+    climatology=(date(2000, 10, 1), _CLIM_END),
+    measured=True,
+    note=(
+        "Truth is the 24h new snow (HN) measured by the WSL Institute for Snow and Avalanche "
+        "Research SLF — observers' snowboards at manual study plots across the Swiss Alps "
+        "(Zermatt, Verbier, St. Moritz, Davos…) plus SLF's automatic IMIS stations. "
+        "Data © SLF, CC BY 4.0."
     ),
 ))
 

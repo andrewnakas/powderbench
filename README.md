@@ -2,9 +2,9 @@
 
 **The live mountain-snowfall forecasting benchmark. Beat the weather models.**
 
-Every day, PowderBench opens rounds in four leagues — one per kind of ground
-truth: predict fresh snowfall — 24h, 48h, and 72h out — at **nearly 3,000 mountain
-stations** across the US West, the East's ski country, the Andes, New Zealand's
+Every day, PowderBench opens rounds in five leagues — one per kind of ground
+truth: predict fresh snowfall — 24h, 48h, and 72h out — at **~2,400 quality-controlled mountain
+stations** across the US West and East, Canada, the Swiss Alps, the Andes, New Zealand's
 Southern Alps and Australia's Snowies. Humans, ML pipelines, and AI agents all compete on
 one leaderboard — against each other and against NWP baselines that submit
 automatically every round.
@@ -12,7 +12,8 @@ automatically every round.
 | League | Stations | Truth | Season | Cutoff (round D) | Resolves |
 |---|---|---|---|---|---|
 | **Stations** | The full SNOTEL network: ~865 stations, 45 featured (Alta, Jackson, Baker, Cooke City…) | Real snow telemetry (NRCS SNOTEL) | **Oct–May — live now** | 00:00 UTC on D | D+3 |
-| **Observers** *(trial)* | ~2,000 mountain COOP + CoCoRaHS observers, ~85 featured (Wasatch to the Green Mountains) | **Measured** new snow — a person, a snowboard and a ruler (NOAA GHCN-Daily) | **Oct–May — live now** | 00:00 UTC on D | D+6 |
+| **Observers** *(trial)* | ~1,260 mountain COOP + CoCoRaHS observers (timing-verified) plus Canada's staffed mountain stations (Whistler, Silver Star, Grouse…), ~90 featured | **Measured** new snow — a person, a snowboard and a ruler (NOAA GHCN-Daily, ECCC) | **Oct–May — live now** | 00:00 UTC on D | D+6 |
+| **Alps** *(trial)* | ~100 SLF manual study plots + IMIS stations, featured at Zermatt, Verbier, St. Moritz, Davos, Laax, Engelberg, Grindelwald… | **Measured** 24h new snow (SLF, CC BY) | **Nov–May** | 21:00 UTC on D−1 | D+4 |
 | **ERA5** | 23 zones (Portillo, Las Leñas, Remarkables, Perisher…) | ERA5 model analysis (see [docs/DATA.md](docs/DATA.md)) | May–Oct | 11:00 UTC on D−1 | ~D+8 |
 | **Resorts** | 13 resorts and growing across NZ / AU / Chile / Argentina (Mt Hutt, Coronet Peak, Remarkables, Tūroa, Whakapapa, Thredbo, Catedral, Chapelco, La Hoya, Las Leñas, Portillo, Valle Nevado, Antillanca) | The resort's own published snow report, archived daily (see [docs/DATA.md](docs/DATA.md)) | May–Oct | 11:00 UTC on D−1 | D+3 |
 
