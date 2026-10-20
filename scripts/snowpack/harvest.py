@@ -43,8 +43,10 @@ class Source:
     files: Callable[[], list[tuple[str, str]]]  # -> [(url, relative dest)]
     kind: str  # model | observations | bulletins | labels | profiles
     description: str
-    csv_sep: str | None = None  # set when the folder holds one uniform CSV table
-    csv_glob: str | None = None
+    # files forming one logical table (yearly CSVs): also published as
+    # normalized Parquet under <config>/parquet/ with one schema, which is
+    # what the dataset config points at (raw files stay byte-identical)
+    table_glob: str | None = None
     gzip: bool = False  # compress downloads on the way in (big JSON APIs)
     notes: list[str] = field(default_factory=list)
 
@@ -133,7 +135,7 @@ SOURCES = [
         kind="model",
         description="Daily simulated snowpack per massif x altitude band x aspect x slope: total depth "
                     "(neigetot), SWE (equivalent_eau), runoff (ecoulement). Alps, Pyrenees, Corsica.",
-        csv_sep=";", csv_glob="donnees_nivologiques_*.csv.gz",
+        table_glob="donnees_nivologiques_*.csv.gz",
     ),
     Source(
         config="meteofrance_nivo_obs",
@@ -146,7 +148,7 @@ SOURCES = [
         description="Twice-daily mountain observations from ski-patrol / partner stations: total snow depth "
                     "(ht_neige, m), fresh snow (ssfrai), snow surface state, ram penetration, drifting snow, "
                     "observed avalanche activity, weather.",
-        csv_sep=";", csv_glob="nivo_*.csv.gz",
+        table_glob="nivo_*.csv.gz",
     ),
     Source(
         config="meteofrance_bra_docs",
@@ -236,6 +238,59 @@ SOURCES = [
 ]
 
 
+# ---- normalized tables ----------------------------------------------------
+
+def _read_raw(path: Path):
+    import gzip
+
+    import pandas as pd
+
+    opener = gzip.open if path.suffix == ".gz" else open
+    with opener(path, "rt", encoding="utf-8", errors="replace") as f:
+        header = f.readline()
+    sep = ";" if header.count(";") > header.count(",") else ","  # publisher switched over the years
+    return pd.read_csv(path, sep=sep, dtype=str, keep_default_na=False, na_values=[""])
+
+
+def tabulate(src: Source, out: Path) -> int:
+    """Two passes: decide each column's type across ALL files (numeric only if
+    every value in every year parses), then write every file with that one
+    schema, so the Hugging Face loader sees a single consistent table."""
+    import pandas as pd
+
+    folder = out / src.config
+    raws = sorted(folder.glob(src.table_glob))
+    if not raws:
+        return 0
+    columns: list[str] = []
+    numeric: dict[str, bool] = {}
+    for path in raws:
+        df = _read_raw(path)
+        for c in df.columns:
+            if c not in numeric:
+                columns.append(c)
+                numeric[c] = True
+            if numeric[c]:
+                vals = df[c].dropna()
+                numeric[c] = bool(pd.to_numeric(vals, errors="coerce").notna().all())
+    pq = folder / "parquet"
+    pq.mkdir(exist_ok=True)
+    n = 0
+    for path in raws:
+        dest = pq / (path.name.split(".")[0] + ".parquet")
+        if dest.exists() and dest.stat().st_mtime >= path.stat().st_mtime:
+            continue
+        df = _read_raw(path).reindex(columns=columns)
+        for c in columns:
+            df[c] = pd.to_numeric(df[c]) if numeric[c] else df[c].astype("string")
+            if numeric[c]:
+                df[c] = df[c].astype("float64")
+        df.to_parquet(dest, index=False)
+        n += 1
+    print(f"[{src.config}] parquet: {n} written, {len(raws)} total, {sum(numeric.values())}/{len(columns)} numeric columns")
+    return n
+
+
 # ---- harvest + card --------------------------------------------------------
 
 def sha256(path: Path) -> str:
@@ -286,11 +341,8 @@ def card(sources: list[Source], manifest: list[dict]) -> str:
         by_cfg.setdefault(m["file"].split("/", 1)[0], []).append(m)
     configs = []
     for s in sources:
-        if s.csv_glob and by_cfg.get(s.config):
-            cfg = f"- config_name: {s.config}\n  data_files: \"{s.config}/{s.csv_glob}\"\n"
-            if s.csv_sep:
-                cfg += f"  sep: \"{s.csv_sep}\"\n"
-            configs.append(cfg)
+        if s.table_glob and by_cfg.get(s.config):
+            configs.append(f"- config_name: {s.config}\n  data_files: \"{s.config}/parquet/*.parquet\"\n")
     yaml = ["---", "license: other", "pretty_name: PowderBench Snowpack & Avalanche Training Data",
             "tags:", "- snow", "- avalanche", "- snowpack", "- weather", "- climate",
             "task_categories:", "- tabular-classification", "- time-series-forecasting"]
@@ -301,7 +353,8 @@ def card(sources: list[Source], manifest: list[dict]) -> str:
     for s in sources:
         files = by_cfg.get(s.config, [])
         size = sum(f["bytes"] for f in files) / 1e6
-        rows.append(f"| `{s.config}` | {s.kind} | {s.title} | `{s.license}` | {len(files)} files, {size:,.0f} MB | [source]({s.homepage}) |")
+        have = f"{len(files)} files, {size:,.0f} MB" if files else "pending (weekly harvest)"
+        rows.append(f"| `{s.config}` | {s.kind} | {s.title} | `{s.license}` | {have} | [source]({s.homepage}) |")
     details = []
     for s in sources:
         details.append(f"### `{s.config}`\n\n{s.description}\n\n- **Licence:** `{s.license}`"
@@ -319,7 +372,10 @@ benchmark ([code](https://github.com/andrewnakas/powderbench),
 `scripts/snowpack/harvest.py`).
 
 **Every source keeps its own licence.** Files are mirrored unmodified; each
-config below is one source. Share-alike sources (CC BY-SA, ODbL) are separate
+config below is one source. Yearly tables are additionally published as
+normalized Parquet (`<config>/parquet/`, one schema across years — the
+publisher's own CSV separators and column types drift) and that's what
+`load_dataset("nakas/powderbench-snowpack", "<config>")` reads. Share-alike sources (CC BY-SA, ODbL) are separate
 configs — if you combine them with other data, their share-alike terms apply
 to the result. `manifest.jsonl` lists every file with its source URL, size,
 SHA-256, licence and retrieval time.
@@ -363,6 +419,8 @@ def main() -> int:
     for src in chosen:
         for m in harvest(src, args.out):
             old[m["file"]] = m
+        if src.table_glob:
+            tabulate(src, args.out)
     mpath.write_text("".join(json.dumps(m) + "\n" for m in sorted(old.values(), key=lambda m: m["file"])))
     (args.out / "README.md").write_text(card(SOURCES, list(old.values())))
     print(f"{len(old)} files in manifest -> {args.out}")
@@ -372,8 +430,14 @@ def main() -> int:
 
         api = HfApi()
         api.create_repo(args.repo, repo_type="dataset", exist_ok=True)
-        api.upload_large_folder(repo_id=args.repo, repo_type="dataset", folder_path=str(args.out),
-                                ignore_patterns=["*.part", ".cache/**"])
+        upload = getattr(api, "upload_large_folder", None)  # resumable; absent in some hub versions
+        if upload:
+            upload(repo_id=args.repo, repo_type="dataset", folder_path=str(args.out),
+                   ignore_patterns=["*.part", ".cache/**"])
+        else:
+            api.upload_folder(repo_id=args.repo, repo_type="dataset", folder_path=str(args.out),
+                              ignore_patterns=["*.part", ".cache/**"],
+                              commit_message="PowderBench snowpack harvest")
         print(f"uploaded -> https://huggingface.co/datasets/{args.repo}")
     return 0
 

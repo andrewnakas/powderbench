@@ -25,7 +25,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install requests huggingface_hub
+      - run: pip install requests huggingface_hub pandas pyarrow
       - name: Restore previous mirror (resume, skip unchanged files)
         uses: actions/cache@v4
         with:
