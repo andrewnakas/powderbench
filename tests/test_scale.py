@@ -155,3 +155,19 @@ def test_slot_round_is_pinned_to_the_scheduled_slot(monkeypatch):
 
     monkeypatch.setattr(cli, "datetime", OnTime)
     assert cli._slot_round(get_league("era5"), 10) == date(2026, 7, 21)  # cutoff 11:00 on D-1
+
+
+def test_submit_dry_run_validates_against_round(tmp_path):
+    from typer.testing import CliRunner
+
+    from powderbench.cli import app
+    from powderbench.stations import station_ids
+
+    rows = [{"station_id": s, "horizon_h": h, "snowfall_in": 1.0}
+            for s in station_ids("stations", featured_only=True) for h in HORIZONS]
+    p = tmp_path / "f.csv"
+    pd.DataFrame(rows).to_csv(p, index=False)
+    ok = CliRunner().invoke(app, ["submit", str(p), "--team", "my-team", "--dry-run", "--round-date", "2026-10-21"])
+    assert ok.exit_code == 0 and "data/submissions/stations/2026-10-21/my-team.csv" in ok.stdout
+    bad = CliRunner().invoke(app, ["submit", str(p), "--team", "baseline-x", "--dry-run"])
+    assert bad.exit_code != 0  # reserved team prefix

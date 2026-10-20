@@ -40,7 +40,19 @@ May–Oct, so there is always something to forecast — and always a model to be
 - **Playable year-round.** The training camp scores you against any past season
   in minutes.
 
-## Quickstart: your first forecast in 5 minutes
+## Quickstart: your first forecast in 1 minute
+
+```bash
+git clone https://github.com/andrewnakas/powderbench.git && cd powderbench
+python3 -m venv .venv && .venv/bin/pip install -e .
+.venv/bin/python examples/starter_ensemble.py --league stations --out my.csv
+.venv/bin/powderbench submit my.csv --team my-team --league stations   # needs the GitHub CLI
+```
+
+Then make it better than the starter — that's the game. Daily autopilot:
+[`examples/auto-submit.yml`](examples/auto-submit.yml).
+
+## Quickstart by hand: your first forecast in 5 minutes
 
 ```bash
 git clone https://github.com/andrewnakas/powderbench.git && cd powderbench

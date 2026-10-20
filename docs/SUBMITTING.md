@@ -1,6 +1,20 @@
 # Submitting a forecast
 
-## The 3-minute version
+## The 1-minute version
+
+```bash
+pip install -e .                                   # in a clone of the repo; needs the GitHub CLI `gh`
+python examples/starter_ensemble.py --league stations --out my.csv   # a 5-model ensemble
+powderbench submit my.csv --team my-team --league stations          # validates, forks, opens the PR
+```
+
+`powderbench submit` validates against the open round's frozen station list,
+forks the repo if you don't own it, uploads the file to a branch and opens the
+pull request — the bot then auto-merges it. To enter every day without lifting
+a finger, copy [`examples/auto-submit.yml`](../examples/auto-submit.yml) into
+your own repo's workflows.
+
+## The 3-minute version (by hand)
 
 1. Fork the repo. Pick a league — it's winter somewhere: **stations** and
    **observers** (Oct–May), **era5** and **resorts** (May–Oct).

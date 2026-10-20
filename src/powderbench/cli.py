@@ -13,7 +13,7 @@ import typer
 app = typer.Typer(help="PowderBench: live mountain-snowfall forecasting benchmark.", no_args_is_help=True)
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
 
-LeagueOpt = typer.Option("stations", "--league", "-l", help="League: stations | era5 | resorts")
+LeagueOpt = typer.Option("stations", "--league", "-l", help="League (see data/leagues.yaml or `powderbench leagues`)")
 
 
 def _parse_date(s: str) -> date:
@@ -262,6 +262,80 @@ def scrape_resorts(
         return
     path = scrape_all(only=only, hemisphere=hemisphere)
     typer.echo(f"wrote {path}")
+
+
+UPSTREAM = "andrewnakas/powderbench"
+
+
+def _gh(*args: str, input_text: str | None = None) -> str:
+    import subprocess
+
+    out = subprocess.run(["gh", *args], capture_output=True, text=True, input=input_text)
+    if out.returncode != 0:
+        raise typer.BadParameter(f"gh {' '.join(args[:3])}… failed: {out.stderr.strip()[:300]}")
+    return out.stdout.strip()
+
+
+@app.command()
+def submit(
+    csv_path: Path,
+    team: str = typer.Option(..., help="Team name (lowercase, hyphens) — becomes the file name"),
+    league: str = LeagueOpt,
+    round_date: Optional[str] = typer.Option(None, help="Default: the open round with the next cutoff"),
+    dry_run: bool = typer.Option(False, help="Validate and show what would be submitted"),
+):
+    """Validate a forecast and open the submission pull request (needs the
+    GitHub CLI `gh`, logged in). Forks the repo if you don't own it."""
+    import base64
+    import re
+
+    from .leagues import get_league
+    from .rounds import round_dir, round_station_ids
+    from .validate import validate_submission
+
+    if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", team) or team.startswith("baseline-"):
+        raise typer.BadParameter("team: lowercase letters, digits and hyphens; 'baseline-' is reserved")
+    lg = get_league(league)
+    d = _parse_date(round_date) if round_date else _slot_round(lg)
+    if not (round_dir(lg, d) / "round.json").exists():
+        typer.echo(f"note: round {lg.name}/{d} isn't in your checkout — `git pull` to validate against it")
+    res = validate_submission(csv_path, league=lg, round_stations=round_station_ids(lg, d))
+    typer.echo(res.summary())
+    if not res.ok:
+        raise typer.Exit(1)
+    path = f"data/submissions/{lg.name}/{d.isoformat()}/{team}.csv"
+    typer.echo(f"round {lg.name}/{d} · cutoff {lg.cutoff_utc(d):%Y-%m-%d %H:%M} UTC · {path}")
+    if dry_run:
+        return
+
+    login = _gh("api", "user", "-q", ".login")
+    owner, name = UPSTREAM.split("/")
+    repo = UPSTREAM if login == owner else f"{login}/{name}"
+    if repo != UPSTREAM:
+        _gh("repo", "fork", UPSTREAM, "--clone=false")
+    main_sha = _gh("api", f"repos/{UPSTREAM}/git/ref/heads/main", "-q", ".object.sha")
+    branch = f"submit-{team}-{lg.name}-{d.isoformat()}"
+    try:
+        _gh("api", f"repos/{repo}/git/refs", "-f", f"ref=refs/heads/{branch}", "-f", f"sha={main_sha}")
+    except typer.BadParameter:
+        pass  # branch exists from an earlier submit: update the file on it
+    content = base64.b64encode(Path(csv_path).read_bytes()).decode()
+    args = ["api", "-X", "PUT", f"repos/{repo}/contents/{path}", "-f", f"message=Submission: {team} ({lg.name}/{d})",
+            "-f", f"content={content}", "-f", f"branch={branch}"]
+    try:  # updating an existing submission needs its blob sha
+        args += ["-f", "sha=" + _gh("api", f"repos/{repo}/contents/{path}?ref={branch}", "-q", ".sha")]
+    except typer.BadParameter:
+        pass
+    _gh(*args)
+    head = branch if repo == UPSTREAM else f"{login}:{branch}"
+    try:
+        url = _gh("pr", "create", "--repo", UPSTREAM, "--head", head, "--base", "main",
+                  "--title", f"Submission: {team} ({lg.name}/{d})",
+                  "--body", f"Forecast for round `{lg.name}/{d}` (cutoff {lg.cutoff_utc(d):%Y-%m-%d %H:%M} UTC), "
+                            f"submitted with `powderbench submit`. Coverage {res.coverage:.0%}.")
+    except typer.BadParameter:
+        url = "(PR already open — the file on it was updated)"
+    typer.echo(f"submitted: {url}")
 
 
 @app.command()

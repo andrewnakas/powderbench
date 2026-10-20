@@ -1,0 +1,27 @@
+# Drop this into .github/workflows/ of YOUR OWN repo (with your model code) to
+# enter PowderBench automatically every day. Needs a repo secret
+# POWDERBENCH_TOKEN: a GitHub personal access token (public_repo scope) for the
+# account that owns your team name — PRs are opened from your fork.
+name: PowderBench daily submission
+on:
+  schedule:
+    - cron: "0 18 * * *" # well before the 00:00 UTC stations/observers cutoff
+  workflow_dispatch:
+
+jobs:
+  submit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install "git+https://github.com/andrewnakas/powderbench"
+      - name: Forecast (replace with your model)
+        run: |
+          curl -sO https://raw.githubusercontent.com/andrewnakas/powderbench/main/examples/starter_ensemble.py
+          python starter_ensemble.py --league stations --out forecast.csv
+      - name: Submit
+        env:
+          GH_TOKEN: ${{ secrets.POWDERBENCH_TOKEN }}
+        run: powderbench submit forecast.csv --team CHANGE-ME --league stations
