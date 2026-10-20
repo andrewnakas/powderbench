@@ -128,3 +128,29 @@ def test_leagues_due_by_cutoff_hour():
         assert lg in run("--due", "baselines", "--hour", str((h - 1) % 24))
         assert lg not in run("--due", "open", "--hour", str((h + 5) % 24))
     assert sorted(run()) == sorted(by_cutoff)
+
+
+def test_slot_round_is_pinned_to_the_scheduled_slot(monkeypatch):
+    """A late baselines run (slot 23:00, runner starts 01:49 next day) must
+    still target the round whose cutoff follows the slot — for every league."""
+    from datetime import datetime, timezone
+
+    from powderbench import cli
+    from powderbench.leagues import get_league
+
+    class Late(datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return datetime(2026, 10, 20, 1, 49, tzinfo=timezone.utc)
+
+    monkeypatch.setattr(cli, "datetime", Late)
+    assert cli._slot_round(get_league("stations"), 23) == date(2026, 10, 20)
+    assert cli._slot_round(get_league("observers"), 23) == date(2026, 10, 20)
+
+    class OnTime(datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return datetime(2026, 7, 20, 10, 20, tzinfo=timezone.utc)
+
+    monkeypatch.setattr(cli, "datetime", OnTime)
+    assert cli._slot_round(get_league("era5"), 10) == date(2026, 7, 21)  # cutoff 11:00 on D-1

@@ -143,15 +143,22 @@ def leagues(
         typer.echo(lg.name)
 
 
-def _next_cutoff_round(lg) -> date:
-    """The round whose submission cutoff comes next. Looks back 2h so a cron
-    run that starts late (past the cutoff) still targets its own round —
-    baselines are exempt from the late flag."""
+def _slot_round(lg, slot_hour: int | None = None) -> date:
+    """The round whose cutoff this baselines run is for. With slot_hour (the
+    cron's *scheduled* hour), the answer doesn't drift when the runner starts
+    late or a previous league takes a while: the slot is the most recent
+    slot_hour:00 at or before now, and the round is the first cutoff after it."""
     from datetime import timezone
 
-    now = datetime.now(timezone.utc) - timedelta(hours=2)
-    d = now.date() - timedelta(days=1)
-    while lg.cutoff_utc(d) <= now:
+    now = datetime.now(timezone.utc)
+    if slot_hour is None:
+        anchor = now - timedelta(hours=2)
+    else:
+        anchor = now.replace(hour=slot_hour, minute=0, second=0, microsecond=0)
+        if anchor > now:
+            anchor -= timedelta(days=1)
+    d = anchor.date() - timedelta(days=1)
+    while lg.cutoff_utc(d) <= anchor:
         d += timedelta(days=1)
     return d
 
@@ -161,13 +168,14 @@ def baseline_submit(
     round_date: Optional[str] = typer.Argument(None, help="Default: the round with the next cutoff"),
     league: str = LeagueOpt,
     mode: str = typer.Option("live", help="live | hindcast (dry runs)"),
+    slot_hour: Optional[int] = typer.Option(None, help="Scheduled UTC hour of the cron slot (pins the round)"),
 ):
     """Generate and store baseline submissions for an open round."""
     from .leagues import get_league
     from .rounds import submit_baselines
 
     lg = get_league(league)
-    d = _parse_date(round_date) if round_date else _next_cutoff_round(lg)
+    d = _parse_date(round_date) if round_date else _slot_round(lg, slot_hour)
     if not lg.in_season(d):
         typer.echo(f"{lg.name} is off-season for {d} — no baselines to submit")
         return

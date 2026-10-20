@@ -35,10 +35,10 @@ jobs:
       - name: Generate baseline forecasts
         run: |
           LEAGUES="${{ github.event.inputs.league }}"
+          SLOT_HOUR=$(echo "${{ github.event.schedule }}" | awk '{print $2}')
           if [ -z "$LEAGUES" ]; then
             # each cron slot covers the leagues whose cutoff is the next hour
             # the *scheduled* slot, not the clock: runs often start 30-60 min late
-            SLOT_HOUR=$(echo "${{ github.event.schedule }}" | awk '{print $2}')
             LEAGUES=$(powderbench leagues --due baselines --hour "$SLOT_HOUR")
           fi
           ROUND="${{ github.event.inputs.round_date }}"
@@ -46,7 +46,7 @@ jobs:
           for LEAGUE in $LEAGUES; do
             # one league's outage must not block the others; the default round
             # is the one whose cutoff comes next
-            powderbench baseline-submit $ROUND --league "$LEAGUE" || FAILED=1
+            powderbench baseline-submit $ROUND --league "$LEAGUE" ${SLOT_HOUR:+--slot-hour "$SLOT_HOUR"} || FAILED=1
           done
           exit $FAILED
       - name: Commit

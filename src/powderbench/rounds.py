@@ -74,7 +74,12 @@ def submit_baselines(league: League, d: date, mode: str = "live") -> dict[str, P
     out = {}
     sdir = submissions_dir(league, d)
     sdir.mkdir(parents=True, exist_ok=True)
+    # predict exactly the round's frozen station set (the registry may have
+    # grown since the round opened; extra rows would fail validation)
+    allowed = set(round_station_ids(league, d))
     for team, pred in baselines.all_baselines(league, d, mode=mode).items():
+        if len(pred):
+            pred = pred[pred["station_id"].isin(allowed)]
         path = sdir / f"{team}.csv"
         pred.to_csv(path, index=False)
         out[team] = path
