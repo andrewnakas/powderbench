@@ -28,7 +28,6 @@ LEAGUES = {  # league -> (history start, source/licence line)
                                      "and Environment and Climate Change Canada (Open Government Licence – Canada)"),
     "alps": (date(2000, 10, 1), "WSL Institute for Snow and Avalanche Research SLF — CC BY 4.0, www.slf.ch"),
 }
-CHUNK_YEARS = 2
 
 
 def export(league: str, out: Path) -> dict:
@@ -48,7 +47,9 @@ def export(league: str, out: Path) -> dict:
     n = 0
     cur = start
     while cur <= end:
-        stop = min(date(cur.year + CHUNK_YEARS, cur.month, 1) - timedelta(days=1), end)
+        # calendar-year chunks: the same windows the truth fetchers cache, so a
+        # re-export is (almost) all cache hits
+        stop = min(date(cur.year, 12, 31), end)
         path = folder / f"truth_{cur:%Y%m%d}_{stop:%Y%m%d}.parquet"
         if not path.exists() or stop >= end - timedelta(days=40):  # recent chunks get refreshed
             frames = [daily_truth(lg, ids[i : i + 200], cur, stop) for i in range(0, len(ids), 200)]
