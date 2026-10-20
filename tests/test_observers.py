@@ -96,3 +96,36 @@ def test_documented_offset_waives_margin_but_must_still_win():
     assert attribution.fit_offsets(reports, era5)["z"]["offset"] is None  # guessing: too close
     assert attribution.fit_offsets(reports, era5, expected={"z": 1})["z"]["offset"] == 1
     assert attribution.fit_offsets(reports, era5, expected={"z": 0})["z"]["offset"] is None  # data disagrees
+
+
+def test_cdec_sensor_qc_blanks_stuck_and_spiking_depth():
+    from powderbench.networks import cdec
+
+    g = pd.DataFrame({
+        "SNWD": [50, 70, 134, 134, 134, 90, 95, 120, 96],
+        "WTEQ": [12, 14, 16.3, 16.9, 17.8, 17.7, 17.7, 17.8, 17.9],
+    })
+    d = cdec._sensor_qc(g)
+    assert d[:2].tolist() == [50, 70]
+    assert d[2:5].isna().all()  # stuck at a ceiling while SWE climbed 1.5"
+    assert d[7] != d[7]  # 120 between 95 and 96: a spike
+    assert d[8] == 96
+
+
+def test_snolite_big_jump_needs_neighbour_swe(monkeypatch):
+    from powderbench.networks import snolite
+
+    monkeypatch.setattr(snolite, "neighbors", lambda ids: {"lite:OR:SNTLT": ["n:OR:SNTL"], "lone:OR:SNTLT": []})
+
+    def fake(ids, b, e, elements):
+        days = [b + timedelta(days=i) for i in range(3)]
+        if elements == ("SNWD",):
+            return pd.DataFrame([{"station_id": s, "date": d, "SNWD": v}
+                                 for s in ids for d, v in zip(days, [20, 30, 31])])
+        return pd.DataFrame([{"station_id": "n:OR:SNTL", "date": d, "WTEQ": v} for d, v in zip(days, [5, 6, 6])])
+
+    monkeypatch.setattr(snolite.snotel, "fetch_daily", fake)
+    out = snolite.daily(["lite:OR:SNTLT", "lone:OR:SNTLT"], date(2026, 1, 2), date(2026, 1, 3)).set_index(["station_id", "date"])
+    assert out.loc[("lite:OR:SNTLT", date(2026, 1, 2)), "snow24"] == 10  # neighbour gained 1" SWE
+    assert out.loc[("lone:OR:SNTLT", date(2026, 1, 2)), "qc_flag"] == snolite.QC_NO_NEIGHBOR_SUPPORT
+    assert out.loc[("lone:OR:SNTLT", date(2026, 1, 3)), "snow24"] == 1  # small days need no support

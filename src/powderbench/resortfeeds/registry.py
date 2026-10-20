@@ -66,6 +66,26 @@ def _cell(pattern: str):
     return parse
 
 
+def _stamp(pattern: str, fmt: str, tz: str):
+    """report_time from a page's own 'Updated …' text: regex group 1, parsed
+    with `fmt` (a.m./p.m. and case normalised) in the resort's zone."""
+    from datetime import datetime
+    from zoneinfo import ZoneInfo
+
+    def parse(body: str) -> str | None:
+        m = re.search(pattern, body, re.S)
+        if not m:
+            return None
+        text = re.sub(r"\s+", " ", m.group(1).replace("a.m.", "AM").replace("p.m.", "PM")).strip()
+        text = re.sub(r"\b(am|pm)\b", lambda x: x.group(1).upper(), text)
+        try:
+            return datetime.strptime(text, fmt).replace(tzinfo=ZoneInfo(tz)).isoformat()
+        except ValueError:
+            return None
+
+    return parse
+
+
 def _red_mountain_parse(body: str) -> float | None:
     """api.redresort.com/report/full: the patrol's MountainReport. Off-season
     it keeps last April's numbers with SummerMode=true -> no report."""
@@ -605,9 +625,8 @@ REGISTRY: tuple[ResortSpec, ...] = (
         url="https://skiwhitefish.com/snowreport/",
         parse=regex_number(r'<h5[^>]*>\s*(\d+(?:\.\d+)?)\s*(?:"|&quot;|&#8243;|&#8221;|”|″)\s*</h5>\s*<p[^>]*>\s*Past 24 Hours'),
         unit="in",
-        notes="2026-10-20 held: first-party page, robots OK, site /policies has no clause, but the parent "
-        "group's terms (foleyentertainmentgroup.com/terms-of-use) returned 403 — unverified, so disabled. "
-        "Parser verified on Wayback (24h 10\" vs 7-day 25\").",
+        notes="2026-10-20 rejected: parent Foley Entertainment Group's terms (now reachable) list 'Winter Sports Inc. – DBA Whitefish Mountain Resort' and ban 'any robot, spider, or other automatic device … including monitoring or copying'. "
+        "Parser kept for reference (Wayback 24h 10\" vs 7-day 25\").",
     ),
     ResortSpec(
         resort_id="mt-rose",
@@ -915,5 +934,138 @@ REGISTRY: tuple[ResortSpec, ...] = (
         url="https://example.invalid/taos",
         parse=_not_scraped,
         notes='2026-10-20 rejected: OpenSnow-fed widget and terms ban bots (also Aspen Snowmass: personal-use terms; Brian Head/MCP: robots banned; Schweitzer: Alterra; Mt Washington BC: OpenSnow).',
+    ),
+    ResortSpec(
+        resort_id="white-pass",
+        station_id="white-pass:US:RESORT",
+        country="US",
+        tz="America/Los_Angeles",
+        url="https://skiwhitepass.com/fragments/blocks/074101ba-e952-45eb-9a87-d90143a17849/shared_component/0",
+        parse=_cell('<h5>New Snow 24 Hours</h5>\\s*<p>([^<]{0,40})</p>'),
+        unit="in",
+        report_hour_local=7,
+        enabled=True,
+        verified="2026-10-20: " + 'robots \'Disallow:\' empty (page and fragment). No terms of use (404); privacy policy has no scraping clause. First-party patrol snow report; NWAC supplies only temps, NWS only the forecast. Since the 2026 redesign the report is a same-site HTML fragment with the same markup. Wayback 2025-12-17: 24h 5" (12h 5, 36h 5); 2026-02-17: 1 (12h 1, 36h 2); 2026-02-24: 6.',
+        notes='Fragment UUID found via data-fragment-type="snow_report" on the snow-report page — re-discover if it 404s. Stamp has no year, so no freshness gate.',
+    ),
+    ResortSpec(
+        resort_id="bluewood",
+        station_id="bluewood:US:RESORT",
+        country="US",
+        tz="America/Los_Angeles",
+        url="https://bluewood.com/conditions",
+        parse=_cell('CONDITIONS: SUMMIT</strong>.{0,3000}?dvmd_tm_col_1 dvmd_tm_row_1 [^>]*><div class="dvmd_tm_cdata">([^<]{0,40})</div>'),
+        report_time=_stamp('Last updated</p></div>\\s*</div><div[^>]*>\\s*<div class="et_pb_text_inner">([^<]{0,60})</div>', '%B %d, %Y (%I:%M %p)', 'America/Los_Angeles'),
+        unit="in",
+        report_hour_local=5,
+        enabled=True,
+        verified="2026-10-20: " + 'robots disallows only wp-admin/WooCommerce (Crawl-delay 10). No terms of use (404); privacy policy has no scraping clause. First-party hand-entered Divi tables (Base/Summit x 24h/48h/depth). Wayback 2025-12-29: summit 24h 5" (48h 8, base 4); 2026-02-01: 0.',
+        notes='Summit; freshness-gated (captures showed reports up to 2 weeks old).',
+    ),
+    ResortSpec(
+        resort_id="discovery-basin",
+        station_id="discovery-basin:US:RESORT",
+        country="US",
+        tz="America/Denver",
+        url="https://www.skidiscovery.com/snow-report/",
+        parse=_cell('<p>New Snow, 24 hours</p>\\s*<p class="little-text inch">([^<]{0,40})</p>'),
+        report_time=_stamp('<span class="tablinks">Updated: ([^<]+)</span>', '%B %d, %Y at %I:%M %p', 'America/Denver'),
+        unit="in",
+        report_hour_local=6,
+        enabled=True,
+        verified="2026-10-20: " + 'robots.txt only Crawl-delay 30. No terms of use (404); no legal links in footer. First-party snow-report tiles (24/48/72h/YTD), \'Updated: <Month D, YYYY> at <h:mm am>\'. Wayback 2025-12-09: 24h 2" (48h 5, 72h 11).',
+        notes='Discovery Basin; freshness-gated.',
+    ),
+    ResortSpec(
+        resort_id="showdown",
+        station_id="showdown:US:RESORT",
+        country="US",
+        tz="America/Denver",
+        url="https://www.showdownmontana.com/snow-report",
+        parse=_cell('<h2[^>]*>([^<]{0,40})</h2>\\s*<p[^>]*>\\s*<span[^>]*>\\s*Last 24 Hour\\s*</span>'),
+        report_time=_stamp('Last Update(?:<[^>]+>|\\s|:)*(\\d{1,2}/\\d{1,2}/\\d{4})', '%m/%d/%Y', 'America/Denver'),
+        unit="in",
+        report_hour_local=6,
+        enabled=True,
+        verified="2026-10-20: " + 'Squarespace default robots allows the page. Terms & Conditions (TermsFeed template) have no scraping, automated-access or reproduction clause. First-party hand-edited report (\'Last Update: MM/DD/YYYY\'). Wayback 2025-11-28: 24h 5" (overnight 4); 2025-12-18: 0; live 10/11/2026: 19 (overnight 15).',
+        notes="Date-only stamp (00:00 local): yesterday's report is stale by the 20:30 UTC scrape.",
+    ),
+    ResortSpec(
+        resort_id="blacktail",
+        station_id="blacktail:US:RESORT",
+        country="US",
+        tz="America/Denver",
+        url="https://blacktailmountain.com/snow-report/",
+        parse=_cell('<strong>New Snow 24 Hours: &nbsp;</strong>([^<]{0,40})</li>'),
+        report_time=_stamp('<h3>Reported: ([^<]+)</h3>', '%I:%M %p, %a, %m/%d/%y', 'America/Denver'),
+        unit="in",
+        report_hour_local=6,
+        enabled=True,
+        verified="2026-10-20: " + 'robots \'Disallow:\' empty. No terms of use or privacy page (404). First-party staff-entered report (\'Reported: h:mm am, Day, MM/DD/YY\'). Wayback 2026-03-16: 24h 6" (overnight 2, summit depth 49).',
+        notes='Blank fields read as no report; freshness-gated.',
+    ),
+    ResortSpec(
+        resort_id="montana-snowbowl",
+        station_id="montana-snowbowl:US:RESORT",
+        country="US",
+        tz="America/Denver",
+        url="https://www.montanasnowbowl.com/report.php",
+        parse=_cell('SIZE=2>Summit</TD>\\s*<TD[^>]*>[^<]*</TD>\\s*<TD[^>]*>([^<]{0,40})</TD>'),
+        report_time=_stamp('<b>Updated:</b>\\s*([^<]+?)\\s*</center>', '%A %b %d, %Y %I:%M %p', 'America/Denver'),
+        unit="in",
+        report_hour_local=5,
+        enabled=True,
+        verified="2026-10-20: " + 'robots blocks only WP dirs and /index.php (report.php allowed). No terms of use (404); safety-and-policies page has no scraping clause. First-party hand-maintained report table with a 7-day daily-snowfall history. Wayback 2026-02-25: Summit 7" (Base 4, history Day-1 7).',
+        notes="'New Snow' is the daily amount of the ~4:45 am report (confirmed by its 7-day history); freshness-gated.",
+    ),
+    ResortSpec(
+        resort_id="red-river",
+        station_id="red-river:US:RESORT",
+        country="US",
+        tz="America/Denver",
+        url="https://www.redriverskiarea.com/winter/winter-mountain/snow-report/",
+        parse=_cell('<dl class="SnowReport-measure"><dt>Last 24 Hours</dt><dd>([^<]{0,40})</dd></dl>'),
+        report_time=_stamp('<dt>Updated</dt>\\s*<dd>([^<]+)</dd>', '%I:%M %p, %B %d, %Y', 'America/Denver'),
+        unit="in",
+        report_hour_local=7,
+        enabled=True,
+        verified="2026-10-20: " + "robots 'Allow: /'. No terms of use (404); 'Policies' page has no scraping clause. First-party SnowReport block (same platform as Jay Peak/Bolton Valley); OpenSnow powers only the forecast. Wayback 2025-12-31 / 2026-01-24: 24h 0 (72h 0, 5d 0).",
+        notes="Freshness-gated on 'Updated' (captures 1-2 days old).",
+    ),
+    ResortSpec(
+        resort_id="tamarack",
+        station_id="tamarack:US:RESORT",
+        country="US",
+        tz="America/Boise",
+        url="https://example.invalid/tamarack",
+        parse=_not_scraped,
+        notes="2026-10-20 held: parser ready (patrol report, 'Updated MM/DD/YYYY at 7:00 AM'), but its privacy policy binds visitors to unpublished 'Terms and Conditions of Use' (as Sun Valley) — ask.",
+    ),
+    ResortSpec(
+        resort_id="maverick",
+        station_id="maverick:US:RESORT",
+        country="US",
+        tz="America/Denver",
+        url="https://example.invalid/maverick",
+        parse=_not_scraped,
+        notes='2026-10-20 held: free-typed Square Online text, sporadic updates (8-day-old report seen), no non-zero winter capture.',
+    ),
+    ResortSpec(
+        resort_id="great-divide",
+        station_id="great-divide:US:RESORT",
+        country="US",
+        tz="America/Denver",
+        url="https://example.invalid/great-divide",
+        parse=_not_scraped,
+        notes="2026-10-20 rejected: terms ban access 'by a bot, script'; but it has a clean JSON API with history — outreach.",
+    ),
+    ResortSpec(
+        resort_id="mt-ashland",
+        station_id="mt-ashland:US:RESORT",
+        country="US",
+        tz="America/Los_Angeles",
+        url="https://example.invalid/mt-ashland",
+        parse=_not_scraped,
+        notes='2026-10-20 rejected by terms (data mining/harvesting/extracting) — also China Peak, Homewood, Mt Baldy, Ski Santa Fe, Ski Apache, Sunrise Park, Bear Valley, Powder Mountain; MCP resorts (Purgatory, Nordic Valley, Willamette Pass, Lee Canyon, Sipapu, Pajarito, Arizona Snowbowl); OpenSnow-fed: Eagle Point, Sundance, Angel Fire, Hurricane Ridge.',
     ),
 )

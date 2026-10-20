@@ -46,6 +46,14 @@ FIXTURE_VALUES = {
     "49-degrees-north": 1.0,
     "mt-spokane": 4.0,
     "red-mountain": 1.0,
+    # 2026-10-20 western recon
+    "white-pass": 5.0,
+    "bluewood": 5.0,
+    "discovery-basin": 2.0,
+    "showdown": 5.0,
+    "blacktail": 6.0,
+    "montana-snowbowl": 7.0,
+    "red-river": 0.0,
 }
 
 
