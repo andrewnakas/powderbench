@@ -23,7 +23,7 @@ import re
 import sys
 import time
 from dataclasses import dataclass, field
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Callable
 
@@ -111,16 +111,21 @@ def envidat(ref: str) -> Callable[[], list[tuple[str, str]]]:
 
 
 def nve_varsom() -> list[tuple[str, str]]:
-    """NVE avalanche warnings archive, one JSON per region x season."""
+    """NVE avalanche warnings archive, one JSON per region x month (whole-season
+    requests time out server-side)."""
     base = "https://api01.nve.no/hydrology/forecast/avalanche/v6.3.0/api"
     regions = [r["Id"] for r in get(f"{base}/Region/").json() if r.get("TypeName") == "A"]
     today = date.today()
     out = []
-    for season in range(2012, today.year + (1 if today.month >= 9 else 0)):
-        start, end = f"{season}-09-01", f"{season + 1}-08-31"
-        for rid in regions:
-            out.append((f"{base}/AvalancheWarningByRegion/Detail/{rid}/2/{start}/{end}",
-                        f"warnings_{season}-{season + 1}_region{rid}.json.gz"))
+    y, m = 2012, 11
+    while (y, m) <= (today.year, today.month):
+        if m in (11, 12, 1, 2, 3, 4, 5, 6):  # the warning season
+            start = date(y, m, 1)
+            end = date(y + (m == 12), m % 12 + 1, 1) - timedelta(days=1)
+            for rid in regions:
+                out.append((f"{base}/AvalancheWarningByRegion/Detail/{rid}/2/{start}/{end}",
+                            f"warnings_{start:%Y-%m}_region{rid}.json.gz"))
+        y, m = (y + (m == 12), m % 12 + 1)
     return out
 
 
