@@ -5,8 +5,10 @@ CoCoRaHS) that measure new snowfall (GHCN-Daily element SNOW), for the
 Selection (all from NCEI's published inventory + station list):
   - reports SNOW, active through the current year, first SNOW <= MAX_FIRST_YEAR
     (enough seasons for a climatology)
-  - mountain sites: elevation >= WEST_MIN_M west of 100W, >= EAST_MIN_M east
-    of it (Adirondacks/Greens/Whites/Appalachian ski country)
+  - mountain sites: west of 100W, >= WEST_MIN_M and within NEAR_SNOTEL_KM of a
+    SNOTEL site (not the high plains); east, >= EAST_MIN_M and east of 93W
+    (Appalachians/Great Lakes snowbelts) — or anywhere within NEAR_SKI_KM of a
+    ski area with 2+ lifts (OpenSkiData)
   - region: nearest curated SNOTEL zone within REGION_RADIUS_KM, else state
 
 Featured (ranked set): per curated region, up to FEATURED_PER_REGION of the
@@ -46,6 +48,8 @@ FEATURED_PER_REGION = 3
 CLIMO = ROOT / "data" / "climatology" / "observers.csv.gz"
 MIN_WINTER_DOYS = 60  # of the ~90 Dec-Feb days-of-year
 NEAR_SKI_KM = 15  # observers this close to a ski area are in at any elevation
+NEAR_SNOTEL_KM = 30  # western "mountain" test: near an actual mountain snow site
+EAST_MIN_LON = -93.0  # the 500 m eastern rule is for the Appalachians/Great Lakes, not the plains
 NEAR_SKI_MIN_LIFTS = 2
 FIELDS = ["station_id", "slug", "name", "resort", "region", "state", "elevation_ft",
           "latitude", "longitude", "league", "tier", "network", "external_id", "day_offset"]
@@ -77,8 +81,24 @@ def km(lat1, lon1, lat2, lon2) -> float:
 
 
 def fit_day_offsets(rows: list[dict]) -> list[dict]:
-    """Fit each station's observation-day offset against ERA5 over the last two
-    winters (powderbench.networks.attribution); drop stations without a clear fit."""
+    """Fit each station's observation-day offset against ERA5 (powderbench.
+    networks.attribution); drop stations without a clear fit. Offsets already
+    fitted in the current station file are reused — ERA5 calls are costly
+    (Open-Meteo bills a winter as ~11 calls per location), so only newly
+    admitted stations are fitted, on the last winter."""
+    prior = {}
+    if OUT.exists():
+        with OUT.open() as f:
+            prior = {r["station_id"]: int(r["day_offset"]) for r in csv.DictReader(f) if r.get("day_offset")}
+    reused = [dict(r, day_offset=prior[r["station_id"]]) for r in rows if r["station_id"] in prior]
+
+    def mountain(r):  # passed the elevation rule -> already judged by an earlier fit
+        return r["elevation_ft"] / 3.28084 >= (WEST_MIN_M if r["longitude"] < -100 else EAST_MIN_M)
+
+    rows = [r for r in rows if r["station_id"] not in prior and not mountain(r)]
+    print(f"day-offset: reusing {len(reused)} fitted stations, fitting {len(rows)} new")
+    if not rows:
+        return reused
     sys.path.insert(0, str(ROOT / "src"))
     import pandas as pd
 
@@ -91,7 +111,7 @@ def fit_day_offsets(rows: list[dict]) -> list[dict]:
     sts = [Station(**{k: r[k] for k in ("station_id", "slug", "name", "resort", "region", "state",
                                         "elevation_ft", "latitude", "longitude")}) for r in rows]
     reps, mods = [], []
-    for b, e in attribution.winters(last):
+    for b, e in attribution.winters(last, n=1):
         raw = ghcnd.fetch_snow([s.station_id for s in sts], b, e)
         reps.append(raw[raw["qflag"] == ""])
         mods.append(era5_daily_snowfall(sts, b, e))
@@ -107,7 +127,7 @@ def fit_day_offsets(rows: list[dict]) -> list[dict]:
             r["day_offset"] = off
             kept.append(r)
     print(f"day-offset fit: {counts} (None = no clear fit -> dropped)")
-    return kept
+    return reused + kept
 
 
 def main() -> int:
@@ -130,6 +150,8 @@ def main() -> int:
         climo_ids = set(c["station_id"].unique())
         print(f"climatology pass: {len(solid)} stations with a solid winter record")
 
+    with (ROOT / "data" / "stations" / "snotel.csv").open() as f:
+        snotel_sites = [(float(r["latitude"]), float(r["longitude"])) for r in csv.DictReader(f)]
     curated = [s for s in yaml.safe_load((ROOT / "data" / "stations.yaml").read_text())["stations"]
                if s.get("league", "stations") == "stations"]
     picked = []
@@ -141,7 +163,13 @@ def main() -> int:
         state, name = line[38:40].strip(), line[41:71].strip().title()
         ski, ski_km = skiareas.nearest(lat, lon, NEAR_SKI_MIN_LIFTS)
         near_ski = ski is not None and ski_km <= NEAR_SKI_KM
-        if elev < (WEST_MIN_M if lon < -100 else EAST_MIN_M) and not near_ski:
+        if lon < -100:  # west: high AND near a SNOTEL site (excludes the high plains)
+            mountain = elev >= WEST_MIN_M and any(
+                abs(a - lat) < 0.4 and abs(b - lon) < 0.5 and skiareas.km(lat, lon, a, b) <= NEAR_SNOTEL_KM
+                for a, b in snotel_sites)
+        else:
+            mountain = elev >= EAST_MIN_M and lon >= EAST_MIN_LON
+        if not (mountain or near_ski):
             continue
         sid = f"{gid}:{state}:GHCND"
         # climatology pass: stations with a record must be solid; brand-new

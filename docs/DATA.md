@@ -60,9 +60,13 @@ Data Service. COOP data is US public domain; CoCoRaHS data is CC BY 3.0
 - **Stations**: `scripts/networks/ghcnd.py` regenerates `data/stations/ghcnd.csv`
   from NCEI's inventory: US stations reporting `SNOW` through the current year
   with records back to ≤2020, at mountain elevations (≥1,500 m west of 100°W,
-  ≥500 m east of it — Adirondacks, Greens, Whites, Appalachians), then — after
+  ≥500 m east of it — Adirondacks, Greens, Whites, Appalachians; since
+  2026-10-21 the western rule also requires a SNOTEL site within 30 km and the
+  eastern one longitude east of 93°W, which keeps out the high plains), **plus
+  any observer within 15 km of a ski area with 2+ lifts** (OpenSkiData) at any
+  elevation — lake-effect and eastern ski towns included. Then — after
   the climatology build — only stations with a solid winter record (an h24
-  climatology on ≥60 of the ~90 Dec–Feb days) and a clear day-attribution fit (below). ~1,260 stations.
+  climatology on ≥60 of the ~90 Dec–Feb days) and a clear day-attribution fit (below). ~1,150 stations.
   **Featured**: the three highest per curated ski zone and per eastern
   ski-country region.
 - **Day alignment — fitted per station.** Observers file a reading under the
@@ -96,7 +100,7 @@ Data Service. COOP data is US public domain; CoCoRaHS data is CC BY 3.0
 | Source | Status | Why |
 |---|---|---|
 | NRCS SNOTEL, full network | **live** (stations) | ~865 stations with depth + SWE |
-| NOAA GHCN-Daily SNOW (COOP + CoCoRaHS) | **live, trial** (observers) | measured new snow, ~1,260 timing-verified mountain sites. Hindcast gate (featured, 2026-02-01..14): GFS/Open-Meteo +25.1, zeros +12.8, climatology 0, persistence −51 |
+| NOAA GHCN-Daily SNOW (COOP + CoCoRaHS) | **live, trial** (observers) | measured new snow, ~1,150 timing-verified mountain and ski-area sites. Hindcast gate (featured, 2026-02-01..14): GFS/Open-Meteo +25.1, zeros +12.8, climatology 0, persistence −51 |
 | NOAA WPC PWPF | **live** (`baseline-wpc`) | official NWS snowfall percentiles |
 | CDEC snow pillows (CA DWR) | **live** (stations, 57) | CDEC's *daily* depth is a daily mean, so we read **hourly** depth/SWE and take the median of the 23:00/00:00/01:00 readings at local midnight; SNOTEL QC plus density (depth < SWE → void), stuck-sensor (flat depth while SWE rises ≥0.5") and spike (>10" above both neighbours) checks. Gate: median r = 0.96 vs the nearest SNOTEL (13 pairs, Jan–Feb 2026). Pillows within 1.5 km of a SNOTEL are the same site and are dropped (FDC, HOR). History from 2021-10. |
 | NRCS SNOLITE | **live** (stations, 33) | depth-only; a ≥6" jump must be confirmed by an SWE rise at a SNOTEL within 40 km (station data, not a model) |
