@@ -89,6 +89,10 @@ Score yourself against any past period — the baselines run automatically:
 
 ## Training data
 
+- **Train a model in Colab:** [`examples/house_model_colab.ipynb`](https://colab.research.google.com/github/andrewnakas/powderbench/blob/main/examples/house_model_colab.ipynb)
+  — LightGBM quantile post-processing of GFS/ICON/GEM/NBM at real 1–3-day lead
+  times against PowderBench truth, scored season-out exactly like the benchmark.
+
 - **Snowpack & avalanche data:** [`nakas/powderbench-snowpack`](https://huggingface.co/datasets/nakas/powderbench-snowpack)
   on Hugging Face mirrors the open data avalanche forecasters work from —
   Météo-France SAFRAN-Crocus snowpack simulations (1958–) and ski-resort
