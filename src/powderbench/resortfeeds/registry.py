@@ -66,9 +66,10 @@ def _cell(pattern: str):
     return parse
 
 
-def _stamp(pattern: str, fmt: str, tz: str):
+def _stamp(pattern: str, fmt: str | list[str], tz: str):
     """report_time from a page's own 'Updated …' text: regex group 1, parsed
-    with `fmt` (a.m./p.m. and case normalised) in the resort's zone."""
+    with `fmt` (one strptime format, a list tried in order, or "iso") in the
+    resort's zone; a.m./p.m. and case are normalised."""
     from datetime import datetime
     from zoneinfo import ZoneInfo
 
@@ -78,10 +79,15 @@ def _stamp(pattern: str, fmt: str, tz: str):
             return None
         text = re.sub(r"\s+", " ", m.group(1).replace("a.m.", "AM").replace("p.m.", "PM")).strip()
         text = re.sub(r"\b(am|pm)\b", lambda x: x.group(1).upper(), text)
-        try:
-            return datetime.strptime(text, fmt).replace(tzinfo=ZoneInfo(tz)).isoformat()
-        except ValueError:
-            return None
+        for f in [fmt] if isinstance(fmt, str) else fmt:
+            try:
+                if f == "iso":
+                    dt = datetime.fromisoformat(text.replace("Z", "+00:00"))
+                    return (dt if dt.tzinfo else dt.replace(tzinfo=ZoneInfo(tz))).isoformat()
+                return datetime.strptime(text, f).replace(tzinfo=ZoneInfo(tz)).isoformat()
+            except ValueError:
+                continue
+        return None
 
     return parse
 
@@ -1067,5 +1073,223 @@ REGISTRY: tuple[ResortSpec, ...] = (
         url="https://example.invalid/mt-ashland",
         parse=_not_scraped,
         notes='2026-10-20 rejected by terms (data mining/harvesting/extracting) — also China Peak, Homewood, Mt Baldy, Ski Santa Fe, Ski Apache, Sunrise Park, Bear Valley, Powder Mountain; MCP resorts (Purgatory, Nordic Valley, Willamette Pass, Lee Canyon, Sipapu, Pajarito, Arizona Snowbowl); OpenSnow-fed: Eagle Point, Sundance, Angel Fire, Hurricane Ridge.',
+    ),
+    ResortSpec(
+        resort_id="magic-mountain",
+        station_id="magic-mountain:US:RESORT",
+        country="US",
+        tz="America/New_York",
+        url="https://www.magicmtn.com/snow-report",
+        parse=_cell('"SnowReport":\\{"[0-9a-f-]{36}":\\{.{0,6000}?"24HrTotal":"([^"]{0,40})"'),
+        report_time=_stamp('"SnowReport":\\{"[0-9a-f-]{36}":\\{.{0,6000}?"_updatedDate":\\{"\\$date":"([^"]+)"', ['iso'], 'America/New_York'),
+        unit="in",
+        report_hour_local=7,
+        enabled=True,
+        verified="2026-10-20: " + 'Wix robots Allow: /. No terms of use published (all terms/legal paths 404, no footer link). Values are the resort\'s own Wix CMS SnowReport record (24HrTotal/48HrTotal/week/season) with a dated patrol write-up — the visible first block is a stale repeater, so the CMS record is read. Wayback 2026-03-06: 24h 2" (48h 2, week 6-8); 2026-02-05: 0.',
+        notes="Freshness-gated on the record's _updatedDate.",
+    ),
+    ResortSpec(
+        resort_id="ragged",
+        station_id="ragged:US:RESORT",
+        country="US",
+        tz="America/New_York",
+        url="https://www.raggedmountainresort.com/mountain-report-cams/",
+        parse=_cell('<h6>Last 24 hrs\\.</h6>\\s*<h3>([^<]{0,40})</h3>'),
+        unit="in",
+        report_hour_local=7,
+        enabled=True,
+        verified="2026-10-20: " + 'robots \'Disallow:\' empty (Crawl-delay 10). No terms of use (404); privacy and policies pages have no scraping clause; Pacific Group Resorts \'pgri\' theme (as Jay Peak), parent publishes no terms. First-party Current Conditions block. Wayback 2026-01-20: 24h 4" (overnight 1, 48h 8); 2026-03-14: 2/2/2.',
+        notes='No report timestamp on the page.',
+    ),
+    ResortSpec(
+        resort_id="saddleback",
+        station_id="saddleback:US:RESORT",
+        country="US",
+        tz="America/New_York",
+        url="https://saddlebackapi.netlify.app/.netlify/functions/getAll",
+        parse=_cell('"snow":\\{"id":"[^"]*".{0,800}?"freshSnowFallDepth24H":\\{"value":([^,}]{0,10}),"unit":"INCH"\\}'),
+        report_time=_stamp('"snow":\\{"id":"[^"]*".{0,2000}?"lastModified":"([^"]+)"', ['iso'], 'America/New_York'),
+        unit="in",
+        report_hour_local=6,
+        enabled=True,
+        verified="2026-10-20: " + 'saddlebackmaine.com robots \'Disallow:\' empty; API host has no robots.txt (404). Terms of Use cover only lift-pass fraud and SMS. Endpoint = the resort\'s own Netlify function behind its mountain-report page (resort-entered Lumiplan-style feed, as Mt Hood Meadows). Wayback 2026-02-13: 24h 2" (48h 8, 7d 11, lastModified 2026-02-12 06:15).',
+        notes="Never use the 'overnight' field (mirrors base depth). Freshness-gated on lastModified.",
+    ),
+    ResortSpec(
+        resort_id="wachusett",
+        station_id="wachusett:US:RESORT",
+        country="US",
+        tz="America/New_York",
+        url="https://www.wachusett.com/the-mountain/your-visit/snow-report/",
+        parse=_cell('<span id="snowfallLabel" class="main-header-wrap__snowreport__snow" aria-label="24h Snowfall">([^<]{0,40})</span>'),
+        unit="in",
+        report_hour_local=8,
+        enabled=True,
+        verified="2026-10-20: " + 'robots (Yoast) blocks only search URLs. No website terms of use (/termsandconditions covers passes/tickets only); privacy policy has no scraping clause. 24h Snowfall is server-rendered from the resort\'s own wp-api SnowReport. Wayback 2026-01-01: 2"; 2026-01-19: 6"; 2026-02-12: 2.5" (each agrees with that day\'s narrative).',
+        notes='Stamp is weekday-only, so no freshness gate.',
+    ),
+    ResortSpec(
+        resort_id="holiday-valley",
+        station_id="holiday-valley:US:RESORT",
+        country="US",
+        tz="America/New_York",
+        url="https://www.holidayvalley.com/snow-report/",
+        parse=_cell('<span>PAST</span>\\s*<span>24HRS</span></h3>\\s*<span class="big-number">\\s*([^<]{0,40})</span>'),
+        unit="in",
+        report_hour_local=7,
+        enabled=True,
+        verified="2026-10-20: " + 'robots \'Disallow:\' empty. No terms of use (404); /policies has no scraping/reuse clause. First-party snow_report module. Wayback 2025-12-11: 1"; 2026-02-06: 3"; 2026-02-27: 3" (\'We received 3 inches\').',
+        notes='No report timestamp; several consistent captures.',
+    ),
+    ResortSpec(
+        resort_id="elk-mountain",
+        station_id="elk-mountain:US:RESORT",
+        country="US",
+        tz="America/New_York",
+        url="https://www.elkskier.com/conditions/",
+        parse=_cell('<div class="table_column">Natural snow last 24 hours</div>\\s*<div class="table_column">([^<]{0,40})</div>'),
+        report_time=_stamp('<div class="table_column">Current Date</div>\\s*<div class="table_column">(\\d{2}/\\d{2}/\\d{4})', ['%m/%d/%Y'], 'America/New_York'),
+        unit="in",
+        report_hour_local=7,
+        enabled=True,
+        verified="2026-10-20: " + 'robots: Yoast \'Disallow:\' empty. No terms of use (404); privacy policy has no scraping clause. First-party Conditions Report table with a \'Current Date\' stamp. Wayback 2025-12-11: \'4" - 6"\' -> 5 (stamp 12/11/2025); 2026-01-03: 1".',
+        notes="Freshness gate REQUIRED: a Dec 2025 capture still showed last season's 03/22/2025 report.",
+    ),
+    ResortSpec(
+        resort_id="timberline-wv",
+        station_id="timberline-wv:US:RESORT",
+        country="US",
+        tz="America/New_York",
+        url="https://timberlinemountain.com/snow-report/",
+        parse=_cell('<p class="resort-info-title">Snow Last 24 Hours</p>\\s*<p>([^<]{0,40})</p>'),
+        unit="in",
+        report_hour_local=8,
+        enabled=True,
+        verified="2026-10-20: " + "robots disallows only /wp-admin/. /terms-conditions covers lift tickets/facilities only. First-party report from the site's own snow-report plugin. Wayback 2025-12-03: 24h 8 (7d 8); 2026-01-16: 3 (7d 3).",
+        notes='No report timestamp.',
+    ),
+    ResortSpec(
+        resort_id="wintergreen",
+        station_id="wintergreen:US:RESORT",
+        country="US",
+        tz="America/New_York",
+        url="https://www.wintergreenresort.com/mountain-report-cams/",
+        parse=_cell('<h6>Last 24 hrs\\.</h6>\\s*<h3>([^<]{0,40})</h3>'),
+        report_time=_stamp('<p class="card-text">\\s*Updated\\s+([A-Z][a-z]+ \\d{1,2}, \\d{4} \\d{1,2}:\\d{2} [AP]M)', ['%B %d, %Y %I:%M %p'], 'America/New_York'),
+        unit="in",
+        report_hour_local=8,
+        enabled=True,
+        verified="2026-10-20: " + 'robots disallows only wpforms uploads and /cdn-cgi/ (Crawl-delay 10). No terms of use (404); privacy policy has no scraping clause. Pacific Group Resorts (as Jay Peak), not Vail. First-party Current Conditions block. Wayback 2025-01-21: 24h 2" (overnight 0, 48h 2); 2026-02-05: 0 (48h 0.5, \'Updated February 5, 2026 8:02 AM\').',
+        notes="Freshness-gated when the 'Updated' line is present (from Jan 2026).",
+    ),
+    ResortSpec(
+        resort_id="crystal-mountain-mi",
+        station_id="crystal-mountain-mi:US:RESORT",
+        country="US",
+        tz="America/Detroit",
+        url="https://www.crystalmountain.com/ski/cams-conditions/mountain-report",
+        parse=_cell('<h3 class="h5">\\s*24h Snowfall\\s*</h3>\\s*<div class="f-heading f-w-300 lh-1 values">\\s*<span class="value">([^<]{0,40})</span>'),
+        report_time=_stamp('<h2>Report for ([A-Z][a-z]+ \\d{1,2}, \\d{4})</h2>', ['%B %d, %Y'], 'America/Detroit'),
+        unit="in",
+        report_hour_local=7,
+        enabled=True,
+        verified="2026-10-20: " + 'robots Drupal default. No website terms of use (/terms-conditions covers tickets/liability only). First-party snow-report block headed \'Report for <date>\'. Wayback 2026-01-01: 24h 4" (Report for December 31, 2025); 2026-02-02: 2".',
+        notes='Date-only stamp (00:00 local).',
+    ),
+    ResortSpec(
+        resort_id="caberfae",
+        station_id="caberfae:US:RESORT",
+        country="US",
+        tz="America/Detroit",
+        url="https://caberfaepeaks.com/snow-report/",
+        parse=_cell("<td class=''>24 HOUR SNOWFALL:([^<]{0,40})</td>"),
+        report_time=_stamp("Today(?:&#8217;|’|')s Date:\\s*(\\d{1,2}/\\d{1,2}/\\d{2,4})", ['%m/%d/%Y', '%m/%d/%y'], 'America/Detroit'),
+        unit="in",
+        report_hour_local=7,
+        enabled=True,
+        verified="2026-10-20: " + 'robots \'Disallow:\' empty. No terms of use (footer has camping/cancellation policies only). First-party Daily Conditions table (24/48/72h, YTD) with \'Today\'s Date\'. Wayback 2026-01-23: 24h 8" (48h 11, 72h 17; comment \'received 8″ of new snow\').',
+        notes='Date-only stamp.',
+    ),
+    ResortSpec(
+        resort_id="nubs-nob",
+        station_id="nubs-nob:US:RESORT",
+        country="US",
+        tz="America/Detroit",
+        url="https://www.nubsnob.com/conditions-tables/",
+        parse=_cell("New Snow since yesterday:</div><div class='conditions-cell cell-1'>([^<]{0,40})</div>"),
+        report_time=_stamp("<div class='conditions-cell cell-0'>Date:</div><div class='conditions-cell cell-1'>\\s*(\\d{1,2}/\\d{1,2}/\\d{2,4})", ['%m/%d/%y', '%m/%d/%Y'], 'America/Detroit'),
+        unit="in",
+        report_hour_local=8,
+        enabled=True,
+        verified="2026-10-20: " + 'robots allows the page (Crawl-delay 20). No website terms of use (only a liability release). First-party conditions table; \'New Snow since yesterday\' is the daily report-to-report amount. Wayback 2026-01-15: 1" (3d 1, 7d 7, Date 1/14/26).',
+        notes='Date-only stamp.',
+    ),
+    ResortSpec(
+        resort_id="cascade-mountain",
+        station_id="cascade-mountain:US:RESORT",
+        country="US",
+        tz="America/Chicago",
+        url="https://www.cascademountain.com/snow-report/",
+        parse=_cell('<p>New Snow 24 hrs</p>\\s*<h5>([^<]{0,40})</h5>'),
+        report_time=_stamp('Last Update:\\s*(\\d{1,2}/\\d{1,2}/\\d{2,4})', ['%m/%d/%y', '%m/%d/%Y'], 'America/Chicago'),
+        unit="in",
+        report_hour_local=7,
+        enabled=True,
+        verified="2026-10-20: " + "robots allows the page. No website terms of use (/terms-conditions covers gift cards/tickets). First-party Elementor page ('New Snow 24 hrs') with a staff 'Last Update' note. Wayback 2026-02-17: 0 (Last Update 2/16/26 6:40 a.m.); 2025-12-03: 10 but stamped 12/1 -> stale.",
+        notes='Freshness gate REQUIRED; some captures hit a JS interstitial (expect occasional failed scrapes).',
+    ),
+    ResortSpec(
+        resort_id="burke",
+        station_id="burke:US:RESORT",
+        country="US",
+        tz="America/New_York",
+        url="https://example.invalid/burke",
+        parse=_not_scraped,
+        notes="2026-10-20 held: first-party table, no terms, but hand-typed entries are inconsistent (24h 3 vs 48h 1) and there's no timestamp.",
+    ),
+    ResortSpec(
+        resort_id="black-mountain-nh",
+        station_id="black-mountain-nh:US:RESORT",
+        country="US",
+        tz="America/New_York",
+        url="https://example.invalid/black-mountain-nh",
+        parse=_not_scraped,
+        notes='2026-10-20 held: no 48h/7d to cross-check and no reliable timestamp.',
+    ),
+    ResortSpec(
+        resort_id="snow-ridge",
+        station_id="snow-ridge:US:RESORT",
+        country="US",
+        tz="America/New_York",
+        url="https://example.invalid/snow-ridge",
+        parse=_not_scraped,
+        notes="2026-10-20 held: no timestamp, and a capture's 24h (10) disagrees with its own narrative (8).",
+    ),
+    ResortSpec(
+        resort_id="tenney",
+        station_id="tenney:US:RESORT",
+        country="US",
+        tz="America/New_York",
+        url="https://example.invalid/tenney",
+        parse=_not_scraped,
+        notes='2026-10-20 held: only one winter capture (value 0); recheck in season (propapps platform).',
+    ),
+    ResortSpec(
+        resort_id="hatley-pointe",
+        station_id="hatley-pointe:US:RESORT",
+        country="US",
+        tz="America/New_York",
+        url="https://example.invalid/hatley-pointe",
+        parse=_not_scraped,
+        notes='2026-10-20 held: only one winter capture (value 0); recheck in season.',
+    ),
+    ResortSpec(
+        resort_id="berkshire-east",
+        station_id="berkshire-east:US:RESORT",
+        country="US",
+        tz="America/New_York",
+        url="https://example.invalid/berkshire-east",
+        parse=_not_scraped,
+        notes='2026-10-20 held: terms forbid reproduction without written consent (also Catamount) — outreach. Rejected by terms: Cranmore, Jiminy Peak, Windham, Greek Peak, Plattekill, Massanutten, Whitecap; Lost Valley (SnoCountry-fed); ORDA (Gore, Belleayre) behind Cloudflare.',
     ),
 )
