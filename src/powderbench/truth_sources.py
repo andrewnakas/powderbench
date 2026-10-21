@@ -227,6 +227,38 @@ register(TruthSource(
 ))
 
 
+def _snolite_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
+    from .networks import snolite
+
+    return snolite.daily(ids, begin, end)
+
+
+register(TruthSource(
+    name="snolite",
+    fetch=_snolite_daily,
+    history_begin=date(2015, 10, 1),
+    climatology=(date(2015, 10, 1), _CLIM_END),
+    measured=False,
+    note="NRCS SNOLITE depth-only telemetry; big jumps confirmed by neighbouring SNOTEL SWE.",
+))
+
+
+def _cdec_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
+    from .networks import cdec
+
+    return cdec.daily(ids, begin, end)
+
+
+register(TruthSource(
+    name="cdec",
+    fetch=_cdec_daily,
+    history_begin=date(2021, 10, 1),
+    climatology=(date(2021, 10, 1), _CLIM_END),
+    measured=False,
+    note="California DWR CDEC snow pillows: hourly depth at local midnight, SNOTEL-style QC.",
+))
+
+
 def daily_truth(league: League, station_ids: list[str], begin: date, end: date) -> pd.DataFrame:
     """QC'd daily snowfall for [begin, end], dispatched by truth source.
     Stations with a per-station override are fetched from their own source."""

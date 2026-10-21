@@ -6,7 +6,7 @@ Independent leaderboards — one per kind of ground truth; results never mix:
 
 | | Stations | Observers (trial) | Alps (trial) | ERA5 | Resorts |
 |---|---|---|---|---|---|
-| Points | ~865 SNOTEL (45 featured) | ~1,260 US COOP + CoCoRaHS mountain observers + Canadian ECCC stations (~90 featured) | ~100 SLF study plots + IMIS (Swiss Alps) | 23 ERA5 resort points | 13 resorts (growing) |
+| Points | ~1,000 SNOTEL + CDEC + SNOLITE + BC pillows (45 featured) | ~1,260 US COOP + CoCoRaHS mountain observers + Canadian ECCC stations (~90 featured) | ~100 SLF study plots + IMIS (Swiss Alps) | 23 ERA5 resort points | 13 resorts (growing) |
 | Truth | Snow-depth telemetry (Δdepth, SWE-checked) | **Measured** new snow on an observer's snowboard | Measured 24h new snow (SLF) | Model analysis | The resort's own published snow report |
 | Cutoff for round D | 00:00 UTC on D | 00:00 UTC on D | **21:00 UTC on D−1** | **11:00 UTC on D−1** | **11:00 UTC on D−1** |
 | Resolves | D+3, 16:00 UTC | D+6, 16:00 UTC (report latency) | D+4, 16:00 UTC | from D+8, 16:00 UTC (ERA5 archive lag) | D+3, 16:00 UTC |

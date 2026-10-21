@@ -72,12 +72,19 @@ def _climatology_rows(daily: pd.DataFrame) -> list[dict]:
     return rows
 
 
-def build_climatology(league: League, begin: date, end: date) -> pd.DataFrame:
+def build_climatology(league: League, begin: date, end: date, only_missing: bool = False) -> pd.DataFrame:
     """Fetch the league's truth history in [begin, end] and compute per-station
-    day-of-year stats per horizon. Writes data/climatology/<league>.csv."""
+    day-of-year stats per horizon. Writes data/climatology/<league>.csv.gz.
+    only_missing: compute just the stations without rows yet and merge them in
+    (onboarding a new network without rebuilding everything)."""
     from .truth_sources import daily_truth
 
     ids = station_ids(league.name)
+    existing = None
+    if only_missing and (data_dir() / league.climatology_path).exists():
+        existing = load_climatology(league)
+        have = set(existing["station_id"])
+        ids = [i for i in ids if i not in have]
     log.info("[%s] fetching %d stations %s..%s", league.name, len(ids), begin, end)
     rows = []
     # station batches bound memory: ~1k stations x 10 years is millions of rows
@@ -86,6 +93,8 @@ def build_climatology(league: League, begin: date, end: date) -> pd.DataFrame:
         log.info("[%s] stations %d-%d of %d", league.name, i + 1, i + len(batch), len(ids))
         rows += _climatology_rows(daily_truth(league, batch, begin, end))
     climo = pd.DataFrame(rows)
+    if existing is not None:
+        climo = pd.concat([existing, climo], ignore_index=True)
     out = data_dir() / f"climatology/{league.name}.csv.gz"
     out.parent.mkdir(parents=True, exist_ok=True)
     climo.to_csv(out, index=False)

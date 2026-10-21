@@ -32,6 +32,9 @@ from pathlib import Path
 import requests
 import yaml
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import skiareas  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "data" / "stations" / "ghcnd.csv"
 BASE = "https://www.ncei.noaa.gov/pub/data/ghcn/daily/"
@@ -42,6 +45,8 @@ REGION_RADIUS_KM = 60
 FEATURED_PER_REGION = 3
 CLIMO = ROOT / "data" / "climatology" / "observers.csv.gz"
 MIN_WINTER_DOYS = 60  # of the ~90 Dec-Feb days-of-year
+NEAR_SKI_KM = 15  # observers this close to a ski area are in at any elevation
+NEAR_SKI_MIN_LIFTS = 2
 FIELDS = ["station_id", "slug", "name", "resort", "region", "state", "elevation_ft",
           "latitude", "longitude", "league", "tier", "network", "external_id", "day_offset"]
 EAST_REGIONS = {  # state -> ski-country region label for the east
@@ -114,7 +119,7 @@ def main() -> int:
             if line.startswith("US") and last >= this_year and first <= MAX_FIRST_YEAR:
                 snow[line[:11]] = first
 
-    solid = None
+    solid, climo_ids = None, set()
     if CLIMO.exists():
         import pandas as pd
 
@@ -122,6 +127,7 @@ def main() -> int:
         winter = c[(c["doy"] <= 59) | (c["doy"] >= 335)]
         counts = winter.groupby("station_id").size()
         solid = set(counts[counts >= MIN_WINTER_DOYS].index)
+        climo_ids = set(c["station_id"].unique())
         print(f"climatology pass: {len(solid)} stations with a solid winter record")
 
     curated = [s for s in yaml.safe_load((ROOT / "data" / "stations.yaml").read_text())["stations"]
@@ -133,9 +139,14 @@ def main() -> int:
             continue
         lat, lon, elev = float(line[12:20]), float(line[21:30]), float(line[31:37])
         state, name = line[38:40].strip(), line[41:71].strip().title()
-        if elev < (WEST_MIN_M if lon < -100 else EAST_MIN_M):
+        ski, ski_km = skiareas.nearest(lat, lon, NEAR_SKI_MIN_LIFTS)
+        near_ski = ski is not None and ski_km <= NEAR_SKI_KM
+        if elev < (WEST_MIN_M if lon < -100 else EAST_MIN_M) and not near_ski:
             continue
-        if solid is not None and f"{gid}:{state}:GHCND" not in solid:
+        sid = f"{gid}:{state}:GHCND"
+        # climatology pass: stations with a record must be solid; brand-new
+        # admissions stay until their climatology exists (then re-run)
+        if solid is not None and sid in climo_ids and sid not in solid:
             continue
         near = min(curated, key=lambda c: km(lat, lon, c["latitude"], c["longitude"]))
         dist = km(lat, lon, near["latitude"], near["longitude"])
@@ -147,7 +158,8 @@ def main() -> int:
             region = state
         picked.append({
             "station_id": f"{gid}:{state}:GHCND", "slug": f"ghcnd-{gid.lower()}", "name": name,
-            "resort": near["resort"] if dist <= REGION_RADIUS_KM else name, "region": region,
+            "resort": skiareas.label(near["resort"] if dist <= REGION_RADIUS_KM else name, lat, lon),
+            "region": region,
             "state": state, "elevation_ft": round(elev * 3.28084), "latitude": lat, "longitude": lon,
             "league": "observers", "tier": "network",
             "network": "CoCoRaHS" if gid.startswith("US1") else "COOP", "external_id": gid,

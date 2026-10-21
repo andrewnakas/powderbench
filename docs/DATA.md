@@ -46,6 +46,9 @@ A station-day is voided — excluded from scoring for everyone — when
 A 48h/72h window is valid only if every component day is valid. Typical
 midwinter void rates are a few percent.
 
+Network station names carry the nearest ski area (OpenSkiData, ODbL —
+`data/skiareas/`), e.g. SNOTEL "Atwater" → "Alta Ski Area (2 km)".
+
 ## Ground truth: measured new snow (observers league)
 
 The observers league scores against **measured** new snowfall — the snowboard
@@ -95,8 +98,10 @@ Data Service. COOP data is US public domain; CoCoRaHS data is CC BY 3.0
 | NRCS SNOTEL, full network | **live** (stations) | ~865 stations with depth + SWE |
 | NOAA GHCN-Daily SNOW (COOP + CoCoRaHS) | **live, trial** (observers) | measured new snow, ~1,260 timing-verified mountain sites. Hindcast gate (featured, 2026-02-01..14): GFS/Open-Meteo +25.1, zeros +12.8, climatology 0, persistence −51 |
 | NOAA WPC PWPF | **live** (`baseline-wpc`) | official NWS snowfall percentiles |
-| CDEC snow pillows (CA DWR) | **deferred** | CDEC's *daily* depth isn't the midnight reading (runs above the 00:00 hourly value during storms — looks like a daily mean), so day-to-day deltas would smear storms across days. Doing it right means hourly data with a smoothed local-midnight reading (~1,200 requests for a climatology). Also seen: depth < SWE at MB3 (impossible) → needs a density QC. ~60 non-NRCS pillows with depth. |
-| BC ASWS (OGL-BC) | next | current-season CSVs + separate archive |
+| CDEC snow pillows (CA DWR) | **live** (stations, 57) | CDEC's *daily* depth is a daily mean, so we read **hourly** depth/SWE and take the median of the 23:00/00:00/01:00 readings at local midnight; SNOTEL QC plus density (depth < SWE → void), stuck-sensor (flat depth while SWE rises ≥0.5") and spike (>10" above both neighbours) checks. Gate: median r = 0.96 vs the nearest SNOTEL (13 pairs, Jan–Feb 2026). Pillows within 1.5 km of a SNOTEL are the same site and are dropped (FDC, HOR). History from 2021-10. |
+| NRCS SNOLITE | **live** (stations, 33) | depth-only; a ≥6" jump must be confirmed by an SWE rise at a SNOTEL within 40 km (station data, not a model) |
+| BC automated snow pillows (AWDB network MSNT) | **live** (stations, 41) | BC government pillows served by NRCS AWDB; depth + SWE, regular SNOTEL QC |
+| BC ASWS (OGL-BC) | via AWDB (above) | |
 | ECCC climate-daily `TOTAL_SNOW` (OGL-Canada) | **live, trial** (observers) | 8 mountain stations still measure snowfall daily (Whistler, Silver Star, Grouse, Kananaskis, Barkerville featured) |
 | IEM real-time COOP/CoCoRaHS | next | same-day provisional observers truth |
 | NWS Local Storm Reports (IEM) | planned | storm-total "Storm Mode" events |

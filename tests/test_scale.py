@@ -171,3 +171,21 @@ def test_submit_dry_run_validates_against_round(tmp_path):
     assert ok.exit_code == 0 and "data/submissions/stations/2026-10-21/my-team.csv" in ok.stdout
     bad = CliRunner().invoke(app, ["submit", str(p), "--team", "baseline-x", "--dry-run"])
     assert bad.exit_code != 0  # reserved team prefix
+
+
+def test_no_network_station_duplicates_a_snotel_site():
+    """CDEC/SNOLITE/BC entries closer than 1.5 km to a SNOTEL station are the
+    same site listed twice (found: CDEC FDC/HOR = SNOTEL 1049/1050)."""
+    import math
+
+    stations_mod.clear_cache()
+    sts = load_stations("stations")
+    sn = [s for s in sts if s.station_id.endswith(":SNTL")]
+    for s in sts:
+        if s.station_id.endswith(":SNTL"):
+            continue
+        p = math.pi / 180
+        d = min(12742 * math.asin(math.sqrt(math.sin((t.latitude - s.latitude) * p / 2) ** 2
+                + math.cos(s.latitude * p) * math.cos(t.latitude * p) * math.sin((t.longitude - s.longitude) * p / 2) ** 2))
+                for t in sn)
+        assert d > 1.5, (s.station_id, d)

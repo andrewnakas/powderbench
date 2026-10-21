@@ -54,6 +54,7 @@ def build_climatology(
     league: str = LeagueOpt,
     begin: Optional[str] = typer.Option(None, help="Default: league-appropriate history"),
     end: Optional[str] = typer.Option(None),
+    only_missing: bool = typer.Option(False, help="Only stations without climatology yet (merge in)"),
 ):
     """Rebuild a league's climatology table from its truth history."""
     from .climatology import build_climatology as build
@@ -70,7 +71,7 @@ def build_climatology(
         # e.g. the resorts league has no report history yet: its reference
         # climatology is ERA5 at the resort coordinates (docs/DATA.md caveat)
         lg = replace(lg, truth_source=src.climatology_source)
-    build(lg, _parse_date(begin or defaults[0]), _parse_date(end or defaults[1]))
+    build(lg, _parse_date(begin or defaults[0]), _parse_date(end or defaults[1]), only_missing=only_missing)
 
 
 @app.command()

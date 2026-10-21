@@ -23,6 +23,8 @@ import requests
 import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import skiareas  # noqa: E402
 OUT = ROOT / "data" / "stations" / "snotel.csv"
 AWDB = "https://wcc.sc.egov.usda.gov/awdbRestApi/services/v1/stations"
 REGION_RADIUS_KM = 60
@@ -85,7 +87,7 @@ def main() -> int:
             "station_id": st["stationTriplet"],
             "slug": f"sntl-{st['stationId']}-{st['stateCode'].lower()}",
             "name": st["name"],
-            "resort": st["name"],
+            "resort": skiareas.label(st["name"], lat, lon),
             "region": region,
             "state": st["stateCode"],
             "elevation_ft": round(st["elevation"]),
