@@ -22,11 +22,14 @@ import requests
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import skiareas  # noqa: E402
 
 OUT = ROOT / "data" / "stations" / "slf.csv"
 STUDY_PLOTS = "https://measurement-data.slf.ch/study-plot/stations.csv"
 IMIS = "https://measurement-api.slf.ch/public/api/imis/stations"
 MIN_REPORTS = 100
+ALPS_MIN_LIFTS = 4  # label with real ski areas, not village rope tows
 FEATURED = {  # study plot -> resort
     "4ZE0": "Zermatt", "4SF0": "Saas-Fee", "4RU0": "Verbier", "4MO0": "Crans-Montana",
     "4GR0": "Grimentz", "4LA0": "Lauchernalp", "7MZ0": "St. Moritz", "7CO0": "Corvatsch",
@@ -59,7 +62,7 @@ def main() -> int:
     for p in plots[plots["active"]].itertuples():
         c = p.station_code
         rows.append({"station_id": f"{c}:CH:SLF", "slug": f"slf-{c.lower()}", "name": p.label,
-                     "resort": FEATURED.get(c, p.label), "region": CODE_REGION.get(c[0], "Swiss Alps"),
+                     "resort": FEATURED.get(c) or skiareas.label(p.label, p.lat, p.lon, min_lifts=ALPS_MIN_LIFTS), "region": CODE_REGION.get(c[0], "Swiss Alps"),
                      "state": "CH", "elevation_ft": round(p.elevation * 3.28084), "latitude": round(p.lat, 5),
                      "longitude": round(p.lon, 5), "league": "alps",
                      "tier": "featured" if c in FEATURED else "network", "network": "SLF study plot",
@@ -69,7 +72,7 @@ def main() -> int:
             continue
         c = s["code"]
         rows.append({"station_id": f"{c}:CH:IMIS", "slug": f"imis-{c.lower()}", "name": s["label"],
-                     "resort": s["label"], "region": CANTON_REGION.get(s.get("canton_code"), "Swiss Alps"),
+                     "resort": skiareas.label(s["label"], s["lat"], s["lon"], min_lifts=ALPS_MIN_LIFTS), "region": CANTON_REGION.get(s.get("canton_code"), "Swiss Alps"),
                      "state": "CH", "elevation_ft": round(s["elevation"] * 3.28084), "latitude": round(s["lat"], 5),
                      "longitude": round(s["lon"], 5), "league": "alps", "tier": "network",
                      "network": "SLF IMIS", "external_id": c})

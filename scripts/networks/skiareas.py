@@ -13,9 +13,12 @@ ROOT = Path(__file__).resolve().parents[2]
 
 @lru_cache(maxsize=1)
 def areas() -> list[dict]:
-    with (ROOT / "data" / "skiareas" / "ski_areas_na.csv").open() as f:
-        return [dict(r, lat=float(r["lat"]), lon=float(r["lon"]), lift_count=int(r["lift_count"]))
-                for r in csv.DictReader(f)]
+    out = []
+    for path in sorted((ROOT / "data" / "skiareas").glob("ski_areas_*.csv")):
+        with path.open() as f:
+            out += [dict(r, lat=float(r["lat"]), lon=float(r["lon"]), lift_count=int(r["lift_count"]))
+                    for r in csv.DictReader(f)]
+    return out
 
 
 def km(lat1, lon1, lat2, lon2) -> float:
@@ -36,9 +39,9 @@ def nearest(lat: float, lon: float, min_lifts: int = 1) -> tuple[dict | None, fl
     return best, dist
 
 
-def label(name: str, lat: float, lon: float, within_km: float = 10.0) -> str:
+def label(name: str, lat: float, lon: float, within_km: float = 10.0, min_lifts: int = 1) -> str:
     """Station display name: 'Atwater · 2 km from Alta' when a ski area is near."""
-    a, d = nearest(lat, lon)
+    a, d = nearest(lat, lon, min_lifts)
     if a is None or d > within_km:
         return name
     return f"{a['name']}" if d < 1 else f"{a['name']} ({d:.0f} km)"
