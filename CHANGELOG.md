@@ -9,7 +9,7 @@
   Environment Canada observers at mountain and ski-area sites, with
   per-station observation-day attribution fitted against ERA5.
 - New **Alps** league: SLF measured 24 h new snow at 216 Swiss sites.
-- New **Resorts · North America** league: 38 resorts' own morning reports,
+- New **Resorts · North America** league: 37 resorts' own morning reports,
   with a 30 h freshness gate on reports that carry a date.
 - Featured stations for the headline board; full-network and regional side
   tracks.
