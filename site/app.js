@@ -82,6 +82,7 @@ function renderBoard(entries, rounds) {
   for (const t of entries) {
     const tr = document.createElement("tr");
     if (t.is_baseline) tr.classList.add("baseline");
+    if (t.is_house) tr.classList.add("house");
     if (!t.eligible) tr.classList.add("unranked");
     const ps = t.powder_score;
     const psClass = ps === null ? "" : ps > 0 ? "score-pos" : "score-neg";

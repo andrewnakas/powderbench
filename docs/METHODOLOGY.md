@@ -182,6 +182,17 @@ jobs up to ~3 h late):
 Each baseline is computed independently: one provider's outage never removes
 the others.
 
+**House agents** (`house-*`, `src/powderbench/agents/`) are forecasting
+strategies run by the maintainers — competitors, not reference forecasts. They
+run in the baselines slot (3 h before the cutoff), may use only today's model
+forecasts and the truth of rounds already resolved, and are labelled on the
+leaderboard. `powderbench agent-backtest` replays past rounds under exactly
+that rule. First agent, `house-blend`: a per-station skill-weighted,
+bias-corrected blend of the models. Backtest, ERA5 league, 90 rounds
+(Jul–Oct 2026): **+26.0** vs. GFS −13.6 and Open-Meteo −18.6 (the raw models
+run high against ERA5's smoother truth); southern resorts: lowest MAE (4.23″ vs.
+GFS 4.37″) but a lower mean Powder Score (+7.4 vs. +9.4).
+
 ## 6. Fairness and integrity
 
 - **Deadline:** a submission counts only if its file first landed on `main`

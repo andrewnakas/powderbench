@@ -40,6 +40,7 @@ def aggregate(rows: pd.DataFrame, min_rounds: int = MIN_ROUNDS) -> pd.DataFrame:
         entry = {
             "team": team,
             "is_baseline": team.startswith("baseline-"),
+            "is_house": team.startswith("house-"),
             "rounds": int(len(grp)),
             "avg_coverage": round(float(grp["coverage"].mean()), 4),
             "powder_score": _mean(grp["powder_score"]),

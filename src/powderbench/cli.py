@@ -299,6 +299,62 @@ def resolve_events():
         typer.echo(f"resolved event {eid}")
 
 
+@app.command()
+def agent_backtest(
+    begin: str,
+    end: str,
+    league: str = LeagueOpt,
+    agent: str = typer.Option("house-blend", help="House agent name"),
+):
+    """Replay past rounds with a house agent (only pre-cutoff information) and
+    compare it with the stored baselines on the same station-horizons."""
+    from .agents import AGENTS
+    from .agents.backtest import backtest
+    from .leagues import get_league
+
+    rows = backtest(get_league(league), AGENTS[agent], _parse_date(begin), _parse_date(end))
+    if not len(rows):
+        typer.echo("no resolved rounds in range")
+        raise typer.Exit(1)
+    board = rows.groupby("team").agg(rounds=("round", "nunique"), powder_score=("powder_score", "mean"),
+                                     mae=("mae", "mean"), pinball=("pinball", "mean"))
+    typer.echo(board.sort_values("powder_score", ascending=False).round(3).to_string())
+
+
+@app.command()
+def house_submit(
+    round_date: Optional[str] = typer.Argument(None, help="Default: the round with the next cutoff"),
+    league: str = LeagueOpt,
+    slot_hour: Optional[int] = typer.Option(None, help="Scheduled UTC hour of the cron slot"),
+):
+    """Run every house agent for a round (after the baselines, same slot) and
+    write their submissions."""
+    from .agents import AGENTS
+    from .leagues import get_league
+    from .rounds import round_station_ids, submissions_dir
+
+    lg = get_league(league)
+    d = _parse_date(round_date) if round_date else _slot_round(lg, slot_hour)
+    if not lg.in_season(d):
+        typer.echo(f"{lg.name} is off-season for {d}")
+        return
+    allowed = set(round_station_ids(lg, d))
+    for team, agent in AGENTS.items():
+        try:
+            pred = agent(lg, d)
+        except Exception as exc:  # one agent's failure never blocks the others
+            typer.echo(f"{team}: failed ({exc})")
+            continue
+        if not len(pred):
+            typer.echo(f"{team}: nothing to submit")
+            continue
+        pred = pred[pred["station_id"].isin(allowed)]
+        path = submissions_dir(lg, d) / f"{team}.csv"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        pred.to_csv(path, index=False)
+        typer.echo(f"{team}: {path}")
+
+
 UPSTREAM = "andrewnakas/powderbench"
 
 
@@ -328,8 +384,8 @@ def submit(
     from .rounds import round_dir, round_station_ids
     from .validate import validate_submission
 
-    if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", team) or team.startswith("baseline-"):
-        raise typer.BadParameter("team: lowercase letters, digits and hyphens; 'baseline-' is reserved")
+    if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", team) or team.startswith(("baseline-", "house-")):
+        raise typer.BadParameter("team: lowercase letters, digits and hyphens; 'baseline-' and 'house-' are reserved")
     lg = get_league(league)
     d = _parse_date(round_date) if round_date else _slot_round(lg)
     if not (round_dir(lg, d) / "round.json").exists():

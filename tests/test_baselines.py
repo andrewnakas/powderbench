@@ -35,3 +35,43 @@ def test_openmeteo_prediction_keeps_horizons_within_model_range(monkeypatch):
     monkeypatch.setattr(baselines.openmeteo, "forecast_daily_snowfall", lambda *a, **k: daily)
     out = baselines.openmeteo_prediction(type("L", (), {"name": "x"})(), d, "ncep_hrrr_conus")
     assert out.set_index("horizon_h")["snowfall_in"].to_dict() == {24: 1.0, 48: 3.0}
+
+
+def test_house_blend_learns_bias_without_lookahead(tmp_path, monkeypatch):
+    """The blend shrinks a model that has run 2x high toward the truth, using
+    only rounds resolved before it runs."""
+    import json
+    import shutil
+    from datetime import datetime, timezone
+    from pathlib import Path
+
+    from powderbench import stations as stations_mod
+    from powderbench.agents.blend import blend_agent
+    from powderbench.leagues import get_league
+
+    data = Path(__file__).resolve().parents[1] / "data"
+    for n in ("stations.yaml", "leagues.yaml"):
+        shutil.copy(data / n, tmp_path / n)
+    monkeypatch.setenv("POWDERBENCH_DATA_DIR", str(tmp_path))
+    stations_mod.clear_cache()
+    try:
+        lg = get_league("era5")
+        sid = "portillo:CL:ERA5"
+        for i in range(40):
+            d = date(2026, 7, 1) + timedelta(days=i)
+            sub = tmp_path / "submissions" / "era5" / d.isoformat(); sub.mkdir(parents=True)
+            rd = tmp_path / "rounds" / "era5" / d.isoformat(); rd.mkdir(parents=True)
+            truth = 2.0 + (i % 5)
+            pd.DataFrame([{"station_id": sid, "horizon_h": 24, "snowfall_in": 2 * truth}]).to_csv(sub / "baseline-gfs.csv", index=False)
+            pd.DataFrame([{"station_id": sid, "horizon_h": 24, "truth_in": truth, "valid": True}]).to_csv(rd / "truth.csv", index=False)
+        target = date(2026, 8, 20)
+        sub = tmp_path / "submissions" / "era5" / target.isoformat(); sub.mkdir(parents=True)
+        pd.DataFrame([{"station_id": sid, "horizon_h": 24, "snowfall_in": 10.0}]).to_csv(sub / "baseline-gfs.csv", index=False)
+        out = blend_agent(lg, target, lg.cutoff_utc(target)).set_index("station_id")
+        assert 5.0 <= out.loc[sid, "snowfall_in"] < 7.0  # learned ~0.5x, shrunk slightly toward 1
+        # nothing resolved yet -> no correction
+        early = blend_agent(lg, target, datetime(2026, 7, 2, tzinfo=timezone.utc)).set_index("station_id")
+        assert early.loc[sid, "snowfall_in"] == 10.0
+    finally:
+        monkeypatch.delenv("POWDERBENCH_DATA_DIR")
+        stations_mod.clear_cache()

@@ -60,7 +60,7 @@ jobs:
             LEAGUE=$(echo "$F" | cut -d/ -f3)
             ROUND=$(echo "$F" | cut -d/ -f4)
             T=$(basename "$F" .csv)
-            case "$T" in baseline-*) review "team names starting with \`baseline-\` are reserved" ;; esac
+            case "$T" in baseline-*|house-*) review "team names starting with \`baseline-\` or \`house-\` are reserved" ;; esac
             if [ -n "$TEAM" ] && [ "$TEAM" != "$T" ]; then review "one team per PR (\`$TEAM\` vs \`$T\`)"; fi
             TEAM="$T"
             MANIFEST="data/rounds/$LEAGUE/$ROUND/round.json"

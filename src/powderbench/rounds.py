@@ -148,7 +148,7 @@ def resolve_round(league: League, d: date, enforce_deadline: bool = True) -> dic
             teams[team] = {"invalid": True, "errors": res.errors}
             continue
         metrics = scoring.score_tracks(pd.read_csv(sub_path), truth_d, climo_pred, stations)
-        if enforce_deadline and not team.startswith("baseline-"):
+        if enforce_deadline and not team.startswith(("baseline-", "house-")):
             landed = _first_commit_utc(sub_path)
             metrics["late"] = landed is None or landed > deadline
         else:

@@ -108,6 +108,9 @@ merged by a maintainer rather than the auto-merge bot.
   featured station-horizons (for a side track: of that track's stations).
   Everyone else is listed unranked until they qualify.
 - Baselines (`baseline-*`) are ranked like anyone else. Beat them.
+- House agents (`house-*`) are maintainer-run forecasting strategies, held to
+  the same cutoff (they run with the baselines), labelled on the leaderboard and
+  open-source. `baseline-` and `house-` team names are reserved.
 
 ## Fair play
 

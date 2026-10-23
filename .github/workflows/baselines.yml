@@ -50,6 +50,8 @@ jobs:
             # one league's outage must not block the others; the default round
             # is the one whose cutoff comes next
             powderbench baseline-submit $ROUND --league "$LEAGUE" ${SLOT_HOUR:+--slot-hour "$SLOT_HOUR"} || FAILED=1
+            # house agents read today's model forecasts, so they run right after
+            powderbench house-submit $ROUND --league "$LEAGUE" ${SLOT_HOUR:+--slot-hour "$SLOT_HOUR"} || true
           done
           exit $FAILED
       - name: Commit
