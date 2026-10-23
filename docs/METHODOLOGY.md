@@ -222,15 +222,19 @@ that rule. The agents:
   consensus, spread, climatology, location, elevation and season. It is retrained from
   the resolved history on every run.
 
-Backtest, ERA5 league, 90 rounds (Jul–Oct 2026):
+The learned agents (analog, gbm) abstain until a league has 20 resolved rounds
+and 40 snowy cases (≥ 2″) per horizon. Where today's model consensus is beyond
+anything in their history, they use house-blend's values instead, because a
+tree model or analog can't forecast more snow than it has seen.
 
-| | Powder Score | MAE (in) | pinball |
-|---|---|---|---|
-| house-gbm | **+39.1** | 0.61 | 0.248 |
-| house-analog | +36.7 | 0.67 | 0.259 |
-| house-blend | +26.0 | — | — |
-| GFS | −13.6 | 0.89 | — |
-| Open-Meteo best-match | −18.6 | 0.98 | — |
+ERA5 league backtest, Jul–Oct 2026. Each agent is compared with the baselines
+on the same rounds:
+
+| | Rounds | Powder Score | MAE (in) | Pinball | GFS on the same rounds | Climatology MAE |
+|---|---|---|---|---|---|---|
+| house-gbm | 63 | **+38.3** | 0.40 | 0.154 | −25.0 | 0.82 |
+| house-analog | 63 | +37.0 | 0.40 | 0.149 | −25.0 | 0.82 |
+| house-blend | 90 | +26.0 | 0.57 | 0.239 | −13.6 | 1.11 |
 
 The raw models run high against ERA5's smoother truth, which is the bias these agents
 learn. Southern resorts with `house-blend`: lowest MAE (4.23″ vs. GFS 4.37″) but a lower
