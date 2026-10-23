@@ -9,7 +9,8 @@ after ERA5's ~5-day archive lag).
 Anti-cheat: a submission only counts as on-time if its file first landed on
 the main branch (merge commit time, which GitHub sets and authors can't forge)
 before the cutoff. Late files are still scored but flagged and excluded from
-official leaderboard aggregation.
+official leaderboard aggregation. The rule applies to baselines and house
+agents too (they're generated 2.5-9 h before the cutoff).
 """
 
 from __future__ import annotations
@@ -148,7 +149,7 @@ def resolve_round(league: League, d: date, enforce_deadline: bool = True) -> dic
             teams[team] = {"invalid": True, "errors": res.errors}
             continue
         metrics = scoring.score_tracks(pd.read_csv(sub_path), truth_d, climo_pred, stations)
-        if enforce_deadline and not team.startswith(("baseline-", "house-")):
+        if enforce_deadline:  # everyone, baselines and house agents included
             landed = _first_commit_utc(sub_path)
             metrics["late"] = landed is None or landed > deadline
         else:

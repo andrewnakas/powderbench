@@ -43,6 +43,10 @@
   Face; `docs/METHODOLOGY.md`, `docs/SOURCES.md`, `CITATION.cff`.
 
 **Fixes**
+- Baselines run when due (2.5–9 h before the cutoff) from a 2-hourly job,
+  instead of at fixed slots that GitHub started up to 5 h late. The submission
+  deadline now applies to baselines and house agents too. 33 earlier rounds had
+  baselines committed after the cutoff (see METHODOLOGY).
 - Site publish no longer fails on leagues without rounds yet; baselines are
   pinned to their scheduled slot; map basemap switched to a keyless provider.
 

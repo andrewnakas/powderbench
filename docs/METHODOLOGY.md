@@ -192,6 +192,20 @@ starts too close to the cutoff does nothing. Baselines therefore use forecasts
 at least 2.5 h older than the cutoff: if anything, a small handicap against
 players who submit at the last minute.
 
+The deadline applies to baselines and house agents like everyone else. Before
+2026-10-23, baselines were exempt, and delayed jobs committed them after the
+cutoff in 33 rounds:
+
+| League | Rounds |
+|---|---|
+| ERA5 | 17 |
+| Resorts (SH) | 10 |
+| Stations | 4 |
+| Observers | 2 |
+
+Rounds already scored keep those baseline scores, noted here. Rounds scored from
+2026-10-23 on, including the open ones, flag late baselines like any late entry.
+
 **House agents** (`house-*`, `src/powderbench/agents/`) are forecasting
 strategies run by the maintainers — competitors, not reference forecasts. They
 run right after the baselines (2.5–9 h before the cutoff), may use only today's model
