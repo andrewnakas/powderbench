@@ -516,6 +516,7 @@ async function selectLeague(name) {
   renderLeagueBar();
   const lg = state.leagues.find((l) => l.name === name);
   document.getElementById("truth-note").textContent = lg.truth_note || TRUTH_NOTES[lg.truth_source] || "";
+  renderHealth(lg);
 
   try {
     state.stations = await loadJSON(`data/stations-${name}.json`);
@@ -573,6 +574,20 @@ function renderStorms(events) {
     div.innerHTML = `<h3>${e.title} <span class="badge">${e.league}</span></h3><p class="fine">${when}</p>${body}`;
     list.appendChild(div);
   }
+}
+
+function renderHealth(lg) {
+  const el = document.getElementById("data-health");
+  if (!el) return;
+  const h = lg.health || {};
+  const bits = [];
+  if (h.last_round) bits.push(`Last scored round ${h.last_round}: ${Math.round(h.qc_valid_share * 100)}% of station-horizons passed QC`);
+  if (h.latest_scrape) {
+    const st = h.latest_scrape.status;
+    const parts = Object.entries(st).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${v} ${k.replace("_", " ")}`);
+    bits.push(`Latest scrape ${h.latest_scrape.at.slice(0, 16).replace("T", " ")} UTC: ${parts.join(" · ")}`);
+  }
+  el.textContent = bits.length ? "Data health — " + bits.join(" · ") : "";
 }
 
 function renderHeroStats(leagues) {

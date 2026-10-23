@@ -40,7 +40,6 @@ FIXTURE_VALUES = {
     "jay-peak": 3.0,
     "bolton-valley": 4.0,
     "wolf-creek": 2.0,
-    "brundage": 4.0,
     "bogus-basin": 3.0,
     "mission-ridge": 2.5,
     "49-degrees-north": 1.0,

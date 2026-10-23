@@ -247,6 +247,31 @@ def build_site() -> list[Path]:
 
     from .truth_sources import get_source
 
+    def health(l) -> dict:
+        """Public data-health line: QC pass rate of the last scored round and,
+        for resort leagues, the status mix of the latest scrape."""
+        out = {}
+        res = sorted(round_results_dir(l).glob("*.json"))
+        if res:
+            qc = json.loads(res[-1].read_text()).get("qc") or {}
+            ok, bad = qc.get("station_horizons_valid", 0), qc.get("station_horizons_voided", 0)
+            if ok + bad:
+                out["last_round"] = res[-1].stem
+                out["qc_valid_share"] = round(ok / (ok + bad), 3)
+        if l.truth_source == "resort":
+            raw = sorted((data_dir() / "resortreports" / "raw").glob("*.csv"))
+            ids = {s.station_id for s in load_stations(l.name)}
+            for path in reversed(raw[-6:]):
+                with path.open() as f:
+                    rows = [r for r in csv.DictReader(f) if r["station_id"] in ids]
+                if rows:
+                    counts: dict[str, int] = {}
+                    for r in rows:
+                        counts[r["status"]] = counts.get(r["status"], 0) + 1
+                    out["latest_scrape"] = {"at": rows[0]["scraped_utc"], "status": counts}
+                    break
+        return out
+
     leagues = load_leagues()
     league_meta = []
     for l in leagues:
@@ -258,6 +283,7 @@ def build_site() -> list[Path]:
              "n_stations": len(load_stations(l.name)),
              "n_featured": len(load_stations(l.name, featured_only=True)),
              "n_rounds_resolved": len(list(round_results_dir(l).glob("*.json"))),
+             "health": health(l),
              "open_round": open_round, "last_resolved": last_resolved}
         )
     emit("leagues.json", league_meta)

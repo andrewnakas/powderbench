@@ -778,9 +778,10 @@ REGISTRY: tuple[ResortSpec, ...] = (
         parse=_cell('Lakeview \\(7,400&#039;\\)</div>\\s*<ul>\\s*<li>24 Hours:([^<]{0,40})</li>'),
         unit="in",
         report_hour_local=6,
-        enabled=True,
+        enabled=False,  # see notes
         verified="2026-10-20: " + 'robots \'Disallow:\' empty. No terms of use (404); privacy policy and policies page have no scraping clause. First-party WordPress weather box (Base 6,050\' / Lakeview 7,400\' x 24/48/72h/1-week); OpenSnow powers only the separate forecast tab. Wayback 2026-01-08: Lakeview 24h 4" (48h 6, 1-week 26).',
-        notes='Lakeview (7,400 ft) 24 Hours.',
+        notes="Lakeview (7,400 ft) 24 Hours. 2026-10-23 disabled: every scheduled scrape from GitHub's runners "
+        "returns an HTTP error while the page loads normally elsewhere (the site blocks cloud IPs); not worked around.",
     ),
     ResortSpec(
         resort_id="bogus-basin",
