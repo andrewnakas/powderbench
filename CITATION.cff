@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use PowderBench, its data or its results, please cite it as below."
+title: "PowderBench: a live, contamination-free benchmark for mountain snowfall forecasting"
+type: software
+authors:
+  - family-names: Nakas
+    given-names: Andrew
+repository-code: "https://github.com/andrewnakas/powderbench"
+url: "https://powderbench.com"
+license: MIT
+version: "0.3.0"
+date-released: "2026-10-23"
+keywords:
+  - snowfall
+  - weather forecasting
+  - benchmark
+  - SNOTEL
+  - machine learning
+abstract: >-
+  PowderBench scores 24-72 hour mountain snowfall forecasts from humans, ML
+  models and AI agents against quality-controlled observations at ~2,400
+  stations across North America, the Alps and the southern hemisphere, next
+  to the world's operational weather models. Rounds ask about weather that
+  has not happened yet, so the benchmark cannot be memorized.

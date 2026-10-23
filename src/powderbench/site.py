@@ -283,6 +283,11 @@ def build_site() -> list[Path]:
 
     emit("resort-vs-era5.json", _resort_vs_era5({l.name: l for l in leagues}))
     emit("events.json", _events())
+    sources = data_dir() / "sources.yaml"
+    if sources.exists():
+        import yaml
+
+        emit("sources.json", yaml.safe_load(sources.read_text())["sources"])
     written += build_api(leagues)
     return written
 
