@@ -1,6 +1,13 @@
 # ❄️ PowderBench
 
-**The live mountain-snowfall forecasting benchmark. Beat the weather models.**
+**The live, open benchmark for mountain snowfall forecasting. Beat the weather models.**
+
+[![Tests](https://github.com/andrewnakas/powderbench/actions/workflows/tests.yml/badge.svg)](https://github.com/andrewnakas/powderbench/actions/workflows/tests.yml)
+[![Site](https://img.shields.io/badge/live-powderbench.com-7cc4ff)](https://powderbench.com)
+[![Truth dataset](https://img.shields.io/badge/%F0%9F%A4%97%20dataset-powderbench--truth-yellow)](https://huggingface.co/datasets/nakas/powderbench-truth)
+[![Methodology](https://img.shields.io/badge/docs-methodology-informational)](docs/METHODOLOGY.md)
+[![License: MIT](https://img.shields.io/badge/code-MIT-green)](LICENSE)
+[![Cite](https://img.shields.io/badge/cite-CITATION.cff-lightgrey)](CITATION.cff)
 
 Every day, PowderBench opens rounds in six leagues — one per kind of ground
 truth: predict fresh snowfall — 24h, 48h, and 72h out — at **~2,400 quality-controlled mountain
@@ -159,6 +166,8 @@ docs/                  RULES.md · SUBMITTING.md · DATA.md · RESORTS.md
 
 ## Docs
 
+- [Methodology](docs/METHODOLOGY.md) — truth, QC, scoring, validation, limitations
+- [Data sources & licences](docs/SOURCES.md)
 - [SUBMITTING.md](docs/SUBMITTING.md) — submission format + PR walkthrough
 - [RULES.md](docs/RULES.md) — cutoffs, scoring, eligibility, QC, anti-gaming
 - [DATA.md](docs/DATA.md) — exactly how truth is computed, sources, licenses
@@ -166,4 +175,7 @@ docs/                  RULES.md · SUBMITTING.md · DATA.md · RESORTS.md
 
 ## License
 
-MIT for code. SNOTEL data is public domain (USDA); Open-Meteo data CC BY 4.0.
+MIT for code. Data keep their providers' licences — public domain (USDA, NOAA),
+CC BY (SLF, CoCoRaHS, Open-Meteo/ERA5), Open Government Licence – Canada, ODbL
+(OpenSkiData) — see [docs/SOURCES.md](docs/SOURCES.md) for the full list and
+required attributions.
