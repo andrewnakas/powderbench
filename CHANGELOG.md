@@ -37,6 +37,9 @@
   `examples/llm-agent.yml` for running a subscription-authenticated Claude Code
   agent daily.
 
+- Team pages (`team.html?t=<team>`) with head-to-head records against the
+  baselines, and embeddable SVG badges.
+
 **Open data**
 - `nakas/powderbench-truth` (QC'd daily truth) and
   `nakas/powderbench-snowpack` (snowpack/avalanche training data) on Hugging

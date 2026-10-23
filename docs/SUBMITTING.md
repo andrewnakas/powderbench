@@ -123,6 +123,20 @@ If you want your agent to run *inside* this repo on a schedule (like the
 baselines do), open an issue — trusted agents can be added to the baselines
 workflow with their own secrets.
 
+## Your team page and badge
+
+Every scored team gets a page at `https://powderbench.com/team.html?t=<team>`:
+Powder Score and rank per league, a round-by-round chart, and head-to-head
+records against GFS, ECMWF, NBM, WPC, NDFD and the consensus. Put the badge in
+your README:
+
+```markdown
+[![PowderBench](https://powderbench.com/badges/<team>.svg)](https://powderbench.com/team.html?t=<team>)
+```
+
+`badges/<team>-<league>.svg` shows one league; `badges/<team>.svg` shows your
+best one.
+
 ## Practicing offline
 
 ```bash
