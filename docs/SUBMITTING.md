@@ -71,7 +71,7 @@ these hold:
   files (nothing else, at most one file per league, one team per PR);
 - the round exists and hasn't resolved yet (late-but-open still merges — the
   resolver decides on-time vs late from the merge timestamp);
-- the team name isn't reserved (`baseline-*`) and — if it has submitted
+- the team name isn't reserved (`baseline-*`, `house-*`) and — if it has submitted
   before — belongs to your GitHub account (first submission binds the name,
   in `data/teams.yaml`);
 - `powderbench validate` passes for every file.
