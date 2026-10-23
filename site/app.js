@@ -501,6 +501,22 @@ function renderTrackOptions() {
   sel.style.display = tracks.length ? "" : "none";
 }
 
+function renderHall(months) {
+  const box = document.getElementById("hall");
+  const rows = (months || []).filter((m) => m.champion || m.best_model);
+  box.style.display = rows.length ? "" : "none";
+  const now = new Date().toISOString().slice(0, 7);
+  const link = (e) => e ? `<a href="team.html?t=${encodeURIComponent(e.team)}">${e.team}</a>` : "—";
+  document.querySelector("#hall-table tbody").innerHTML = rows.map((m) => `
+    <tr${m.champion?.team?.startsWith("house-") ? ' class="house"' : ""}>
+      <td>${m.month}${m.month === now ? ' <span class="badge">SO FAR</span>' : ""}</td>
+      <td class="team">${m.champion ? "🏆 " + link(m.champion) : "—"}</td>
+      <td>${m.champion ? fmt(m.champion.powder_score, 1) : "—"}</td>
+      <td class="team">${link(m.best_model)}${m.best_model ? ` (${fmt(m.best_model.powder_score, 1)})` : ""}</td>
+      <td>${m.rounds}</td>
+    </tr>`).join("");
+}
+
 function renderCurrentBoard() {
   const track = document.getElementById("board-track").value;
   if (track) renderBoard((state.lb.tracks || {})[track], state.lb.generated_rounds);
@@ -526,6 +542,7 @@ async function selectLeague(name) {
 
   state.lb = { season: [], last30: [], generated_rounds: 0 };
   try { state.lb = await loadJSON(`data/leaderboard-${name}.json`); } catch (e) { /* pre-season */ }
+  renderHall(state.lb.months);
   renderTrackOptions();
   renderCurrentBoard();
 

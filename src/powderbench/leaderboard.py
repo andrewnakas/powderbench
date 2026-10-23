@@ -20,6 +20,7 @@ from .stations import data_dir
 from .validate import MIN_COVERAGE
 
 MIN_ROUNDS = 5
+MONTH_MIN_ROUNDS = 10  # a monthly title needs most of the month's rounds
 
 
 def round_results_dir(league: League) -> Path:
@@ -110,6 +111,26 @@ def load_track_results(league: League | str = "stations") -> dict[str, pd.DataFr
     return {track: pd.DataFrame(r) for track, r in rows.items()}
 
 
+def monthly_champions(rows: pd.DataFrame) -> list[dict]:
+    """Per calendar month (by round date): the champion among competitors and
+    house agents, the best weather model, and the podium of everyone eligible
+    (MONTH_MIN_ROUNDS rounds at the usual coverage). Newest month first."""
+    out = []
+    months = rows.assign(month=rows["round"].str[:7])
+    for month, grp in sorted(months.groupby("month"), reverse=True):
+        board = aggregate(grp.drop(columns="month"), min_rounds=min(MONTH_MIN_ROUNDS, grp["round"].nunique()))
+        board = board[board["eligible"]]
+        pick = lambda b: (_records(b.head(1)[["team", "powder_score", "rounds"]]) or [None])[0]
+        out.append({
+            "month": month, "rounds": int(grp["round"].nunique()),
+            "champion": pick(board[~board["is_baseline"] & (board["team"] != "baseline-climatology")]),
+            "best_model": pick(board[board["is_baseline"] & ~board["team"].isin(
+                ["baseline-climatology", "baseline-zeros", "baseline-persistence"])]),
+            "podium": _records(board.head(3)[["team", "powder_score", "is_baseline", "is_house"]]),
+        })
+    return out
+
+
 def build_leaderboard(league: League | str = "stations", season_start: date | None = None) -> dict:
     """Aggregate a league's resolved rounds into leaderboard.json."""
     league = get_league(league) if isinstance(league, str) else league
@@ -124,6 +145,7 @@ def build_leaderboard(league: League | str = "stations", season_start: date | No
         last30 = rows[rows["round"].isin(round_ids[-30:])]
         out["last30"] = _records(aggregate(last30, min_rounds=min(MIN_ROUNDS, len(round_ids[-30:]))))
         out["rounds"] = round_ids
+        out["months"] = monthly_champions(rows)
         tracks = {}
         for track, trows in sorted(load_track_results(league).items()):
             if season_start is not None:

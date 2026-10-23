@@ -79,3 +79,24 @@ def test_team_profiles_and_badges(tmp_path, monkeypatch):
     site.build_badges(teams)
     svg = (tmp_path / "badges" / "frozen-gradient.svg").read_text()
     assert svg.startswith("<svg") and "era5 +12.3 · #1" in svg
+
+
+def test_monthly_champions():
+    import pandas as pd
+
+    from powderbench.leaderboard import monthly_champions
+
+    rows = []
+    for i in range(12):
+        d = f"2026-08-{i + 1:02d}"
+        for team, ps in (("frozen-gradient", 30.0), ("house-gbm", 25.0), ("baseline-gfs", 10.0),
+                         ("baseline-climatology", 0.0), ("late-joiner", 90.0 if i > 9 else None)):
+            if ps is not None:
+                rows.append({"team": team, "round": d, "powder_score": ps, "mae": 1.0, "coverage": 1.0})
+    rows.append({"team": "frozen-gradient", "round": "2026-09-01", "powder_score": 5.0, "mae": 1.0, "coverage": 1.0})
+    m = monthly_champions(pd.DataFrame(rows))
+    assert [x["month"] for x in m] == ["2026-09", "2026-08"]
+    aug = m[1]
+    assert aug["champion"]["team"] == "frozen-gradient"  # late-joiner has 2 rounds: not eligible
+    assert aug["best_model"]["team"] == "baseline-gfs"
+    assert [p["team"] for p in aug["podium"]] == ["frozen-gradient", "house-gbm", "baseline-gfs"]
