@@ -39,7 +39,7 @@ Each league is defined by one kind of ground truth; results never mix.
 | **Stations** | ~1,000 (45 featured) | Automated snow telemetry: NRCS SNOTEL, SNOLITE, CDEC pillows, BC pillows | Oct–May | 00:00 UTC on *D* | *D*+3 |
 | **Observers** | ~1,160 (98 featured) | **Measured** new snow: NWS COOP + CoCoRaHS (NOAA GHCN-Daily), ECCC staffed stations | Oct–May | 00:00 UTC on *D* | *D*+6 |
 | **Alps** | 216 (19 featured) | **Measured** 24 h new snow (HN): SLF study plots + IMIS | Nov–May | 21:00 UTC on *D*−1 | *D*+4 |
-| **Resorts · North America** | 38 resorts | Each resort's own morning snow report | Nov–Apr | 00:00 UTC on *D* | *D*+4 |
+| **Resorts · North America** | 37 resorts | Each resort's own morning snow report | Nov–Apr | 00:00 UTC on *D* | *D*+4 |
 | **ERA5** | 23 points | ERA5 reanalysis (Andes, NZ, Australia) | May–Oct | 11:00 UTC on *D*−1 | ~*D*+8 |
 | **Resorts · Southern Hemisphere** | 13 resorts | Each resort's own morning snow report | May–Oct | 11:00 UTC on *D*−1 | *D*+3 |
 
