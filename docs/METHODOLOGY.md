@@ -263,6 +263,7 @@ floors must not. Results (featured stations, 2026-02-01…14):
 |---|---|---|---|---|
 | Observers | +25.1 (GFS) | — | 0 | −46.8 |
 | Alps | +41.1 (ICON) | +41.6 | 0 | −0.8 |
+| Alps · Austria (GeoSphere) | +44.9 (AROME) | +39.6 | 0 | −33.0 |
 
 A network whose truth made the models look worse than climatology would
 indicate broken truth and would not launch. Hindcast NWP uses archived

@@ -39,6 +39,13 @@ sources:
     attribution: "Swiss snow data © WSL Institute for Snow and Avalanche Research SLF (www.slf.ch), CC BY 4.0."
     role: truth
     leagues: [alps]
+  - name: Measured new snow (shneu_manu) — climate stations
+    provider: GeoSphere Austria
+    url: https://data.hub.geosphere.at/
+    licence: CC BY 4.0
+    attribution: "Austrian snow data © GeoSphere Austria (data.hub.geosphere.at), CC BY 4.0."
+    role: truth
+    leagues: [alps]
   - name: Resort snow reports
     provider: Each resort (first-party pages; per-resort audit in the registry)
     url: https://github.com/andrewnakas/powderbench/blob/main/src/powderbench/resortfeeds/registry.py

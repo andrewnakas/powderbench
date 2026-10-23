@@ -27,7 +27,8 @@ LEAGUES = {  # league -> (history start, source/licence line)
                                      "public; BC Ministry of Environment snow pillows — Open Government Licence – BC"),
     "observers": (date(2016, 10, 1), "NOAA GHCN-Daily (NWS COOP: public domain; CoCoRaHS: CC BY 3.0, © CoCoRaHS) "
                                      "and Environment and Climate Change Canada (Open Government Licence – Canada)"),
-    "alps": (date(2000, 10, 1), "WSL Institute for Snow and Avalanche Research SLF — CC BY 4.0, www.slf.ch"),
+    "alps": (date(2000, 10, 1), "WSL Institute for Snow and Avalanche Research SLF — CC BY 4.0, www.slf.ch; "
+                                 "GeoSphere Austria — CC BY 4.0, data.hub.geosphere.at"),
 }
 
 

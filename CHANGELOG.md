@@ -8,7 +8,8 @@
 - New **Observers** league: measured new snow from ~1,160 COOP, CoCoRaHS and
   Environment Canada observers at mountain and ski-area sites, with
   per-station observation-day attribution fitted against ERA5.
-- New **Alps** league: SLF measured 24 h new snow at 216 Swiss sites.
+- New **Alps** league: measured 24 h new snow at 216 Swiss sites (SLF) and 22
+  Austrian climate stations (GeoSphere Austria): St. Anton, Obergurgl, Saalbach…
 - New **Resorts · North America** league: 37 resorts' own morning reports,
   with a 30 h freshness gate on reports that carry a date.
 - Featured stations for the headline board; full-network and regional side

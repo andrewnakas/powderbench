@@ -221,8 +221,29 @@ register(TruthSource(
     note=(
         "Truth is the 24h new snow (HN) measured by the WSL Institute for Snow and Avalanche "
         "Research SLF — observers' snowboards at manual study plots across the Swiss Alps "
-        "(Zermatt, Verbier, St. Moritz, Davos…) plus SLF's automatic IMIS stations. "
-        "Data © SLF, CC BY 4.0."
+        "(Zermatt, Verbier, St. Moritz, Davos…) plus SLF's automatic IMIS stations, and hand "
+        "measurements at GeoSphere Austria's climate stations (St. Anton, Obergurgl, Saalbach…). "
+        "Data © SLF and © GeoSphere Austria, CC BY 4.0."
+    ),
+))
+
+
+def _geosphere_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
+    from .networks import geosphere
+
+    return geosphere.daily(ids, begin, end, _offsets(league, ids))
+
+
+register(TruthSource(
+    name="geosphere",
+    fetch=_geosphere_daily,
+    history_begin=date(2010, 10, 1),
+    climatology=(date(2000, 10, 1), _CLIM_END),
+    measured=True,
+    note=(
+        "Truth is the 24h new snow measured by hand at GeoSphere Austria's climate stations "
+        "(St. Anton, Obergurgl, Obertauern, Saalbach…), read at the 07:00 morning observation. "
+        "Data © GeoSphere Austria, CC BY 4.0."
     ),
 ))
 

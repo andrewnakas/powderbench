@@ -113,7 +113,7 @@ Data Service. COOP data is US public domain; CoCoRaHS data is CC BY 3.0
 | Synoptic / NWAC / UAC / CAIC / Avalanche Canada | permission requested | see [OUTREACH.md](OUTREACH.md) |
 | OnTheSnow, OpenSnow, Snow-Forecast, Skiresort.info | rejected | ToS prohibit scraping/redistribution |
 
-## Ground truth: measured new snow, Swiss Alps (alps league)
+## Ground truth: measured new snow, Swiss and Austrian Alps (alps league)
 
 The alps league scores against **HN — the 24h height of new snow** published by
 the WSL Institute for Snow and Avalanche Research **SLF** (CC BY 4.0; data ©
@@ -131,6 +131,39 @@ last week.
   missing values, SLF's negative sentinels and >48".
 - Season Nov–May; cutoff 21:00 UTC on D−1 (before Swiss local midnight in
   both CET and CEST); resolves D+4.
+
+### Austria: GeoSphere Austria climate stations
+
+The Austrian stations (`:GEO`, `truth_source: geosphere`) score against
+`shneu_manu`, the 24h new snow measured by hand at the 06 UTC (07:00 CET)
+observation. It comes from GeoSphere Austria's daily climate dataset
+(`klima-v2-1d`, CC BY 4.0; data © GeoSphere Austria). Updates are daily and
+there's no key.
+
+- **Candidates:** active stations at ≥ 900 m with ≥ 100 manual readings last
+  winter. GeoSphere lists many sites under two station numbers with identical
+  values; one is kept per site.
+- **Day attribution:** the 07:00 reading should hold yesterday's snow, but
+  fitted against ERA5, stations split. St. Anton fits the same day clearly
+  (r = 0.80 vs 0.64), while Obergurgl fits the next morning's report (0.66 vs
+  0.27). So every station is fitted with the strict margin rule, no documented
+  default. Near-ties are excluded (Warth, Langen am Arlberg, Seefeld and 19
+  others), which leaves 22 of 44 sites.
+- **Featured:** St. Anton (village and Galzig), Galtür / Ischgl, Obergurgl,
+  Obertauern, Saalbach, Nauders, Pitztal Glacier.
+- **Climatology:** from each station's own record since 2000.
+- **Hindcast gate:** 2026-02-01…14, models on the 8 featured stations,
+  climatology and persistence on all 22.
+
+  | | Powder Score |
+  |---|---|
+  | AROME | +44.9 |
+  | Open-Meteo | +43.7 |
+  | ICON | +40.0 |
+  | Consensus | +39.6 |
+  | Zeros | +4.8 |
+  | Climatology | 0 |
+  | Persistence | −33.0 |
 
 ## Ground truth: ERA5 analysis (era5 league)
 
