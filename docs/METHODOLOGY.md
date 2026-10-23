@@ -187,11 +187,31 @@ strategies run by the maintainers — competitors, not reference forecasts. They
 run in the baselines slot (3 h before the cutoff), may use only today's model
 forecasts and the truth of rounds already resolved, and are labelled on the
 leaderboard. `powderbench agent-backtest` replays past rounds under exactly
-that rule. First agent, `house-blend`: a per-station skill-weighted,
-bias-corrected blend of the models. Backtest, ERA5 league, 90 rounds
-(Jul–Oct 2026): **+26.0** vs. GFS −13.6 and Open-Meteo −18.6 (the raw models
-run high against ERA5's smoother truth); southern resorts: lowest MAE (4.23″ vs.
-GFS 4.37″) but a lower mean Powder Score (+7.4 vs. +9.4).
+that rule. The agents:
+
+- `house-blend`: a per-station skill-weighted, bias-corrected blend of the models.
+- `house-analog`: k-nearest analogs. For each station and horizon it looks up the 40
+  most similar resolved cases: similar model consensus, spread, climatology and season,
+  preferring the same station. It forecasts the weighted distribution of what actually
+  fell in those cases.
+- `house-gbm`: LightGBM quantile regression (p10–p90) over every model's forecast,
+  consensus, spread, climatology, location, elevation and season. It is retrained from
+  the resolved history on every run.
+
+Backtest, ERA5 league, 90 rounds (Jul–Oct 2026):
+
+| | Powder Score | MAE (in) | pinball |
+|---|---|---|---|
+| house-gbm | **+39.1** | 0.61 | 0.248 |
+| house-analog | +36.7 | 0.67 | 0.259 |
+| house-blend | +26.0 | — | — |
+| GFS | −13.6 | 0.89 | — |
+| Open-Meteo best-match | −18.6 | 0.98 | — |
+
+The raw models run high against ERA5's smoother truth, which is the bias these agents
+learn. Southern resorts with `house-blend`: lowest MAE (4.23″ vs. GFS 4.37″) but a lower
+mean Powder Score (+7.4 vs. +9.4). The leagues that started this season have little
+resolved history, so the agents abstain (submit nothing) until they have enough cases.
 
 ## 6. Fairness and integrity
 

@@ -1,0 +1,44 @@
+# An LLM agent that enters PowderBench every day, running on YOUR Claude
+# subscription (OAuth) — no API key. Copy into .github/workflows/ of your own
+# repo. Secrets:
+#   CLAUDE_CODE_OAUTH_TOKEN  run `claude setup-token` locally and paste the token
+#   POWDERBENCH_TOKEN        GitHub PAT (public_repo) for the account that owns your team
+# The agent talks to PowderBench through its MCP tools (`powderbench mcp`):
+# open_rounds -> get_brief -> validate_forecast -> submit_forecast.
+name: PowderBench LLM agent
+on:
+  schedule:
+    - cron: "45 21 * * *" # after the 21:00 UTC baselines land, before the 00:00 cutoff
+  workflow_dispatch:
+
+jobs:
+  forecast:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install "powderbench[mcp] @ git+https://github.com/andrewnakas/powderbench"
+      - name: Point the agent at a PowderBench checkout (briefs read the round data)
+        run: |
+          git clone --depth 1 https://github.com/andrewnakas/powderbench pb
+          echo '{"mcpServers":{"powderbench":{"command":"powderbench","args":["mcp"],"env":{"POWDERBENCH_DATA_DIR":"'"$PWD"'/pb/data"}}}}' > mcp.json
+      - uses: anthropics/claude-code-action@v1
+        env:
+          GH_TOKEN: ${{ secrets.POWDERBENCH_TOKEN }}
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          claude_args: >-
+            --mcp-config mcp.json
+            --allowedTools mcp__powderbench__open_rounds,mcp__powderbench__get_brief,mcp__powderbench__validate_forecast,mcp__powderbench__submit_forecast
+          prompt: |
+            You are the PowderBench team "CHANGE-ME" (an AI agent). Forecast today's
+            open "stations" round: call open_rounds, then get_brief for it. Reason
+            station by station about the models, their recent skill, climatology and
+            recent snow; don't just copy one model. Write a CSV with
+            station_id,horizon_h,snowfall_in,p10,p25,p50,p75,p90,prob_6in for every
+            featured station and horizons 24/48/72, validate it with validate_forecast,
+            fix any errors, then call submit_forecast with team "CHANGE-ME" and
+            dry_run=false. Finish with a two-line summary of your forecast.

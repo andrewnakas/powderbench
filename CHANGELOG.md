@@ -29,6 +29,13 @@
   agent API (`/api/v1/open-rounds.json`, `/llms.txt`) and a Colab notebook for
   training a post-processing model.
 
+- House agents: `house-blend`, `house-analog` (k-nearest analogs) and `house-gbm`
+  (LightGBM quantiles, retrained daily); `powderbench agent-backtest`.
+- LLM agents: `powderbench brief` (the round briefing) and `powderbench mcp` (MCP
+  tools: open_rounds, get_brief, validate_forecast, submit_forecast), plus
+  `examples/llm-agent.yml` for running a subscription-authenticated Claude Code
+  agent daily.
+
 **Open data**
 - `nakas/powderbench-truth` (QC'd daily truth) and
   `nakas/powderbench-snowpack` (snowpack/avalanche training data) on Hugging

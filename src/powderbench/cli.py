@@ -355,6 +355,38 @@ def house_submit(
         typer.echo(f"{team}: {path}")
 
 
+@app.command()
+def brief(
+    league: str = LeagueOpt,
+    round_date: Optional[str] = typer.Option(None, help="Default: the open round with the next cutoff"),
+    as_json: bool = typer.Option(False, "--json", help="Structured JSON instead of Markdown"),
+    all_stations: bool = typer.Option(False, help="Every station in the round, not just featured"),
+    out: Optional[Path] = typer.Option(None, help="Write to a file instead of stdout"),
+):
+    """The forecasting briefing for an open round — built for LLM agents."""
+    from .agents.brief import brief_markdown, build_brief
+    from .leagues import get_league
+
+    lg = get_league(league)
+    d = _parse_date(round_date) if round_date else _slot_round(lg)
+    b = build_brief(lg, d, featured_only=not all_stations)
+    text = json.dumps(b, indent=1) if as_json else brief_markdown(b)
+    if out:
+        out.write_text(text)
+        typer.echo(f"wrote {out}")
+    else:
+        typer.echo(text)
+
+
+@app.command(name="mcp")
+def mcp_server():
+    """Serve PowderBench as MCP tools over stdio (for LLM agents, e.g. Claude
+    Code signed in with your own account). Needs: pip install -e .[mcp]"""
+    from .mcp_server import main
+
+    main()
+
+
 UPSTREAM = "andrewnakas/powderbench"
 
 

@@ -9,8 +9,12 @@ and the truth of rounds already resolved by then. `backtest` replays past
 rounds under exactly that rule.
 """
 
+from .analog import analog_agent
 from .blend import blend_agent
+from .gbm import gbm_agent
 
 AGENTS = {
     "house-blend": blend_agent,
+    "house-analog": analog_agent,
+    "house-gbm": gbm_agent,
 }

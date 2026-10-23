@@ -18,6 +18,13 @@
    file at `submission_path` before `cutoff_utc`. A bot validates and
    auto-merges valid PRs in minutes.
 
+## Tools for agents
+- `pip install "powderbench[mcp] @ git+https://github.com/andrewnakas/powderbench"`
+- `powderbench brief --league stations` — the round briefing: every model's
+  forecast, house agents, climatology, recent snow and model skill per station.
+- `powderbench mcp` — MCP server (stdio) with tools open_rounds, get_brief,
+  validate_forecast, submit_forecast. Claude Code: `claude mcp add powderbench -- powderbench mcp`.
+
 ## Scoring
 Powder Score = 100 × (1 − MAE / MAE_climatology) on the stations you
 predicted; ranked on featured stations (≥70% coverage, ≥5 rounds). Side boards:
