@@ -189,3 +189,24 @@ def test_no_network_station_duplicates_a_snotel_site():
                 + math.cos(s.latitude * p) * math.cos(t.latitude * p) * math.sin((t.longitude - s.longitude) * p / 2) ** 2))
                 for t in sn)
         assert d > 1.5, (s.station_id, d)
+
+
+def test_build_site_survives_a_league_with_no_rounds_yet(tmp_path, monkeypatch):
+    """Regression: build-site crashed on data/rounds/<league> missing (the alps
+    league before its first November round), aborting every publish."""
+    import shutil as sh
+
+    from powderbench import site
+
+    root = tmp_path / "repo"
+    sh.copytree(DATA, root / "data", ignore=sh.ignore_patterns("cache", "rounds", "submissions", "results",
+                                                               "resortreports", "obs", "snowhistory"))
+    (root / "site").mkdir()
+    monkeypatch.setenv("POWDERBENCH_DATA_DIR", str(root / "data"))
+    stations_mod.clear_cache()
+    try:
+        written = site.build_site()
+        assert any(p.name == "leagues.json" for p in written)
+    finally:
+        monkeypatch.delenv("POWDERBENCH_DATA_DIR")
+        stations_mod.clear_cache()

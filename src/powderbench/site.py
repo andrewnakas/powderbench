@@ -51,7 +51,10 @@ def _daily_truth_series(league: League) -> dict[str, dict[str, list]]:
             s["in"].append(round(float(r.snow24_in), 2))
         return series
 
-    for rdir in sorted((data_dir() / "rounds" / league.name).iterdir()):
+    rounds_root = data_dir() / "rounds" / league.name
+    if not rounds_root.exists():  # a league before its first round (e.g. off-season)
+        return series
+    for rdir in sorted(rounds_root.iterdir()):
         tpath = rdir / "truth.csv"
         if not tpath.exists():
             continue
