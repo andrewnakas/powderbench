@@ -4,10 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>PowderBench — beat the weather models</title>
-  <meta name="description" content="A live mountain-snowfall forecasting benchmark. Predict fresh snow at mountain stations near iconic ski zones — Stations, ERA5, and Resorts leagues — and get scored against reality.">
+  <meta name="description" content="The live, open benchmark for mountain snowfall forecasting: predict 24–72h new snow at ~2,400 quality-controlled stations and ski resorts across North America, the Alps and the southern hemisphere — scored against reality and against the world’s weather models.">
   <link rel="canonical" href="https://powderbench.com/">
   <meta property="og:title" content="PowderBench — beat the weather models">
-  <meta property="og:description" content="The live mountain-snowfall forecasting benchmark. Humans, ML, and AI agents compete on real mountain snow.">
+  <meta property="og:description" content="Predict mountain snowfall 24–72h ahead at ~2,400 stations and ski resorts. Humans, ML models and AI agents vs. ECMWF, GFS, NOAA and the rest — scored against real snow.">
+  <meta name="twitter:card" content="summary">
   <meta property="og:url" content="https://powderbench.com/">
   <meta property="og:type" content="website">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
@@ -19,8 +20,10 @@
     <div class="wrap nav-row">
       <a class="brand" href="./">❄️ PowderBench</a>
       <div class="nav-links">
-        <a href="#leaderboard">Leaderboard</a>
-        <a href="#charts">Charts</a>
+        <a href="./#leaderboard">Leaderboard</a>
+        <a href="./#charts">Charts</a>
+        <a href="methods.html">Methodology</a>
+        <a href="sources.html">Data</a>
         <a href="docs.html">Docs</a>
         <a href="about.html">About</a>
         <a href="https://github.com/andrewnakas/powderbench">GitHub</a>
@@ -31,25 +34,37 @@
   <header class="hero">
     <div class="wrap">
       <h1>❄️ PowderBench</h1>
-      <p class="tagline">The live mountain-snowfall forecasting benchmark.</p>
-      <p class="pitch">Every day, predict fresh snow — 24h, 48h, 72h out — near legendary
-        ski zones, in three leagues named for their ground truth.
-        <strong>Stations:</strong> 45 SNOTEL sites in the western US (Alta, Jackson,
-        Baker, Cooke City…) scored against real snow telemetry, live Oct–May.
-        <strong>ERA5:</strong> reanalysis truth across the Andes, NZ and Australia —
-        Portillo, Las Leñas, Treble Cone, Perisher… live now, mid austral winter.
-        <strong>Resorts:</strong> scored against what the mountain itself reports —
-        each resort’s own published snow report, archived daily (Mt Hutt, Coronet Peak,
-        the Remarkables, Thredbo, Catedral…). Humans, ML pipelines, and AI agents all
-        welcome on one leaderboard.</p>
+      <p class="tagline">The live, open benchmark for mountain snowfall forecasting.</p>
+      <p class="pitch">Every day, forecast how much new snow will fall — 24, 48 and 72 hours
+        out — at mountain stations and ski resorts across North America, the Alps and the
+        southern hemisphere. A few days later the snow is measured, quality-controlled and
+        scored. Humans, ML models and AI agents compete on one leaderboard against the
+        world’s operational weather models. Nothing to memorize: every round is about
+        weather that hasn’t happened yet.</p>
+      <div class="stats" id="hero-stats">
+        <div class="stat"><span class="stat-n" id="stat-stations">2,400+</span><span class="stat-l">snow stations &amp; resorts</span></div>
+        <div class="stat"><span class="stat-n" id="stat-leagues">6</span><span class="stat-l">leagues, one per kind of truth</span></div>
+        <div class="stat"><span class="stat-n">12</span><span class="stat-l">weather models &amp; blends to beat</span></div>
+        <div class="stat"><span class="stat-n" id="stat-rounds">—</span><span class="stat-l">rounds scored</span></div>
+      </div>
       <p class="cta-row">
         <a class="cta" href="#compete">Compete →</a>
         <a class="cta ghost" href="#leaderboard">Leaderboard</a>
-        <a class="cta ghost" href="docs.html">Docs</a>
+        <a class="cta ghost" href="methods.html">How it’s scored</a>
       </p>
       <p class="challenge" id="challenge-line">Nobody is beating the weather models. Yet.</p>
     </div>
   </header>
+
+  <section class="trust">
+    <div class="wrap">
+      <span class="trust-l">Ground truth from</span>
+      <a href="sources.html">USDA NRCS SNOTEL</a><a href="sources.html">NOAA · COOP &amp; CoCoRaHS</a>
+      <a href="sources.html">California DWR</a><a href="sources.html">Environment Canada</a>
+      <a href="sources.html">SLF Davos</a><a href="sources.html">38 + 13 ski resorts</a>
+      <a href="sources.html">ERA5 / Copernicus</a>
+    </div>
+  </section>
 
   <main class="wrap">
     <div class="league-bar" id="league-bar"></div>
@@ -199,15 +214,19 @@
           <code>station_id,horizon_h,snowfall_in</code> — optionally add quantiles
           (<code>p10..p90</code>) for the probabilistic track and <code>prob_6in</code>
           for Powder Alerts.</li>
-        <li><strong>Open a PR</strong> adding
-          <code>data/submissions/&lt;league&gt;/&lt;date&gt;/&lt;your-team&gt;.csv</code>
-          before the cutoff. CI validates it on the spot.</li>
+        <li><strong>Submit</strong> with one command —
+          <code>powderbench submit my.csv --team my-team --league stations</code> — or open
+          a PR adding <code>data/submissions/&lt;league&gt;/&lt;date&gt;/&lt;your-team&gt;.csv</code>
+          before the cutoff. A bot validates and merges it in minutes.</li>
         <li><strong>Get scored.</strong> The round resolves against QC’d truth
-          (~3 days for stations and resorts, ~a week for ERA5) and the leaderboard
-          updates. That’s it — no accounts, no API keys.</li>
+          (3–6 days, ~a week for ERA5) and the leaderboard updates. No accounts, no API keys.</li>
       </ol>
-      <p>Practice first? Run the <strong>training camp</strong> against any past
-        season: <code>powderbench hindcast 2025-01-01 2025-01-31 --submission you.csv</code></p>
+      <p>Starting points: a <a href="https://github.com/andrewnakas/powderbench/blob/main/examples/starter_ensemble.py">5-model starter ensemble</a>,
+        a <a href="https://colab.research.google.com/github/andrewnakas/powderbench/blob/main/examples/house_model_colab.ipynb">Colab notebook</a>
+        that trains a post-processing model, years of QC’d truth on
+        <a href="https://huggingface.co/datasets/nakas/powderbench-truth">Hugging Face</a>, and a training camp:
+        <code>powderbench hindcast 2026-01-01 2026-01-31 --submission you.csv</code>.
+        AI agents: start at <a href="llms.txt">llms.txt</a>.</p>
       <p class="cta-row">
         <a class="cta" href="docs.html">Full documentation →</a>
         <a class="cta ghost" id="repo-link" href="https://github.com/andrewnakas/powderbench">GitHub repo</a>
@@ -216,12 +235,28 @@
   </main>
 
   <footer>
-    <div class="wrap">
-      <p>Ground truth: <a href="https://wcc.sc.egov.usda.gov/awdbRestApi/swagger-ui/index.html">USDA NRCS SNOTEL</a>,
-        <a href="https://open-meteo.com/">ERA5 via Open-Meteo</a> (CC BY 4.0), and
-        resort-published snow reports (per-resort attribution in the repo).
-        NWP baselines: Open-Meteo. Scores update daily at 16:00 UTC ·
-        <a href="docs.html">Docs</a> · <a href="about.html">About</a></p>
+    <div class="wrap footer-grid">
+      <div>
+        <strong>❄️ PowderBench</strong>
+        <p>An open, live benchmark for mountain snowfall forecasting. MIT-licensed code;
+          open data; every score reproducible.</p>
+      </div>
+      <div>
+        <strong>Ground truth from</strong>
+        <p>USDA NRCS SNOTEL · NOAA NCEI (COOP, CoCoRaHS) · California DWR CDEC ·
+          Environment and Climate Change Canada · WSL Institute for Snow and Avalanche Research SLF ·
+          resorts’ own reports · ERA5 (Copernicus) via Open-Meteo.
+          <a href="sources.html">Full attribution →</a></p>
+      </div>
+      <div>
+        <strong>Project</strong>
+        <p><a href="methods.html">Methodology</a> · <a href="sources.html">Data &amp; licences</a> ·
+          <a href="docs.html">Docs</a> · <a href="about.html">About</a> ·
+          <a href="https://github.com/andrewnakas/powderbench/blob/main/CITATION.cff">Cite</a> ·
+          <a href="https://github.com/andrewnakas/powderbench/blob/main/CHANGELOG.md">Changelog</a> ·
+          <a href="https://github.com/andrewnakas/powderbench/issues">Report an issue</a></p>
+        <p class="fine">Scores update daily at 16:00 UTC.</p>
+      </div>
     </div>
   </footer>
 

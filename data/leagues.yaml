@@ -7,7 +7,7 @@
 # resolve_after: a round matures for scoring at D + days, at hour_utc UTC.
 leagues:
   - name: stations
-    label: "Stations · Western US SNOTEL"
+    label: "Stations · Snow telemetry (N. America)"
     status: live
     truth_source: snotel
     cutoff: { days_before: 0, hour_utc: 0 }
@@ -15,7 +15,7 @@ leagues:
     season_start_month: 10 # water year: Oct 1 - Sep 30
     active_months: [10, 11, 12, 1, 2, 3, 4, 5] # Oct-May
   - name: observers
-    label: "Observers · North America measured new snow"
+    label: "Observers · Measured new snow (N. America)"
     status: trial
     truth_source: ghcnd
     # same clock as the stations league: day D starts at local midnight
@@ -36,7 +36,7 @@ leagues:
     season_start_month: 10
     active_months: [11, 12, 1, 2, 3, 4]
   - name: alps
-    label: "Alps · measured new snow"
+    label: "Alps · Measured new snow (SLF)"
     status: trial
     truth_source: slf
     # Swiss local day D starts 23:00 UTC D-1 (CET) / 22:00 UTC (CEST): a

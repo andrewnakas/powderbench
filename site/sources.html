@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Data & licences — PowderBench</title>
+  <meta name="description" content="Every data source PowderBench uses, its licence and the attribution it requires, plus PowderBench's own open datasets.">
+  <link rel="canonical" href="https://powderbench.com/sources.html">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❄️</text></svg>">
+</head>
+<body>
+  <nav class="topnav">
+    <div class="wrap nav-row">
+      <a class="brand" href="./">❄️ PowderBench</a>
+      <div class="nav-links">
+        <a href="./#leaderboard">Leaderboard</a>
+        <a href="./#charts">Charts</a>
+        <a href="methods.html">Methodology</a>
+        <a href="sources.html" class="active">Data</a>
+        <a href="docs.html">Docs</a>
+        <a href="about.html">About</a>
+        <a href="https://github.com/andrewnakas/powderbench">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="page-hero">
+    <div class="wrap">
+      <h1>Data &amp; licences</h1>
+      <p>PowderBench is built on open data. Every source, its licence, and how to credit it — plus our own open datasets on Hugging Face.</p>
+    </div>
+  </header>
+
+  <main class="wrap doc md" id="md" data-src="docs/SOURCES.md">
+    <p class="fine">Loading… (or read it on <a href="https://github.com/andrewnakas/powderbench/blob/main/docs/SOURCES.md">GitHub</a>)</p>
+  </main>
+
+  <footer>
+    <div class="wrap footer-grid">
+      <div>
+        <strong>❄️ PowderBench</strong>
+        <p>An open, live benchmark for mountain snowfall forecasting. MIT-licensed code;
+          open data; every score reproducible.</p>
+      </div>
+      <div>
+        <strong>Ground truth from</strong>
+        <p>USDA NRCS SNOTEL · NOAA NCEI (COOP, CoCoRaHS) · California DWR CDEC ·
+          Environment and Climate Change Canada · WSL Institute for Snow and Avalanche Research SLF ·
+          resorts’ own reports · ERA5 (Copernicus) via Open-Meteo.
+          <a href="sources.html">Full attribution →</a></p>
+      </div>
+      <div>
+        <strong>Project</strong>
+        <p><a href="methods.html">Methodology</a> · <a href="sources.html">Data &amp; licences</a> ·
+          <a href="docs.html">Docs</a> · <a href="about.html">About</a> ·
+          <a href="https://github.com/andrewnakas/powderbench/blob/main/CITATION.cff">Cite</a> ·
+          <a href="https://github.com/andrewnakas/powderbench/blob/main/CHANGELOG.md">Changelog</a> ·
+          <a href="https://github.com/andrewnakas/powderbench/issues">Report an issue</a></p>
+        <p class="fine">Scores update daily at 16:00 UTC.</p>
+      </div>
+    </div>
+  </footer>
+  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+  <script>
+    (async () => {
+      const el = document.getElementById("md");
+      try {
+        const r = await fetch(el.dataset.src, { cache: "no-cache" });
+        if (!r.ok) throw new Error(r.status);
+        let md = await r.text();
+        md = md.replace(/^# .*\n/, "");  // the page header already shows the title
+        el.innerHTML = marked.parse(md);
+        el.querySelectorAll('a[href^="../"]').forEach((a) => {
+          a.href = "https://github.com/andrewnakas/powderbench/blob/main/" + a.getAttribute("href").slice(3);
+        });
+        el.querySelectorAll('a[href$=".md"]').forEach((a) => {
+          const f = a.getAttribute("href").split("/").pop();
+          a.href = f === "SOURCES.md" ? "sources.html" : f === "METHODOLOGY.md" ? "methods.html"
+            : "https://github.com/andrewnakas/powderbench/blob/main/docs/" + f;
+        });
+      } catch (e) { /* keep the GitHub link */ }
+    })();
+  </script>
+</body>
+</html>

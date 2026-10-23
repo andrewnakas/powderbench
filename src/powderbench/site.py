@@ -257,6 +257,7 @@ def build_site() -> list[Path]:
              "truth_note": src.note, "measured": src.measured,
              "n_stations": len(load_stations(l.name)),
              "n_featured": len(load_stations(l.name, featured_only=True)),
+             "n_rounds_resolved": len(list(round_results_dir(l).glob("*.json"))),
              "open_round": open_round, "last_resolved": last_resolved}
         )
     emit("leagues.json", league_meta)
@@ -289,6 +290,14 @@ def build_site() -> list[Path]:
 
         emit("sources.json", yaml.safe_load(sources.read_text())["sources"])
     written += build_api(leagues)
+    # the methodology and attribution pages render these documents verbatim
+    docs = site_dir() / "docs"
+    docs.mkdir(exist_ok=True)
+    for name in ("METHODOLOGY.md", "SOURCES.md", "RULES.md"):
+        src = data_dir().parent / "docs" / name
+        if src.exists():
+            shutil.copyfile(src, docs / name)
+            written.append(docs / name)
     return written
 
 

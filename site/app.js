@@ -575,10 +575,19 @@ function renderStorms(events) {
   }
 }
 
+function renderHeroStats(leagues) {
+  const sum = (k) => leagues.reduce((a, l) => a + (l[k] || 0), 0);
+  const set = (id, v) => { const el = document.getElementById(id); if (el && v) el.textContent = v.toLocaleString(); };
+  set("stat-stations", sum("n_stations"));
+  set("stat-leagues", leagues.length);
+  set("stat-rounds", sum("n_rounds_resolved"));
+}
+
 (async () => {
   try { renderStorms(await loadJSON("data/events.json")); } catch (e) { /* no events yet */ }
   try {
     state.leagues = await loadJSON("data/leagues.json");
+    renderHeroStats(state.leagues);
   } catch (e) {
     state.leagues = [{ name: "stations", label: "Stations", status: "live", truth_source: "snotel" }];
   }

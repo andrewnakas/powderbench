@@ -16,6 +16,8 @@
       <div class="nav-links">
         <a href="./#leaderboard">Leaderboard</a>
         <a href="./#charts">Charts</a>
+        <a href="methods.html">Methodology</a>
+        <a href="sources.html">Data</a>
         <a href="docs.html" class="active">Docs</a>
         <a href="about.html">About</a>
         <a href="https://github.com/andrewnakas/powderbench">GitHub</a>
@@ -68,18 +70,20 @@
 
     <section id="leagues">
       <h2>Leagues &amp; cutoffs</h2>
-      <p>Three independent leaderboards, one per kind of ground truth. Results never mix.</p>
+      <p>Six independent leaderboards, one per kind of ground truth. Results never mix.
+        Full detail in the <a href="methods.html">methodology</a>.</p>
       <div class="table-scroll">
         <table>
           <thead>
-            <tr><th></th><th>Stations</th><th>ERA5</th><th>Resorts</th></tr>
+            <tr><th>League</th><th>Points</th><th>Truth</th><th>Season</th><th>Cutoff (round D)</th><th>Resolves</th></tr>
           </thead>
           <tbody>
-            <tr><td>Points</td><td>45 SNOTEL sites, western US</td><td>23 resort-coordinate points, Andes/NZ/AU</td><td>13 resorts and growing</td></tr>
-            <tr><td>Truth</td><td>Real snow telemetry</td><td>ERA5 reanalysis</td><td>The resort's own snow report</td></tr>
-            <tr><td>Cutoff for round D</td><td>00:00 UTC on D</td><td>11:00 UTC on D−1</td><td>11:00 UTC on D−1</td></tr>
-            <tr><td>Resolves</td><td>D+3, 16:00 UTC</td><td>from D+8 (archive lag)</td><td>D+3, 16:00 UTC</td></tr>
-            <tr><td>Season</td><td>Oct 1 – Sep 30</td><td>Apr 1 – Mar 31</td><td>Apr 1 – Mar 31</td></tr>
+            <tr><td>Stations</td><td>~1,000 (45 featured)</td><td>Snow telemetry: SNOTEL, CDEC, SNOLITE, BC</td><td>Oct–May</td><td>00:00 UTC on D</td><td>D+3</td></tr>
+            <tr><td>Observers</td><td>~1,160 (98 featured)</td><td>Measured new snow: COOP, CoCoRaHS, ECCC</td><td>Oct–May</td><td>00:00 UTC on D</td><td>D+6</td></tr>
+            <tr><td>Alps</td><td>216 (19 featured)</td><td>Measured new snow: SLF</td><td>Nov–May</td><td>21:00 UTC on D−1</td><td>D+4</td></tr>
+            <tr><td>Resorts · N. America</td><td>38 resorts</td><td>The resort's own snow report</td><td>Nov–Apr</td><td>00:00 UTC on D</td><td>D+4</td></tr>
+            <tr><td>ERA5</td><td>23 points, Andes/NZ/AU</td><td>ERA5 reanalysis</td><td>May–Oct</td><td>11:00 UTC on D−1</td><td>~D+8</td></tr>
+            <tr><td>Resorts · S. Hemisphere</td><td>13 resorts</td><td>The resort's own snow report</td><td>May–Oct</td><td>11:00 UTC on D−1</td><td>D+3</td></tr>
           </tbody>
         </table>
       </div>
@@ -212,11 +216,28 @@ powderbench hindcast 2025-07-01 2025-07-14 --league era5   # austral winter</cod
   </main>
 
   <footer>
-    <div class="wrap">
-      <p>Ground truth: <a href="https://wcc.sc.egov.usda.gov/awdbRestApi/swagger-ui/index.html">USDA NRCS SNOTEL</a>,
-        <a href="https://open-meteo.com/">ERA5 via Open-Meteo</a> (CC BY 4.0), and
-        resort-published snow reports (per-resort attribution in the repo).
-        Scores update daily at 16:00 UTC · <a href="./">Home</a> · <a href="about.html">About</a></p>
+    <div class="wrap footer-grid">
+      <div>
+        <strong>❄️ PowderBench</strong>
+        <p>An open, live benchmark for mountain snowfall forecasting. MIT-licensed code;
+          open data; every score reproducible.</p>
+      </div>
+      <div>
+        <strong>Ground truth from</strong>
+        <p>USDA NRCS SNOTEL · NOAA NCEI (COOP, CoCoRaHS) · California DWR CDEC ·
+          Environment and Climate Change Canada · WSL Institute for Snow and Avalanche Research SLF ·
+          resorts’ own reports · ERA5 (Copernicus) via Open-Meteo.
+          <a href="sources.html">Full attribution →</a></p>
+      </div>
+      <div>
+        <strong>Project</strong>
+        <p><a href="methods.html">Methodology</a> · <a href="sources.html">Data &amp; licences</a> ·
+          <a href="docs.html">Docs</a> · <a href="about.html">About</a> ·
+          <a href="https://github.com/andrewnakas/powderbench/blob/main/CITATION.cff">Cite</a> ·
+          <a href="https://github.com/andrewnakas/powderbench/blob/main/CHANGELOG.md">Changelog</a> ·
+          <a href="https://github.com/andrewnakas/powderbench/issues">Report an issue</a></p>
+        <p class="fine">Scores update daily at 16:00 UTC.</p>
+      </div>
     </div>
   </footer>
 </body>

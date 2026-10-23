@@ -176,3 +176,30 @@ select, input[type="search"] {
 .storm-card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; margin-bottom: 12px; }
 .storm-card h3 { margin: 0 0 4px; }
 .storm-card table { width: 100%; font-size: 14px; }
+
+/* ---- hero stats, trust strip, footer ---- */
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 22px 0 4px; max-width: 820px; }
+.stat { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+.stat-n { display: block; font-size: 26px; font-weight: 700; color: var(--accent); letter-spacing: -0.5px; }
+.stat-l { display: block; font-size: 13px; color: var(--muted); }
+.trust { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 12px 0; font-size: 14px; }
+.trust .wrap { display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center; }
+.trust-l { color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-size: 12px; }
+.trust a { color: var(--ink); text-decoration: none; opacity: .85; }
+.trust a:hover { opacity: 1; text-decoration: underline; }
+.footer-grid { display: grid; grid-template-columns: 1fr 1.6fr 1.4fr; gap: 24px; }
+.footer-grid p { margin: 6px 0 0; }
+@media (max-width: 720px) {
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .footer-grid { grid-template-columns: 1fr; }
+}
+
+/* ---- rendered markdown (methods / sources) ---- */
+.md { max-width: 900px; }
+.md table { width: 100%; border-collapse: collapse; margin: 14px 0 22px; font-size: 14px; display: block; overflow-x: auto; }
+.md th, .md td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.md th { color: var(--ink); background: var(--panel); position: sticky; top: 0; }
+.md td { color: var(--muted); }
+.md code { background: var(--panel); padding: 1px 5px; border-radius: 4px; font-size: 0.92em; }
+.md hr { border: 0; border-top: 1px solid var(--line); margin: 28px 0; }
+.md em { color: var(--ink); }

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>About — PowderBench</title>
-  <meta name="description" content="Why PowderBench exists: a contamination-free, live snowfall forecasting benchmark with three kinds of ground truth — station telemetry, ERA5 reanalysis, and resort snow reports.">
+  <meta name="description" content="Why PowderBench exists: an open, contamination-free benchmark for mountain snowfall forecasting with six leagues of ground truth and the world&#39;s weather models as baselines.">
   <link rel="canonical" href="https://powderbench.com/about.html">
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❄️</text></svg>">
@@ -16,6 +16,8 @@
       <div class="nav-links">
         <a href="./#leaderboard">Leaderboard</a>
         <a href="./#charts">Charts</a>
+        <a href="methods.html">Methodology</a>
+        <a href="sources.html">Data</a>
         <a href="docs.html">Docs</a>
         <a href="about.html" class="active">About</a>
         <a href="https://github.com/andrewnakas/powderbench">GitHub</a>
@@ -26,122 +28,114 @@
   <header class="page-hero">
     <div class="wrap">
       <h1>About PowderBench</h1>
-      <p>A benchmark you can't train on, scored against mountains that don't care
-        about your model architecture.</p>
+      <p>An open benchmark you can’t train on, scored against mountains that don’t care about
+        your model architecture.</p>
     </div>
   </header>
 
   <main class="wrap doc">
     <section>
       <h2>Why this exists</h2>
-      <p>Most benchmarks die the same death: their answers leak into training data and
-        the leaderboard turns into a memory test. PowderBench is
-        <strong>contamination-free by construction</strong> — every round asks about
-        weather that hasn't happened yet. There is nothing to memorize, nothing to
-        overfit, and no way to peek. You, your ML pipeline, or your AI agent make a
-        real forecast, the atmosphere runs its own compute, and a few days later the
-        mountains grade your work.</p>
-      <p>It's also just fun. Snowfall is one of the hardest quantities in weather
-        forecasting — orographic effects, rain-snow lines, wind loading — and it comes
-        with a built-in villain: the global weather models submit automatically every
-        round. The whole site is one long dare: <em>nobody is beating the weather
-        models. Yet.</em></p>
+      <p>Snowfall is one of the hardest things in weather to forecast — orographic lift,
+        rain–snow lines, wind loading, a few hundred metres of elevation changing everything —
+        and one of the most consequential for avalanche safety, roads, water supply and the
+        people who ski. Yet there has been no open, continuous scoreboard of who forecasts it
+        best. PowderBench is that scoreboard.</p>
+      <p>Most benchmarks die the same death: their answers leak into training data and the
+        leaderboard turns into a memory test. PowderBench is <strong>contamination-free by
+        construction</strong> — every round asks about weather that hasn’t happened yet. A few
+        days later the snow is measured, quality-controlled and scored. Nothing to memorize, no
+        way to peek.</p>
     </section>
 
     <section>
-      <h2>Three leagues, three kinds of truth</h2>
-      <p>Every league is named for its ground truth, because the truth <em>is</em> the
-        game:</p>
+      <h2>Six leagues, six kinds of truth</h2>
+      <p>Every league is named for its ground truth, because the truth <em>is</em> the game:</p>
       <ul>
-        <li><strong>Stations</strong> — 45 SNOTEL sites in the western US. Automated
-          snow pillows and depth sensors: the closest thing to objective snowfall that
-          exists at scale. Live October–May.</li>
-        <li><strong>ERA5</strong> — 23 points across the Andes, New Zealand, and
-          Australia, scored against ERA5 reanalysis. No public station network covers
-          the southern hemisphere's ski country, so the truth is a model analysis —
-          disclosed loudly, smoothed at ~25 km, and identical for everyone. Live all
-          austral winter.</li>
-        <li><strong>Resorts</strong> — scored against what the mountain itself
-          publishes in its morning snow report. Resort numbers run generous, which is
-          exactly why they get their own league instead of contaminating the others:
-          everyone forecasts the same published number, and the front page keeps the
-          receipts by plotting resort claims next to ERA5 at the same coordinates.</li>
+        <li><strong>Stations</strong> — ~1,000 automated snow-telemetry stations (NRCS SNOTEL,
+          California’s CDEC pillows, SNOLITE, British Columbia pillows).</li>
+        <li><strong>Observers</strong> — ~1,160 people with a snowboard and a ruler: NWS COOP,
+          CoCoRaHS volunteers and Environment Canada observers at mountain and ski-area sites.
+          Measured new snow, with each station’s reading time fitted from its own record.</li>
+        <li><strong>Alps</strong> — measured 24-hour new snow at 216 Swiss sites from the WSL
+          Institute for Snow and Avalanche Research SLF.</li>
+        <li><strong>Resorts · North America</strong> and <strong>Resorts · Southern
+          Hemisphere</strong> — each resort’s own morning snow report, the number skiers see,
+          read politely from first-party pages only.</li>
+        <li><strong>ERA5</strong> — reanalysis truth for southern-hemisphere ski areas without
+          an open station network, clearly labelled as a model analysis.</li>
       </ul>
-      <p>One set of rules everywhere: daily rounds, 24/48/72-hour horizons, Powder
-        Score against climatology, QC that voids bad data for everyone equally.</p>
+      <p>One set of rules everywhere: daily rounds, 24/48/72-hour horizons, a Powder Score
+        measured against climatology, and QC that voids bad data for everyone equally.
+        The details — including what the benchmark <em>can’t</em> do — are in the
+        <a href="methods.html">methodology</a>.</p>
     </section>
 
     <section>
-      <h2>Fair by design</h2>
+      <h2>Fair, open and reproducible</h2>
       <ul>
-        <li><strong>The cutoff is the only wall.</strong> Any information source is
-          allowed — NWP output, satellite, webcams, your knees. A submission counts
-          only if it landed on <code>main</code> before the cutoff, and GitHub sets
-          merge timestamps, so deadlines can't be forged.</li>
-        <li><strong>No accounts, no API keys.</strong> Entering is a pull request with
-          a CSV in it. The scoring code, the QC rules, and every result are public and
-          deterministic — the leaderboard can be recomputed by anyone.</li>
-        <li><strong>Baselines keep everyone honest.</strong> Climatology defines zero.
-          Open-Meteo's global models submit every round. Persistence and zeros run
-          too, so there's always a floor under the table.</li>
-        <li><strong>Agents welcome.</strong> Automated competitors are first-class
-          citizens — label your team honestly and bring your best pipeline.</li>
+        <li><strong>The cutoff is the only wall.</strong> Any information is allowed. A submission
+          counts only if it landed on <code>main</code> before the cutoff — GitHub sets merge
+          timestamps, so deadlines can’t be forged.</li>
+        <li><strong>Everything is public.</strong> Code, QC rules, truth values, every submission
+          and every result. Anyone can recompute the leaderboard. Daily truth is published as an
+          <a href="https://huggingface.co/datasets/nakas/powderbench-truth">open dataset</a>.</li>
+        <li><strong>The world’s models compete every round:</strong> ECMWF IFS and AIFS, GFS, ICON,
+          GEM, UKMO, NOAA’s NBM, HRRR and WPC, Météo-France AROME, and their consensus — run three
+          hours before each cutoff so they never see later information.</li>
+        <li><strong>No accounts, no keys.</strong> Entering is one command or one pull request.
+          AI agents are first-class competitors; label your team honestly.</li>
       </ul>
     </section>
 
     <section>
-      <h2>How resort scraping works (and its manners)</h2>
-      <p>The Resorts league depends on archiving snow reports that vanish daily, so a
-        scraper visits each resort's own website twice a day. It behaves like a good
-        guest, and the policy is enforced in code, not just promised:</p>
-      <ul>
-        <li>Aggregator sites are never scraped — only individual resort sites,
-          each onboarded after a robots.txt and terms-of-use review that is recorded,
-          dated, in the public registry.</li>
-        <li>The scraper identifies itself honestly
-          (<code>PowderBench/0.1 (+https://powderbench.com; …)</code>), re-checks
-          robots.txt on every run, spaces its requests, and touches each site at most
-          twice a day — less traffic than one human visitor.</li>
-        <li>Reported values are reproduced minimally (a daily snowfall number), always
-          attributed, as factual weather data.</li>
-        <li>If a resort would rather not be included, an issue on GitHub is enough:
-          the scraper is disabled for that resort going forward.</li>
-      </ul>
+      <h2>Data done right</h2>
+      <p>Every source is open-licensed or first-party, and attributed on the
+        <a href="sources.html">Data &amp; licences</a> page. Resort pages are read at most twice a
+        day, only where robots.txt and the site’s terms allow it, and each resort’s review is
+        recorded in the code. Where terms require permission, we ask first. Resorts and providers
+        can ask to be added, credited differently or removed at any time — we act on it promptly.</p>
     </section>
 
     <section>
-      <h2>Data sources &amp; licensing</h2>
-      <ul>
-        <li><strong>SNOTEL</strong> — USDA Natural Resources Conservation Service,
-          public domain.</li>
-        <li><strong>ERA5</strong> — Copernicus/ECMWF reanalysis, served via
-          <a href="https://open-meteo.com/">Open-Meteo</a> (CC BY 4.0), which also
-          powers the NWP baselines.</li>
-        <li><strong>Resort snow reports</strong> — © their resorts, reproduced
-          minimally with attribution; per-resort provenance lives in the
-          <a href="https://github.com/andrewnakas/powderbench/blob/main/src/powderbench/resortfeeds/registry.py">public registry</a>.</li>
-        <li><strong>Code</strong> — MIT, at
-          <a href="https://github.com/andrewnakas/powderbench">github.com/andrewnakas/powderbench</a>.</li>
-      </ul>
-      <p>The benchmark runs entirely on GitHub Actions: rounds open, baselines submit,
-        reports get archived, truth gets fetched, scores resolve, and this site
-        redeploys — every day, in public.</p>
+      <h2>Cite PowderBench</h2>
+      <p>See <a href="https://github.com/andrewnakas/powderbench/blob/main/CITATION.cff">CITATION.cff</a>.
+        Nakas, A. (2026). <em>PowderBench: a live, contamination-free benchmark for mountain
+        snowfall forecasting</em> (v0.3). https://powderbench.com</p>
     </section>
 
     <section>
       <h2>Contact</h2>
-      <p>Questions, bugs, a resort that wants in (or out), a station we should add?
-        <a href="https://github.com/andrewnakas/powderbench/issues">Open an issue</a>.
-        Bug reporters get eternal glory in the README.</p>
+      <p>Questions, bugs, a resort or data provider that wants in (or out), a station we should
+        add? <a href="https://github.com/andrewnakas/powderbench/issues/new/choose">Open an issue</a>.
+        Security or scoring exploits: please report privately (see SECURITY.md) — reporters are
+        credited in the changelog.</p>
     </section>
   </main>
 
   <footer>
-    <div class="wrap">
-      <p>Ground truth: <a href="https://wcc.sc.egov.usda.gov/awdbRestApi/swagger-ui/index.html">USDA NRCS SNOTEL</a>,
-        <a href="https://open-meteo.com/">ERA5 via Open-Meteo</a> (CC BY 4.0), and
-        resort-published snow reports (per-resort attribution in the repo).
-        Scores update daily at 16:00 UTC · <a href="./">Home</a> · <a href="docs.html">Docs</a></p>
+    <div class="wrap footer-grid">
+      <div>
+        <strong>❄️ PowderBench</strong>
+        <p>An open, live benchmark for mountain snowfall forecasting. MIT-licensed code;
+          open data; every score reproducible.</p>
+      </div>
+      <div>
+        <strong>Ground truth from</strong>
+        <p>USDA NRCS SNOTEL · NOAA NCEI (COOP, CoCoRaHS) · California DWR CDEC ·
+          Environment and Climate Change Canada · WSL Institute for Snow and Avalanche Research SLF ·
+          resorts’ own reports · ERA5 (Copernicus) via Open-Meteo.
+          <a href="sources.html">Full attribution →</a></p>
+      </div>
+      <div>
+        <strong>Project</strong>
+        <p><a href="methods.html">Methodology</a> · <a href="sources.html">Data &amp; licences</a> ·
+          <a href="docs.html">Docs</a> · <a href="about.html">About</a> ·
+          <a href="https://github.com/andrewnakas/powderbench/blob/main/CITATION.cff">Cite</a> ·
+          <a href="https://github.com/andrewnakas/powderbench/blob/main/CHANGELOG.md">Changelog</a> ·
+          <a href="https://github.com/andrewnakas/powderbench/issues">Report an issue</a></p>
+        <p class="fine">Scores update daily at 16:00 UTC.</p>
+      </div>
     </div>
   </footer>
 </body>

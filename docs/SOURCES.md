@@ -1,6 +1,8 @@
 # Data sources and attribution
 
-PowderBench is built on open data. Every source below permits the use we make of it; please keep these attributions when you reuse PowderBench data. Generated from `data/sources.yaml` — edit that file, then run `python scripts/build_sources.py`.
+<!-- generated from data/sources.yaml: edit that, then run python scripts/build_sources.py -->
+
+Every source below permits the use PowderBench makes of it. Please keep these attributions when you reuse PowderBench data.
 
 ## Ground truth
 
@@ -33,5 +35,11 @@ PowderBench is built on open data. Every source below permits the use we make of
 |---|---|---|---|
 | [Southern-hemisphere snow archives](https://github.com/andrewnakas/powderbench/blob/main/data/snowhistory/catalog.yaml) | Snowy Hydro; Victorian Alpine Resorts (Data Vic); INA and SNIH (Argentina) | CC BY (Data Vic, INA, SNIH); Snowy Hydro published data, attributed, removed on request | Historical snow series: Snowy Hydro Ltd; State of Victoria (CC BY); INA and SNIH, Argentina (CC BY). |
 | [Snowpack & avalanche training data (Hugging Face mirror)](https://huggingface.co/datasets/nakas/powderbench-snowpack) | Météo-France; NVE (Norway); SLF/EnviDat; Zenodo authors | Per source: Etalab 2.0, NLOD 2.0, CC BY 4.0, CC BY-SA 4.0, ODbL | See the dataset card for per-source attribution. |
+
+## PowderBench's own open data
+
+- **QC'd daily truth** for every station league (with QC flags and station metadata): [huggingface.co/datasets/nakas/powderbench-truth](https://huggingface.co/datasets/nakas/powderbench-truth)
+- **Snowpack & avalanche training data** (Météo-France, NVE, SLF/EnviDat, Zenodo — per-source licences): [huggingface.co/datasets/nakas/powderbench-snowpack](https://huggingface.co/datasets/nakas/powderbench-snowpack)
+- **Every round, submission, truth file and result**: the [GitHub repository](https://github.com/andrewnakas/powderbench) (`data/`).
 
 Takedown or correction requests: open an issue on GitHub — we act on them promptly.
