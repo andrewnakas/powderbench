@@ -4,9 +4,10 @@ climate stations: `shneu_manu`, the observer's hand measurement of new snow
 CC BY 4.0: credit "GeoSphere Austria" (https://data.hub.geosphere.at).
 
 The reading at 06 UTC (07:00 CET) on date D covers the previous 24 h, so it
-should hold day D-1's snow (day D <- the report dated D+1, DEFAULT_OFFSET),
-but fitted against ERA5 some stations clearly file it the other way, so every
-station's offset is fitted and near-ties are excluded (networks/attribution.py).
+mostly holds day D-1's snow: day D <- the report dated D+1 (DEFAULT_OFFSET).
+Fitted against ERA5 some stations clearly match the same day instead (their
+snow mostly falls overnight, before the reading), so the offset is fitted per
+station; near-ties keep the protocol (networks/attribution.py).
 
 Data: the GeoSphere Data Hub station API (no key). Past calendar years are
 cached per station; the current year is re-fetched at most once per UTC day.

@@ -248,6 +248,26 @@ register(TruthSource(
 ))
 
 
+def _nivo_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
+    from .networks import nivo
+
+    return nivo.daily(ids, begin, end, _offsets(league, ids))
+
+
+register(TruthSource(
+    name="nivo",
+    fetch=_nivo_daily,
+    history_begin=date(2010, 10, 1),
+    climatology=(date(2000, 10, 1), _CLIM_END),
+    measured=True,
+    note=(
+        "Truth is the 24h new snow measured on the snow board by observers at French ski "
+        "resorts (Météo-France nivo-meteorological network: Val d'Isère, Tignes, Chamonix, "
+        "Alpe d'Huez…). Data © Météo-France, Licence Ouverte 2.0."
+    ),
+))
+
+
 def _snolite_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
     from .networks import snolite
 

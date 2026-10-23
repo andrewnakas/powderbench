@@ -5,7 +5,7 @@ Candidates: active stations at >= MIN_ALT_M with a manual new-snow record in
 the last winter (>= MIN_REPORTS readings). GeoSphere lists many sites twice
 (an old and a new station number, identical values): one is kept per site,
 the one with the longer record. Day attribution is fitted per station against
-ERA5 with the strict margin rule (stations fit both 0 and +1 in practice).
+ERA5: the 07:00 protocol (+1) unless 0 wins clearly (see the adapter).
 
     python scripts/networks/geosphere.py
 """
@@ -82,10 +82,11 @@ def main() -> int:
     for wb, we in attribution.winters(last):
         reps.append(geosphere.fetch_snow([s.station_id for s in sts], wb, we).dropna())
         mods.append(era5_daily_snowfall(sts, wb, we))
-    # the 07:00 reading should hold yesterday's snow (+1), but stations differ in
-    # practice (St. Anton fits 0 clearly), so no documented offset: one shift
-    # has to win by the margin rule, and near-ties are dropped
-    fits = attribution.fit_offsets(pd.concat(reps), pd.concat(mods), allowed=(0, 1))
+    # the documented 06 UTC (07:00) reading covers mostly yesterday (+1): a
+    # near-tie takes the protocol, a clear win for 0 (snow that mostly falls
+    # overnight, e.g. St. Anton) overrides it, and weak tracking drops the site
+    fits = attribution.fit_offsets(pd.concat(reps), pd.concat(mods), allowed=(0, 1),
+                                   expected={r["station_id"]: 1 for r in rows})
     kept = []
     for r in rows:
         fit = fits.get(r["station_id"], {})
