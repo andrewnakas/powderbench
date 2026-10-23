@@ -123,19 +123,52 @@ def open_round(
     typer.echo(f"opened {lg.name} round {d} -> {path}")
 
 
-# GitHub cron starts 30 min to 3 h late; baselines must still use only
-# information available before the cutoff, so they run well ahead of it
-BASELINE_LEAD_H = 3
+# GitHub cron starts anywhere from minutes to ~5 h late, and a stations run
+# takes up to ~1.5 h. Baselines must only use information from before the
+# cutoff, so a run fetches only while the cutoff is BASELINE_WINDOW_H away;
+# the workflow fires every 2 h and the first run inside the window does it.
+BASELINE_WINDOW_H = (2.5, 9.0)
+
+
+def _next_round(lg, now: datetime | None = None) -> date:
+    """The round whose cutoff comes next."""
+    from datetime import timezone
+
+    now = now or datetime.now(timezone.utc)
+    d = now.date() - timedelta(days=1)
+    while lg.cutoff_utc(d) <= now:
+        d += timedelta(days=1)
+    return d
+
+
+def _lead_h(lg, d: date) -> float:
+    from datetime import timezone
+
+    return (lg.cutoff_utc(d) - datetime.now(timezone.utc)).total_seconds() / 3600
+
+
+def _baselines_due(lg) -> date | None:
+    """The next round, if its cutoff is inside the baselines window and it
+    has no baselines yet."""
+    from .rounds import submissions_dir
+
+    d = _next_round(lg)
+    lo, hi = BASELINE_WINDOW_H
+    if not (lo <= _lead_h(lg, d) <= hi) or not lg.in_season(d):
+        return None
+    return None if any(submissions_dir(lg, d).glob("baseline-*.csv")) else d
 
 
 @app.command()
 def leagues(
-    due: Optional[str] = typer.Option(None, help="open | baselines: only leagues whose cron slot is --hour"),
-    hour: Optional[int] = typer.Option(None, help="UTC hour of the cron run (default: now)"),
+    due: Optional[str] = typer.Option(None, help="open: leagues whose cutoff hour is --hour; "
+                                                 "baselines: leagues whose baselines are due now"),
+    hour: Optional[int] = typer.Option(None, help="UTC hour of the cron run, for --due open (default: now)"),
 ):
     """List league names (one per line) — workflows loop over this instead of
     hardcoding league lists. open runs in the cutoff hour (for the round ~24h
-    ahead); baselines run BASELINE_LEAD_H hours before the cutoff."""
+    ahead); baselines are due while the next cutoff is 2.5-9 h away and the
+    round has none yet."""
     from .leagues import load_leagues
 
     from datetime import timezone
@@ -144,29 +177,9 @@ def leagues(
     for lg in load_leagues():
         if due == "open" and lg.cutoff_hour_utc != h:
             continue
-        if due == "baselines" and (lg.cutoff_hour_utc - BASELINE_LEAD_H) % 24 != h:
+        if due == "baselines" and _baselines_due(lg) is None:
             continue
         typer.echo(lg.name)
-
-
-def _slot_round(lg, slot_hour: int | None = None) -> date:
-    """The round whose cutoff this baselines run is for. With slot_hour (the
-    cron's *scheduled* hour), the answer doesn't drift when the runner starts
-    late or a previous league takes a while: the slot is the most recent
-    slot_hour:00 at or before now, and the round is the first cutoff after it."""
-    from datetime import timezone
-
-    now = datetime.now(timezone.utc)
-    if slot_hour is None:
-        anchor = now - timedelta(hours=2)
-    else:
-        anchor = now.replace(hour=slot_hour, minute=0, second=0, microsecond=0)
-        if anchor > now:
-            anchor -= timedelta(days=1)
-    d = anchor.date() - timedelta(days=1)
-    while lg.cutoff_utc(d) <= anchor:
-        d += timedelta(days=1)
-    return d
 
 
 @app.command()
@@ -174,14 +187,17 @@ def baseline_submit(
     round_date: Optional[str] = typer.Argument(None, help="Default: the round with the next cutoff"),
     league: str = LeagueOpt,
     mode: str = typer.Option("live", help="live | hindcast (dry runs)"),
-    slot_hour: Optional[int] = typer.Option(None, help="Scheduled UTC hour of the cron slot (pins the round)"),
 ):
     """Generate and store baseline submissions for an open round."""
     from .leagues import get_league
     from .rounds import submit_baselines
 
     lg = get_league(league)
-    d = _parse_date(round_date) if round_date else _slot_round(lg, slot_hour)
+    d = _parse_date(round_date) if round_date else _next_round(lg)
+    if mode == "live" and _lead_h(lg, d) < BASELINE_WINDOW_H[0]:
+        # too close to (or past) the cutoff: live forecasts could post-date it
+        typer.echo(f"{lg.name} {d}: cutoff in {_lead_h(lg, d):.1f} h — too late for baselines, skipping")
+        return
     if not lg.in_season(d):
         typer.echo(f"{lg.name} is off-season for {d} — no baselines to submit")
         return
@@ -328,7 +344,6 @@ def agent_backtest(
 def house_submit(
     round_date: Optional[str] = typer.Argument(None, help="Default: the round with the next cutoff"),
     league: str = LeagueOpt,
-    slot_hour: Optional[int] = typer.Option(None, help="Scheduled UTC hour of the cron slot"),
 ):
     """Run every house agent for a round (after the baselines, same slot) and
     write their submissions."""
@@ -337,7 +352,7 @@ def house_submit(
     from .rounds import round_station_ids, submissions_dir
 
     lg = get_league(league)
-    d = _parse_date(round_date) if round_date else _slot_round(lg, slot_hour)
+    d = _parse_date(round_date) if round_date else _next_round(lg)
     if not lg.in_season(d):
         typer.echo(f"{lg.name} is off-season for {d}")
         return
@@ -371,7 +386,7 @@ def brief(
     from .leagues import get_league
 
     lg = get_league(league)
-    d = _parse_date(round_date) if round_date else _slot_round(lg)
+    d = _parse_date(round_date) if round_date else _next_round(lg)
     b = build_brief(lg, d, featured_only=not all_stations)
     text = json.dumps(b, indent=1) if as_json else brief_markdown(b)
     if out:
@@ -422,7 +437,7 @@ def submit(
     if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", team) or team.startswith(("baseline-", "house-")):
         raise typer.BadParameter("team: lowercase letters, digits and hyphens; 'baseline-' and 'house-' are reserved")
     lg = get_league(league)
-    d = _parse_date(round_date) if round_date else _slot_round(lg)
+    d = _parse_date(round_date) if round_date else _next_round(lg)
     if not (round_dir(lg, d) / "round.json").exists():
         typer.echo(f"note: round {lg.name}/{d} isn't in your checkout — `git pull` to validate against it")
     res = validate_submission(csv_path, league=lg, round_stations=round_station_ids(lg, d))

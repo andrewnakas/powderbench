@@ -42,9 +42,9 @@ def _league(name: str):
 
 
 def _round(lg, round_date: str | None) -> date:
-    from .cli import _slot_round
+    from .cli import _next_round
 
-    return date.fromisoformat(round_date) if round_date else _slot_round(lg)
+    return date.fromisoformat(round_date) if round_date else _next_round(lg)
 
 
 @mcp.tool()

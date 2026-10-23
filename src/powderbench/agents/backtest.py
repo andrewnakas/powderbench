@@ -12,7 +12,7 @@ from .. import climatology, scoring
 from ..leagues import League
 from ..rounds import round_dir, submissions_dir
 
-LEAD = timedelta(hours=3)  # agents run with the baselines, 3h before the cutoff
+LEAD = timedelta(hours=3)  # agents run with the baselines, 2.5-9 h before the cutoff: replay at the late end
 
 
 def backtest(league: League, agent, begin: date, end: date, compare=("baseline-consensus", "baseline-openmeteo",

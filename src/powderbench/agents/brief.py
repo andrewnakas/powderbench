@@ -5,8 +5,8 @@ forecast one open round, in one compact document.
     powderbench brief --league stations --json     # the same, structured
 
 Contents per station: location/elevation/region, every model's forecast for
-24/48/72h (from the round's baseline submissions, written 3h before the
-cutoff), the house agents' calls, climatology (median and powder-day odds),
+24/48/72h (from the round's baseline submissions, written 2.5-9 h before
+the cutoff), the house agents' calls, climatology (median and powder-day odds),
 the last week of observed snow, and each model's recent skill in the league.
 Plus the rules of the round and the exact output format.
 """

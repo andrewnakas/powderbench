@@ -116,45 +116,56 @@ def test_powder_score_survives_missing_climatology():
     assert m["powder_score"] == 100.0 and m["n_skill"] == 3
 
 
-def test_leagues_due_by_cutoff_hour():
+def test_leagues_due_open_by_cutoff_hour():
     from typer.testing import CliRunner
 
-    from powderbench import cli
     from powderbench.cli import app
 
     run = lambda *a: CliRunner().invoke(app, ["leagues", *a]).stdout.split()
     by_cutoff = {lg.name: lg.cutoff_hour_utc for lg in load_leagues()}
     for lg, h in by_cutoff.items():
         assert lg in run("--due", "open", "--hour", str(h))
-        assert lg in run("--due", "baselines", "--hour", str((h - cli.BASELINE_LEAD_H) % 24))
         assert lg not in run("--due", "open", "--hour", str((h + 5) % 24))
     assert sorted(run()) == sorted(by_cutoff)
 
 
-def test_slot_round_is_pinned_to_the_scheduled_slot(monkeypatch):
-    """A late baselines run (slot 23:00, runner starts 01:49 next day) must
-    still target the round whose cutoff follows the slot — for every league."""
-    from datetime import datetime, timezone
+def _at(monkeypatch, when):
+    from datetime import datetime
 
     from powderbench import cli
+
+    class Fixed(datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return when
+
+    monkeypatch.setattr(cli, "datetime", Fixed)
+
+
+def test_baselines_due_only_well_before_the_cutoff(monkeypatch, tmp_path):
+    """Whenever the (late) cron fires, baselines run only while the next
+    cutoff is 2.5-9 h away, once per round, and never close to the cutoff."""
+    from datetime import datetime, timezone
+
+    from powderbench import cli, rounds
     from powderbench.leagues import get_league
 
-    class Late(datetime):
-        @classmethod
-        def now(cls, tz=None):
-            return datetime(2026, 10, 20, 1, 49, tzinfo=timezone.utc)
+    monkeypatch.setattr(rounds, "submissions_dir", lambda lg, d: tmp_path / lg.name / d.isoformat())
+    st, era5 = get_league("stations"), get_league("era5")  # cutoffs 00:00 and 11:00 (D-1)
+    utc = lambda *a: datetime(*a, tzinfo=timezone.utc)
 
-    monkeypatch.setattr(cli, "datetime", Late)
-    assert cli._slot_round(get_league("stations"), 23) == date(2026, 10, 20)
-    assert cli._slot_round(get_league("observers"), 23) == date(2026, 10, 20)
+    _at(monkeypatch, utc(2026, 10, 22, 17, 30))
+    assert cli._next_round(st) == date(2026, 10, 23) and cli._baselines_due(st) == date(2026, 10, 23)
+    assert cli._baselines_due(era5) is None  # its cutoff is 17.5 h away
+    (tmp_path / "stations" / "2026-10-23").mkdir(parents=True)
+    (tmp_path / "stations" / "2026-10-23" / "baseline-gfs.csv").write_text("x")
+    assert cli._baselines_due(st) is None  # already done by an earlier run
 
-    class OnTime(datetime):
-        @classmethod
-        def now(cls, tz=None):
-            return datetime(2026, 7, 20, 10, 20, tzinfo=timezone.utc)
+    _at(monkeypatch, utc(2026, 10, 22, 22, 30))  # 1.5 h before the cutoff: too late
+    assert cli._baselines_due(get_league("observers")) is None
 
-    monkeypatch.setattr(cli, "datetime", OnTime)
-    assert cli._slot_round(get_league("era5"), 10) == date(2026, 7, 21)  # cutoff 11:00 on D-1
+    _at(monkeypatch, utc(2026, 7, 20, 5, 15))
+    assert cli._next_round(era5) == date(2026, 7, 21) and cli._baselines_due(era5) == date(2026, 7, 21)
 
 
 def test_submit_dry_run_validates_against_round(tmp_path):

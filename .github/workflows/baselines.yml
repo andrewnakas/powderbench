@@ -1,11 +1,11 @@
 name: Baseline submissions
 on:
   schedule:
-    # each slot is 3h before a league cutoff (powderbench leagues --due baselines):
-    # GitHub cron starts up to ~3h late, and baselines must not see post-cutoff data
-    - cron: "15 21 * * *" # stations + observers: 00:00 UTC cutoff
-    - cron: "15 8 * * *" # era5 + resorts: 11:00 UTC cutoff (round D = tomorrow)
-    - cron: "15 18 * * *" # alps: 21:00 UTC cutoff
+    # GitHub cron starts up to ~5 h late, and baselines must not see post-cutoff
+    # data: fire every 2 h; a run submits only for leagues whose next cutoff is
+    # 2.5-9 h away and that have no baselines yet (powderbench leagues --due
+    # baselines), so each cutoff gets 3-4 chances and none is ever too close
+    - cron: "15 1-23/2 * * *"
   workflow_dispatch:
     inputs:
       league:
@@ -38,20 +38,18 @@ jobs:
       - name: Generate baseline forecasts
         run: |
           LEAGUES="${{ github.event.inputs.league }}"
-          SLOT_HOUR=$(echo "${{ github.event.schedule }}" | awk '{print $2}')
           if [ -z "$LEAGUES" ]; then
-            # each cron slot covers the leagues whose cutoff is the next hour
-            # the *scheduled* slot, not the clock: runs often start 30-60 min late
-            LEAGUES=$(powderbench leagues --due baselines --hour "$SLOT_HOUR")
+            LEAGUES=$(powderbench leagues --due baselines)
           fi
+          echo "due: ${LEAGUES:-none}"
           ROUND="${{ github.event.inputs.round_date }}"
           FAILED=0
           for LEAGUE in $LEAGUES; do
             # one league's outage must not block the others; the default round
             # is the one whose cutoff comes next
-            powderbench baseline-submit $ROUND --league "$LEAGUE" ${SLOT_HOUR:+--slot-hour "$SLOT_HOUR"} || FAILED=1
+            powderbench baseline-submit $ROUND --league "$LEAGUE" || FAILED=1
             # house agents read today's model forecasts, so they run right after
-            powderbench house-submit $ROUND --league "$LEAGUE" ${SLOT_HOUR:+--slot-hour "$SLOT_HOUR"} || true
+            powderbench house-submit $ROUND --league "$LEAGUE" || true
           done
           exit $FAILED
       - name: Commit

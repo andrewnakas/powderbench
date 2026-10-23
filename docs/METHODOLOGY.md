@@ -183,9 +183,18 @@ jobs up to ~3 h late):
 Each baseline is computed independently: one provider's outage never removes
 the others.
 
+**When baselines run.** GitHub's scheduler starts jobs up to about 5 h late,
+and baselines are exempt from the submission deadline. So a late start must not
+let them fetch forecasts issued after the cutoff. The job fires every 2 h, and a
+run generates a round's baselines only when that round has none yet and its
+cutoff is 2.5–9 h away. Each cutoff gets three or four chances, and a run that
+starts too close to the cutoff does nothing. Baselines therefore use forecasts
+at least 2.5 h older than the cutoff: if anything, a small handicap against
+players who submit at the last minute.
+
 **House agents** (`house-*`, `src/powderbench/agents/`) are forecasting
 strategies run by the maintainers — competitors, not reference forecasts. They
-run in the baselines slot (3 h before the cutoff), may use only today's model
+run right after the baselines (2.5–9 h before the cutoff), may use only today's model
 forecasts and the truth of rounds already resolved, and are labelled on the
 leaderboard. `powderbench agent-backtest` replays past rounds under exactly
 that rule. The agents:

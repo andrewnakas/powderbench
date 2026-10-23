@@ -340,8 +340,8 @@ Digital Forecast Database. It comes from the CONUS 2.5 km grid, in the public
 domain, at `noaa-ndfd-pds` `wmo/snow/…/YSUZ98_KWBN_*`. The bucket refreshes it
 about every 30 minutes and keeps the archive.
 
-- **File used:** the newest file posted at or before the baselines slot (3 h before
-  the cutoff), never a later one, even when the job starts late.
+- **File used:** the newest file posted before the run, and never later than 3 h
+  before the cutoff.
 - **Windows:** the 6 h periods are summed over the WPC windows. h24 is 06Z D to
   06Z D+1, and h48 is 06Z D to 06Z D+2.
 - **No h72:** the evening issuance doesn't reach 06Z D+3, so NDFD has no h72 forecast
