@@ -45,7 +45,7 @@ jobs:
         run: |
           git config user.name "powderbench-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add data/rounds data/results data/events site/data site/api site/docs
+          git add data/rounds data/results data/events site/data site/api site/docs site/badges
           git diff --cached --quiet || git commit -m "Resolve rounds & update leaderboard"
           git pull --rebase origin main
           git push

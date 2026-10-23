@@ -88,6 +88,80 @@ def _round_history(league: League) -> list[dict]:
     return out
 
 
+H2H_OPPONENTS = ("baseline-climatology", "baseline-gfs", "baseline-ecmwf", "baseline-openmeteo",
+                 "baseline-nbm", "baseline-wpc", "baseline-ndfd", "baseline-consensus")
+
+
+def _teams(leagues: list[League], histories: dict[str, list[dict]]) -> dict[str, dict]:
+    """Per-team profile for team.html and the badges: season/last-30 board
+    entries per league, per-round Powder Scores, and head-to-head records
+    against the reference baselines (share of shared rounds won)."""
+    teams: dict[str, dict] = {}
+    for lg in leagues:
+        lb_path = leaderboard_path(lg)
+        lb = json.loads(lb_path.read_text()) if lb_path.exists() else {}
+        last30 = {e["team"]: e for e in lb.get("last30", [])}
+        hist = histories.get(lg.name, [])
+        for e in lb.get("season", []):
+            t = e["team"]
+            prof = teams.setdefault(t, {"kind": "baseline" if t.startswith("baseline-") else
+                                        "house" if t.startswith("house-") else "player", "leagues": {}})
+            rounds = [[r["round_id"], r["teams"][t]] for r in hist if t in r["teams"]]
+            h2h = {}
+            for opp in H2H_OPPONENTS:
+                if opp == t:
+                    continue
+                both = [r["teams"] for r in hist if t in r["teams"] and opp in r["teams"]]
+                if both:
+                    h2h[opp] = {"won": sum(x[t] > x[opp] for x in both), "of": len(both)}
+            prof["leagues"][lg.name] = {"label": lg.label, "season": e, "last30": last30.get(t),
+                                        "n_teams": len(lb.get("season", [])), "rounds": rounds, "h2h": h2h}
+    return teams
+
+
+def _badge_svg(left: str, right: str, color: str) -> str:
+    """A shields-style flat badge (no external service)."""
+    w = lambda txt: 6.6 * len(txt) + 12
+    lw, rw = w(left), w(right)
+    esc = lambda x: x.replace("&", "&amp;").replace("<", "&lt;")
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" width="{lw + rw:.0f}" height="20" role="img" '
+            f'aria-label="{esc(left)}: {esc(right)}"><title>{esc(left)}: {esc(right)}</title>'
+            f'<clipPath id="r"><rect width="{lw + rw:.0f}" height="20" rx="3"/></clipPath><g clip-path="url(#r)">'
+            f'<rect width="{lw:.0f}" height="20" fill="#16263d"/><rect x="{lw:.0f}" width="{rw:.0f}" height="20" fill="{color}"/></g>'
+            f'<g fill="#fff" text-anchor="middle" font-family="Verdana,DejaVu Sans,sans-serif" font-size="11">'
+            f'<text x="{lw / 2:.1f}" y="14">{esc(left)}</text><text x="{lw + rw / 2:.1f}" y="14">{esc(right)}</text></g></svg>')
+
+
+def build_badges(teams: dict[str, dict]) -> list[Path]:
+    """site/badges/<team>.svg (best league) and <team>-<league>.svg."""
+    out = site_dir() / "badges"
+    out.mkdir(exist_ok=True)
+    written = []
+
+    def text(name, e):
+        ps = e.get("powder_score")
+        if ps is None:
+            return f"{name} · unscored", "#5b6b86"
+        rank = f" · #{e['rank']}" if e.get("eligible") and e.get("rank") else ""
+        return f"{name} {ps:+.1f}{rank}", "#2f8f5b" if ps > 0 else "#a14646"
+
+    for team, prof in teams.items():
+        best = None
+        for name, lg in prof["leagues"].items():
+            right, color = text(name, lg["season"])
+            path = out / f"{team}-{name}.svg"
+            path.write_text(_badge_svg("❄ PowderBench", right, color))
+            written.append(path)
+            key = (bool(lg["season"].get("eligible")), lg["season"].get("powder_score") or -1e9)
+            if best is None or key > best[0]:
+                best = (key, right, color)
+        if best:
+            path = out / f"{team}.svg"
+            path.write_text(_badge_svg("❄ PowderBench", best[1], best[2]))
+            written.append(path)
+    return written
+
+
 def _monthly_climatology(league: League) -> dict[str, list]:
     """{station_id: [12 monthly means of h24 climatological snowfall, inches]}."""
     path = data_dir() / league.climatology_path
@@ -273,6 +347,7 @@ def build_site() -> list[Path]:
         return out
 
     leagues = load_leagues()
+    histories: dict[str, list[dict]] = {}
     league_meta = []
     for l in leagues:
         open_round, last_resolved = _league_round_status(l)
@@ -300,7 +375,7 @@ def build_site() -> list[Path]:
             shutil.copyfile(lb, target)
             written.append(target)
 
-        history = _round_history(league)
+        history = histories[league.name] = _round_history(league)
         emit(f"recent_rounds-{league.name}.json", [
             json.loads(p.read_text()) for p in sorted(round_results_dir(league).glob("*.json"))[-RECENT_ROUNDS:]
         ])
@@ -308,6 +383,9 @@ def build_site() -> list[Path]:
         emit(f"snowfall-{league.name}.json", _daily_truth_series(league))
         emit(f"climo-{league.name}.json", _monthly_climatology(league))
 
+    teams = _teams(leagues, histories)
+    emit("teams.json", teams, compact=True)
+    written += build_badges(teams)
     emit("resort-vs-era5.json", _resort_vs_era5({l.name: l for l in leagues}))
     emit("events.json", _events())
     sources = data_dir() / "sources.yaml"

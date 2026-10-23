@@ -88,7 +88,7 @@ function renderBoard(entries, rounds) {
     const psClass = ps === null ? "" : ps > 0 ? "score-pos" : "score-neg";
     tr.innerHTML = `
       <td>${t.rank ?? "–"}</td>
-      <td class="team">${t.team}</td>
+      <td class="team"><a href="team.html?t=${encodeURIComponent(t.team)}">${t.team}</a></td>
       <td class="${psClass}">${fmt(ps, 1)}</td>
       <td>${fmt(t.mae)}</td>
       <td>${fmt(t.pinball)}</td>

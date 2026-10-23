@@ -54,3 +54,28 @@ def test_load_round_results_skips_late_and_invalid(tmp_path, monkeypatch):
     (rounds / "2025-03-01.json").write_text(json.dumps(payload))
     rows = leaderboard.load_round_results(league)
     assert rows["team"].tolist() == ["good"]
+
+
+def test_team_profiles_and_badges(tmp_path, monkeypatch):
+    import json
+
+    from powderbench import site
+    from powderbench.leagues import get_league
+
+    lg = get_league("era5")
+    lb = tmp_path / "lb.json"
+    lb.write_text(json.dumps({"season": [
+        {"team": "frozen-gradient", "powder_score": 12.34, "eligible": True, "rank": 1, "rounds": 2},
+        {"team": "baseline-gfs", "powder_score": -3.0, "eligible": True, "rank": 2, "rounds": 2}]}))
+    monkeypatch.setattr(site, "leaderboard_path", lambda l: lb)
+    monkeypatch.setattr(site, "site_dir", lambda: tmp_path)
+    hist = [{"round_id": "2026-07-01", "teams": {"frozen-gradient": 20.0, "baseline-gfs": 5.0}},
+            {"round_id": "2026-07-02", "teams": {"frozen-gradient": 4.0, "baseline-gfs": 9.0}}]
+    teams = site._teams([lg], {"era5": hist})
+    fg = teams["frozen-gradient"]
+    assert fg["kind"] == "player" and teams["baseline-gfs"]["kind"] == "baseline"
+    assert fg["leagues"]["era5"]["h2h"]["baseline-gfs"] == {"won": 1, "of": 2}
+    assert fg["leagues"]["era5"]["rounds"] == [["2026-07-01", 20.0], ["2026-07-02", 4.0]]
+    site.build_badges(teams)
+    svg = (tmp_path / "badges" / "frozen-gradient.svg").read_text()
+    assert svg.startswith("<svg") and "era5 +12.3 · #1" in svg

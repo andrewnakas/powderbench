@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Team — PowderBench</title>
+  <meta name="description" content="A PowderBench team: Powder Score by league, round-by-round results and head-to-head records against the weather models.">
+  <link rel="canonical" href="https://powderbench.com/team.html">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❄️</text></svg>">
+</head>
+<body>
+  <nav class="topnav">
+    <div class="wrap nav-row">
+      <a class="brand" href="./">❄️ PowderBench</a>
+      <div class="nav-links">
+        <a href="./#leaderboard">Leaderboard</a>
+        <a href="./#charts">Charts</a>
+        <a href="methods.html">Methodology</a>
+        <a href="sources.html">Data</a>
+        <a href="docs.html">Docs</a>
+        <a href="about.html">About</a>
+        <a href="https://github.com/andrewnakas/powderbench">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="page-hero">
+    <div class="wrap">
+      <h1 id="team-name">Team</h1>
+      <p id="team-kind" class="fine"></p>
+    </div>
+  </header>
+
+  <main class="wrap doc" id="team-main">
+    <p class="fine" id="team-status">Loading…</p>
+  </main>
+
+  <footer>
+    <div class="wrap footer-grid">
+      <div>
+        <strong>❄️ PowderBench</strong>
+        <p>An open, live benchmark for mountain snowfall forecasting. MIT-licensed code;
+          open data; every score reproducible.</p>
+      </div>
+      <div>
+        <strong>Ground truth from</strong>
+        <p>USDA NRCS SNOTEL · NOAA NCEI (COOP, CoCoRaHS) · California DWR CDEC ·
+          Environment and Climate Change Canada · WSL Institute for Snow and Avalanche Research SLF ·
+          resorts’ own reports · ERA5 (Copernicus) via Open-Meteo.
+          <a href="sources.html">Full attribution →</a></p>
+      </div>
+      <div>
+        <strong>Project</strong>
+        <p><a href="methods.html">Methodology</a> · <a href="sources.html">Data &amp; licences</a> ·
+          <a href="docs.html">Docs</a> · <a href="about.html">About</a> ·
+          <a href="https://github.com/andrewnakas/powderbench/blob/main/CITATION.cff">Cite</a> ·
+          <a href="https://github.com/andrewnakas/powderbench/blob/main/CHANGELOG.md">Changelog</a> ·
+          <a href="https://github.com/andrewnakas/powderbench/issues">Report an issue</a></p>
+        <p class="fine">Scores update daily at 16:00 UTC.</p>
+      </div>
+    </div>
+  </footer>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <script src="team.js"></script>
+</body>
+</html>
