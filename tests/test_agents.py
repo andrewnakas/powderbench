@@ -35,7 +35,7 @@ def history(tmp_path, monkeypatch):
 
     for i in range(90):
         d = TARGET - timedelta(days=90 - i)
-        truth = {s: float(rng.gamma(0.6, 3.0)) for s in SIDS}
+        truth = {s: float(rng.gamma(0.8, 4.0)) for s in SIDS}
         write_models(d, truth)
         rd = tmp_path / "rounds" / "era5" / d.isoformat(); rd.mkdir(parents=True)
         pd.DataFrame([{"station_id": s, "horizon_h": h, "truth_in": t * h / 24, "valid": True}
@@ -94,3 +94,21 @@ def test_brief_and_mcp_tools(history):
     csv = "station_id,horizon_h,snowfall_in\n" + "".join(f"{s},{h},1.0\n" for s in SIDS for h in (24, 48, 72))
     assert "PASS" in mcp_server.validate_forecast("era5", csv, TARGET.isoformat())
     assert "FAIL" in mcp_server.validate_forecast("era5", "station_id,horizon_h,snowfall_in\nnope,24,1\n", TARGET.isoformat())
+
+
+def test_learned_agents_abstain_without_snowy_history_and_extrapolate(history, monkeypatch):
+    from powderbench.agents import guard
+    from powderbench.agents.analog import analog_agent
+    from powderbench.agents.blend import blend_agent
+
+    as_of = history.cutoff_utc(TARGET)
+    monkeypatch.setattr(guard, "MIN_SNOW_CASES", 10_000)
+    assert analog_agent(history, TARGET, as_of).empty
+    monkeypatch.setattr(guard, "MIN_SNOW_CASES", 5)
+    # a storm far beyond the history: house-blend's values, not a capped analog
+    sub = Path(stations_mod.data_dir()) / "submissions" / "era5" / TARGET.isoformat()
+    for f in sub.glob("baseline-*.csv"):
+        df = pd.read_csv(f); df.loc[df["station_id"] == SIDS[0], "snowfall_in"] *= 20; df.to_csv(f, index=False)
+    a = analog_agent(history, TARGET, as_of).set_index(["station_id", "horizon_h"])
+    b = blend_agent(history, TARGET, as_of).set_index(["station_id", "horizon_h"])
+    assert a.loc[(SIDS[0], 24), "snowfall_in"] == b.loc[(SIDS[0], 24), "snowfall_in"] > 50

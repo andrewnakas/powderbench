@@ -16,6 +16,7 @@ import pandas as pd
 
 from .. import HORIZONS, POWDER_ALERT_INCHES, climatology
 from ..leagues import League
+from .guard import enough_history, fallback_out_of_range
 from .blend import _model_preds, history
 
 K = 40
@@ -70,6 +71,8 @@ def analog_agent(league: League, d: date, as_of: datetime | None = None) -> pd.D
     hist = history(league, as_of)
     if not len(today) or len(hist) < MIN_CASES:
         return pd.DataFrame()
+    if not enough_history(hist):
+        return pd.DataFrame()
     try:
         climo = climatology.load_climatology(league)
     except FileNotFoundError:
@@ -104,4 +107,5 @@ def analog_agent(league: League, d: date, as_of: datetime | None = None) -> pd.D
             rows.append(row)
     if not rows:
         return pd.DataFrame()
-    return pd.DataFrame(rows)[["station_id", "horizon_h", "snowfall_in", *QUANTILES, "prob_6in"]]
+    out = pd.DataFrame(rows)[["station_id", "horizon_h", "snowfall_in", *QUANTILES, "prob_6in"]]
+    return fallback_out_of_range(out, today, hist, league, d, as_of)

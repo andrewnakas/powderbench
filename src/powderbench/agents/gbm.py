@@ -19,6 +19,7 @@ from .. import HORIZONS, POWDER_ALERT_INCHES, climatology
 from ..leagues import League
 from ..stations import load_stations
 from .analog import _climo_p50
+from .guard import enough_history, fallback_out_of_range
 from .blend import _model_preds, history
 
 MIN_ROWS = 400
@@ -60,6 +61,8 @@ def gbm_agent(league: League, d: date, as_of: datetime | None = None) -> pd.Data
     hist = history(league, as_of)
     if not len(today) or len(hist) < MIN_ROWS:
         return pd.DataFrame()
+    if not enough_history(hist):
+        return pd.DataFrame()
     try:
         climo = climatology.load_climatology(league)
     except FileNotFoundError:
@@ -90,4 +93,5 @@ def gbm_agent(league: League, d: date, as_of: datetime | None = None) -> pd.Data
     out.loc[h24, "prob_6in"] = [round(float(1 - np.interp(POWDER_ALERT_INCHES, row, qs, left=0.0, right=1.0)), 3)
                                 if row[-1] > row[0] else float(row[0] >= POWDER_ALERT_INCHES)
                                 for row in q[h24.to_numpy()]]
-    return out[["station_id", "horizon_h", "snowfall_in", *QUANTILES, "prob_6in"]]
+    out = out[["station_id", "horizon_h", "snowfall_in", *QUANTILES, "prob_6in"]]
+    return fallback_out_of_range(out, today, hist, league, d, as_of)
