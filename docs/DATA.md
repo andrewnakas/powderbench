@@ -102,6 +102,7 @@ Data Service. COOP data is US public domain; CoCoRaHS data is CC BY 3.0
 | NRCS SNOTEL, full network | **live** (stations) | ~865 stations with depth + SWE |
 | NOAA GHCN-Daily SNOW (COOP + CoCoRaHS) | **live, trial** (observers) | measured new snow, ~1,150 timing-verified mountain and ski-area sites. Hindcast gate (featured, 2026-02-01..14): GFS/Open-Meteo +25.1, zeros +12.8, climatology 0, persistence −51 |
 | NOAA WPC PWPF | **live** (`baseline-wpc`) | official NWS snowfall percentiles |
+| NWS NDFD snow amount | **live** (`baseline-ndfd`) | the forecast offices' own snowfall grids, 24/48 h |
 | CDEC snow pillows (CA DWR) | **live** (stations, 57) | CDEC's *daily* depth is a daily mean, so we read **hourly** depth/SWE and take the median of the 23:00/00:00/01:00 readings at local midnight; SNOTEL QC plus density (depth < SWE → void), stuck-sensor (flat depth while SWE rises ≥0.5") and spike (>10" above both neighbours) checks. Gate: median r = 0.96 vs the nearest SNOTEL (13 pairs, Jan–Feb 2026). Pillows within 1.5 km of a SNOTEL are the same site and are dropped (FDC, HOR). History from 2021-10. |
 | NRCS SNOLITE | **live** (stations, 33) | depth-only; a ≥6" jump must be confirmed by an SWE rise at a SNOTEL within 40 km (station data, not a model) |
 | BC automated snow pillows (AWDB network MSNT) | **live** (stations, 41) | BC government pillows served by NRCS AWDB; depth + SWE, regular SNOTEL QC |
@@ -331,6 +332,25 @@ quantile columns are WPC's 10/25/50/75/90th percentiles (negative tails clipped
 to 0); `prob_6in` = WPC P(≥6") on h24. Nearest grid point within 5 km
 (Alaska is off-grid). WPC keeps only ~1.5 days online, so the committed
 baseline submissions double as the archive. Needs `pip install -e .[grib]`.
+
+## Official NWS baseline: NDFD snow amount (the human forecasters)
+
+`baseline-ndfd` is the snow amount NWS forecast offices publish in the National
+Digital Forecast Database. It comes from the CONUS 2.5 km grid, in the public
+domain, at `noaa-ndfd-pds` `wmo/snow/…/YSUZ98_KWBN_*`. The bucket refreshes it
+about every 30 minutes and keeps the archive.
+
+- **File used:** the newest file posted at or before the baselines slot (3 h before
+  the cutoff), never a later one, even when the job starts late.
+- **Windows:** the 6 h periods are summed over the WPC windows. h24 is 06Z D to
+  06Z D+1, and h48 is 06Z D to 06Z D+2.
+- **No h72:** the evening issuance doesn't reach 06Z D+3, so NDFD has no h72 forecast
+  (a 24/48 h baseline, like HRRR).
+- **Stations:** nearest grid point within 5 km. Alaska and Canada are off-grid.
+
+Alignment check on the resolved stations rounds: 24 h windows starting 06Z and
+12Z fit the truth best (MAE 1.39″ and 1.35″), against 1.55″ for 00Z and 1.62″
+for 24Z.
 
 ## NWP baselines: Open-Meteo
 

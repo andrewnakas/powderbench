@@ -22,6 +22,7 @@ Every source below permits the use PowderBench makes of it. Please keep these at
 |---|---|---|---|
 | [Weather-model forecasts (GFS, ECMWF IFS & AIFS, ICON, GEM, UKMO, NBM, HRRR, AROME)](https://open-meteo.com/) | Open-Meteo (from NOAA, ECMWF, DWD, ECCC, Met Office, Météo-France) | CC BY 4.0 | Weather forecasts by Open-Meteo.com (CC BY 4.0), from the respective national weather services. |
 | [WPC Probabilistic Winter Precipitation Forecast](https://www.wpc.ncep.noaa.gov/pwpf/) | NOAA Weather Prediction Center | US public domain | Snowfall percentiles: NOAA/NWS Weather Prediction Center. |
+| [National Digital Forecast Database (NDFD) snow amount](https://registry.opendata.aws/noaa-ndfd/) | NOAA National Weather Service (via NOAA Open Data Dissemination) | US public domain | Snow amount forecasts: NOAA/NWS National Digital Forecast Database. |
 
 ## Metadata
 

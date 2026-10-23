@@ -24,7 +24,8 @@
 
 **Competitors**
 - Baselines: ECMWF IFS, ECMWF AIFS, ICON, GEM, UKMO, NBM, HRRR, AROME, NOAA
-  WPC percentiles, and the model consensus — each run 3 h before the cutoff.
+  WPC percentiles, NWS NDFD snow amount (the forecast offices' own forecast), and the
+  model consensus — each run 3 h before the cutoff.
 - `powderbench submit`, a starter ensemble, a daily auto-submit template, an
   agent API (`/api/v1/open-rounds.json`, `/llms.txt`) and a Colab notebook for
   training a post-processing model.

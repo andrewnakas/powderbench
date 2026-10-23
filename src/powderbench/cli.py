@@ -316,6 +316,9 @@ def agent_backtest(
     if not len(rows):
         typer.echo("no resolved rounds in range")
         raise typer.Exit(1)
+    played = set(rows.loc[rows["team"] == "agent", "round"])
+    if played:  # agents abstain early on: compare on the rounds the agent played
+        rows = rows[rows["round"].isin(played)]
     board = rows.groupby("team").agg(rounds=("round", "nunique"), powder_score=("powder_score", "mean"),
                                      mae=("mae", "mean"), pinball=("pinball", "mean"))
     typer.echo(board.sort_values("powder_score", ascending=False).round(3).to_string())

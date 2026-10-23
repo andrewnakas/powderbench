@@ -177,6 +177,7 @@ jobs up to ~3 h late):
 | `baseline-nbm`, `-hrrr` | NOAA National Blend and HRRR (US leagues) |
 | `baseline-arome` | Météo-France AROME (Alps) |
 | `baseline-wpc` | NOAA WPC official snowfall percentiles + P(≥6″) (US) |
+| `baseline-ndfd` | NWS forecast offices' official snow amount (NDFD), 24/48 h (US) |
 | `baseline-consensus` | median of the NWP baselines (≥ 3 models) |
 
 Each baseline is computed independently: one provider's outage never removes

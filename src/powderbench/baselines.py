@@ -8,7 +8,7 @@ given league.
 from __future__ import annotations
 
 import logging
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta, timezone
 
 import pandas as pd
 
@@ -177,5 +177,11 @@ def all_baselines(league: League, target_day: date, mode: str = "live") -> dict[
             subs["baseline-wpc"] = wpc_prediction(list(load_stations(league.name)), target_day)
         except Exception:
             log.warning("WPC baseline failed for %s/%s", league.name, target_day, exc_info=True)
+        from .ndfd import ndfd_prediction
+
+        # the newest NWS issuance at the baselines slot, never a later one
+        slot = league.cutoff_utc(target_day) - timedelta(hours=3)
+        subs["baseline-ndfd"] = safe("baseline-ndfd", lambda: ndfd_prediction(
+            list(load_stations(league.name)), target_day, min(slot, datetime.now(timezone.utc))))
     subs[CONSENSUS_TEAM] = consensus_prediction(subs)
     return {k: v for k, v in subs.items() if len(v)}

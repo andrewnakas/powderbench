@@ -65,6 +65,12 @@ sources:
     licence: US public domain
     attribution: "Snowfall percentiles: NOAA/NWS Weather Prediction Center."
     role: baseline
+  - name: National Digital Forecast Database (NDFD) snow amount
+    provider: NOAA National Weather Service (via NOAA Open Data Dissemination)
+    url: https://registry.opendata.aws/noaa-ndfd/
+    licence: US public domain
+    attribution: "Snow amount forecasts: NOAA/NWS National Digital Forecast Database."
+    role: baseline
   - name: Ski areas
     provider: OpenSkiData (OpenStreetMap contributors, Skimap.org)
     url: https://openskidata.org/

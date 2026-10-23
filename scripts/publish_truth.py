@@ -23,14 +23,15 @@ sys.path.insert(0, str(ROOT / "src"))
 
 REPO = "nakas/powderbench-truth"
 LEAGUES = {  # league -> (history start, source/licence line)
-    "stations": (date(2015, 10, 1), "NRCS SNOTEL (USDA) — US public domain"),
+    "stations": (date(2015, 10, 1), "NRCS SNOTEL and SNOLITE (USDA) — US public domain; California DWR CDEC — "
+                                     "public; BC Ministry of Environment snow pillows — Open Government Licence – BC"),
     "observers": (date(2016, 10, 1), "NOAA GHCN-Daily (NWS COOP: public domain; CoCoRaHS: CC BY 3.0, © CoCoRaHS) "
                                      "and Environment and Climate Change Canada (Open Government Licence – Canada)"),
     "alps": (date(2000, 10, 1), "WSL Institute for Snow and Avalanche Research SLF — CC BY 4.0, www.slf.ch"),
 }
 
 
-def export(league: str, out: Path) -> dict:
+def export(league: str, out: Path, fresh: bool = False) -> dict:
     import pandas as pd
 
     from powderbench.leagues import get_league
@@ -51,7 +52,7 @@ def export(league: str, out: Path) -> dict:
         # re-export is (almost) all cache hits
         stop = min(date(cur.year, 12, 31), end)
         path = folder / f"truth_{cur:%Y%m%d}_{stop:%Y%m%d}.parquet"
-        if not path.exists() or stop >= end - timedelta(days=40):  # recent chunks get refreshed
+        if fresh or not path.exists() or stop >= end - timedelta(days=40):  # recent chunks get refreshed
             frames = [daily_truth(lg, ids[i : i + 200], cur, stop) for i in range(0, len(ids), 200)]
             df = pd.concat(frames, ignore_index=True).rename(columns={"snow24": "snow24_in"})
             df["date"] = pd.to_datetime(df["date"])
@@ -100,8 +101,10 @@ inches; NaN when voided), `valid`, `qc_flag` (`ok`, `missing`,
 offset) in each `<league>_stations` config.
 
 How the truth is built (all code in the [repo](https://github.com/andrewnakas/powderbench)):
-- **stations** — SNOTEL snow-depth deltas, voided on missing/absurd depths,
-  >48" jumps, or big jumps without an SWE increase.
+- **stations** — snow-depth deltas at SNOTEL, SNOLITE, CDEC and BC snow
+  pillows, voided on missing/absurd depths, >48" jumps, big jumps without an
+  SWE increase (or a neighbour's, for SNOLITE), implausible density, stuck
+  sensors and spikes (CDEC uses the hourly reading at local midnight).
 - **observers** — *measured* new snow from observers' snowboards; each
   station's observation-day offset is fitted against ERA5 and ambiguous
   stations are excluded (docs/DATA.md).
@@ -119,12 +122,13 @@ def main() -> int:
     ap.add_argument("--out", type=Path, default=Path("_truth"))
     ap.add_argument("--league", action="append")
     ap.add_argument("--upload", action="store_true")
+    ap.add_argument("--fresh", action="store_true", help="rebuild every chunk (after station/QC changes)")
     args = ap.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
     statf = args.out / "stats.json"
     stats = json.loads(statf.read_text()) if statf.exists() else {}
     for lg in args.league or LEAGUES:
-        stats[lg] = export(lg, args.out)
+        stats[lg] = export(lg, args.out, args.fresh)
     statf.write_text(json.dumps(stats, indent=1))
     (args.out / "README.md").write_text(card([stats[k] for k in LEAGUES if k in stats]))
     if args.upload:
