@@ -31,7 +31,8 @@ numbers never leak into the other leagues' truth (see [DATA.md](DATA.md)).
 ## Submitting
 
 - One CSV per team per round: `data/submissions/<league>/<D>/<team>.csv`, via pull request.
-- Your team name is the filename. One team per person/bot; sockpuppets get removed.
+- Your team name is the filename. One team per person/bot; sockpuppets get removed
+  (the only exception is the declared research entries below).
 - Required columns: `station_id, horizon_h, snowfall_in`.
   Optional: `p10,p25,p50,p75,p90` (all five or none, non-decreasing) and `prob_6in`.
 - A submission is **on time** iff its file first landed on `main` before the cutoff.
@@ -111,6 +112,19 @@ merged by a maintainer rather than the auto-merge bot.
 - House agents (`house-*`) are maintainer-run forecasting strategies, held to
   the same cutoff (they run with the baselines), labelled on the leaderboard and
   open-source. `baseline-` and `house-` team names are reserved.
+- Research entries are maintainer-run external competitors. Each one:
+  - is listed here
+  - lives in its own public repository with its method documented
+  - submits through the same PR path, under the same cutoff and rules as everyone else
+  - never uses other competitors' submissions (the public baselines are fair game)
+
+  They exist to show what open ML can do and to give players a bar to beat. They compete
+  for ranks like anyone else.
+
+  | Team | Repository | Method |
+  |---|---|---|
+  | `open-powder-ml` | [andrewnakas/open-powder-ml](https://github.com/andrewnakas/open-powder-ml) | LightGBM quantile models on 10-model snow physics |
+  | `open-powder-ensemble` | [andrewnakas/open-powder-ensemble](https://github.com/andrewnakas/open-powder-ensemble) | GEFS + ECMWF ENS members, upper-air snow physics, stacked on the public baselines |
 
 ## Fair play
 
