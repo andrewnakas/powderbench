@@ -1,0 +1,111 @@
+{
+ "round_id": "2026-10-19",
+ "league": "resorts",
+ "resolved_utc": "2026-10-26T18:27:45+00:00",
+ "observations_72h": null,
+ "qc": {
+  "station_horizons_valid": 30,
+  "station_horizons_voided": 9
+ },
+ "biggest_24h": {
+  "station_id": "chapelco:AR:RESORT",
+  "resort": "Chapelco",
+  "inches": 0.8
+ },
+ "teams": {
+  "baseline-climatology": {
+   "n_scorable": 30,
+   "n_scored": 30,
+   "coverage": 1.0,
+   "mae": 0.7161,
+   "rmse": 2.1,
+   "bias": -0.6628,
+   "mae_by_horizon": {
+    "24": 0.1552,
+    "48": 0.7436,
+    "72": 1.2496
+   },
+   "powder_score": 0.0,
+   "n_skill": 30,
+   "pinball": 0.3136,
+   "n_pinball": 30,
+   "brier6": 0.0,
+   "n_brier6": 10,
+   "late": false
+  },
+  "baseline-gfs": {
+   "n_scorable": 30,
+   "n_scored": 30,
+   "coverage": 1.0,
+   "mae": 0.6249,
+   "rmse": 1.9271,
+   "bias": -0.6095,
+   "mae_by_horizon": {
+    "24": 0.0827,
+    "48": 0.6498,
+    "72": 1.1421
+   },
+   "powder_score": 12.74,
+   "n_skill": 30,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-openmeteo": {
+   "n_scorable": 30,
+   "n_scored": 30,
+   "coverage": 1.0,
+   "mae": 0.8986,
+   "rmse": 1.9257,
+   "bias": 0.0482,
+   "mae_by_horizon": {
+    "24": 0.441,
+    "48": 0.8786,
+    "72": 1.3763
+   },
+   "powder_score": -25.48,
+   "n_skill": 30,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-persistence": {
+   "n_scorable": 30,
+   "n_scored": 30,
+   "coverage": 1.0,
+   "mae": 0.9457,
+   "rmse": 2.496,
+   "bias": -0.1577,
+   "mae_by_horizon": {
+    "24": 0.276,
+    "48": 0.985,
+    "72": 1.576
+   },
+   "powder_score": -32.05,
+   "n_skill": 30,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-zeros": {
+   "n_scorable": 30,
+   "n_scored": 30,
+   "coverage": 1.0,
+   "mae": 0.7097,
+   "rmse": 2.1703,
+   "bias": -0.7097,
+   "mae_by_horizon": {
+    "24": 0.158,
+    "48": 0.749,
+    "72": 1.222
+   },
+   "powder_score": 0.9,
+   "n_skill": 30,
+   "pinball": 0.3548,
+   "n_pinball": 30,
+   "brier6": 0.0,
+   "n_brier6": 10,
+   "late": false
+  }
+ }
+}

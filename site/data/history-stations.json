@@ -288,5 +288,117 @@
    "station_horizons_voided": 0
   },
   "teams": {}
+ },
+ {
+  "round_id": "2026-10-17",
+  "biggest_24h": {
+   "station_id": "737:CO:SNTL",
+   "resort": "Crested Butte",
+   "inches": 1.0
+  },
+  "qc": {
+   "station_horizons_valid": 135,
+   "station_horizons_voided": 0
+  },
+  "teams": {}
+ },
+ {
+  "round_id": "2026-10-18",
+  "biggest_24h": null,
+  "qc": {
+   "station_horizons_valid": 135,
+   "station_horizons_voided": 0
+  },
+  "teams": {}
+ },
+ {
+  "round_id": "2026-10-19",
+  "biggest_24h": {
+   "station_id": "1103:AK:SNTL",
+   "resort": "Alyeska",
+   "inches": 3.0
+  },
+  "qc": {
+   "station_horizons_valid": 135,
+   "station_horizons_voided": 0
+  },
+  "teams": {}
+ },
+ {
+  "round_id": "2026-10-20",
+  "biggest_24h": {
+   "station_id": "1103:AK:SNTL",
+   "resort": "Alyeska",
+   "inches": 2.0
+  },
+  "qc": {
+   "station_horizons_valid": 135,
+   "station_horizons_voided": 0
+  },
+  "teams": {
+   "baseline-gfs": 7.37
+  }
+ },
+ {
+  "round_id": "2026-10-21",
+  "biggest_24h": {
+   "station_id": "327:CO:SNTL",
+   "resort": "Beartown",
+   "inches": 4.0
+  },
+  "qc": {
+   "station_horizons_valid": 2558,
+   "station_horizons_voided": 31
+  },
+  "teams": {
+   "baseline-aifs": -6.77,
+   "baseline-consensus": 0.79,
+   "baseline-gem": -13.53,
+   "baseline-gfs": -14.04,
+   "baseline-icon": 10.64,
+   "baseline-ukmo": 13.67
+  }
+ },
+ {
+  "round_id": "2026-10-22",
+  "biggest_24h": {
+   "station_id": "580:CO:SNTL",
+   "resort": "Lily Pond",
+   "inches": 5.0
+  },
+  "qc": {
+   "station_horizons_valid": 2767,
+   "station_horizons_voided": 209
+  },
+  "teams": {
+   "baseline-aifs": -4.84,
+   "baseline-climatology": 0.0,
+   "baseline-consensus": 6.24,
+   "baseline-ecmwf": 10.2,
+   "baseline-gem": -19.01,
+   "baseline-icon": 10.04,
+   "baseline-persistence": -6.6,
+   "baseline-ukmo": 6.79,
+   "baseline-zeros": -0.51
+  }
+ },
+ {
+  "round_id": "2026-10-23",
+  "biggest_24h": {
+   "station_id": "487:MT:SNTL",
+   "resort": "Frohner Meadow",
+   "inches": 8.0
+  },
+  "qc": {
+   "station_horizons_valid": 2742,
+   "station_horizons_voided": 234
+  },
+  "teams": {
+   "baseline-climatology": 0.0,
+   "baseline-icon": 5.36,
+   "baseline-persistence": -7.94,
+   "baseline-ukmo": 9.28,
+   "baseline-zeros": 0.0
+  }
  }
 ]

@@ -2,26 +2,6 @@
  "season_start_month": 10,
  "stations": [
   {
-   "slug": "bridger-bowl",
-   "station_id": "365:MT:SNTL",
-   "resort": "Bridger Bowl",
-   "seasons": [
-    "2015",
-    "2016",
-    "2017",
-    "2018",
-    "2019",
-    "2020",
-    "2021",
-    "2022",
-    "2023",
-    "2024",
-    "2025",
-    "2026"
-   ],
-   "latest_total": 14.0
-  },
-  {
    "slug": "silverton",
    "station_id": "713:CO:SNTL",
    "resort": "Silverton",
@@ -39,7 +19,87 @@
     "2025",
     "2026"
    ],
-   "latest_total": 12.0
+   "latest_total": 26.0
+  },
+  {
+   "slug": "bridger-bowl",
+   "station_id": "365:MT:SNTL",
+   "resort": "Bridger Bowl",
+   "seasons": [
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023",
+    "2024",
+    "2025",
+    "2026"
+   ],
+   "latest_total": 18.0
+  },
+  {
+   "slug": "wolf-creek",
+   "station_id": "874:CO:SNTL",
+   "resort": "Wolf Creek",
+   "seasons": [
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023",
+    "2024",
+    "2025",
+    "2026"
+   ],
+   "latest_total": 18.0
+  },
+  {
+   "slug": "crested-butte",
+   "station_id": "737:CO:SNTL",
+   "resort": "Crested Butte",
+   "seasons": [
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023",
+    "2024",
+    "2025",
+    "2026"
+   ],
+   "latest_total": 14.0
+  },
+  {
+   "slug": "crystal",
+   "station_id": "642:WA:SNTL",
+   "resort": "Crystal Mountain",
+   "seasons": [
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023",
+    "2024",
+    "2025",
+    "2026"
+   ],
+   "latest_total": 11.0
   },
   {
    "slug": "snowbird",
@@ -62,9 +122,9 @@
    "latest_total": 9.0
   },
   {
-   "slug": "cooke-city",
-   "station_id": "480:MT:SNTL",
-   "resort": "Cooke City / Beartooths",
+   "slug": "grand-targhee",
+   "station_id": "1082:WY:SNTL",
+   "resort": "Grand Targhee",
    "seasons": [
     "2015",
     "2016",
@@ -79,7 +139,7 @@
     "2025",
     "2026"
    ],
-   "latest_total": 7.0
+   "latest_total": 8.0
   },
   {
    "slug": "brian-head",
@@ -99,7 +159,67 @@
     "2025",
     "2026"
    ],
-   "latest_total": 6.0
+   "latest_total": 8.0
+  },
+  {
+   "slug": "cooke-city",
+   "station_id": "480:MT:SNTL",
+   "resort": "Cooke City / Beartooths",
+   "seasons": [
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023",
+    "2024",
+    "2025",
+    "2026"
+   ],
+   "latest_total": 8.0
+  },
+  {
+   "slug": "breckenridge",
+   "station_id": "531:CO:SNTL",
+   "resort": "Breckenridge",
+   "seasons": [
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023",
+    "2024",
+    "2025",
+    "2026"
+   ],
+   "latest_total": 8.0
+  },
+  {
+   "slug": "alyeska",
+   "station_id": "1103:AK:SNTL",
+   "resort": "Alyeska",
+   "seasons": [
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023",
+    "2024",
+    "2025",
+    "2026"
+   ],
+   "latest_total": 7.0
   },
   {
    "slug": "alta-atwater",
@@ -136,6 +256,66 @@
    "latest_total": 6.0
   },
   {
+   "slug": "white-pass",
+   "station_id": "692:WA:SNTL",
+   "resort": "White Pass",
+   "seasons": [
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023",
+    "2024",
+    "2025",
+    "2026"
+   ],
+   "latest_total": 6.0
+  },
+  {
+   "slug": "aspen",
+   "station_id": "542:CO:SNTL",
+   "resort": "Aspen / Highlands",
+   "seasons": [
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023",
+    "2024",
+    "2025",
+    "2026"
+   ],
+   "latest_total": 5.0
+  },
+  {
+   "slug": "big-sky",
+   "station_id": "590:MT:SNTL",
+   "resort": "Big Sky",
+   "seasons": [
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023",
+    "2024",
+    "2025",
+    "2026"
+   ],
+   "latest_total": 5.0
+  },
+  {
    "slug": "steamboat",
    "station_id": "825:CO:SNTL",
    "resort": "Steamboat",
@@ -156,49 +336,9 @@
    "latest_total": 5.0
   },
   {
-   "slug": "breckenridge",
-   "station_id": "531:CO:SNTL",
-   "resort": "Breckenridge",
-   "seasons": [
-    "2015",
-    "2016",
-    "2017",
-    "2018",
-    "2019",
-    "2020",
-    "2021",
-    "2022",
-    "2023",
-    "2024",
-    "2025",
-    "2026"
-   ],
-   "latest_total": 4.0
-  },
-  {
-   "slug": "big-sky",
-   "station_id": "590:MT:SNTL",
-   "resort": "Big Sky",
-   "seasons": [
-    "2015",
-    "2016",
-    "2017",
-    "2018",
-    "2019",
-    "2020",
-    "2021",
-    "2022",
-    "2023",
-    "2024",
-    "2025",
-    "2026"
-   ],
-   "latest_total": 4.0
-  },
-  {
-   "slug": "crested-butte",
-   "station_id": "737:CO:SNTL",
-   "resort": "Crested Butte",
+   "slug": "mt-rose",
+   "station_id": "652:NV:SNTL",
+   "resort": "Mt. Rose",
    "seasons": [
     "2015",
     "2016",
@@ -256,9 +396,9 @@
    "latest_total": 3.0
   },
   {
-   "slug": "wolf-creek",
-   "station_id": "874:CO:SNTL",
-   "resort": "Wolf Creek",
+   "slug": "snoqualmie",
+   "station_id": "672:WA:SNTL",
+   "resort": "Snoqualmie / Alpental",
    "seasons": [
     "2015",
     "2016",
@@ -276,9 +416,9 @@
    "latest_total": 3.0
   },
   {
-   "slug": "alyeska",
-   "station_id": "1103:AK:SNTL",
-   "resort": "Alyeska",
+   "slug": "taos",
+   "station_id": "1168:NM:SNTL",
+   "resort": "Taos",
    "seasons": [
     "2015",
     "2016",
@@ -296,9 +436,9 @@
    "latest_total": 2.0
   },
   {
-   "slug": "brundage",
-   "station_id": "370:ID:SNTL",
-   "resort": "Brundage",
+   "slug": "sun-valley",
+   "station_id": "490:ID:SNTL",
+   "resort": "Sun Valley / Galena",
    "seasons": [
     "2015",
     "2016",
@@ -316,9 +456,9 @@
    "latest_total": 2.0
   },
   {
-   "slug": "crystal",
-   "station_id": "642:WA:SNTL",
-   "resort": "Crystal Mountain",
+   "slug": "mt-hood",
+   "station_id": "651:OR:SNTL",
+   "resort": "Mt. Hood / Timberline",
    "seasons": [
     "2015",
     "2016",
@@ -396,26 +536,6 @@
    "latest_total": 2.0
   },
   {
-   "slug": "grand-targhee",
-   "station_id": "1082:WY:SNTL",
-   "resort": "Grand Targhee",
-   "seasons": [
-    "2015",
-    "2016",
-    "2017",
-    "2018",
-    "2019",
-    "2020",
-    "2021",
-    "2022",
-    "2023",
-    "2024",
-    "2025",
-    "2026"
-   ],
-   "latest_total": 1.0
-  },
-  {
    "slug": "powder-mountain",
    "station_id": "332:UT:SNTL",
    "resort": "Powder Mountain / Snowbasin",
@@ -456,69 +576,9 @@
    "latest_total": 1.0
   },
   {
-   "slug": "aspen",
-   "station_id": "542:CO:SNTL",
-   "resort": "Aspen / Highlands",
-   "seasons": [
-    "2015",
-    "2016",
-    "2017",
-    "2018",
-    "2019",
-    "2020",
-    "2021",
-    "2022",
-    "2023",
-    "2024",
-    "2025",
-    "2026"
-   ],
-   "latest_total": 1.0
-  },
-  {
-   "slug": "mt-rose",
-   "station_id": "652:NV:SNTL",
-   "resort": "Mt. Rose",
-   "seasons": [
-    "2015",
-    "2016",
-    "2017",
-    "2018",
-    "2019",
-    "2020",
-    "2021",
-    "2022",
-    "2023",
-    "2024",
-    "2025",
-    "2026"
-   ],
-   "latest_total": 1.0
-  },
-  {
-   "slug": "snoqualmie",
-   "station_id": "672:WA:SNTL",
-   "resort": "Snoqualmie / Alpental",
-   "seasons": [
-    "2015",
-    "2016",
-    "2017",
-    "2018",
-    "2019",
-    "2020",
-    "2021",
-    "2022",
-    "2023",
-    "2024",
-    "2025",
-    "2026"
-   ],
-   "latest_total": 1.0
-  },
-  {
-   "slug": "bogus-basin",
-   "station_id": "978:ID:SNTL",
-   "resort": "Bogus Basin",
+   "slug": "ski-santa-fe",
+   "station_id": "922:NM:SNTL",
+   "resort": "Ski Santa Fe",
    "seasons": [
     "2015",
     "2016",
@@ -556,9 +616,9 @@
    "latest_total": 0.0
   },
   {
-   "slug": "taos",
-   "station_id": "1168:NM:SNTL",
-   "resort": "Taos",
+   "slug": "brundage",
+   "station_id": "370:ID:SNTL",
+   "resort": "Brundage",
    "seasons": [
     "2015",
     "2016",
@@ -616,26 +676,6 @@
    "latest_total": 0.0
   },
   {
-   "slug": "sun-valley",
-   "station_id": "490:ID:SNTL",
-   "resort": "Sun Valley / Galena",
-   "seasons": [
-    "2015",
-    "2016",
-    "2017",
-    "2018",
-    "2019",
-    "2020",
-    "2021",
-    "2022",
-    "2023",
-    "2024",
-    "2025",
-    "2026"
-   ],
-   "latest_total": 0.0
-  },
-  {
    "slug": "heavenly",
    "station_id": "518:CA:SNTL",
    "resort": "Heavenly",
@@ -656,49 +696,9 @@
    "latest_total": 0.0
   },
   {
-   "slug": "mt-hood",
-   "station_id": "651:OR:SNTL",
-   "resort": "Mt. Hood / Timberline",
-   "seasons": [
-    "2015",
-    "2016",
-    "2017",
-    "2018",
-    "2019",
-    "2020",
-    "2021",
-    "2022",
-    "2023",
-    "2024",
-    "2025",
-    "2026"
-   ],
-   "latest_total": 0.0
-  },
-  {
    "slug": "jackson-hole",
    "station_id": "689:WY:SNTL",
    "resort": "Jackson Hole / Teton Pass",
-   "seasons": [
-    "2015",
-    "2016",
-    "2017",
-    "2018",
-    "2019",
-    "2020",
-    "2021",
-    "2022",
-    "2023",
-    "2024",
-    "2025",
-    "2026"
-   ],
-   "latest_total": 0.0
-  },
-  {
-   "slug": "white-pass",
-   "station_id": "692:WA:SNTL",
-   "resort": "White Pass",
    "seasons": [
     "2015",
     "2016",
@@ -876,9 +876,9 @@
    "latest_total": 0.0
   },
   {
-   "slug": "ski-santa-fe",
-   "station_id": "922:NM:SNTL",
-   "resort": "Ski Santa Fe",
+   "slug": "bogus-basin",
+   "station_id": "978:ID:SNTL",
+   "resort": "Bogus Basin",
    "seasons": [
     "2015",
     "2016",

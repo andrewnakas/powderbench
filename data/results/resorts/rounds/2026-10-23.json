@@ -1,0 +1,219 @@
+{
+ "round_id": "2026-10-23",
+ "league": "resorts",
+ "resolved_utc": "2026-10-26T18:27:50+00:00",
+ "observations_72h": null,
+ "qc": {
+  "station_horizons_valid": 24,
+  "station_horizons_voided": 15
+ },
+ "biggest_24h": {
+  "station_id": "chapelco:AR:RESORT",
+  "resort": "Chapelco",
+  "inches": 0.8
+ },
+ "teams": {
+  "baseline-aifs": {
+   "n_scorable": 24,
+   "n_scored": 24,
+   "coverage": 1.0,
+   "mae": 0.1815,
+   "rmse": 0.435,
+   "bias": -0.016,
+   "mae_by_horizon": {
+    "24": 0.1148,
+    "48": 0.3207,
+    "72": 0.0
+   },
+   "powder_score": -61.24,
+   "n_skill": 24,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-climatology": {
+   "n_scorable": 24,
+   "n_scored": 24,
+   "coverage": 1.0,
+   "mae": 0.1125,
+   "rmse": 0.3635,
+   "bias": -0.085,
+   "mae_by_horizon": {
+    "24": 0.0818,
+    "48": 0.1883,
+    "72": 0.0
+   },
+   "powder_score": 0.0,
+   "n_skill": 24,
+   "pinball": 0.0561,
+   "n_pinball": 24,
+   "brier6": 0.0001,
+   "n_brier6": 10,
+   "late": true
+  },
+  "baseline-consensus": {
+   "n_scorable": 24,
+   "n_scored": 24,
+   "coverage": 1.0,
+   "mae": 0.1401,
+   "rmse": 0.3905,
+   "bias": -0.0574,
+   "mae_by_horizon": {
+    "24": 0.0845,
+    "48": 0.2517,
+    "72": 0.0
+   },
+   "powder_score": -24.47,
+   "n_skill": 24,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-ecmwf": {
+   "n_scorable": 24,
+   "n_scored": 24,
+   "coverage": 1.0,
+   "mae": 0.1159,
+   "rmse": 0.3002,
+   "bias": -0.0172,
+   "mae_by_horizon": {
+    "24": 0.0679,
+    "48": 0.2103,
+    "72": 0.0
+   },
+   "powder_score": -3.0,
+   "n_skill": 24,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-gem": {
+   "n_scorable": 24,
+   "n_scored": 24,
+   "coverage": 1.0,
+   "mae": 0.1286,
+   "rmse": 0.3765,
+   "bias": -0.0689,
+   "mae_by_horizon": {
+    "24": 0.079,
+    "48": 0.2297,
+    "72": 0.0
+   },
+   "powder_score": -14.29,
+   "n_skill": 24,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-gfs": {
+   "n_scorable": 24,
+   "n_scored": 24,
+   "coverage": 1.0,
+   "mae": 0.4559,
+   "rmse": 1.3437,
+   "bias": 0.2584,
+   "mae_by_horizon": {
+    "24": 0.1065,
+    "48": 0.9876,
+    "72": 0.0
+   },
+   "powder_score": -305.07,
+   "n_skill": 24,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-icon": {
+   "n_scorable": 24,
+   "n_scored": 24,
+   "coverage": 1.0,
+   "mae": 0.0988,
+   "rmse": 0.3606,
+   "bias": -0.0988,
+   "mae_by_horizon": {
+    "24": 0.079,
+    "48": 0.158,
+    "72": 0.0
+   },
+   "powder_score": 12.25,
+   "n_skill": 24,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-openmeteo": {
+   "n_scorable": 24,
+   "n_scored": 24,
+   "coverage": 1.0,
+   "mae": 0.0895,
+   "rmse": 0.267,
+   "bias": -0.0253,
+   "mae_by_horizon": {
+    "24": 0.0294,
+    "48": 0.1855,
+    "72": 0.0
+   },
+   "powder_score": 20.44,
+   "n_skill": 24,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-persistence": {
+   "n_scorable": 24,
+   "n_scored": 24,
+   "coverage": 1.0,
+   "mae": 0.64,
+   "rmse": 2.3369,
+   "bias": 0.64,
+   "mae_by_horizon": {
+    "24": 0.512,
+    "48": 1.024,
+    "72": 0.0
+   },
+   "powder_score": -468.68,
+   "n_skill": 24,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-ukmo": {
+   "n_scorable": 24,
+   "n_scored": 24,
+   "coverage": 1.0,
+   "mae": 0.24,
+   "rmse": 0.5878,
+   "bias": 0.0425,
+   "mae_by_horizon": {
+    "24": 0.1286,
+    "48": 0.4473,
+    "72": 0.0
+   },
+   "powder_score": -113.22,
+   "n_skill": 24,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-zeros": {
+   "n_scorable": 24,
+   "n_scored": 24,
+   "coverage": 1.0,
+   "mae": 0.0988,
+   "rmse": 0.3606,
+   "bias": -0.0988,
+   "mae_by_horizon": {
+    "24": 0.079,
+    "48": 0.158,
+    "72": 0.0
+   },
+   "powder_score": 12.25,
+   "n_skill": 24,
+   "pinball": 0.0494,
+   "n_pinball": 24,
+   "brier6": 0.0,
+   "n_brier6": 10,
+   "late": false
+  }
+ }
+}

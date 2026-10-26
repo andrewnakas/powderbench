@@ -1,1139 +1,5 @@
 [
  {
-  "round_id": "2026-09-28",
-  "league": "era5",
-  "resolved_utc": "2026-10-06T20:49:02+00:00",
-  "observations_72h": [
-   {
-    "station_id": "antillanca:CL:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   },
-   {
-    "station_id": "catedral:AR:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   },
-   {
-    "station_id": "chapelco:AR:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 1.58
-   },
-   {
-    "station_id": "coronet-peak:NZ:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   },
-   {
-    "station_id": "mt-hutt:NZ:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   },
-   {
-    "station_id": "perisher:AU:ERA5",
-    "feed": "snowyhydro",
-    "snow24_obs_in": 0.0
-   },
-   {
-    "station_id": "portillo:CL:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 11.02
-   },
-   {
-    "station_id": "remarkables:NZ:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   },
-   {
-    "station_id": "thredbo:AU:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   },
-   {
-    "station_id": "turoa:NZ:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 1.97
-   },
-   {
-    "station_id": "valle-nevado:CL:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.78
-   },
-   {
-    "station_id": "whakapapa:NZ:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   }
-  ],
-  "qc": {
-   "station_horizons_valid": 58,
-   "station_horizons_voided": 11
-  },
-  "biggest_24h": {
-   "station_id": "valle-nevado:CL:ERA5",
-   "resort": "Valle Nevado / Tres Valles",
-   "inches": 1.2
-  },
-  "teams": {
-   "baseline-climatology": {
-    "n_scorable": 58,
-    "n_scored": 58,
-    "coverage": 1.0,
-    "mae": 0.1758,
-    "rmse": 0.3551,
-    "bias": -0.161,
-    "mae_by_horizon": {
-     "24": 0.2001,
-     "48": 0.233,
-     "72": 0.0196
-    },
-    "powder_score": -0.01,
-    "pinball": 0.0789,
-    "n_pinball": 58,
-    "brier6": 0.0001,
-    "n_brier6": 23,
-    "late": false
-   },
-   "baseline-gfs": {
-    "n_scorable": 58,
-    "n_scored": 58,
-    "coverage": 1.0,
-    "mae": 0.2985,
-    "rmse": 0.5377,
-    "bias": -0.0351,
-    "mae_by_horizon": {
-     "24": 0.2493,
-     "48": 0.3547,
-     "72": 0.2849
-    },
-    "powder_score": -69.8,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-openmeteo": {
-    "n_scorable": 58,
-    "n_scored": 58,
-    "coverage": 1.0,
-    "mae": 0.573,
-    "rmse": 1.1928,
-    "bias": 0.5398,
-    "mae_by_horizon": {
-     "24": 0.6194,
-     "48": 0.6577,
-     "72": 0.3214
-    },
-    "powder_score": -225.96,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-persistence": {
-    "n_scorable": 58,
-    "n_scored": 58,
-    "coverage": 1.0,
-    "mae": 2.1049,
-    "rmse": 4.0735,
-    "bias": 2.0251,
-    "mae_by_horizon": {
-     "24": 1.7302,
-     "48": 3.5443,
-     "72": 0.0643
-    },
-    "powder_score": -1097.39,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-zeros": {
-    "n_scorable": 58,
-    "n_scored": 58,
-    "coverage": 1.0,
-    "mae": 0.1915,
-    "rmse": 0.3815,
-    "bias": -0.1915,
-    "mae_by_horizon": {
-     "24": 0.2001,
-     "48": 0.2492,
-     "72": 0.0643
-    },
-    "powder_score": -8.94,
-    "pinball": 0.0957,
-    "n_pinball": 58,
-    "brier6": 0.0,
-    "n_brier6": 23,
-    "late": false
-   }
-  }
- },
- {
-  "round_id": "2026-09-29",
-  "league": "era5",
-  "resolved_utc": "2026-10-07T21:02:50+00:00",
-  "observations_72h": [
-   {
-    "station_id": "antillanca:CL:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   },
-   {
-    "station_id": "catedral:AR:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   },
-   {
-    "station_id": "chapelco:AR:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 2.37
-   },
-   {
-    "station_id": "coronet-peak:NZ:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   },
-   {
-    "station_id": "mt-hutt:NZ:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   },
-   {
-    "station_id": "portillo:CL:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 11.02
-   },
-   {
-    "station_id": "remarkables:NZ:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   },
-   {
-    "station_id": "thredbo:AU:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   },
-   {
-    "station_id": "turoa:NZ:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   },
-   {
-    "station_id": "valle-nevado:CL:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.78
-   },
-   {
-    "station_id": "whakapapa:NZ:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   }
-  ],
-  "qc": {
-   "station_horizons_valid": 58,
-   "station_horizons_voided": 11
-  },
-  "biggest_24h": {
-   "station_id": "penitentes:AR:ERA5",
-   "resort": "Penitentes",
-   "inches": 0.4
-  },
-  "teams": {
-   "baseline-climatology": {
-    "n_scorable": 58,
-    "n_scored": 58,
-    "coverage": 1.0,
-    "mae": 0.4101,
-    "rmse": 1.0305,
-    "bias": -0.3796,
-    "mae_by_horizon": {
-     "24": 0.0491,
-     "48": 0.9526,
-     "72": 0.062
-    },
-    "powder_score": -0.01,
-    "pinball": 0.152,
-    "n_pinball": 58,
-    "brier6": 0.0001,
-    "n_brier6": 23,
-    "late": false
-   },
-   "baseline-gfs": {
-    "n_scorable": 58,
-    "n_scored": 58,
-    "coverage": 1.0,
-    "mae": 0.3008,
-    "rmse": 0.7943,
-    "bias": -0.1041,
-    "mae_by_horizon": {
-     "24": 0.0851,
-     "48": 0.6386,
-     "72": 0.0666
-    },
-    "powder_score": 26.64,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-openmeteo": {
-    "n_scorable": 58,
-    "n_scored": 58,
-    "coverage": 1.0,
-    "mae": 0.2761,
-    "rmse": 0.7846,
-    "bias": 0.221,
-    "mae_by_horizon": {
-     "24": 0.0348,
-     "48": 0.6422,
-     "72": 0.0368
-    },
-    "powder_score": 32.67,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-persistence": {
-    "n_scorable": 58,
-    "n_scored": 58,
-    "coverage": 1.0,
-    "mae": 0.7265,
-    "rmse": 1.2849,
-    "bias": 0.1212,
-    "mae_by_horizon": {
-     "24": 0.2756,
-     "48": 1.0964,
-     "72": 0.8819
-    },
-    "powder_score": -77.17,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-zeros": {
-    "n_scorable": 58,
-    "n_scored": 58,
-    "coverage": 1.0,
-    "mae": 0.4048,
-    "rmse": 1.0493,
-    "bias": -0.4048,
-    "mae_by_horizon": {
-     "24": 0.0491,
-     "48": 0.9718,
-     "72": 0.0
-    },
-    "powder_score": 1.28,
-    "pinball": 0.2024,
-    "n_pinball": 58,
-    "brier6": 0.0,
-    "n_brier6": 23,
-    "late": false
-   }
-  }
- },
- {
-  "round_id": "2026-09-30",
-  "league": "era5",
-  "resolved_utc": "2026-10-08T21:04:00+00:00",
-  "observations_72h": [
-   {
-    "station_id": "antillanca:CL:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   },
-   {
-    "station_id": "catedral:AR:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 3.94
-   },
-   {
-    "station_id": "chapelco:AR:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 2.37
-   },
-   {
-    "station_id": "coronet-peak:NZ:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   },
-   {
-    "station_id": "mt-hutt:NZ:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   },
-   {
-    "station_id": "portillo:CL:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 11.809999999999999
-   },
-   {
-    "station_id": "remarkables:NZ:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   },
-   {
-    "station_id": "thredbo:AU:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   },
-   {
-    "station_id": "turoa:NZ:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   },
-   {
-    "station_id": "valle-nevado:CL:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.78
-   },
-   {
-    "station_id": "whakapapa:NZ:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   }
-  ],
-  "qc": {
-   "station_horizons_valid": 58,
-   "station_horizons_voided": 11
-  },
-  "biggest_24h": {
-   "station_id": "penitentes:AR:ERA5",
-   "resort": "Penitentes",
-   "inches": 4.2
-  },
-  "teams": {
-   "baseline-climatology": {
-    "n_scorable": 58,
-    "n_scored": 58,
-    "coverage": 1.0,
-    "mae": 0.7971,
-    "rmse": 1.5307,
-    "bias": -0.7685,
-    "mae_by_horizon": {
-     "24": 0.9226,
-     "48": 1.0575,
-     "72": 0.0574
-    },
-    "powder_score": -0.0,
-    "pinball": 0.2978,
-    "n_pinball": 58,
-    "brier6": 0.0001,
-    "n_brier6": 23,
-    "late": false
-   },
-   "baseline-gfs": {
-    "n_scorable": 58,
-    "n_scored": 58,
-    "coverage": 1.0,
-    "mae": 0.4467,
-    "rmse": 0.9195,
-    "bias": -0.0446,
-    "mae_by_horizon": {
-     "24": 0.5081,
-     "48": 0.6183,
-     "72": 0.0
-    },
-    "powder_score": 43.96,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-openmeteo": {
-    "n_scorable": 58,
-    "n_scored": 58,
-    "coverage": 1.0,
-    "mae": 0.4006,
-    "rmse": 0.8263,
-    "bias": 0.2485,
-    "mae_by_horizon": {
-     "24": 0.441,
-     "48": 0.5656,
-     "72": 0.0069
-    },
-    "powder_score": 49.74,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-persistence": {
-    "n_scorable": 58,
-    "n_scored": 58,
-    "coverage": 1.0,
-    "mae": 0.8396,
-    "rmse": 1.5573,
-    "bias": -0.354,
-    "mae_by_horizon": {
-     "24": 0.8567,
-     "48": 1.1096,
-     "72": 0.2894
-    },
-    "powder_score": -5.33,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-zeros": {
-    "n_scorable": 58,
-    "n_scored": 58,
-    "coverage": 1.0,
-    "mae": 0.7916,
-    "rmse": 1.5447,
-    "bias": -0.7916,
-    "mae_by_horizon": {
-     "24": 0.9226,
-     "48": 1.0736,
-     "72": 0.0
-    },
-    "powder_score": 0.69,
-    "pinball": 0.3958,
-    "n_pinball": 58,
-    "brier6": 0.0,
-    "n_brier6": 23,
-    "late": false
-   }
-  }
- },
- {
-  "round_id": "2026-10-01",
-  "league": "era5",
-  "resolved_utc": "2026-10-09T20:35:27+00:00",
-  "observations_72h": [
-   {
-    "station_id": "antillanca:CL:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   },
-   {
-    "station_id": "catedral:AR:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 7.88
-   },
-   {
-    "station_id": "chapelco:AR:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 2.37
-   },
-   {
-    "station_id": "coronet-peak:NZ:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   },
-   {
-    "station_id": "mt-hutt:NZ:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   },
-   {
-    "station_id": "portillo:CL:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.79
-   },
-   {
-    "station_id": "remarkables:NZ:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   },
-   {
-    "station_id": "thredbo:AU:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   },
-   {
-    "station_id": "turoa:NZ:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   },
-   {
-    "station_id": "valle-nevado:CL:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.39
-   },
-   {
-    "station_id": "whakapapa:NZ:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   }
-  ],
-  "qc": {
-   "station_horizons_valid": 58,
-   "station_horizons_voided": 11
-  },
-  "biggest_24h": {
-   "station_id": "valle-nevado:CL:ERA5",
-   "resort": "Valle Nevado / Tres Valles",
-   "inches": 1.1
-  },
-  "teams": {
-   "baseline-climatology": {
-    "n_scorable": 58,
-    "n_scored": 58,
-    "coverage": 1.0,
-    "mae": 0.6807,
-    "rmse": 1.8788,
-    "bias": -0.6569,
-    "mae_by_horizon": {
-     "24": 0.151,
-     "48": 1.5379,
-     "72": 0.0528
-    },
-    "powder_score": -0.01,
-    "pinball": 0.2817,
-    "n_pinball": 58,
-    "brier6": 0.0001,
-    "n_brier6": 23,
-    "late": false
-   },
-   "baseline-gfs": {
-    "n_scorable": 58,
-    "n_scored": 58,
-    "coverage": 1.0,
-    "mae": 0.5635,
-    "rmse": 1.5761,
-    "bias": -0.4324,
-    "mae_by_horizon": {
-     "24": 0.133,
-     "48": 1.2773,
-     "72": 0.0207
-    },
-    "powder_score": 17.21,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-openmeteo": {
-    "n_scorable": 58,
-    "n_scored": 58,
-    "coverage": 1.0,
-    "mae": 0.459,
-    "rmse": 1.1539,
-    "bias": 0.3687,
-    "mae_by_horizon": {
-     "24": 0.1258,
-     "48": 1.022,
-     "72": 0.0183
-    },
-    "powder_score": 32.57,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-persistence": {
-    "n_scorable": 58,
-    "n_scored": 58,
-    "coverage": 1.0,
-    "mae": 1.4516,
-    "rmse": 3.1698,
-    "bias": 0.6933,
-    "mae_by_horizon": {
-     "24": 0.9789,
-     "48": 2.4995,
-     "72": 0.3491
-    },
-    "powder_score": -113.26,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-zeros": {
-    "n_scorable": 58,
-    "n_scored": 58,
-    "coverage": 1.0,
-    "mae": 0.6795,
-    "rmse": 1.899,
-    "bias": -0.6795,
-    "mae_by_horizon": {
-     "24": 0.151,
-     "48": 1.5601,
-     "72": 0.0046
-    },
-    "powder_score": 0.17,
-    "pinball": 0.3397,
-    "n_pinball": 58,
-    "brier6": 0.0,
-    "n_brier6": 23,
-    "late": false
-   }
-  }
- },
- {
-  "round_id": "2026-10-02",
-  "league": "era5",
-  "resolved_utc": "2026-10-10T19:53:09+00:00",
-  "observations_72h": [
-   {
-    "station_id": "antillanca:CL:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   },
-   {
-    "station_id": "catedral:AR:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 7.88
-   },
-   {
-    "station_id": "chapelco:AR:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 2.37
-   },
-   {
-    "station_id": "coronet-peak:NZ:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   },
-   {
-    "station_id": "mt-hutt:NZ:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   },
-   {
-    "station_id": "portillo:CL:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 10.629999999999999
-   },
-   {
-    "station_id": "remarkables:NZ:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   },
-   {
-    "station_id": "thredbo:AU:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   },
-   {
-    "station_id": "turoa:NZ:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   },
-   {
-    "station_id": "valle-nevado:CL:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 3.15
-   },
-   {
-    "station_id": "whakapapa:NZ:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   }
-  ],
-  "qc": {
-   "station_horizons_valid": 58,
-   "station_horizons_voided": 11
-  },
-  "biggest_24h": {
-   "station_id": "penitentes:AR:ERA5",
-   "resort": "Penitentes",
-   "inches": 6.9
-  },
-  "teams": {
-   "baseline-climatology": {
-    "n_scorable": 58,
-    "n_scored": 58,
-    "coverage": 1.0,
-    "mae": 1.5435,
-    "rmse": 2.8758,
-    "bias": -1.5188,
-    "mae_by_horizon": {
-     "24": 1.4091,
-     "48": 2.4545,
-     "72": 0.0551
-    },
-    "powder_score": 0.0,
-    "pinball": 0.6406,
-    "n_pinball": 58,
-    "brier6": 0.0855,
-    "n_brier6": 23,
-    "late": false
-   },
-   "baseline-gfs": {
-    "n_scorable": 58,
-    "n_scored": 58,
-    "coverage": 1.0,
-    "mae": 1.0986,
-    "rmse": 2.1505,
-    "bias": -0.6339,
-    "mae_by_horizon": {
-     "24": 1.1719,
-     "48": 1.5853,
-     "72": 0.0252
-    },
-    "powder_score": 28.83,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-openmeteo": {
-    "n_scorable": 58,
-    "n_scored": 58,
-    "coverage": 1.0,
-    "mae": 1.4421,
-    "rmse": 3.0311,
-    "bias": 1.3328,
-    "mae_by_horizon": {
-     "24": 1.4247,
-     "48": 2.2095,
-     "72": 0.0046
-    },
-    "powder_score": 6.57,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-persistence": {
-    "n_scorable": 58,
-    "n_scored": 58,
-    "coverage": 1.0,
-    "mae": 1.6683,
-    "rmse": 2.9063,
-    "bias": -0.1696,
-    "mae_by_horizon": {
-     "24": 1.6835,
-     "48": 2.3413,
-     "72": 0.3491
-    },
-    "powder_score": -8.08,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-zeros": {
-    "n_scorable": 58,
-    "n_scored": 58,
-    "coverage": 1.0,
-    "mae": 1.5424,
-    "rmse": 2.8934,
-    "bias": -1.5424,
-    "mae_by_horizon": {
-     "24": 1.4091,
-     "48": 2.4779,
-     "72": 0.0046
-    },
-    "powder_score": 0.07,
-    "pinball": 0.7712,
-    "n_pinball": 58,
-    "brier6": 0.087,
-    "n_brier6": 23,
-    "late": false
-   }
-  }
- },
- {
-  "round_id": "2026-10-03",
-  "league": "era5",
-  "resolved_utc": "2026-10-11T19:59:12+00:00",
-  "observations_72h": [
-   {
-    "station_id": "antillanca:CL:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   },
-   {
-    "station_id": "catedral:AR:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 3.94
-   },
-   {
-    "station_id": "chapelco:AR:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 2.37
-   },
-   {
-    "station_id": "coronet-peak:NZ:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   },
-   {
-    "station_id": "mt-hutt:NZ:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   },
-   {
-    "station_id": "portillo:CL:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 38.980000000000004
-   },
-   {
-    "station_id": "remarkables:NZ:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   },
-   {
-    "station_id": "thredbo:AU:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   },
-   {
-    "station_id": "turoa:NZ:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   },
-   {
-    "station_id": "valle-nevado:CL:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 17.72
-   },
-   {
-    "station_id": "whakapapa:NZ:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   }
-  ],
-  "qc": {
-   "station_horizons_valid": 58,
-   "station_horizons_voided": 11
-  },
-  "biggest_24h": {
-   "station_id": "catedral:AR:ERA5",
-   "resort": "Catedral Alta Patagonia",
-   "inches": 6.0
-  },
-  "teams": {
-   "baseline-climatology": {
-    "n_scorable": 58,
-    "n_scored": 58,
-    "coverage": 1.0,
-    "mae": 1.0385,
-    "rmse": 2.149,
-    "bias": -1.017,
-    "mae_by_horizon": {
-     "24": 1.0688,
-     "48": 1.5254,
-     "72": 0.0472
-    },
-    "powder_score": -0.0,
-    "pinball": 0.4147,
-    "n_pinball": 58,
-    "brier6": 0.0427,
-    "n_brier6": 23,
-    "late": false
-   },
-   "baseline-gfs": {
-    "n_scorable": 58,
-    "n_scored": 58,
-    "coverage": 1.0,
-    "mae": 0.5032,
-    "rmse": 1.2012,
-    "bias": -0.1477,
-    "mae_by_horizon": {
-     "24": 0.5021,
-     "48": 0.7573,
-     "72": 0.0184
-    },
-    "powder_score": 51.54,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-openmeteo": {
-    "n_scorable": 58,
-    "n_scored": 58,
-    "coverage": 1.0,
-    "mae": 0.7588,
-    "rmse": 1.8797,
-    "bias": 0.5393,
-    "mae_by_horizon": {
-     "24": 0.7489,
-     "48": 1.1647,
-     "72": 0.0
-    },
-    "powder_score": 26.93,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-persistence": {
-    "n_scorable": 58,
-    "n_scored": 58,
-    "coverage": 1.0,
-    "mae": 1.2805,
-    "rmse": 2.5333,
-    "bias": 0.3331,
-    "mae_by_horizon": {
-     "24": 1.0796,
-     "48": 1.9675,
-     "72": 0.3491
-    },
-    "powder_score": -23.3,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-zeros": {
-    "n_scorable": 58,
-    "n_scored": 58,
-    "coverage": 1.0,
-    "mae": 1.0396,
-    "rmse": 2.1643,
-    "bias": -1.0396,
-    "mae_by_horizon": {
-     "24": 1.0688,
-     "48": 1.5505,
-     "72": 0.0046
-    },
-    "powder_score": -0.11,
-    "pinball": 0.5198,
-    "n_pinball": 58,
-    "brier6": 0.0435,
-    "n_brier6": 23,
-    "late": false
-   }
-  }
- },
- {
-  "round_id": "2026-10-04",
-  "league": "era5",
-  "resolved_utc": "2026-10-12T22:45:18+00:00",
-  "observations_72h": [
-   {
-    "station_id": "antillanca:CL:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   },
-   {
-    "station_id": "catedral:AR:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   },
-   {
-    "station_id": "chapelco:AR:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 2.37
-   },
-   {
-    "station_id": "mt-hutt:NZ:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   },
-   {
-    "station_id": "portillo:CL:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 62.2
-   },
-   {
-    "station_id": "remarkables:NZ:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   },
-   {
-    "station_id": "thredbo:AU:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   },
-   {
-    "station_id": "turoa:NZ:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   },
-   {
-    "station_id": "valle-nevado:CL:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 48.03
-   },
-   {
-    "station_id": "whakapapa:NZ:ERA5",
-    "feed": "resorts",
-    "snow24_obs_in": 0.0
-   }
-  ],
-  "qc": {
-   "station_horizons_valid": 58,
-   "station_horizons_voided": 11
-  },
-  "biggest_24h": {
-   "station_id": "portillo:CL:ERA5",
-   "resort": "Ski Portillo",
-   "inches": 2.0
-  },
-  "teams": {
-   "baseline-climatology": {
-    "n_scorable": 58,
-    "n_scored": 58,
-    "coverage": 1.0,
-    "mae": 0.7049,
-    "rmse": 1.6069,
-    "bias": -0.6821,
-    "mae_by_horizon": {
-     "24": 0.4817,
-     "48": 1.2707,
-     "72": 0.0483
-    },
-    "powder_score": -0.0,
-    "pinball": 0.265,
-    "n_pinball": 58,
-    "brier6": 0.0,
-    "n_brier6": 23,
-    "late": false
-   },
-   "baseline-gfs": {
-    "n_scorable": 58,
-    "n_scored": 58,
-    "coverage": 1.0,
-    "mae": 0.5384,
-    "rmse": 1.6614,
-    "bias": 0.1877,
-    "mae_by_horizon": {
-     "24": 0.3307,
-     "48": 1.0269,
-     "72": 0.0
-    },
-    "powder_score": 23.62,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-openmeteo": {
-    "n_scorable": 58,
-    "n_scored": 58,
-    "coverage": 1.0,
-    "mae": 0.258,
-    "rmse": 0.6014,
-    "bias": -0.1126,
-    "mae_by_horizon": {
-     "24": 0.2096,
-     "48": 0.441,
-     "72": 0.0
-    },
-    "powder_score": 63.4,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-persistence": {
-    "n_scorable": 58,
-    "n_scored": 58,
-    "coverage": 1.0,
-    "mae": 2.2926,
-    "rmse": 3.8444,
-    "bias": 0.889,
-    "mae_by_horizon": {
-     "24": 1.1479,
-     "48": 2.6277,
-     "72": 3.8445
-    },
-    "powder_score": -225.25,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-zeros": {
-    "n_scorable": 58,
-    "n_scored": 58,
-    "coverage": 1.0,
-    "mae": 0.7047,
-    "rmse": 1.6338,
-    "bias": -0.7047,
-    "mae_by_horizon": {
-     "24": 0.4817,
-     "48": 1.2953,
-     "72": 0.0
-    },
-    "powder_score": 0.03,
-    "pinball": 0.3523,
-    "n_pinball": 58,
-    "brier6": 0.0,
-    "n_brier6": 23,
-    "late": false
-   }
-  }
- },
- {
   "round_id": "2026-10-05",
   "league": "era5",
   "resolved_utc": "2026-10-13T21:03:27+00:00",
@@ -2223,6 +1089,1727 @@
     "n_pinball": 58,
     "brier6": 0.0,
     "n_brier6": 23,
+    "late": false
+   }
+  }
+ },
+ {
+  "round_id": "2026-10-12",
+  "league": "era5",
+  "resolved_utc": "2026-10-26T18:20:31+00:00",
+  "observations_72h": [
+   {
+    "station_id": "antillanca:CL:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   },
+   {
+    "station_id": "catedral:AR:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   },
+   {
+    "station_id": "chapelco:AR:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 2.37
+   },
+   {
+    "station_id": "portillo:CL:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   },
+   {
+    "station_id": "remarkables:NZ:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   },
+   {
+    "station_id": "thredbo:AU:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   },
+   {
+    "station_id": "turoa:NZ:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   },
+   {
+    "station_id": "valle-nevado:CL:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 2.36
+   },
+   {
+    "station_id": "whakapapa:NZ:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   }
+  ],
+  "qc": {
+   "station_horizons_valid": 69,
+   "station_horizons_voided": 0
+  },
+  "biggest_24h": {
+   "station_id": "portillo:CL:ERA5",
+   "resort": "Ski Portillo",
+   "inches": 1.1
+  },
+  "teams": {
+   "baseline-climatology": {
+    "n_scorable": 69,
+    "n_scored": 69,
+    "coverage": 1.0,
+    "mae": 0.13,
+    "rmse": 0.3229,
+    "bias": -0.0672,
+    "mae_by_horizon": {
+     "24": 0.0875,
+     "48": 0.1306,
+     "72": 0.172
+    },
+    "powder_score": 0.0,
+    "n_skill": 69,
+    "pinball": 0.0801,
+    "n_pinball": 69,
+    "brier6": 0.0,
+    "n_brier6": 23,
+    "tracks": {
+     "region:Otago, NZ": {
+      "n_scorable": 12,
+      "n_scored": 12,
+      "coverage": 1.0,
+      "mae": 0.0552,
+      "powder_score": 0.0,
+      "bias": 0.0552
+     },
+     "region:Victorian Alps, AU": {
+      "n_scorable": 9,
+      "n_scored": 9,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": null,
+      "bias": 0.0
+     }
+    },
+    "late": false
+   },
+   "baseline-gfs": {
+    "n_scorable": 69,
+    "n_scored": 69,
+    "coverage": 1.0,
+    "mae": 0.4661,
+    "rmse": 1.5308,
+    "bias": 0.4485,
+    "mae_by_horizon": {
+     "24": 0.3954,
+     "48": 0.4781,
+     "72": 0.5248
+    },
+    "powder_score": -258.45,
+    "n_skill": 69,
+    "pinball": null,
+    "brier6": null,
+    "tracks": {
+     "region:Otago, NZ": {
+      "n_scorable": 12,
+      "n_scored": 12,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": 100.0,
+      "bias": 0.0
+     },
+     "region:Victorian Alps, AU": {
+      "n_scorable": 9,
+      "n_scored": 9,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": null,
+      "bias": 0.0
+     }
+    },
+    "late": false
+   },
+   "baseline-openmeteo": {
+    "n_scorable": 69,
+    "n_scored": 69,
+    "coverage": 1.0,
+    "mae": 0.0684,
+    "rmse": 0.1711,
+    "bias": 0.0452,
+    "mae_by_horizon": {
+     "24": 0.0695,
+     "48": 0.066,
+     "72": 0.0696
+    },
+    "powder_score": 47.43,
+    "n_skill": 69,
+    "pinball": null,
+    "brier6": null,
+    "tracks": {
+     "region:Otago, NZ": {
+      "n_scorable": 12,
+      "n_scored": 12,
+      "coverage": 1.0,
+      "mae": 0.0115,
+      "powder_score": 79.15,
+      "bias": 0.0115
+     },
+     "region:Victorian Alps, AU": {
+      "n_scorable": 9,
+      "n_scored": 9,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": null,
+      "bias": 0.0
+     }
+    },
+    "late": false
+   },
+   "baseline-persistence": {
+    "n_scorable": 69,
+    "n_scored": 69,
+    "coverage": 1.0,
+    "mae": 0.8583,
+    "rmse": 1.6001,
+    "bias": 0.8511,
+    "mae_by_horizon": {
+     "24": 0.4014,
+     "48": 0.8459,
+     "72": 1.3276
+    },
+    "powder_score": -560.05,
+    "n_skill": 69,
+    "pinball": null,
+    "brier6": null,
+    "tracks": {
+     "region:Otago, NZ": {
+      "n_scorable": 12,
+      "n_scored": 12,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": 100.0,
+      "bias": 0.0
+     },
+     "region:Victorian Alps, AU": {
+      "n_scorable": 9,
+      "n_scored": 9,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": null,
+      "bias": 0.0
+     }
+    },
+    "late": false
+   },
+   "baseline-zeros": {
+    "n_scorable": 69,
+    "n_scored": 69,
+    "coverage": 1.0,
+    "mae": 0.1122,
+    "rmse": 0.3504,
+    "bias": -0.1122,
+    "mae_by_horizon": {
+     "24": 0.0875,
+     "48": 0.1246,
+     "72": 0.1246
+    },
+    "powder_score": 13.69,
+    "n_skill": 69,
+    "pinball": 0.0561,
+    "n_pinball": 69,
+    "brier6": 0.0,
+    "n_brier6": 23,
+    "tracks": {
+     "region:Otago, NZ": {
+      "n_scorable": 12,
+      "n_scored": 12,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": 100.0,
+      "bias": 0.0
+     },
+     "region:Victorian Alps, AU": {
+      "n_scorable": 9,
+      "n_scored": 9,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": null,
+      "bias": 0.0
+     }
+    },
+    "late": false
+   }
+  }
+ },
+ {
+  "round_id": "2026-10-13",
+  "league": "era5",
+  "resolved_utc": "2026-10-26T18:20:37+00:00",
+  "observations_72h": [
+   {
+    "station_id": "antillanca:CL:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   },
+   {
+    "station_id": "catedral:AR:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   },
+   {
+    "station_id": "chapelco:AR:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 2.37
+   },
+   {
+    "station_id": "portillo:CL:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   },
+   {
+    "station_id": "remarkables:NZ:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   },
+   {
+    "station_id": "thredbo:AU:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   },
+   {
+    "station_id": "turoa:NZ:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 1.97
+   },
+   {
+    "station_id": "valle-nevado:CL:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 2.36
+   },
+   {
+    "station_id": "whakapapa:NZ:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   }
+  ],
+  "qc": {
+   "station_horizons_valid": 69,
+   "station_horizons_voided": 0
+  },
+  "biggest_24h": {
+   "station_id": "valle-nevado:CL:ERA5",
+   "resort": "Valle Nevado / Tres Valles",
+   "inches": 0.4
+  },
+  "teams": {
+   "baseline-climatology": {
+    "n_scorable": 69,
+    "n_scored": 69,
+    "coverage": 1.0,
+    "mae": 0.1464,
+    "rmse": 0.4014,
+    "bias": -0.104,
+    "mae_by_horizon": {
+     "24": 0.0371,
+     "48": 0.0419,
+     "72": 0.36
+    },
+    "powder_score": 0.0,
+    "n_skill": 69,
+    "pinball": 0.0766,
+    "n_pinball": 69,
+    "brier6": 0.0,
+    "n_brier6": 23,
+    "tracks": {
+     "region:Otago, NZ": {
+      "n_scorable": 12,
+      "n_scored": 12,
+      "coverage": 1.0,
+      "mae": 0.4339,
+      "powder_score": 0.0,
+      "bias": -0.4156
+     },
+     "region:Victorian Alps, AU": {
+      "n_scorable": 9,
+      "n_scored": 9,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": null,
+      "bias": 0.0
+     }
+    },
+    "late": false
+   },
+   "baseline-gfs": {
+    "n_scorable": 69,
+    "n_scored": 69,
+    "coverage": 1.0,
+    "mae": 0.4294,
+    "rmse": 1.2906,
+    "bias": 0.407,
+    "mae_by_horizon": {
+     "24": 0.0947,
+     "48": 0.2529,
+     "72": 0.9407
+    },
+    "powder_score": -193.4,
+    "n_skill": 69,
+    "pinball": null,
+    "brier6": null,
+    "tracks": {
+     "region:Otago, NZ": {
+      "n_scorable": 12,
+      "n_scored": 12,
+      "coverage": 1.0,
+      "mae": 1.4767,
+      "powder_score": -240.32,
+      "bias": 1.4767
+     },
+     "region:Victorian Alps, AU": {
+      "n_scorable": 9,
+      "n_scored": 9,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": null,
+      "bias": 0.0
+     }
+    },
+    "late": false
+   },
+   "baseline-openmeteo": {
+    "n_scorable": 69,
+    "n_scored": 69,
+    "coverage": 1.0,
+    "mae": 0.1894,
+    "rmse": 0.6324,
+    "bias": 0.0504,
+    "mae_by_horizon": {
+     "24": 0.0204,
+     "48": 0.0204,
+     "72": 0.5273
+    },
+    "powder_score": -29.39,
+    "n_skill": 69,
+    "pinball": null,
+    "brier6": null,
+    "tracks": {
+     "region:Otago, NZ": {
+      "n_scorable": 12,
+      "n_scored": 12,
+      "coverage": 1.0,
+      "mae": 0.5581,
+      "powder_score": -28.6,
+      "bias": -0.0298
+     },
+     "region:Victorian Alps, AU": {
+      "n_scorable": 9,
+      "n_scored": 9,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": null,
+      "bias": 0.0
+     }
+    },
+    "late": false
+   },
+   "baseline-persistence": {
+    "n_scorable": 69,
+    "n_scored": 69,
+    "coverage": 1.0,
+    "mae": 1.6975,
+    "rmse": 3.8671,
+    "bias": 1.481,
+    "mae_by_horizon": {
+     "24": 0.7764,
+     "48": 1.59,
+     "72": 2.726
+    },
+    "powder_score": -1059.86,
+    "n_skill": 69,
+    "pinball": null,
+    "brier6": null,
+    "tracks": {
+     "region:Otago, NZ": {
+      "n_scorable": 12,
+      "n_scored": 12,
+      "coverage": 1.0,
+      "mae": 0.4731,
+      "powder_score": -9.03,
+      "bias": -0.4731
+     },
+     "region:Victorian Alps, AU": {
+      "n_scorable": 9,
+      "n_scored": 9,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": null,
+      "bias": 0.0
+     }
+    },
+    "late": false
+   },
+   "baseline-zeros": {
+    "n_scorable": 69,
+    "n_scored": 69,
+    "coverage": 1.0,
+    "mae": 0.1462,
+    "rmse": 0.4409,
+    "bias": -0.1462,
+    "mae_by_horizon": {
+     "24": 0.0371,
+     "48": 0.0371,
+     "72": 0.3643
+    },
+    "powder_score": 0.12,
+    "n_skill": 69,
+    "pinball": 0.0731,
+    "n_pinball": 69,
+    "brier6": 0.0,
+    "n_brier6": 23,
+    "tracks": {
+     "region:Otago, NZ": {
+      "n_scorable": 12,
+      "n_scored": 12,
+      "coverage": 1.0,
+      "mae": 0.4731,
+      "powder_score": -9.03,
+      "bias": -0.4731
+     },
+     "region:Victorian Alps, AU": {
+      "n_scorable": 9,
+      "n_scored": 9,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": null,
+      "bias": 0.0
+     }
+    },
+    "late": false
+   }
+  }
+ },
+ {
+  "round_id": "2026-10-14",
+  "league": "era5",
+  "resolved_utc": "2026-10-26T18:20:45+00:00",
+  "observations_72h": [
+   {
+    "station_id": "antillanca:CL:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   },
+   {
+    "station_id": "catedral:AR:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   },
+   {
+    "station_id": "chapelco:AR:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 2.37
+   },
+   {
+    "station_id": "portillo:CL:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   },
+   {
+    "station_id": "remarkables:NZ:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   },
+   {
+    "station_id": "thredbo:AU:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   },
+   {
+    "station_id": "turoa:NZ:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 3.94
+   },
+   {
+    "station_id": "valle-nevado:CL:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   },
+   {
+    "station_id": "whakapapa:NZ:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   }
+  ],
+  "qc": {
+   "station_horizons_valid": 69,
+   "station_horizons_voided": 0
+  },
+  "biggest_24h": null,
+  "teams": {
+   "baseline-climatology": {
+    "n_scorable": 69,
+    "n_scored": 69,
+    "coverage": 1.0,
+    "mae": 0.2503,
+    "rmse": 0.6276,
+    "bias": -0.1939,
+    "mae_by_horizon": {
+     "24": 0.0,
+     "48": 0.3367,
+     "72": 0.414
+    },
+    "powder_score": 0.0,
+    "n_skill": 69,
+    "pinball": 0.1017,
+    "n_pinball": 69,
+    "brier6": 0.0,
+    "n_brier6": 23,
+    "tracks": {
+     "region:Otago, NZ": {
+      "n_scorable": 12,
+      "n_scored": 12,
+      "coverage": 1.0,
+      "mae": 0.8911,
+      "powder_score": 0.0,
+      "bias": -0.8911
+     },
+     "region:Victorian Alps, AU": {
+      "n_scorable": 9,
+      "n_scored": 9,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": null,
+      "bias": 0.0
+     }
+    },
+    "late": false
+   },
+   "baseline-gfs": {
+    "n_scorable": 69,
+    "n_scored": 69,
+    "coverage": 1.0,
+    "mae": 0.4334,
+    "rmse": 1.0694,
+    "bias": 0.4302,
+    "mae_by_horizon": {
+     "24": 0.0408,
+     "48": 0.4482,
+     "72": 0.8113
+    },
+    "powder_score": -73.19,
+    "n_skill": 69,
+    "pinball": null,
+    "brier6": null,
+    "tracks": {
+     "region:Otago, NZ": {
+      "n_scorable": 12,
+      "n_scored": 12,
+      "coverage": 1.0,
+      "mae": 1.1966,
+      "powder_score": -34.28,
+      "bias": 1.1966
+     },
+     "region:Victorian Alps, AU": {
+      "n_scorable": 9,
+      "n_scored": 9,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": null,
+      "bias": 0.0
+     }
+    },
+    "late": false
+   },
+   "baseline-openmeteo": {
+    "n_scorable": 69,
+    "n_scored": 69,
+    "coverage": 1.0,
+    "mae": 0.4529,
+    "rmse": 1.4296,
+    "bias": 0.4377,
+    "mae_by_horizon": {
+     "24": 0.0072,
+     "48": 0.4589,
+     "72": 0.8926
+    },
+    "powder_score": -80.98,
+    "n_skill": 69,
+    "pinball": null,
+    "brier6": null,
+    "tracks": {
+     "region:Otago, NZ": {
+      "n_scorable": 12,
+      "n_scored": 12,
+      "coverage": 1.0,
+      "mae": 0.6637,
+      "powder_score": 25.52,
+      "bias": 0.5857
+     },
+     "region:Victorian Alps, AU": {
+      "n_scorable": 9,
+      "n_scored": 9,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": null,
+      "bias": 0.0
+     }
+    },
+    "late": false
+   },
+   "baseline-persistence": {
+    "n_scorable": 69,
+    "n_scored": 69,
+    "coverage": 1.0,
+    "mae": 2.2934,
+    "rmse": 5.6177,
+    "bias": 1.8261,
+    "mae_by_horizon": {
+     "24": 1.0305,
+     "48": 2.3857,
+     "72": 3.4641
+    },
+    "powder_score": -816.44,
+    "n_skill": 69,
+    "pinball": null,
+    "brier6": null,
+    "tracks": {
+     "region:Otago, NZ": {
+      "n_scorable": 12,
+      "n_scored": 12,
+      "coverage": 1.0,
+      "mae": 0.9508,
+      "powder_score": -6.7,
+      "bias": -0.9508
+     },
+     "region:Victorian Alps, AU": {
+      "n_scorable": 9,
+      "n_scored": 9,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": null,
+      "bias": 0.0
+     }
+    },
+    "late": false
+   },
+   "baseline-zeros": {
+    "n_scorable": 69,
+    "n_scored": 69,
+    "coverage": 1.0,
+    "mae": 0.2349,
+    "rmse": 0.6534,
+    "bias": -0.2349,
+    "mae_by_horizon": {
+     "24": 0.0,
+     "48": 0.3271,
+     "72": 0.3774
+    },
+    "powder_score": 6.15,
+    "n_skill": 69,
+    "pinball": 0.1174,
+    "n_pinball": 69,
+    "brier6": 0.0,
+    "n_brier6": 23,
+    "tracks": {
+     "region:Otago, NZ": {
+      "n_scorable": 12,
+      "n_scored": 12,
+      "coverage": 1.0,
+      "mae": 0.9508,
+      "powder_score": -6.7,
+      "bias": -0.9508
+     },
+     "region:Victorian Alps, AU": {
+      "n_scorable": 9,
+      "n_scored": 9,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": null,
+      "bias": 0.0
+     }
+    },
+    "late": false
+   }
+  }
+ },
+ {
+  "round_id": "2026-10-15",
+  "league": "era5",
+  "resolved_utc": "2026-10-26T18:23:01+00:00",
+  "observations_72h": [
+   {
+    "station_id": "antillanca:CL:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   },
+   {
+    "station_id": "catedral:AR:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   },
+   {
+    "station_id": "chapelco:AR:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 2.37
+   },
+   {
+    "station_id": "portillo:CL:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   },
+   {
+    "station_id": "remarkables:NZ:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   },
+   {
+    "station_id": "thredbo:AU:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   },
+   {
+    "station_id": "turoa:NZ:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 5.91
+   },
+   {
+    "station_id": "valle-nevado:CL:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   },
+   {
+    "station_id": "whakapapa:NZ:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   }
+  ],
+  "qc": {
+   "station_horizons_valid": 69,
+   "station_horizons_voided": 0
+  },
+  "biggest_24h": {
+   "station_id": "coronet-peak:NZ:ERA5",
+   "resort": "Coronet Peak",
+   "inches": 2.0
+  },
+  "teams": {
+   "baseline-climatology": {
+    "n_scorable": 69,
+    "n_scored": 69,
+    "coverage": 1.0,
+    "mae": 0.3776,
+    "rmse": 0.8058,
+    "bias": -0.3237,
+    "mae_by_horizon": {
+     "24": 0.3271,
+     "48": 0.3894,
+     "72": 0.4163
+    },
+    "powder_score": 0.0,
+    "n_skill": 69,
+    "pinball": 0.148,
+    "n_pinball": 69,
+    "brier6": 0.0,
+    "n_brier6": 23,
+    "tracks": {
+     "region:Otago, NZ": {
+      "n_scorable": 12,
+      "n_scored": 12,
+      "coverage": 1.0,
+      "mae": 1.3825,
+      "powder_score": 0.0,
+      "bias": -1.3825
+     },
+     "region:Victorian Alps, AU": {
+      "n_scorable": 9,
+      "n_scored": 9,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": null,
+      "bias": 0.0
+     }
+    },
+    "late": false
+   },
+   "baseline-gfs": {
+    "n_scorable": 69,
+    "n_scored": 69,
+    "coverage": 1.0,
+    "mae": 0.6151,
+    "rmse": 1.4817,
+    "bias": 0.4785,
+    "mae_by_horizon": {
+     "24": 0.278,
+     "48": 0.7561,
+     "72": 0.8112
+    },
+    "powder_score": -62.89,
+    "n_skill": 69,
+    "pinball": null,
+    "brier6": null,
+    "tracks": {
+     "region:Otago, NZ": {
+      "n_scorable": 12,
+      "n_scored": 12,
+      "coverage": 1.0,
+      "mae": 0.9807,
+      "powder_score": 29.06,
+      "bias": 0.2321
+     },
+     "region:Victorian Alps, AU": {
+      "n_scorable": 9,
+      "n_scored": 9,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": null,
+      "bias": 0.0
+     }
+    },
+    "late": false
+   },
+   "baseline-openmeteo": {
+    "n_scorable": 69,
+    "n_scored": 69,
+    "coverage": 1.0,
+    "mae": 0.8355,
+    "rmse": 1.8736,
+    "bias": 0.5136,
+    "mae_by_horizon": {
+     "24": 0.3798,
+     "48": 1.0185,
+     "72": 1.1083
+    },
+    "powder_score": -121.27,
+    "n_skill": 69,
+    "pinball": null,
+    "brier6": null,
+    "tracks": {
+     "region:Otago, NZ": {
+      "n_scorable": 12,
+      "n_scored": 12,
+      "coverage": 1.0,
+      "mae": 1.2722,
+      "powder_score": 7.98,
+      "bias": -0.5606
+     },
+     "region:Victorian Alps, AU": {
+      "n_scorable": 9,
+      "n_scored": 9,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": null,
+      "bias": 0.0
+     }
+    },
+    "late": false
+   },
+   "baseline-persistence": {
+    "n_scorable": 69,
+    "n_scored": 69,
+    "coverage": 1.0,
+    "mae": 1.4375,
+    "rmse": 3.3173,
+    "bias": 0.7225,
+    "mae_by_horizon": {
+     "24": 0.8639,
+     "48": 1.4534,
+     "72": 1.995
+    },
+    "powder_score": -280.67,
+    "n_skill": 69,
+    "pinball": null,
+    "brier6": null,
+    "tracks": {
+     "region:Otago, NZ": {
+      "n_scorable": 12,
+      "n_scored": 12,
+      "coverage": 1.0,
+      "mae": 1.4285,
+      "powder_score": -3.33,
+      "bias": -1.4285
+     },
+     "region:Victorian Alps, AU": {
+      "n_scorable": 9,
+      "n_scored": 9,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": null,
+      "bias": 0.0
+     }
+    },
+    "late": false
+   },
+   "baseline-zeros": {
+    "n_scorable": 69,
+    "n_scored": 69,
+    "coverage": 1.0,
+    "mae": 0.3607,
+    "rmse": 0.8208,
+    "bias": -0.3607,
+    "mae_by_horizon": {
+     "24": 0.3271,
+     "48": 0.3774,
+     "72": 0.3774
+    },
+    "powder_score": 4.49,
+    "n_skill": 69,
+    "pinball": 0.1803,
+    "n_pinball": 69,
+    "brier6": 0.0,
+    "n_brier6": 23,
+    "tracks": {
+     "region:Otago, NZ": {
+      "n_scorable": 12,
+      "n_scored": 12,
+      "coverage": 1.0,
+      "mae": 1.4285,
+      "powder_score": -3.33,
+      "bias": -1.4285
+     },
+     "region:Victorian Alps, AU": {
+      "n_scorable": 9,
+      "n_scored": 9,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": null,
+      "bias": 0.0
+     }
+    },
+    "late": false
+   }
+  }
+ },
+ {
+  "round_id": "2026-10-16",
+  "league": "era5",
+  "resolved_utc": "2026-10-26T18:25:20+00:00",
+  "observations_72h": [
+   {
+    "station_id": "antillanca:CL:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   },
+   {
+    "station_id": "catedral:AR:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   },
+   {
+    "station_id": "chapelco:AR:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 2.37
+   },
+   {
+    "station_id": "portillo:CL:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   },
+   {
+    "station_id": "remarkables:NZ:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   },
+   {
+    "station_id": "thredbo:AU:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   },
+   {
+    "station_id": "turoa:NZ:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 3.94
+   },
+   {
+    "station_id": "valle-nevado:CL:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   },
+   {
+    "station_id": "whakapapa:NZ:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   }
+  ],
+  "qc": {
+   "station_horizons_valid": 69,
+   "station_horizons_voided": 0
+  },
+  "biggest_24h": {
+   "station_id": "mt-hutt:NZ:ERA5",
+   "resort": "Mt Hutt",
+   "inches": 1.0
+  },
+  "teams": {
+   "baseline-climatology": {
+    "n_scorable": 69,
+    "n_scored": 69,
+    "coverage": 1.0,
+    "mae": 0.0767,
+    "rmse": 0.2112,
+    "bias": -0.0208,
+    "mae_by_horizon": {
+     "24": 0.0503,
+     "48": 0.0654,
+     "72": 0.1144
+    },
+    "powder_score": 0.0,
+    "n_skill": 69,
+    "pinball": 0.0632,
+    "n_pinball": 69,
+    "brier6": 0.0,
+    "n_brier6": 23,
+    "tracks": {
+     "region:Otago, NZ": {
+      "n_scorable": 12,
+      "n_scored": 12,
+      "coverage": 1.0,
+      "mae": 0.0367,
+      "powder_score": 0.0,
+      "bias": 0.0276
+     },
+     "region:Victorian Alps, AU": {
+      "n_scorable": 9,
+      "n_scored": 9,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": null,
+      "bias": 0.0
+     }
+    },
+    "late": false
+   },
+   "baseline-gfs": {
+    "n_scorable": 69,
+    "n_scored": 69,
+    "coverage": 1.0,
+    "mae": 0.4593,
+    "rmse": 1.4819,
+    "bias": 0.4426,
+    "mae_by_horizon": {
+     "24": 0.405,
+     "48": 0.4793,
+     "72": 0.4937
+    },
+    "powder_score": -498.83,
+    "n_skill": 69,
+    "pinball": null,
+    "brier6": null,
+    "tracks": {
+     "region:Otago, NZ": {
+      "n_scorable": 12,
+      "n_scored": 12,
+      "coverage": 1.0,
+      "mae": 0.0278,
+      "powder_score": 24.39,
+      "bias": 0.0002
+     },
+     "region:Victorian Alps, AU": {
+      "n_scorable": 9,
+      "n_scored": 9,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": null,
+      "bias": 0.0
+     }
+    },
+    "late": false
+   },
+   "baseline-openmeteo": {
+    "n_scorable": 69,
+    "n_scored": 69,
+    "coverage": 1.0,
+    "mae": 0.5692,
+    "rmse": 1.4469,
+    "bias": 0.5636,
+    "mae_by_horizon": {
+     "24": 0.4961,
+     "48": 0.5512,
+     "72": 0.6602
+    },
+    "powder_score": -642.05,
+    "n_skill": 69,
+    "pinball": null,
+    "brier6": null,
+    "tracks": {
+     "region:Otago, NZ": {
+      "n_scorable": 12,
+      "n_scored": 12,
+      "coverage": 1.0,
+      "mae": 0.076,
+      "powder_score": -106.78,
+      "bias": 0.076
+     },
+     "region:Victorian Alps, AU": {
+      "n_scorable": 9,
+      "n_scored": 9,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": null,
+      "bias": 0.0
+     }
+    },
+    "late": false
+   },
+   "baseline-persistence": {
+    "n_scorable": 69,
+    "n_scored": 69,
+    "coverage": 1.0,
+    "mae": 0.5272,
+    "rmse": 1.2659,
+    "bias": 0.429,
+    "mae_by_horizon": {
+     "24": 0.29,
+     "48": 0.532,
+     "72": 0.7597
+    },
+    "powder_score": -587.32,
+    "n_skill": 69,
+    "pinball": null,
+    "brier6": null,
+    "tracks": {
+     "region:Otago, NZ": {
+      "n_scorable": 12,
+      "n_scored": 12,
+      "coverage": 1.0,
+      "mae": 0.0138,
+      "powder_score": 62.49,
+      "bias": -0.0138
+     },
+     "region:Victorian Alps, AU": {
+      "n_scorable": 9,
+      "n_scored": 9,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": null,
+      "bias": 0.0
+     }
+    },
+    "late": false
+   },
+   "baseline-zeros": {
+    "n_scorable": 69,
+    "n_scored": 69,
+    "coverage": 1.0,
+    "mae": 0.0551,
+    "rmse": 0.2044,
+    "bias": -0.0551,
+    "mae_by_horizon": {
+     "24": 0.0503,
+     "48": 0.0503,
+     "72": 0.0647
+    },
+    "powder_score": 28.14,
+    "n_skill": 69,
+    "pinball": 0.0276,
+    "n_pinball": 69,
+    "brier6": 0.0,
+    "n_brier6": 23,
+    "tracks": {
+     "region:Otago, NZ": {
+      "n_scorable": 12,
+      "n_scored": 12,
+      "coverage": 1.0,
+      "mae": 0.0138,
+      "powder_score": 62.49,
+      "bias": -0.0138
+     },
+     "region:Victorian Alps, AU": {
+      "n_scorable": 9,
+      "n_scored": 9,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": null,
+      "bias": 0.0
+     }
+    },
+    "late": false
+   }
+  }
+ },
+ {
+  "round_id": "2026-10-17",
+  "league": "era5",
+  "resolved_utc": "2026-10-26T18:27:36+00:00",
+  "observations_72h": [
+   {
+    "station_id": "antillanca:CL:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   },
+   {
+    "station_id": "catedral:AR:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   },
+   {
+    "station_id": "chapelco:AR:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 2.37
+   },
+   {
+    "station_id": "portillo:CL:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   },
+   {
+    "station_id": "remarkables:NZ:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   },
+   {
+    "station_id": "thredbo:AU:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   },
+   {
+    "station_id": "turoa:NZ:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 1.97
+   },
+   {
+    "station_id": "valle-nevado:CL:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.79
+   },
+   {
+    "station_id": "whakapapa:NZ:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   }
+  ],
+  "qc": {
+   "station_horizons_valid": 69,
+   "station_horizons_voided": 0
+  },
+  "biggest_24h": null,
+  "teams": {
+   "baseline-climatology": {
+    "n_scorable": 69,
+    "n_scored": 69,
+    "coverage": 1.0,
+    "mae": 0.04,
+    "rmse": 0.0957,
+    "bias": 0.0024,
+    "mae_by_horizon": {
+     "24": 0.0012,
+     "48": 0.018,
+     "72": 0.1007
+    },
+    "powder_score": 0.0,
+    "n_skill": 69,
+    "pinball": 0.0532,
+    "n_pinball": 69,
+    "brier6": 0.0,
+    "n_brier6": 23,
+    "tracks": {
+     "region:Otago, NZ": {
+      "n_scorable": 12,
+      "n_scored": 12,
+      "coverage": 1.0,
+      "mae": 0.0368,
+      "powder_score": 0.0,
+      "bias": 0.0368
+     },
+     "region:Victorian Alps, AU": {
+      "n_scorable": 9,
+      "n_scored": 9,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": null,
+      "bias": 0.0
+     }
+    },
+    "late": false
+   },
+   "baseline-gfs": {
+    "n_scorable": 69,
+    "n_scored": 69,
+    "coverage": 1.0,
+    "mae": 0.1254,
+    "rmse": 0.5641,
+    "bias": 0.0935,
+    "mae_by_horizon": {
+     "24": 0.0288,
+     "48": 0.0815,
+     "72": 0.266
+    },
+    "powder_score": -213.71,
+    "n_skill": 69,
+    "pinball": null,
+    "brier6": null,
+    "tracks": {
+     "region:Otago, NZ": {
+      "n_scorable": 12,
+      "n_scored": 12,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": 100.0,
+      "bias": 0.0
+     },
+     "region:Victorian Alps, AU": {
+      "n_scorable": 9,
+      "n_scored": 9,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": null,
+      "bias": 0.0
+     }
+    },
+    "late": false
+   },
+   "baseline-openmeteo": {
+    "n_scorable": 69,
+    "n_scored": 69,
+    "coverage": 1.0,
+    "mae": 0.1207,
+    "rmse": 0.4415,
+    "bias": 0.1151,
+    "mae_by_horizon": {
+     "24": 0.024,
+     "48": 0.0408,
+     "72": 0.2972
+    },
+    "powder_score": -201.78,
+    "n_skill": 69,
+    "pinball": null,
+    "brier6": null,
+    "tracks": {
+     "region:Otago, NZ": {
+      "n_scorable": 12,
+      "n_scored": 12,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": 100.0,
+      "bias": 0.0
+     },
+     "region:Victorian Alps, AU": {
+      "n_scorable": 9,
+      "n_scored": 9,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": null,
+      "bias": 0.0
+     }
+    },
+    "late": false
+   },
+   "baseline-persistence": {
+    "n_scorable": 69,
+    "n_scored": 69,
+    "coverage": 1.0,
+    "mae": 0.2185,
+    "rmse": 0.4628,
+    "bias": 0.2049,
+    "mae_by_horizon": {
+     "24": 0.1174,
+     "48": 0.2253,
+     "72": 0.3127
+    },
+    "powder_score": -446.34,
+    "n_skill": 69,
+    "pinball": null,
+    "brier6": null,
+    "tracks": {
+     "region:Otago, NZ": {
+      "n_scorable": 12,
+      "n_scored": 12,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": 100.0,
+      "bias": 0.0
+     },
+     "region:Victorian Alps, AU": {
+      "n_scorable": 9,
+      "n_scored": 9,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": null,
+      "bias": 0.0
+     }
+    },
+    "late": false
+   },
+   "baseline-zeros": {
+    "n_scorable": 69,
+    "n_scored": 69,
+    "coverage": 1.0,
+    "mae": 0.03,
+    "rmse": 0.1189,
+    "bias": -0.03,
+    "mae_by_horizon": {
+     "24": 0.0,
+     "48": 0.0144,
+     "72": 0.0755
+    },
+    "powder_score": 25.09,
+    "n_skill": 69,
+    "pinball": 0.015,
+    "n_pinball": 69,
+    "brier6": 0.0,
+    "n_brier6": 23,
+    "tracks": {
+     "region:Otago, NZ": {
+      "n_scorable": 12,
+      "n_scored": 12,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": 100.0,
+      "bias": 0.0
+     },
+     "region:Victorian Alps, AU": {
+      "n_scorable": 9,
+      "n_scored": 9,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": null,
+      "bias": 0.0
+     }
+    },
+    "late": false
+   }
+  }
+ },
+ {
+  "round_id": "2026-10-18",
+  "league": "era5",
+  "resolved_utc": "2026-10-26T18:27:42+00:00",
+  "observations_72h": [
+   {
+    "station_id": "antillanca:CL:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   },
+   {
+    "station_id": "catedral:AR:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   },
+   {
+    "station_id": "chapelco:AR:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 2.37
+   },
+   {
+    "station_id": "portillo:CL:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   },
+   {
+    "station_id": "remarkables:NZ:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   },
+   {
+    "station_id": "thredbo:AU:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   },
+   {
+    "station_id": "turoa:NZ:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   },
+   {
+    "station_id": "valle-nevado:CL:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 5.91
+   },
+   {
+    "station_id": "whakapapa:NZ:ERA5",
+    "feed": "resorts",
+    "snow24_obs_in": 0.0
+   }
+  ],
+  "qc": {
+   "station_horizons_valid": 58,
+   "station_horizons_voided": 11
+  },
+  "biggest_24h": {
+   "station_id": "valle-nevado:CL:ERA5",
+   "resort": "Valle Nevado / Tres Valles",
+   "inches": 0.2
+  },
+  "teams": {
+   "baseline-climatology": {
+    "n_scorable": 58,
+    "n_scored": 58,
+    "coverage": 1.0,
+    "mae": 0.0397,
+    "rmse": 0.1165,
+    "bias": -0.0221,
+    "mae_by_horizon": {
+     "24": 0.0132,
+     "48": 0.0701,
+     "72": 0.0322
+    },
+    "powder_score": 0.0,
+    "n_skill": 58,
+    "pinball": 0.0397,
+    "n_pinball": 58,
+    "brier6": 0.0,
+    "n_brier6": 23,
+    "tracks": {
+     "region:Otago, NZ": {
+      "n_scorable": 12,
+      "n_scored": 12,
+      "coverage": 1.0,
+      "mae": 0.0322,
+      "powder_score": 0.0,
+      "bias": 0.0322
+     },
+     "region:Victorian Alps, AU": {
+      "n_scorable": 9,
+      "n_scored": 9,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": null,
+      "bias": 0.0
+     }
+    },
+    "late": false
+   },
+   "baseline-gfs": {
+    "n_scorable": 58,
+    "n_scored": 58,
+    "coverage": 1.0,
+    "mae": 0.0513,
+    "rmse": 0.2652,
+    "bias": 0.0304,
+    "mae_by_horizon": {
+     "24": 0.018,
+     "48": 0.1114,
+     "72": 0.0
+    },
+    "powder_score": -29.4,
+    "n_skill": 58,
+    "pinball": null,
+    "brier6": null,
+    "tracks": {
+     "region:Otago, NZ": {
+      "n_scorable": 12,
+      "n_scored": 12,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": 100.0,
+      "bias": 0.0
+     },
+     "region:Victorian Alps, AU": {
+      "n_scorable": 9,
+      "n_scored": 9,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": null,
+      "bias": 0.0
+     }
+    },
+    "late": false
+   },
+   "baseline-openmeteo": {
+    "n_scorable": 58,
+    "n_scored": 58,
+    "coverage": 1.0,
+    "mae": 0.0884,
+    "rmse": 0.3517,
+    "bias": 0.0789,
+    "mae_by_horizon": {
+     "24": 0.0156,
+     "48": 0.2073,
+     "72": 0.0
+    },
+    "powder_score": -122.81,
+    "n_skill": 58,
+    "pinball": null,
+    "brier6": null,
+    "tracks": {
+     "region:Otago, NZ": {
+      "n_scorable": 12,
+      "n_scored": 12,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": 100.0,
+      "bias": 0.0
+     },
+     "region:Victorian Alps, AU": {
+      "n_scorable": 9,
+      "n_scored": 9,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": null,
+      "bias": 0.0
+     }
+    },
+    "late": false
+   },
+   "baseline-persistence": {
+    "n_scorable": 58,
+    "n_scored": 58,
+    "coverage": 1.0,
+    "mae": 0.0181,
+    "rmse": 0.0612,
+    "bias": -0.0057,
+    "mae_by_horizon": {
+     "24": 0.0108,
+     "48": 0.0347,
+     "72": 0.0
+    },
+    "powder_score": 54.49,
+    "n_skill": 58,
+    "pinball": null,
+    "brier6": null,
+    "tracks": {
+     "region:Otago, NZ": {
+      "n_scorable": 12,
+      "n_scored": 12,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": 100.0,
+      "bias": 0.0
+     },
+     "region:Victorian Alps, AU": {
+      "n_scorable": 9,
+      "n_scored": 9,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": null,
+      "bias": 0.0
+     }
+    },
+    "late": false
+   },
+   "baseline-zeros": {
+    "n_scorable": 58,
+    "n_scored": 58,
+    "coverage": 1.0,
+    "mae": 0.0356,
+    "rmse": 0.1297,
+    "bias": -0.0356,
+    "mae_by_horizon": {
+     "24": 0.0144,
+     "48": 0.0755,
+     "72": 0.0
+    },
+    "powder_score": 10.17,
+    "n_skill": 58,
+    "pinball": 0.0178,
+    "n_pinball": 58,
+    "brier6": 0.0,
+    "n_brier6": 23,
+    "tracks": {
+     "region:Otago, NZ": {
+      "n_scorable": 12,
+      "n_scored": 12,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": 100.0,
+      "bias": 0.0
+     },
+     "region:Victorian Alps, AU": {
+      "n_scorable": 9,
+      "n_scored": 9,
+      "coverage": 1.0,
+      "mae": 0.0,
+      "powder_score": null,
+      "bias": 0.0
+     }
+    },
     "late": false
    }
   }

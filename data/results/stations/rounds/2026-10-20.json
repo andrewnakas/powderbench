@@ -1,0 +1,335 @@
+{
+ "round_id": "2026-10-20",
+ "league": "stations",
+ "resolved_utc": "2026-10-26T18:13:27+00:00",
+ "observations_72h": null,
+ "qc": {
+  "station_horizons_valid": 135,
+  "station_horizons_voided": 0
+ },
+ "biggest_24h": {
+  "station_id": "1103:AK:SNTL",
+  "resort": "Alyeska",
+  "inches": 2.0
+ },
+ "teams": {
+  "baseline-climatology": {
+   "n_scorable": 135,
+   "n_scored": 135,
+   "coverage": 1.0,
+   "mae": 0.3148,
+   "rmse": 0.9516,
+   "bias": -0.2926,
+   "mae_by_horizon": {
+    "24": 0.0667,
+    "48": 0.2889,
+    "72": 0.5889
+   },
+   "powder_score": 0.0,
+   "n_skill": 135,
+   "pinball": 0.1583,
+   "n_pinball": 135,
+   "brier6": 0.0005,
+   "n_brier6": 45,
+   "tracks": {
+    "region:Cascades, WA": {
+     "n_scorable": 15,
+     "n_scored": 15,
+     "coverage": 1.0,
+     "mae": 0.6667,
+     "powder_score": 0.0,
+     "bias": -0.6667
+    },
+    "region:Central CO": {
+     "n_scorable": 9,
+     "n_scored": 9,
+     "coverage": 1.0,
+     "mae": 0.7778,
+     "powder_score": 0.0,
+     "bias": -0.7778
+    },
+    "region:Tahoe, CA": {
+     "n_scorable": 15,
+     "n_scored": 15,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Wasatch, UT": {
+     "n_scorable": 15,
+     "n_scored": 15,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    }
+   },
+   "late": true
+  },
+  "baseline-gfs": {
+   "n_scorable": 135,
+   "n_scored": 135,
+   "coverage": 1.0,
+   "mae": 0.2916,
+   "rmse": 0.8748,
+   "bias": -0.2157,
+   "mae_by_horizon": {
+    "24": 0.0611,
+    "48": 0.2845,
+    "72": 0.5292
+   },
+   "powder_score": 7.37,
+   "n_skill": 135,
+   "pinball": null,
+   "brier6": null,
+   "tracks": {
+    "region:Cascades, WA": {
+     "n_scorable": 15,
+     "n_scored": 15,
+     "coverage": 1.0,
+     "mae": 0.6667,
+     "powder_score": 0.0,
+     "bias": -0.6667
+    },
+    "region:Central CO": {
+     "n_scorable": 9,
+     "n_scored": 9,
+     "coverage": 1.0,
+     "mae": 0.7778,
+     "powder_score": 0.0,
+     "bias": -0.7778
+    },
+    "region:Tahoe, CA": {
+     "n_scorable": 15,
+     "n_scored": 15,
+     "coverage": 1.0,
+     "mae": 0.0772,
+     "powder_score": null,
+     "bias": 0.0772
+    },
+    "region:Wasatch, UT": {
+     "n_scorable": 15,
+     "n_scored": 15,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    }
+   },
+   "late": false
+  },
+  "baseline-openmeteo": {
+   "n_scorable": 135,
+   "n_scored": 135,
+   "coverage": 1.0,
+   "mae": 0.39,
+   "rmse": 0.9722,
+   "bias": -0.1712,
+   "mae_by_horizon": {
+    "24": 0.1554,
+    "48": 0.3789,
+    "72": 0.6358
+   },
+   "powder_score": -23.89,
+   "n_skill": 135,
+   "pinball": null,
+   "brier6": null,
+   "tracks": {
+    "region:Cascades, WA": {
+     "n_scorable": 15,
+     "n_scored": 15,
+     "coverage": 1.0,
+     "mae": 0.6667,
+     "powder_score": 0.0,
+     "bias": -0.6667
+    },
+    "region:Central CO": {
+     "n_scorable": 9,
+     "n_scored": 9,
+     "coverage": 1.0,
+     "mae": 0.7778,
+     "powder_score": 0.0,
+     "bias": -0.7778
+    },
+    "region:Tahoe, CA": {
+     "n_scorable": 15,
+     "n_scored": 15,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Wasatch, UT": {
+     "n_scorable": 15,
+     "n_scored": 15,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    }
+   },
+   "late": true
+  },
+  "baseline-persistence": {
+   "n_scorable": 135,
+   "n_scored": 135,
+   "coverage": 1.0,
+   "mae": 0.3926,
+   "rmse": 1.0506,
+   "bias": -0.2148,
+   "mae_by_horizon": {
+    "24": 0.1111,
+    "48": 0.3778,
+    "72": 0.6889
+   },
+   "powder_score": -24.71,
+   "n_skill": 135,
+   "pinball": null,
+   "brier6": null,
+   "tracks": {
+    "region:Cascades, WA": {
+     "n_scorable": 15,
+     "n_scored": 15,
+     "coverage": 1.0,
+     "mae": 1.0667,
+     "powder_score": -60.0,
+     "bias": -0.2667
+    },
+    "region:Central CO": {
+     "n_scorable": 9,
+     "n_scored": 9,
+     "coverage": 1.0,
+     "mae": 0.7778,
+     "powder_score": 0.0,
+     "bias": -0.7778
+    },
+    "region:Tahoe, CA": {
+     "n_scorable": 15,
+     "n_scored": 15,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Wasatch, UT": {
+     "n_scorable": 15,
+     "n_scored": 15,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    }
+   },
+   "late": true
+  },
+  "baseline-wpc": {
+   "n_scorable": 135,
+   "n_scored": 132,
+   "coverage": 0.9778,
+   "mae": 0.263,
+   "rmse": 0.8953,
+   "bias": -0.2578,
+   "mae_by_horizon": {
+    "24": 0.0277,
+    "48": 0.2493,
+    "72": 0.5118
+   },
+   "powder_score": 4.9,
+   "n_skill": 132,
+   "pinball": 0.1269,
+   "n_pinball": 132,
+   "brier6": 0.0,
+   "n_brier6": 44,
+   "tracks": {
+    "region:Cascades, WA": {
+     "n_scorable": 15,
+     "n_scored": 15,
+     "coverage": 1.0,
+     "mae": 0.6667,
+     "powder_score": 0.0,
+     "bias": -0.6667
+    },
+    "region:Central CO": {
+     "n_scorable": 9,
+     "n_scored": 9,
+     "coverage": 1.0,
+     "mae": 0.7778,
+     "powder_score": 0.0,
+     "bias": -0.7778
+    },
+    "region:Tahoe, CA": {
+     "n_scorable": 15,
+     "n_scored": 15,
+     "coverage": 1.0,
+     "mae": 0.004,
+     "powder_score": null,
+     "bias": 0.004
+    },
+    "region:Wasatch, UT": {
+     "n_scorable": 15,
+     "n_scored": 15,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    }
+   },
+   "late": true
+  },
+  "baseline-zeros": {
+   "n_scorable": 135,
+   "n_scored": 135,
+   "coverage": 1.0,
+   "mae": 0.3037,
+   "rmse": 0.9467,
+   "bias": -0.3037,
+   "mae_by_horizon": {
+    "24": 0.0667,
+    "48": 0.2889,
+    "72": 0.5556
+   },
+   "powder_score": 3.53,
+   "n_skill": 135,
+   "pinball": 0.1519,
+   "n_pinball": 135,
+   "brier6": 0.0,
+   "n_brier6": 45,
+   "tracks": {
+    "region:Cascades, WA": {
+     "n_scorable": 15,
+     "n_scored": 15,
+     "coverage": 1.0,
+     "mae": 0.6667,
+     "powder_score": 0.0,
+     "bias": -0.6667
+    },
+    "region:Central CO": {
+     "n_scorable": 9,
+     "n_scored": 9,
+     "coverage": 1.0,
+     "mae": 0.7778,
+     "powder_score": 0.0,
+     "bias": -0.7778
+    },
+    "region:Tahoe, CA": {
+     "n_scorable": 15,
+     "n_scored": 15,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Wasatch, UT": {
+     "n_scorable": 15,
+     "n_scored": 15,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    }
+   },
+   "late": true
+  }
+ }
+}

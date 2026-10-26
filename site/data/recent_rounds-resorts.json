@@ -1,747 +1,5 @@
 [
  {
-  "round_id": "2026-10-03",
-  "league": "resorts",
-  "resolved_utc": "2026-10-06T20:49:02+00:00",
-  "observations_72h": null,
-  "qc": {
-   "station_horizons_valid": 34,
-   "station_horizons_voided": 5
-  },
-  "biggest_24h": {
-   "station_id": "catedral:AR:RESORT",
-   "resort": "Catedral Alta Patagonia",
-   "inches": 3.9
-  },
-  "teams": {
-   "baseline-climatology": {
-    "n_scorable": 34,
-    "n_scored": 34,
-    "coverage": 1.0,
-    "mae": 2.4917,
-    "rmse": 7.5671,
-    "bias": -2.4494,
-    "mae_by_horizon": {
-     "24": 0.3942,
-     "48": 1.6097,
-     "72": 5.6618
-    },
-    "powder_score": -0.0,
-    "pinball": 1.1175,
-    "n_pinball": 34,
-    "brier6": 0.0,
-    "n_brier6": 12,
-    "late": false
-   },
-   "baseline-gfs": {
-    "n_scorable": 34,
-    "n_scored": 34,
-    "coverage": 1.0,
-    "mae": 1.9294,
-    "rmse": 6.0516,
-    "bias": -1.1432,
-    "mae_by_horizon": {
-     "24": 0.4371,
-     "48": 1.1791,
-     "72": 4.3078
-    },
-    "powder_score": 22.57,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-openmeteo": {
-    "n_scorable": 34,
-    "n_scored": 34,
-    "coverage": 1.0,
-    "mae": 3.4293,
-    "rmse": 7.4733,
-    "bias": 0.0936,
-    "mae_by_horizon": {
-     "24": 1.2019,
-     "48": 2.9185,
-     "72": 6.3698
-    },
-    "powder_score": -37.63,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-persistence": {
-    "n_scorable": 34,
-    "n_scored": 34,
-    "coverage": 1.0,
-    "mae": 4.5406,
-    "rmse": 10.9849,
-    "bias": 2.4071,
-    "mae_by_horizon": {
-     "24": 2.5917,
-     "48": 4.5109,
-     "72": 6.6964
-    },
-    "powder_score": -82.23,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-zeros": {
-    "n_scorable": 34,
-    "n_scored": 34,
-    "coverage": 1.0,
-    "mae": 2.5253,
-    "rmse": 7.6566,
-    "bias": -2.5253,
-    "mae_by_horizon": {
-     "24": 0.3942,
-     "48": 1.6473,
-     "72": 5.7282
-    },
-    "powder_score": -1.35,
-    "pinball": 1.2626,
-    "n_pinball": 34,
-    "brier6": 0.0,
-    "n_brier6": 12,
-    "late": false
-   }
-  }
- },
- {
-  "round_id": "2026-10-04",
-  "league": "resorts",
-  "resolved_utc": "2026-10-07T21:02:50+00:00",
-  "observations_72h": null,
-  "qc": {
-   "station_horizons_valid": 33,
-   "station_horizons_voided": 6
-  },
-  "biggest_24h": {
-   "station_id": "portillo:CL:RESORT",
-   "resort": "Ski Portillo",
-   "inches": 9.8
-  },
-  "teams": {
-   "baseline-climatology": {
-    "n_scorable": 33,
-    "n_scored": 33,
-    "coverage": 1.0,
-    "mae": 5.579,
-    "rmse": 15.5933,
-    "bias": -5.5038,
-    "mae_by_horizon": {
-     "24": 1.2173,
-     "48": 5.2832,
-     "72": 10.2365
-    },
-    "powder_score": -0.0,
-    "pinball": 2.6994,
-    "n_pinball": 33,
-    "brier6": 0.0902,
-    "n_brier6": 11,
-    "late": false
-   },
-   "baseline-gfs": {
-    "n_scorable": 33,
-    "n_scored": 33,
-    "coverage": 1.0,
-    "mae": 2.8334,
-    "rmse": 8.3829,
-    "bias": -2.2451,
-    "mae_by_horizon": {
-     "24": 0.9427,
-     "48": 2.8254,
-     "72": 4.7322
-    },
-    "powder_score": 49.21,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-openmeteo": {
-    "n_scorable": 33,
-    "n_scored": 33,
-    "coverage": 1.0,
-    "mae": 4.6884,
-    "rmse": 12.1648,
-    "bias": -3.7425,
-    "mae_by_horizon": {
-     "24": 1.2915,
-     "48": 4.8121,
-     "72": 7.9615
-    },
-    "powder_score": 15.96,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-persistence": {
-    "n_scorable": 33,
-    "n_scored": 33,
-    "coverage": 1.0,
-    "mae": 5.4403,
-    "rmse": 15.6801,
-    "bias": -5.4403,
-    "mae_by_horizon": {
-     "24": 1.1455,
-     "48": 5.1545,
-     "72": 10.0209
-    },
-    "powder_score": 2.49,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-zeros": {
-    "n_scorable": 33,
-    "n_scored": 33,
-    "coverage": 1.0,
-    "mae": 5.5839,
-    "rmse": 15.6886,
-    "bias": -5.5839,
-    "mae_by_horizon": {
-     "24": 1.2173,
-     "48": 5.2982,
-     "72": 10.2364
-    },
-    "powder_score": -0.09,
-    "pinball": 2.792,
-    "n_pinball": 33,
-    "brier6": 0.0909,
-    "n_brier6": 11,
-    "late": false
-   }
-  }
- },
- {
-  "round_id": "2026-10-05",
-  "league": "resorts",
-  "resolved_utc": "2026-10-08T21:04:00+00:00",
-  "observations_72h": null,
-  "qc": {
-   "station_horizons_valid": 33,
-   "station_horizons_voided": 6
-  },
-  "biggest_24h": {
-   "station_id": "portillo:CL:RESORT",
-   "resort": "Ski Portillo",
-   "inches": 29.1
-  },
-  "teams": {
-   "baseline-climatology": {
-    "n_scorable": 33,
-    "n_scored": 33,
-    "coverage": 1.0,
-    "mae": 8.5867,
-    "rmse": 21.4775,
-    "bias": -8.5081,
-    "mae_by_horizon": {
-     "24": 4.0809,
-     "48": 9.0066,
-     "72": 12.6725
-    },
-    "powder_score": -0.0,
-    "pinball": 4.2033,
-    "n_pinball": 33,
-    "brier6": 0.1797,
-    "n_brier6": 11,
-    "late": false
-   },
-   "baseline-gfs": {
-    "n_scorable": 33,
-    "n_scored": 33,
-    "coverage": 1.0,
-    "mae": 5.9178,
-    "rmse": 14.8096,
-    "bias": -5.232,
-    "mae_by_horizon": {
-     "24": 2.3171,
-     "48": 5.5375,
-     "72": 9.899
-    },
-    "powder_score": 31.08,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-openmeteo": {
-    "n_scorable": 33,
-    "n_scored": 33,
-    "coverage": 1.0,
-    "mae": 5.1011,
-    "rmse": 11.9447,
-    "bias": -4.4922,
-    "mae_by_horizon": {
-     "24": 3.5472,
-     "48": 5.0063,
-     "72": 6.7497
-    },
-    "powder_score": 40.59,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-persistence": {
-    "n_scorable": 33,
-    "n_scored": 33,
-    "coverage": 1.0,
-    "mae": 8.9482,
-    "rmse": 21.1882,
-    "bias": -7.5155,
-    "mae_by_horizon": {
-     "24": 4.26,
-     "48": 9.3773,
-     "72": 13.2073
-    },
-    "powder_score": -4.21,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-zeros": {
-    "n_scorable": 33,
-    "n_scored": 33,
-    "coverage": 1.0,
-    "mae": 8.59,
-    "rmse": 21.5726,
-    "bias": -8.59,
-    "mae_by_horizon": {
-     "24": 4.0809,
-     "48": 9.0191,
-     "72": 12.67
-    },
-    "powder_score": -0.04,
-    "pinball": 4.295,
-    "n_pinball": 33,
-    "brier6": 0.1818,
-    "n_brier6": 11,
-    "late": false
-   }
-  }
- },
- {
-  "round_id": "2026-10-06",
-  "league": "resorts",
-  "resolved_utc": "2026-10-09T20:35:27+00:00",
-  "observations_72h": null,
-  "qc": {
-   "station_horizons_valid": 32,
-   "station_horizons_voided": 7
-  },
-  "biggest_24h": {
-   "station_id": "valle-nevado:CL:RESORT",
-   "resort": "Valle Nevado / Tres Valles",
-   "inches": 30.3
-  },
-  "teams": {
-   "baseline-climatology": {
-    "n_scorable": 32,
-    "n_scored": 32,
-    "coverage": 1.0,
-    "mae": 6.8365,
-    "rmse": 18.2184,
-    "bias": -6.7478,
-    "mae_by_horizon": {
-     "24": 4.9382,
-     "48": 8.5791,
-     "72": 7.0079
-    },
-    "powder_score": 0.0,
-    "pinball": 3.3408,
-    "n_pinball": 32,
-    "brier6": 0.179,
-    "n_brier6": 11,
-    "late": false
-   },
-   "baseline-gfs": {
-    "n_scorable": 32,
-    "n_scored": 32,
-    "coverage": 1.0,
-    "mae": 5.3402,
-    "rmse": 14.5825,
-    "bias": -5.0698,
-    "mae_by_horizon": {
-     "24": 3.5243,
-     "48": 6.8888,
-     "72": 5.6342
-    },
-    "powder_score": 21.89,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-openmeteo": {
-    "n_scorable": 32,
-    "n_scored": 32,
-    "coverage": 1.0,
-    "mae": 4.2085,
-    "rmse": 11.5761,
-    "bias": -3.5867,
-    "mae_by_horizon": {
-     "24": 2.8428,
-     "48": 4.897,
-     "72": 4.9534
-    },
-    "powder_score": 38.44,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-persistence": {
-    "n_scorable": 32,
-    "n_scored": 32,
-    "coverage": 1.0,
-    "mae": 7.4181,
-    "rmse": 18.4752,
-    "bias": -5.9406,
-    "mae_by_horizon": {
-     "24": 5.2245,
-     "48": 9.1618,
-     "72": 7.913
-    },
-    "powder_score": -8.51,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-zeros": {
-    "n_scorable": 32,
-    "n_scored": 32,
-    "coverage": 1.0,
-    "mae": 6.8275,
-    "rmse": 18.2979,
-    "bias": -6.8275,
-    "mae_by_horizon": {
-     "24": 4.9382,
-     "48": 8.5891,
-     "72": 6.968
-    },
-    "powder_score": 0.13,
-    "pinball": 3.4138,
-    "n_pinball": 32,
-    "brier6": 0.1818,
-    "n_brier6": 11,
-    "late": false
-   }
-  }
- },
- {
-  "round_id": "2026-10-07",
-  "league": "resorts",
-  "resolved_utc": "2026-10-10T19:53:09+00:00",
-  "observations_72h": null,
-  "qc": {
-   "station_horizons_valid": 33,
-   "station_horizons_voided": 6
-  },
-  "biggest_24h": {
-   "station_id": "valle-nevado:CL:RESORT",
-   "resort": "Valle Nevado / Tres Valles",
-   "inches": 30.3
-  },
-  "teams": {
-   "baseline-climatology": {
-    "n_scorable": 33,
-    "n_scored": 33,
-    "coverage": 1.0,
-    "mae": 4.6514,
-    "rmse": 11.4327,
-    "bias": -4.5703,
-    "mae_by_horizon": {
-     "24": 3.6484,
-     "48": 5.1095,
-     "72": 5.1963
-    },
-    "powder_score": -0.0,
-    "pinball": 2.2322,
-    "n_pinball": 33,
-    "brier6": 0.178,
-    "n_brier6": 11,
-    "late": false
-   },
-   "baseline-gfs": {
-    "n_scorable": 33,
-    "n_scored": 33,
-    "coverage": 1.0,
-    "mae": 3.2608,
-    "rmse": 8.1701,
-    "bias": -3.2508,
-    "mae_by_horizon": {
-     "24": 2.5911,
-     "48": 3.5798,
-     "72": 3.6116
-    },
-    "powder_score": 29.9,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-openmeteo": {
-    "n_scorable": 33,
-    "n_scored": 33,
-    "coverage": 1.0,
-    "mae": 2.7515,
-    "rmse": 7.3909,
-    "bias": -2.693,
-    "mae_by_horizon": {
-     "24": 2.0775,
-     "48": 3.2091,
-     "72": 2.9677
-    },
-    "powder_score": 40.85,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-persistence": {
-    "n_scorable": 33,
-    "n_scored": 33,
-    "coverage": 1.0,
-    "mae": 3.0997,
-    "rmse": 9.0763,
-    "bias": -2.2185,
-    "mae_by_horizon": {
-     "24": 2.5755,
-     "48": 3.04,
-     "72": 3.6836
-    },
-    "powder_score": 33.36,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-zeros": {
-    "n_scorable": 33,
-    "n_scored": 33,
-    "coverage": 1.0,
-    "mae": 4.653,
-    "rmse": 11.5148,
-    "bias": -4.653,
-    "mae_by_horizon": {
-     "24": 3.6509,
-     "48": 5.1182,
-     "72": 5.19
-    },
-    "powder_score": -0.04,
-    "pinball": 2.3265,
-    "n_pinball": 33,
-    "brier6": 0.1818,
-    "n_brier6": 11,
-    "late": false
-   }
-  }
- },
- {
-  "round_id": "2026-10-08",
-  "league": "resorts",
-  "resolved_utc": "2026-10-11T19:59:12+00:00",
-  "observations_72h": null,
-  "qc": {
-   "station_horizons_valid": 33,
-   "station_horizons_voided": 6
-  },
-  "biggest_24h": {
-   "station_id": "portillo:CL:RESORT",
-   "resort": "Ski Portillo",
-   "inches": 8.7
-  },
-  "teams": {
-   "baseline-climatology": {
-    "n_scorable": 33,
-    "n_scored": 33,
-    "coverage": 1.0,
-    "mae": 1.5358,
-    "rmse": 3.2684,
-    "bias": -1.4606,
-    "mae_by_horizon": {
-     "24": 1.4647,
-     "48": 1.5292,
-     "72": 1.6135
-    },
-    "powder_score": -0.0,
-    "pinball": 0.6777,
-    "n_pinball": 33,
-    "brier6": 0.1787,
-    "n_brier6": 11,
-    "late": false
-   },
-   "baseline-gfs": {
-    "n_scorable": 33,
-    "n_scored": 33,
-    "coverage": 1.0,
-    "mae": 0.8302,
-    "rmse": 2.2711,
-    "bias": -0.6313,
-    "mae_by_horizon": {
-     "24": 0.7511,
-     "48": 0.8263,
-     "72": 0.9131
-    },
-    "powder_score": 45.94,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-openmeteo": {
-    "n_scorable": 33,
-    "n_scored": 33,
-    "coverage": 1.0,
-    "mae": 0.557,
-    "rmse": 1.2515,
-    "bias": -0.5519,
-    "mae_by_horizon": {
-     "24": 0.8009,
-     "48": 0.4567,
-     "72": 0.4134
-    },
-    "powder_score": 63.73,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-persistence": {
-    "n_scorable": 33,
-    "n_scored": 33,
-    "coverage": 1.0,
-    "mae": 6.6227,
-    "rmse": 18.3825,
-    "bias": 6.6227,
-    "mae_by_horizon": {
-     "24": 2.6136,
-     "48": 6.6227,
-     "72": 10.6318
-    },
-    "powder_score": -331.22,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-zeros": {
-    "n_scorable": 33,
-    "n_scored": 33,
-    "coverage": 1.0,
-    "mae": 1.5391,
-    "rmse": 3.3394,
-    "bias": -1.5391,
-    "mae_by_horizon": {
-     "24": 1.4673,
-     "48": 1.5391,
-     "72": 1.6109
-    },
-    "powder_score": -0.22,
-    "pinball": 0.7695,
-    "n_pinball": 33,
-    "brier6": 0.1818,
-    "n_brier6": 11,
-    "late": false
-   }
-  }
- },
- {
-  "round_id": "2026-10-09",
-  "league": "resorts",
-  "resolved_utc": "2026-10-12T22:45:18+00:00",
-  "observations_72h": null,
-  "qc": {
-   "station_horizons_valid": 32,
-   "station_horizons_voided": 7
-  },
-  "biggest_24h": {
-   "station_id": "chapelco:AR:RESORT",
-   "resort": "Chapelco",
-   "inches": 0.8
-  },
-  "teams": {
-   "baseline-climatology": {
-    "n_scorable": 32,
-    "n_scored": 32,
-    "coverage": 1.0,
-    "mae": 0.1938,
-    "rmse": 0.4901,
-    "bias": -0.0801,
-    "mae_by_horizon": {
-     "24": 0.0718,
-     "48": 0.1787,
-     "72": 0.3445
-    },
-    "powder_score": -0.01,
-    "pinball": 0.0956,
-    "n_pinball": 32,
-    "brier6": 0.0001,
-    "n_brier6": 11,
-    "late": false
-   },
-   "baseline-gfs": {
-    "n_scorable": 32,
-    "n_scored": 32,
-    "coverage": 1.0,
-    "mae": 0.8466,
-    "rmse": 1.939,
-    "bias": 0.6227,
-    "mae_by_horizon": {
-     "24": 0.6155,
-     "48": 0.8101,
-     "72": 1.1409
-    },
-    "powder_score": -336.88,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-openmeteo": {
-    "n_scorable": 32,
-    "n_scored": 32,
-    "coverage": 1.0,
-    "mae": 0.5589,
-    "rmse": 1.323,
-    "bias": 0.3092,
-    "mae_by_horizon": {
-     "24": 0.3575,
-     "48": 0.5595,
-     "72": 0.7799
-    },
-    "powder_score": -188.42,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-persistence": {
-    "n_scorable": 32,
-    "n_scored": 32,
-    "coverage": 1.0,
-    "mae": 10.0369,
-    "rmse": 25.255,
-    "bias": 10.0369,
-    "mae_by_horizon": {
-     "24": 4.8664,
-     "48": 9.7327,
-     "72": 16.059
-    },
-    "powder_score": -5079.5,
-    "pinball": null,
-    "brier6": null,
-    "late": false
-   },
-   "baseline-zeros": {
-    "n_scorable": 32,
-    "n_scored": 32,
-    "coverage": 1.0,
-    "mae": 0.1481,
-    "rmse": 0.5225,
-    "bias": -0.1481,
-    "mae_by_horizon": {
-     "24": 0.0718,
-     "48": 0.1436,
-     "72": 0.237
-    },
-    "powder_score": 23.57,
-    "pinball": 0.0741,
-    "n_pinball": 32,
-    "brier6": 0.0,
-    "n_brier6": 11,
-    "late": false
-   }
-  }
- },
- {
   "round_id": "2026-10-10",
   "league": "resorts",
   "resolved_utc": "2026-10-13T21:03:27+00:00",
@@ -1477,6 +735,999 @@
     "powder_score": 7.69,
     "pinball": 0.2432,
     "n_pinball": 30,
+    "brier6": 0.0,
+    "n_brier6": 10,
+    "late": false
+   }
+  }
+ },
+ {
+  "round_id": "2026-10-17",
+  "league": "resorts",
+  "resolved_utc": "2026-10-26T18:27:43+00:00",
+  "observations_72h": null,
+  "qc": {
+   "station_horizons_valid": 30,
+   "station_horizons_voided": 9
+  },
+  "biggest_24h": {
+   "station_id": "turoa:NZ:RESORT",
+   "resort": "T\u016broa / Ruapehu",
+   "inches": 2.0
+  },
+  "teams": {
+   "baseline-climatology": {
+    "n_scorable": 30,
+    "n_scored": 30,
+    "coverage": 1.0,
+    "mae": 0.4016,
+    "rmse": 0.8238,
+    "bias": -0.3335,
+    "mae_by_horizon": {
+     "24": 0.2788,
+     "48": 0.3867,
+     "72": 0.5392
+    },
+    "powder_score": 0.0,
+    "n_skill": 30,
+    "pinball": 0.1856,
+    "n_pinball": 30,
+    "brier6": 0.0,
+    "n_brier6": 10,
+    "late": false
+   },
+   "baseline-gfs": {
+    "n_scorable": 30,
+    "n_scored": 30,
+    "coverage": 1.0,
+    "mae": 0.5446,
+    "rmse": 1.1243,
+    "bias": -0.0992,
+    "mae_by_horizon": {
+     "24": 0.276,
+     "48": 0.4873,
+     "72": 0.8704
+    },
+    "powder_score": -35.61,
+    "n_skill": 30,
+    "pinball": null,
+    "brier6": null,
+    "late": false
+   },
+   "baseline-openmeteo": {
+    "n_scorable": 30,
+    "n_scored": 30,
+    "coverage": 1.0,
+    "mae": 0.5032,
+    "rmse": 0.9455,
+    "bias": -0.1516,
+    "mae_by_horizon": {
+     "24": 0.276,
+     "48": 0.4019,
+     "72": 0.8318
+    },
+    "powder_score": -25.32,
+    "n_skill": 30,
+    "pinball": null,
+    "brier6": null,
+    "late": false
+   },
+   "baseline-persistence": {
+    "n_scorable": 30,
+    "n_scored": 30,
+    "coverage": 1.0,
+    "mae": 0.2233,
+    "rmse": 0.8171,
+    "bias": 0.1707,
+    "mae_by_horizon": {
+     "24": 0.0,
+     "48": 0.197,
+     "72": 0.473
+    },
+    "powder_score": 44.38,
+    "n_skill": 30,
+    "pinball": null,
+    "brier6": null,
+    "late": false
+   },
+   "baseline-zeros": {
+    "n_scorable": 30,
+    "n_scored": 30,
+    "coverage": 1.0,
+    "mae": 0.3813,
+    "rmse": 0.8367,
+    "bias": -0.3813,
+    "mae_by_horizon": {
+     "24": 0.276,
+     "48": 0.355,
+     "72": 0.513
+    },
+    "powder_score": 5.04,
+    "n_skill": 30,
+    "pinball": 0.1907,
+    "n_pinball": 30,
+    "brier6": 0.0,
+    "n_brier6": 10,
+    "late": false
+   }
+  }
+ },
+ {
+  "round_id": "2026-10-18",
+  "league": "resorts",
+  "resolved_utc": "2026-10-26T18:27:44+00:00",
+  "observations_72h": null,
+  "qc": {
+   "station_horizons_valid": 30,
+   "station_horizons_voided": 9
+  },
+  "biggest_24h": {
+   "station_id": "chapelco:AR:RESORT",
+   "resort": "Chapelco",
+   "inches": 0.8
+  },
+  "teams": {
+   "baseline-climatology": {
+    "n_scorable": 30,
+    "n_scored": 30,
+    "coverage": 1.0,
+    "mae": 0.3906,
+    "rmse": 1.1545,
+    "bias": -0.3345,
+    "mae_by_horizon": {
+     "24": 0.0818,
+     "48": 0.2329,
+     "72": 0.857
+    },
+    "powder_score": 0.0,
+    "n_skill": 30,
+    "pinball": 0.1633,
+    "n_pinball": 30,
+    "brier6": 0.0,
+    "n_brier6": 10,
+    "late": false
+   },
+   "baseline-gfs": {
+    "n_scorable": 30,
+    "n_scored": 30,
+    "coverage": 1.0,
+    "mae": 0.3443,
+    "rmse": 0.8752,
+    "bias": -0.1875,
+    "mae_by_horizon": {
+     "24": 0.1259,
+     "48": 0.3463,
+     "72": 0.5607
+    },
+    "powder_score": 11.85,
+    "n_skill": 30,
+    "pinball": null,
+    "brier6": null,
+    "late": false
+   },
+   "baseline-openmeteo": {
+    "n_scorable": 30,
+    "n_scored": 30,
+    "coverage": 1.0,
+    "mae": 0.4206,
+    "rmse": 0.8852,
+    "bias": 0.0045,
+    "mae_by_horizon": {
+     "24": 0.1259,
+     "48": 0.5034,
+     "72": 0.6324
+    },
+    "powder_score": -7.68,
+    "n_skill": 30,
+    "pinball": null,
+    "brier6": null,
+    "late": false
+   },
+   "baseline-persistence": {
+    "n_scorable": 30,
+    "n_scored": 30,
+    "coverage": 1.0,
+    "mae": 0.6173,
+    "rmse": 1.7309,
+    "bias": 0.1707,
+    "mae_by_horizon": {
+     "24": 0.197,
+     "48": 0.473,
+     "72": 1.182
+    },
+    "powder_score": -58.06,
+    "n_skill": 30,
+    "pinball": null,
+    "brier6": null,
+    "late": false
+   },
+   "baseline-zeros": {
+    "n_scorable": 30,
+    "n_scored": 30,
+    "coverage": 1.0,
+    "mae": 0.3813,
+    "rmse": 1.215,
+    "bias": -0.3813,
+    "mae_by_horizon": {
+     "24": 0.079,
+     "48": 0.237,
+     "72": 0.828
+    },
+    "powder_score": 2.36,
+    "n_skill": 30,
+    "pinball": 0.1907,
+    "n_pinball": 30,
+    "brier6": 0.0,
+    "n_brier6": 10,
+    "late": false
+   }
+  }
+ },
+ {
+  "round_id": "2026-10-19",
+  "league": "resorts",
+  "resolved_utc": "2026-10-26T18:27:45+00:00",
+  "observations_72h": null,
+  "qc": {
+   "station_horizons_valid": 30,
+   "station_horizons_voided": 9
+  },
+  "biggest_24h": {
+   "station_id": "chapelco:AR:RESORT",
+   "resort": "Chapelco",
+   "inches": 0.8
+  },
+  "teams": {
+   "baseline-climatology": {
+    "n_scorable": 30,
+    "n_scored": 30,
+    "coverage": 1.0,
+    "mae": 0.7161,
+    "rmse": 2.1,
+    "bias": -0.6628,
+    "mae_by_horizon": {
+     "24": 0.1552,
+     "48": 0.7436,
+     "72": 1.2496
+    },
+    "powder_score": 0.0,
+    "n_skill": 30,
+    "pinball": 0.3136,
+    "n_pinball": 30,
+    "brier6": 0.0,
+    "n_brier6": 10,
+    "late": false
+   },
+   "baseline-gfs": {
+    "n_scorable": 30,
+    "n_scored": 30,
+    "coverage": 1.0,
+    "mae": 0.6249,
+    "rmse": 1.9271,
+    "bias": -0.6095,
+    "mae_by_horizon": {
+     "24": 0.0827,
+     "48": 0.6498,
+     "72": 1.1421
+    },
+    "powder_score": 12.74,
+    "n_skill": 30,
+    "pinball": null,
+    "brier6": null,
+    "late": false
+   },
+   "baseline-openmeteo": {
+    "n_scorable": 30,
+    "n_scored": 30,
+    "coverage": 1.0,
+    "mae": 0.8986,
+    "rmse": 1.9257,
+    "bias": 0.0482,
+    "mae_by_horizon": {
+     "24": 0.441,
+     "48": 0.8786,
+     "72": 1.3763
+    },
+    "powder_score": -25.48,
+    "n_skill": 30,
+    "pinball": null,
+    "brier6": null,
+    "late": false
+   },
+   "baseline-persistence": {
+    "n_scorable": 30,
+    "n_scored": 30,
+    "coverage": 1.0,
+    "mae": 0.9457,
+    "rmse": 2.496,
+    "bias": -0.1577,
+    "mae_by_horizon": {
+     "24": 0.276,
+     "48": 0.985,
+     "72": 1.576
+    },
+    "powder_score": -32.05,
+    "n_skill": 30,
+    "pinball": null,
+    "brier6": null,
+    "late": false
+   },
+   "baseline-zeros": {
+    "n_scorable": 30,
+    "n_scored": 30,
+    "coverage": 1.0,
+    "mae": 0.7097,
+    "rmse": 2.1703,
+    "bias": -0.7097,
+    "mae_by_horizon": {
+     "24": 0.158,
+     "48": 0.749,
+     "72": 1.222
+    },
+    "powder_score": 0.9,
+    "n_skill": 30,
+    "pinball": 0.3548,
+    "n_pinball": 30,
+    "brier6": 0.0,
+    "n_brier6": 10,
+    "late": false
+   }
+  }
+ },
+ {
+  "round_id": "2026-10-20",
+  "league": "resorts",
+  "resolved_utc": "2026-10-26T18:27:45+00:00",
+  "observations_72h": null,
+  "qc": {
+   "station_horizons_valid": 30,
+   "station_horizons_voided": 9
+  },
+  "biggest_24h": {
+   "station_id": "valle-nevado:CL:RESORT",
+   "resort": "Valle Nevado / Tres Valles",
+   "inches": 5.1
+  },
+  "teams": {
+   "baseline-climatology": {
+    "n_scorable": 30,
+    "n_scored": 30,
+    "coverage": 1.0,
+    "mae": 0.9757,
+    "rmse": 2.6508,
+    "bias": -0.9261,
+    "mae_by_horizon": {
+     "24": 0.5882,
+     "48": 1.0558,
+     "72": 1.283
+    },
+    "powder_score": 0.0,
+    "n_skill": 30,
+    "pinball": 0.4447,
+    "n_pinball": 30,
+    "brier6": 0.0,
+    "n_brier6": 10,
+    "late": false
+   },
+   "baseline-gfs": {
+    "n_scorable": 30,
+    "n_scored": 30,
+    "coverage": 1.0,
+    "mae": 0.8499,
+    "rmse": 2.3519,
+    "bias": -0.8461,
+    "mae_by_horizon": {
+     "24": 0.467,
+     "48": 0.9428,
+     "72": 1.1398
+    },
+    "powder_score": 12.89,
+    "n_skill": 30,
+    "pinball": null,
+    "brier6": null,
+    "late": false
+   },
+   "baseline-openmeteo": {
+    "n_scorable": 30,
+    "n_scored": 30,
+    "coverage": 1.0,
+    "mae": 1.0078,
+    "rmse": 2.2872,
+    "bias": -0.5889,
+    "mae_by_horizon": {
+     "24": 0.6461,
+     "48": 1.097,
+     "72": 1.2803
+    },
+    "powder_score": -3.29,
+    "n_skill": 30,
+    "pinball": null,
+    "brier6": null,
+    "late": false
+   },
+   "baseline-persistence": {
+    "n_scorable": 30,
+    "n_scored": 30,
+    "coverage": 1.0,
+    "mae": 0.814,
+    "rmse": 2.6656,
+    "bias": -0.814,
+    "mae_by_horizon": {
+     "24": 0.512,
+     "48": 0.906,
+     "72": 1.024
+    },
+    "powder_score": 16.57,
+    "n_skill": 30,
+    "pinball": null,
+    "brier6": null,
+    "late": false
+   },
+   "baseline-zeros": {
+    "n_scorable": 30,
+    "n_scored": 30,
+    "coverage": 1.0,
+    "mae": 0.972,
+    "rmse": 2.7196,
+    "bias": -0.972,
+    "mae_by_horizon": {
+     "24": 0.591,
+     "48": 1.064,
+     "72": 1.261
+    },
+    "powder_score": 0.38,
+    "n_skill": 30,
+    "pinball": 0.486,
+    "n_pinball": 30,
+    "brier6": 0.0,
+    "n_brier6": 10,
+    "late": false
+   }
+  }
+ },
+ {
+  "round_id": "2026-10-21",
+  "league": "resorts",
+  "resolved_utc": "2026-10-26T18:27:46+00:00",
+  "observations_72h": null,
+  "qc": {
+   "station_horizons_valid": 30,
+   "station_horizons_voided": 9
+  },
+  "biggest_24h": {
+   "station_id": "valle-nevado:CL:RESORT",
+   "resort": "Valle Nevado / Tres Valles",
+   "inches": 3.9
+  },
+  "teams": {
+   "baseline-climatology": {
+    "n_scorable": 30,
+    "n_scored": 30,
+    "coverage": 1.0,
+    "mae": 0.6321,
+    "rmse": 1.5367,
+    "bias": -0.587,
+    "mae_by_horizon": {
+     "24": 0.4702,
+     "48": 0.6618,
+     "72": 0.7642
+    },
+    "powder_score": 0.0,
+    "n_skill": 30,
+    "pinball": 0.2747,
+    "n_pinball": 30,
+    "brier6": 0.0,
+    "n_brier6": 10,
+    "late": true
+   },
+   "baseline-gfs": {
+    "n_scorable": 30,
+    "n_scored": 30,
+    "coverage": 1.0,
+    "mae": 0.627,
+    "rmse": 1.5366,
+    "bias": -0.592,
+    "mae_by_horizon": {
+     "24": 0.4703,
+     "48": 0.6673,
+     "72": 0.7435
+    },
+    "powder_score": 0.8,
+    "n_skill": 30,
+    "pinball": null,
+    "brier6": null,
+    "late": false
+   },
+   "baseline-openmeteo": {
+    "n_scorable": 30,
+    "n_scored": 30,
+    "coverage": 1.0,
+    "mae": 0.5609,
+    "rmse": 1.3984,
+    "bias": -0.4983,
+    "mae_by_horizon": {
+     "24": 0.4785,
+     "48": 0.659,
+     "72": 0.5451
+    },
+    "powder_score": 11.26,
+    "n_skill": 30,
+    "pinball": null,
+    "brier6": null,
+    "late": false
+   },
+   "baseline-persistence": {
+    "n_scorable": 30,
+    "n_scored": 30,
+    "coverage": 1.0,
+    "mae": 0.4727,
+    "rmse": 1.505,
+    "bias": -0.4727,
+    "mae_by_horizon": {
+     "24": 0.394,
+     "48": 0.512,
+     "72": 0.512
+    },
+    "powder_score": 25.22,
+    "n_skill": 30,
+    "pinball": null,
+    "brier6": null,
+    "late": false
+   },
+   "baseline-zeros": {
+    "n_scorable": 30,
+    "n_scored": 30,
+    "coverage": 1.0,
+    "mae": 0.6307,
+    "rmse": 1.5989,
+    "bias": -0.6307,
+    "mae_by_horizon": {
+     "24": 0.473,
+     "48": 0.67,
+     "72": 0.749
+    },
+    "powder_score": 0.22,
+    "n_skill": 30,
+    "pinball": 0.3153,
+    "n_pinball": 30,
+    "brier6": 0.0,
+    "n_brier6": 10,
+    "late": false
+   }
+  }
+ },
+ {
+  "round_id": "2026-10-22",
+  "league": "resorts",
+  "resolved_utc": "2026-10-26T18:27:48+00:00",
+  "observations_72h": null,
+  "qc": {
+   "station_horizons_valid": 30,
+   "station_horizons_voided": 9
+  },
+  "biggest_24h": {
+   "station_id": "valle-nevado:CL:RESORT",
+   "resort": "Valle Nevado / Tres Valles",
+   "inches": 1.2
+  },
+  "teams": {
+   "baseline-aifs": {
+    "n_scorable": 30,
+    "n_scored": 30,
+    "coverage": 1.0,
+    "mae": 0.3017,
+    "rmse": 0.6458,
+    "bias": -0.2282,
+    "mae_by_horizon": {
+     "24": 0.2053,
+     "48": 0.3201,
+     "72": 0.3798
+    },
+    "powder_score": -9.69,
+    "n_skill": 30,
+    "pinball": null,
+    "brier6": null,
+    "late": false
+   },
+   "baseline-climatology": {
+    "n_scorable": 30,
+    "n_scored": 30,
+    "coverage": 1.0,
+    "mae": 0.2751,
+    "rmse": 0.6239,
+    "bias": -0.2365,
+    "mae_by_horizon": {
+     "24": 0.1942,
+     "48": 0.265,
+     "72": 0.366
+    },
+    "powder_score": 0.0,
+    "n_skill": 30,
+    "pinball": 0.1083,
+    "n_pinball": 30,
+    "brier6": 0.0001,
+    "n_brier6": 10,
+    "late": true
+   },
+   "baseline-consensus": {
+    "n_scorable": 30,
+    "n_scored": 30,
+    "coverage": 1.0,
+    "mae": 0.2512,
+    "rmse": 0.5948,
+    "bias": -0.1924,
+    "mae_by_horizon": {
+     "24": 0.1942,
+     "48": 0.2622,
+     "72": 0.2971
+    },
+    "powder_score": 8.69,
+    "n_skill": 30,
+    "pinball": null,
+    "brier6": null,
+    "late": false
+   },
+   "baseline-ecmwf": {
+    "n_scorable": 30,
+    "n_scored": 30,
+    "coverage": 1.0,
+    "mae": 0.3425,
+    "rmse": 0.7483,
+    "bias": -0.017,
+    "mae_by_horizon": {
+     "24": 0.1805,
+     "48": 0.3201,
+     "72": 0.5269
+    },
+    "powder_score": -24.52,
+    "n_skill": 30,
+    "pinball": null,
+    "brier6": null,
+    "late": false
+   },
+   "baseline-gem": {
+    "n_scorable": 30,
+    "n_scored": 30,
+    "coverage": 1.0,
+    "mae": 0.2787,
+    "rmse": 0.652,
+    "bias": -0.2677,
+    "mae_by_horizon": {
+     "24": 0.197,
+     "48": 0.276,
+     "72": 0.3632
+    },
+    "powder_score": -1.33,
+    "n_skill": 30,
+    "pinball": null,
+    "brier6": null,
+    "late": false
+   },
+   "baseline-gfs": {
+    "n_scorable": 30,
+    "n_scored": 30,
+    "coverage": 1.0,
+    "mae": 0.2377,
+    "rmse": 0.5568,
+    "bias": -0.1749,
+    "mae_by_horizon": {
+     "24": 0.197,
+     "48": 0.2236,
+     "72": 0.2926
+    },
+    "powder_score": 13.57,
+    "n_skill": 30,
+    "pinball": null,
+    "brier6": null,
+    "late": false
+   },
+   "baseline-icon": {
+    "n_scorable": 30,
+    "n_scored": 30,
+    "coverage": 1.0,
+    "mae": 0.2466,
+    "rmse": 0.6078,
+    "bias": -0.241,
+    "mae_by_horizon": {
+     "24": 0.1942,
+     "48": 0.2291,
+     "72": 0.3164
+    },
+    "powder_score": 10.36,
+    "n_skill": 30,
+    "pinball": null,
+    "brier6": null,
+    "late": false
+   },
+   "baseline-openmeteo": {
+    "n_scorable": 30,
+    "n_scored": 30,
+    "coverage": 1.0,
+    "mae": 0.3324,
+    "rmse": 0.7454,
+    "bias": -0.0436,
+    "mae_by_horizon": {
+     "24": 0.175,
+     "48": 0.2236,
+     "72": 0.5985
+    },
+    "powder_score": -20.83,
+    "n_skill": 30,
+    "pinball": null,
+    "brier6": null,
+    "late": false
+   },
+   "baseline-persistence": {
+    "n_scorable": 30,
+    "n_scored": 30,
+    "coverage": 1.0,
+    "mae": 0.066,
+    "rmse": 0.24,
+    "bias": 0.04,
+    "mae_by_horizon": {
+     "24": 0.039,
+     "48": 0.04,
+     "72": 0.119
+    },
+    "powder_score": 76.01,
+    "n_skill": 30,
+    "pinball": null,
+    "brier6": null,
+    "late": false
+   },
+   "baseline-ukmo": {
+    "n_scorable": 30,
+    "n_scored": 30,
+    "coverage": 1.0,
+    "mae": 0.3146,
+    "rmse": 0.7609,
+    "bias": -0.0666,
+    "mae_by_horizon": {
+     "24": 0.1859,
+     "48": 0.2319,
+     "72": 0.5259
+    },
+    "powder_score": -14.36,
+    "n_skill": 30,
+    "pinball": null,
+    "brier6": null,
+    "late": false
+   },
+   "baseline-zeros": {
+    "n_scorable": 30,
+    "n_scored": 30,
+    "coverage": 1.0,
+    "mae": 0.276,
+    "rmse": 0.6561,
+    "bias": -0.276,
+    "mae_by_horizon": {
+     "24": 0.197,
+     "48": 0.276,
+     "72": 0.355
+    },
+    "powder_score": -0.34,
+    "n_skill": 30,
+    "pinball": 0.138,
+    "n_pinball": 30,
+    "brier6": 0.0,
+    "n_brier6": 10,
+    "late": false
+   }
+  }
+ },
+ {
+  "round_id": "2026-10-23",
+  "league": "resorts",
+  "resolved_utc": "2026-10-26T18:27:50+00:00",
+  "observations_72h": null,
+  "qc": {
+   "station_horizons_valid": 24,
+   "station_horizons_voided": 15
+  },
+  "biggest_24h": {
+   "station_id": "chapelco:AR:RESORT",
+   "resort": "Chapelco",
+   "inches": 0.8
+  },
+  "teams": {
+   "baseline-aifs": {
+    "n_scorable": 24,
+    "n_scored": 24,
+    "coverage": 1.0,
+    "mae": 0.1815,
+    "rmse": 0.435,
+    "bias": -0.016,
+    "mae_by_horizon": {
+     "24": 0.1148,
+     "48": 0.3207,
+     "72": 0.0
+    },
+    "powder_score": -61.24,
+    "n_skill": 24,
+    "pinball": null,
+    "brier6": null,
+    "late": false
+   },
+   "baseline-climatology": {
+    "n_scorable": 24,
+    "n_scored": 24,
+    "coverage": 1.0,
+    "mae": 0.1125,
+    "rmse": 0.3635,
+    "bias": -0.085,
+    "mae_by_horizon": {
+     "24": 0.0818,
+     "48": 0.1883,
+     "72": 0.0
+    },
+    "powder_score": 0.0,
+    "n_skill": 24,
+    "pinball": 0.0561,
+    "n_pinball": 24,
+    "brier6": 0.0001,
+    "n_brier6": 10,
+    "late": true
+   },
+   "baseline-consensus": {
+    "n_scorable": 24,
+    "n_scored": 24,
+    "coverage": 1.0,
+    "mae": 0.1401,
+    "rmse": 0.3905,
+    "bias": -0.0574,
+    "mae_by_horizon": {
+     "24": 0.0845,
+     "48": 0.2517,
+     "72": 0.0
+    },
+    "powder_score": -24.47,
+    "n_skill": 24,
+    "pinball": null,
+    "brier6": null,
+    "late": false
+   },
+   "baseline-ecmwf": {
+    "n_scorable": 24,
+    "n_scored": 24,
+    "coverage": 1.0,
+    "mae": 0.1159,
+    "rmse": 0.3002,
+    "bias": -0.0172,
+    "mae_by_horizon": {
+     "24": 0.0679,
+     "48": 0.2103,
+     "72": 0.0
+    },
+    "powder_score": -3.0,
+    "n_skill": 24,
+    "pinball": null,
+    "brier6": null,
+    "late": false
+   },
+   "baseline-gem": {
+    "n_scorable": 24,
+    "n_scored": 24,
+    "coverage": 1.0,
+    "mae": 0.1286,
+    "rmse": 0.3765,
+    "bias": -0.0689,
+    "mae_by_horizon": {
+     "24": 0.079,
+     "48": 0.2297,
+     "72": 0.0
+    },
+    "powder_score": -14.29,
+    "n_skill": 24,
+    "pinball": null,
+    "brier6": null,
+    "late": false
+   },
+   "baseline-gfs": {
+    "n_scorable": 24,
+    "n_scored": 24,
+    "coverage": 1.0,
+    "mae": 0.4559,
+    "rmse": 1.3437,
+    "bias": 0.2584,
+    "mae_by_horizon": {
+     "24": 0.1065,
+     "48": 0.9876,
+     "72": 0.0
+    },
+    "powder_score": -305.07,
+    "n_skill": 24,
+    "pinball": null,
+    "brier6": null,
+    "late": false
+   },
+   "baseline-icon": {
+    "n_scorable": 24,
+    "n_scored": 24,
+    "coverage": 1.0,
+    "mae": 0.0988,
+    "rmse": 0.3606,
+    "bias": -0.0988,
+    "mae_by_horizon": {
+     "24": 0.079,
+     "48": 0.158,
+     "72": 0.0
+    },
+    "powder_score": 12.25,
+    "n_skill": 24,
+    "pinball": null,
+    "brier6": null,
+    "late": false
+   },
+   "baseline-openmeteo": {
+    "n_scorable": 24,
+    "n_scored": 24,
+    "coverage": 1.0,
+    "mae": 0.0895,
+    "rmse": 0.267,
+    "bias": -0.0253,
+    "mae_by_horizon": {
+     "24": 0.0294,
+     "48": 0.1855,
+     "72": 0.0
+    },
+    "powder_score": 20.44,
+    "n_skill": 24,
+    "pinball": null,
+    "brier6": null,
+    "late": false
+   },
+   "baseline-persistence": {
+    "n_scorable": 24,
+    "n_scored": 24,
+    "coverage": 1.0,
+    "mae": 0.64,
+    "rmse": 2.3369,
+    "bias": 0.64,
+    "mae_by_horizon": {
+     "24": 0.512,
+     "48": 1.024,
+     "72": 0.0
+    },
+    "powder_score": -468.68,
+    "n_skill": 24,
+    "pinball": null,
+    "brier6": null,
+    "late": false
+   },
+   "baseline-ukmo": {
+    "n_scorable": 24,
+    "n_scored": 24,
+    "coverage": 1.0,
+    "mae": 0.24,
+    "rmse": 0.5878,
+    "bias": 0.0425,
+    "mae_by_horizon": {
+     "24": 0.1286,
+     "48": 0.4473,
+     "72": 0.0
+    },
+    "powder_score": -113.22,
+    "n_skill": 24,
+    "pinball": null,
+    "brier6": null,
+    "late": false
+   },
+   "baseline-zeros": {
+    "n_scorable": 24,
+    "n_scored": 24,
+    "coverage": 1.0,
+    "mae": 0.0988,
+    "rmse": 0.3606,
+    "bias": -0.0988,
+    "mae_by_horizon": {
+     "24": 0.079,
+     "48": 0.158,
+     "72": 0.0
+    },
+    "powder_score": 12.25,
+    "n_skill": 24,
+    "pinball": 0.0494,
+    "n_pinball": 24,
     "brier6": 0.0,
     "n_brier6": 10,
     "late": false

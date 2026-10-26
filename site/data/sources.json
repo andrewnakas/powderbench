@@ -1,0 +1,139 @@
+[
+ {
+  "name": "NRCS SNOTEL, SNOLITE & AWDB (incl. BC snow pillows)",
+  "provider": "USDA Natural Resources Conservation Service",
+  "url": "https://wcc.sc.egov.usda.gov/",
+  "licence": "US public domain",
+  "attribution": "Snow telemetry: USDA NRCS National Water and Climate Center (AWDB).",
+  "role": "truth",
+  "leagues": [
+   "stations"
+  ]
+ },
+ {
+  "name": "CDEC snow pillows",
+  "provider": "California Department of Water Resources",
+  "url": "https://cdec.water.ca.gov/",
+  "licence": "Public data of the State of California",
+  "attribution": "California snow pillows: CA Department of Water Resources, CDEC.",
+  "role": "truth",
+  "leagues": [
+   "stations"
+  ]
+ },
+ {
+  "name": "GHCN-Daily (NWS COOP + CoCoRaHS)",
+  "provider": "NOAA National Centers for Environmental Information",
+  "url": "https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-daily",
+  "licence": "US public domain; CoCoRaHS observations \u00a9 CoCoRaHS, CC BY 3.0",
+  "attribution": "Measured new snow: NOAA NCEI GHCN-Daily, including NWS Cooperative Observers and CoCoRaHS volunteers (cocorahs.org).",
+  "role": "truth",
+  "leagues": [
+   "observers"
+  ]
+ },
+ {
+  "name": "Climate daily (TOTAL_SNOW)",
+  "provider": "Environment and Climate Change Canada",
+  "url": "https://api.weather.gc.ca/",
+  "licence": "Open Government Licence \u2013 Canada",
+  "attribution": "Contains information licensed under the Open Government Licence \u2013 Canada (ECCC climate data).",
+  "role": "truth",
+  "leagues": [
+   "observers"
+  ]
+ },
+ {
+  "name": "Measured new snow (HN) \u2014 study plots and IMIS",
+  "provider": "WSL Institute for Snow and Avalanche Research SLF",
+  "url": "https://www.slf.ch/",
+  "licence": "CC BY 4.0",
+  "attribution": "Swiss snow data \u00a9 WSL Institute for Snow and Avalanche Research SLF (www.slf.ch), CC BY 4.0.",
+  "role": "truth",
+  "leagues": [
+   "alps"
+  ]
+ },
+ {
+  "name": "Measured new snow (shneu_manu) \u2014 climate stations",
+  "provider": "GeoSphere Austria",
+  "url": "https://data.hub.geosphere.at/",
+  "licence": "CC BY 4.0",
+  "attribution": "Austrian snow data \u00a9 GeoSphere Austria (data.hub.geosphere.at), CC BY 4.0.",
+  "role": "truth",
+  "leagues": [
+   "alps"
+  ]
+ },
+ {
+  "name": "Resort snow reports",
+  "provider": "Each resort (first-party pages; per-resort audit in the registry)",
+  "url": "https://github.com/andrewnakas/powderbench/blob/main/src/powderbench/resortfeeds/registry.py",
+  "licence": "Factual figures read from public pages, per-site robots/terms review; resorts may opt out at any time",
+  "attribution": "Snow figures as published by each resort; see the resort registry for sources.",
+  "role": "truth",
+  "leagues": [
+   "resorts-na",
+   "resorts"
+  ]
+ },
+ {
+  "name": "ERA5 reanalysis (via Open-Meteo)",
+  "provider": "ECMWF / Copernicus Climate Change Service; Open-Meteo",
+  "url": "https://open-meteo.com/",
+  "licence": "CC BY 4.0",
+  "attribution": "Contains modified Copernicus Climate Change Service information; data via Open-Meteo.com (CC BY 4.0).",
+  "role": "truth",
+  "leagues": [
+   "era5"
+  ]
+ },
+ {
+  "name": "Weather-model forecasts (GFS, ECMWF IFS & AIFS, ICON, GEM, UKMO, NBM, HRRR, AROME)",
+  "provider": "Open-Meteo (from NOAA, ECMWF, DWD, ECCC, Met Office, M\u00e9t\u00e9o-France)",
+  "url": "https://open-meteo.com/",
+  "licence": "CC BY 4.0",
+  "attribution": "Weather forecasts by Open-Meteo.com (CC BY 4.0), from the respective national weather services.",
+  "role": "baseline"
+ },
+ {
+  "name": "WPC Probabilistic Winter Precipitation Forecast",
+  "provider": "NOAA Weather Prediction Center",
+  "url": "https://www.wpc.ncep.noaa.gov/pwpf/",
+  "licence": "US public domain",
+  "attribution": "Snowfall percentiles: NOAA/NWS Weather Prediction Center.",
+  "role": "baseline"
+ },
+ {
+  "name": "National Digital Forecast Database (NDFD) snow amount",
+  "provider": "NOAA National Weather Service (via NOAA Open Data Dissemination)",
+  "url": "https://registry.opendata.aws/noaa-ndfd/",
+  "licence": "US public domain",
+  "attribution": "Snow amount forecasts: NOAA/NWS National Digital Forecast Database.",
+  "role": "baseline"
+ },
+ {
+  "name": "Ski areas",
+  "provider": "OpenSkiData (OpenStreetMap contributors, Skimap.org)",
+  "url": "https://openskidata.org/",
+  "licence": "ODbL 1.0",
+  "attribution": "Ski areas \u00a9 OpenSkiData / OpenStreetMap contributors, ODbL.",
+  "role": "metadata"
+ },
+ {
+  "name": "Southern-hemisphere snow archives",
+  "provider": "Snowy Hydro; Victorian Alpine Resorts (Data Vic); INA and SNIH (Argentina)",
+  "url": "https://github.com/andrewnakas/powderbench/blob/main/data/snowhistory/catalog.yaml",
+  "licence": "CC BY (Data Vic, INA, SNIH); Snowy Hydro published data, attributed, removed on request",
+  "attribution": "Historical snow series: Snowy Hydro Ltd; State of Victoria (CC BY); INA and SNIH, Argentina (CC BY).",
+  "role": "training"
+ },
+ {
+  "name": "Snowpack & avalanche training data (Hugging Face mirror)",
+  "provider": "M\u00e9t\u00e9o-France; NVE (Norway); SLF/EnviDat; Zenodo authors",
+  "url": "https://huggingface.co/datasets/nakas/powderbench-snowpack",
+  "licence": "Per source: Etalab 2.0, NLOD 2.0, CC BY 4.0, CC BY-SA 4.0, ODbL",
+  "attribution": "See the dataset card for per-source attribution.",
+  "role": "training"
+ }
+]

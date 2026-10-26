@@ -1,45 +1,48 @@
 {
  "league": "era5",
  "status": "live",
- "generated_rounds": 98,
+ "generated_rounds": 105,
  "season": [
   {
    "team": "baseline-climatology",
    "is_baseline": true,
-   "rounds": 98,
+   "is_house": false,
+   "rounds": 105,
    "avg_coverage": 1.0,
    "powder_score": 0.001,
-   "mae": 1.051,
-   "rmse": 2.082,
-   "bias": -0.951,
-   "pinball": 0.411,
-   "brier6": 0.033,
+   "mae": 0.99,
+   "rmse": 1.965,
+   "bias": -0.893,
+   "pinball": 0.388,
+   "brier6": 0.031,
    "eligible": true,
    "rank": 1
   },
   {
    "team": "baseline-zeros",
    "is_baseline": true,
-   "rounds": 98,
+   "is_house": false,
+   "rounds": 105,
    "avg_coverage": 1.0,
-   "powder_score": -2.185,
-   "mae": 1.095,
-   "rmse": 2.185,
-   "bias": -1.095,
-   "pinball": 0.547,
-   "brier6": 0.036,
+   "powder_score": -1.184,
+   "mae": 1.03,
+   "rmse": 2.062,
+   "bias": -1.03,
+   "pinball": 0.515,
+   "brier6": 0.033,
    "eligible": true,
    "rank": 2
   },
   {
    "team": "baseline-gfs",
    "is_baseline": true,
-   "rounds": 98,
+   "is_house": false,
+   "rounds": 105,
    "avg_coverage": 1.0,
-   "powder_score": -13.616,
-   "mae": 0.851,
-   "rmse": 1.758,
-   "bias": 0.451,
+   "powder_score": -25.602,
+   "mae": 0.818,
+   "rmse": 1.713,
+   "bias": 0.443,
    "pinball": null,
    "brier6": null,
    "eligible": true,
@@ -48,12 +51,13 @@
   {
    "team": "baseline-openmeteo",
    "is_baseline": true,
-   "rounds": 98,
+   "is_house": false,
+   "rounds": 105,
    "avg_coverage": 1.0,
-   "powder_score": -18.898,
-   "mae": 0.933,
-   "rmse": 2.061,
-   "bias": 0.69,
+   "powder_score": -28.787,
+   "mae": 0.892,
+   "rmse": 1.982,
+   "bias": 0.661,
    "pinball": null,
    "brier6": null,
    "eligible": true,
@@ -62,12 +66,13 @@
   {
    "team": "baseline-persistence",
    "is_baseline": true,
-   "rounds": 98,
-   "avg_coverage": 0.996,
-   "powder_score": -183.128,
-   "mae": 1.56,
-   "rmse": 2.988,
-   "bias": 0.092,
+   "is_house": false,
+   "rounds": 105,
+   "avg_coverage": 0.9963,
+   "powder_score": -206.568,
+   "mae": 1.523,
+   "rmse": 2.942,
+   "bias": 0.139,
    "pinball": null,
    "brier6": null,
    "eligible": true,
@@ -76,6 +81,7 @@
   {
    "team": "southern-league-mogger",
    "is_baseline": false,
+   "is_house": false,
    "rounds": 1,
    "avg_coverage": 1.0,
    "powder_score": 51.73,
@@ -92,13 +98,14 @@
   {
    "team": "baseline-zeros",
    "is_baseline": true,
+   "is_house": false,
    "rounds": 30,
    "avg_coverage": 1.0,
-   "powder_score": 2.838,
-   "mae": 0.602,
-   "rmse": 1.348,
-   "bias": -0.602,
-   "pinball": 0.301,
+   "powder_score": 3.777,
+   "mae": 0.54,
+   "rmse": 1.21,
+   "bias": -0.54,
+   "pinball": 0.27,
    "brier6": 0.012,
    "eligible": true,
    "rank": 1
@@ -106,13 +113,14 @@
   {
    "team": "baseline-climatology",
    "is_baseline": true,
+   "is_house": false,
    "rounds": 30,
    "avg_coverage": 1.0,
    "powder_score": 0.003,
-   "mae": 0.599,
-   "rmse": 1.322,
-   "bias": -0.567,
-   "pinball": 0.246,
+   "mae": 0.539,
+   "rmse": 1.189,
+   "bias": -0.512,
+   "pinball": 0.222,
    "brier6": 0.012,
    "eligible": true,
    "rank": 2
@@ -120,12 +128,13 @@
   {
    "team": "baseline-gfs",
    "is_baseline": true,
+   "is_house": false,
    "rounds": 30,
    "avg_coverage": 1.0,
-   "powder_score": -16.297,
-   "mae": 0.565,
-   "rmse": 1.334,
-   "bias": 0.191,
+   "powder_score": -57.869,
+   "mae": 0.521,
+   "rmse": 1.237,
+   "bias": 0.169,
    "pinball": null,
    "brier6": null,
    "eligible": true,
@@ -134,12 +143,13 @@
   {
    "team": "baseline-openmeteo",
    "is_baseline": true,
+   "is_house": false,
    "rounds": 30,
    "avg_coverage": 1.0,
-   "powder_score": -29.21,
-   "mae": 0.642,
-   "rmse": 1.447,
-   "bias": 0.495,
+   "powder_score": -71.888,
+   "mae": 0.647,
+   "rmse": 1.464,
+   "bias": 0.526,
    "pinball": null,
    "brier6": null,
    "eligible": true,
@@ -148,12 +158,13 @@
   {
    "team": "baseline-persistence",
    "is_baseline": true,
+   "is_house": false,
    "rounds": 30,
    "avg_coverage": 1.0,
-   "powder_score": -292.721,
-   "mae": 1.014,
-   "rmse": 2.047,
-   "bias": 0.126,
+   "powder_score": -363.519,
+   "mae": 1.095,
+   "rmse": 2.24,
+   "bias": 0.277,
    "pinball": null,
    "brier6": null,
    "eligible": true,
@@ -258,6 +269,321 @@
   "2026-10-08",
   "2026-10-09",
   "2026-10-10",
-  "2026-10-11"
- ]
+  "2026-10-11",
+  "2026-10-12",
+  "2026-10-13",
+  "2026-10-14",
+  "2026-10-15",
+  "2026-10-16",
+  "2026-10-17",
+  "2026-10-18"
+ ],
+ "months": [
+  {
+   "month": "2026-10",
+   "rounds": 18,
+   "champion": null,
+   "best_model": {
+    "team": "baseline-gfs",
+    "powder_score": -79.924,
+    "rounds": 18
+   },
+   "podium": [
+    {
+     "team": "baseline-zeros",
+     "powder_score": 8.026,
+     "is_baseline": true,
+     "is_house": false
+    },
+    {
+     "team": "baseline-climatology",
+     "powder_score": 0.002,
+     "is_baseline": true,
+     "is_house": false
+    },
+    {
+     "team": "baseline-gfs",
+     "powder_score": -79.924,
+     "is_baseline": true,
+     "is_house": false
+    }
+   ]
+  },
+  {
+   "month": "2026-09",
+   "rounds": 30,
+   "champion": null,
+   "best_model": {
+    "team": "baseline-openmeteo",
+    "powder_score": -16.302,
+    "rounds": 30
+   },
+   "podium": [
+    {
+     "team": "baseline-climatology",
+     "powder_score": 0.0,
+     "is_baseline": true,
+     "is_house": false
+    },
+    {
+     "team": "baseline-zeros",
+     "powder_score": -0.756,
+     "is_baseline": true,
+     "is_house": false
+    },
+    {
+     "team": "baseline-openmeteo",
+     "powder_score": -16.302,
+     "is_baseline": true,
+     "is_house": false
+    }
+   ]
+  },
+  {
+   "month": "2026-08",
+   "rounds": 31,
+   "champion": null,
+   "best_model": {
+    "team": "baseline-openmeteo",
+    "powder_score": -21.262,
+    "rounds": 31
+   },
+   "podium": [
+    {
+     "team": "baseline-zeros",
+     "powder_score": 2.46,
+     "is_baseline": true,
+     "is_house": false
+    },
+    {
+     "team": "baseline-climatology",
+     "powder_score": 0.0,
+     "is_baseline": true,
+     "is_house": false
+    },
+    {
+     "team": "baseline-openmeteo",
+     "powder_score": -21.262,
+     "is_baseline": true,
+     "is_house": false
+    }
+   ]
+  },
+  {
+   "month": "2026-07",
+   "rounds": 19,
+   "champion": null,
+   "best_model": {
+    "team": "baseline-gfs",
+    "powder_score": 13.339,
+    "rounds": 19
+   },
+   "podium": [
+    {
+     "team": "baseline-gfs",
+     "powder_score": 13.339,
+     "is_baseline": true,
+     "is_house": false
+    },
+    {
+     "team": "baseline-climatology",
+     "powder_score": 0.001,
+     "is_baseline": true,
+     "is_house": false
+    },
+    {
+     "team": "baseline-zeros",
+     "powder_score": -3.76,
+     "is_baseline": true,
+     "is_house": false
+    }
+   ]
+  },
+  {
+   "month": "2026-06",
+   "rounds": 7,
+   "champion": null,
+   "best_model": {
+    "team": "baseline-openmeteo",
+    "powder_score": -4.181,
+    "rounds": 7
+   },
+   "podium": [
+    {
+     "team": "baseline-climatology",
+     "powder_score": 0.006,
+     "is_baseline": true,
+     "is_house": false
+    },
+    {
+     "team": "baseline-openmeteo",
+     "powder_score": -4.181,
+     "is_baseline": true,
+     "is_house": false
+    },
+    {
+     "team": "baseline-gfs",
+     "powder_score": -8.384,
+     "is_baseline": true,
+     "is_house": false
+    }
+   ]
+  }
+ ],
+ "tracks": {
+  "region:Otago, NZ": [
+   {
+    "team": "baseline-persistence",
+    "is_baseline": true,
+    "is_house": false,
+    "rounds": 7,
+    "avg_coverage": 1.0,
+    "powder_score": 49.061,
+    "mae": 0.409,
+    "rmse": null,
+    "bias": -0.409,
+    "pinball": null,
+    "brier6": null,
+    "eligible": true,
+    "rank": 1
+   },
+   {
+    "team": "baseline-zeros",
+    "is_baseline": true,
+    "is_house": false,
+    "rounds": 7,
+    "avg_coverage": 1.0,
+    "powder_score": 49.061,
+    "mae": 0.409,
+    "rmse": null,
+    "bias": -0.409,
+    "pinball": null,
+    "brier6": null,
+    "eligible": true,
+    "rank": 2
+   },
+   {
+    "team": "baseline-openmeteo",
+    "is_baseline": true,
+    "is_house": false,
+    "rounds": 7,
+    "avg_coverage": 1.0,
+    "powder_score": 25.324,
+    "mae": 0.369,
+    "rmse": null,
+    "bias": 0.012,
+    "pinball": null,
+    "brier6": null,
+    "eligible": true,
+    "rank": 3
+   },
+   {
+    "team": "baseline-gfs",
+    "is_baseline": true,
+    "is_house": false,
+    "rounds": 7,
+    "avg_coverage": 1.0,
+    "powder_score": 11.264,
+    "mae": 0.526,
+    "rmse": null,
+    "bias": 0.415,
+    "pinball": null,
+    "brier6": null,
+    "eligible": true,
+    "rank": 4
+   },
+   {
+    "team": "baseline-climatology",
+    "is_baseline": true,
+    "is_house": false,
+    "rounds": 7,
+    "avg_coverage": 1.0,
+    "powder_score": 0.0,
+    "mae": 0.41,
+    "rmse": null,
+    "bias": -0.362,
+    "pinball": null,
+    "brier6": null,
+    "eligible": true,
+    "rank": 5
+   }
+  ],
+  "region:Victorian Alps, AU": [
+   {
+    "team": "baseline-climatology",
+    "is_baseline": true,
+    "is_house": false,
+    "rounds": 7,
+    "avg_coverage": 1.0,
+    "powder_score": null,
+    "mae": 0.0,
+    "rmse": null,
+    "bias": 0.0,
+    "pinball": null,
+    "brier6": null,
+    "eligible": false,
+    "rank": null
+   },
+   {
+    "team": "baseline-gfs",
+    "is_baseline": true,
+    "is_house": false,
+    "rounds": 7,
+    "avg_coverage": 1.0,
+    "powder_score": null,
+    "mae": 0.0,
+    "rmse": null,
+    "bias": 0.0,
+    "pinball": null,
+    "brier6": null,
+    "eligible": false,
+    "rank": null
+   },
+   {
+    "team": "baseline-openmeteo",
+    "is_baseline": true,
+    "is_house": false,
+    "rounds": 7,
+    "avg_coverage": 1.0,
+    "powder_score": null,
+    "mae": 0.0,
+    "rmse": null,
+    "bias": 0.0,
+    "pinball": null,
+    "brier6": null,
+    "eligible": false,
+    "rank": null
+   },
+   {
+    "team": "baseline-persistence",
+    "is_baseline": true,
+    "is_house": false,
+    "rounds": 7,
+    "avg_coverage": 1.0,
+    "powder_score": null,
+    "mae": 0.0,
+    "rmse": null,
+    "bias": 0.0,
+    "pinball": null,
+    "brier6": null,
+    "eligible": false,
+    "rank": null
+   },
+   {
+    "team": "baseline-zeros",
+    "is_baseline": true,
+    "is_house": false,
+    "rounds": 7,
+    "avg_coverage": 1.0,
+    "powder_score": null,
+    "mae": 0.0,
+    "rmse": null,
+    "bias": 0.0,
+    "pinball": null,
+    "brier6": null,
+    "eligible": false,
+    "rank": null
+   }
+  ]
+ }
 }

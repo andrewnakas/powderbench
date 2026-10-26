@@ -1,0 +1,111 @@
+{
+ "round_id": "2026-10-21",
+ "league": "resorts",
+ "resolved_utc": "2026-10-26T18:27:46+00:00",
+ "observations_72h": null,
+ "qc": {
+  "station_horizons_valid": 30,
+  "station_horizons_voided": 9
+ },
+ "biggest_24h": {
+  "station_id": "valle-nevado:CL:RESORT",
+  "resort": "Valle Nevado / Tres Valles",
+  "inches": 3.9
+ },
+ "teams": {
+  "baseline-climatology": {
+   "n_scorable": 30,
+   "n_scored": 30,
+   "coverage": 1.0,
+   "mae": 0.6321,
+   "rmse": 1.5367,
+   "bias": -0.587,
+   "mae_by_horizon": {
+    "24": 0.4702,
+    "48": 0.6618,
+    "72": 0.7642
+   },
+   "powder_score": 0.0,
+   "n_skill": 30,
+   "pinball": 0.2747,
+   "n_pinball": 30,
+   "brier6": 0.0,
+   "n_brier6": 10,
+   "late": true
+  },
+  "baseline-gfs": {
+   "n_scorable": 30,
+   "n_scored": 30,
+   "coverage": 1.0,
+   "mae": 0.627,
+   "rmse": 1.5366,
+   "bias": -0.592,
+   "mae_by_horizon": {
+    "24": 0.4703,
+    "48": 0.6673,
+    "72": 0.7435
+   },
+   "powder_score": 0.8,
+   "n_skill": 30,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-openmeteo": {
+   "n_scorable": 30,
+   "n_scored": 30,
+   "coverage": 1.0,
+   "mae": 0.5609,
+   "rmse": 1.3984,
+   "bias": -0.4983,
+   "mae_by_horizon": {
+    "24": 0.4785,
+    "48": 0.659,
+    "72": 0.5451
+   },
+   "powder_score": 11.26,
+   "n_skill": 30,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-persistence": {
+   "n_scorable": 30,
+   "n_scored": 30,
+   "coverage": 1.0,
+   "mae": 0.4727,
+   "rmse": 1.505,
+   "bias": -0.4727,
+   "mae_by_horizon": {
+    "24": 0.394,
+    "48": 0.512,
+    "72": 0.512
+   },
+   "powder_score": 25.22,
+   "n_skill": 30,
+   "pinball": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-zeros": {
+   "n_scorable": 30,
+   "n_scored": 30,
+   "coverage": 1.0,
+   "mae": 0.6307,
+   "rmse": 1.5989,
+   "bias": -0.6307,
+   "mae_by_horizon": {
+    "24": 0.473,
+    "48": 0.67,
+    "72": 0.749
+   },
+   "powder_score": 0.22,
+   "n_skill": 30,
+   "pinball": 0.3153,
+   "n_pinball": 30,
+   "brier6": 0.0,
+   "n_brier6": 10,
+   "late": false
+  }
+ }
+}
