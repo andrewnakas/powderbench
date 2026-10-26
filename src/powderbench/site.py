@@ -9,6 +9,7 @@ from dataclasses import asdict
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
+from .forecasts import build_forecasts
 from .leaderboard import leaderboard_path, round_results_dir
 from .leagues import League, load_leagues
 from .stations import data_dir, load_stations, station_ids
@@ -382,6 +383,7 @@ def build_site() -> list[Path]:
         emit(f"history-{league.name}.json", history)
         emit(f"snowfall-{league.name}.json", _daily_truth_series(league))
         emit(f"climo-{league.name}.json", _monthly_climatology(league))
+        emit(f"forecasts-{league.name}.json", build_forecasts(league), compact=True)
 
     teams = _teams(leagues, histories)
     emit("teams.json", teams, compact=True)
@@ -402,6 +404,19 @@ def build_site() -> list[Path]:
         if src.exists():
             shutil.copyfile(src, docs / name)
             written.append(docs / name)
+    return written
+
+
+def build_forecast_files() -> list[Path]:
+    """Just the map's forecast files: cheap enough to refresh hourly as
+    submissions merge."""
+    out_dir = site_dir() / "data"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    written = []
+    for league in load_leagues():
+        path = out_dir / f"forecasts-{league.name}.json"
+        path.write_text(json.dumps(build_forecasts(league), separators=(",", ":")))
+        written.append(path)
     return written
 
 

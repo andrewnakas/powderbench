@@ -9,7 +9,12 @@ permissions:
   pages: write
   id-token: write
 
-concurrency: benchmark-data
+# its own group: in the shared benchmark-data group a busier workflow queued
+# behind it replaced this pending run, cancelling the day's scoring (10-23,
+# 10-24). Pushes rebase onto main, so running alongside data writers is safe.
+concurrency:
+  group: resolve
+  cancel-in-progress: false
 
 jobs:
   resolve:
@@ -45,7 +50,11 @@ jobs:
         run: |
           git config user.name "powderbench-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add data/rounds data/results data/events site/data site/api site/docs site/badges
+          # only paths that exist: a missing one (data/events before the first
+          # storm) makes `git add` fail the whole commit (it did, 10-20..10-25)
+          for p in data/rounds data/results data/events site/data site/api site/docs site/badges; do
+            [ -e "$p" ] && git add "$p"
+          done
           git diff --cached --quiet || git commit -m "Resolve rounds & update leaderboard"
           git pull --rebase origin main
           git push

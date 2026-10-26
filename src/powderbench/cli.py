@@ -488,5 +488,14 @@ def build_site():
         typer.echo(f"wrote {f}")
 
 
+@app.command()
+def build_forecasts():
+    """Refresh only the map's per-station forecast files (site/data/forecasts-*.json)."""
+    from .site import build_forecast_files
+
+    for f in build_forecast_files():
+        typer.echo(f"wrote {f} ({f.stat().st_size // 1024} KB)")
+
+
 if __name__ == "__main__":
     app()

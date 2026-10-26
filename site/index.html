@@ -20,8 +20,9 @@
     <div class="wrap nav-row">
       <a class="brand" href="./">❄️ PowderBench</a>
       <div class="nav-links">
+        <a href="./#forecast">Forecast map</a>
         <a href="./#leaderboard">Leaderboard</a>
-        <a href="./#charts">Charts</a>
+        <a href="./#scoring">How scoring works</a>
         <a href="methods.html">Methodology</a>
         <a href="sources.html">Data</a>
         <a href="docs.html">Docs</a>
@@ -34,13 +35,11 @@
   <header class="hero">
     <div class="wrap">
       <h1>❄️ PowderBench</h1>
-      <p class="tagline">The live, open benchmark for mountain snowfall forecasting.</p>
-      <p class="pitch">Every day, forecast how much new snow will fall — 24, 48 and 72 hours
-        out — at mountain stations and ski resorts across North America, the Alps and the
-        southern hemisphere. A few days later the snow is measured, quality-controlled and
-        scored. Humans, ML models and AI agents compete on one leaderboard against the
-        world’s operational weather models. Nothing to memorize: every round is about
-        weather that hasn’t happened yet.</p>
+      <p class="tagline">Who forecasts mountain snow best?</p>
+      <p class="pitch">Every day, weather models, AI models and people predict how much new snow
+        will fall over the next three days at thousands of mountain weather stations and ski
+        resorts. A few days later we measure what <strong>actually</strong> fell and score
+        everyone, in public. So for any station you can see which forecast to trust.</p>
       <div class="stats" id="hero-stats">
         <div class="stat"><span class="stat-n" id="stat-stations">2,400+</span><span class="stat-l">snow stations &amp; resorts</span></div>
         <div class="stat"><span class="stat-n" id="stat-leagues">6</span><span class="stat-l">leagues, one per kind of truth</span></div>
@@ -48,9 +47,9 @@
         <div class="stat"><span class="stat-n" id="stat-rounds">—</span><span class="stat-l">rounds scored</span></div>
       </div>
       <p class="cta-row">
-        <a class="cta" href="#compete">Compete →</a>
+        <a class="cta" href="#forecast">See the snow forecast map →</a>
         <a class="cta ghost" href="#leaderboard">Leaderboard</a>
-        <a class="cta ghost" href="methods.html">How it’s scored</a>
+        <a class="cta ghost" href="#compete">Compete</a>
       </p>
       <p class="challenge" id="challenge-line">Nobody is beating the weather models. Yet.</p>
     </div>
@@ -69,6 +68,68 @@
   <main class="wrap">
     <div class="league-bar" id="league-bar"></div>
 
+    <section id="forecast">
+      <h2>Snow forecast map</h2>
+      <p class="section-note">Tap any station for its snow forecast for the next three days. We show
+        the forecast from whoever has been <strong>most accurate</strong> in this league so far, next
+        to every other forecaster's numbers and to what fell last time.</p>
+      <div class="board-controls">
+        <input id="station-search" type="search" placeholder="Find a station, resort or region…" list="station-list" autocomplete="off">
+        <datalist id="station-list"></datalist>
+        <span class="rounds-note" id="station-count"></span>
+      </div>
+      <p class="fine" id="fc-status"></p>
+      <div class="fc-layout">
+        <div id="map"></div>
+        <aside id="fc-panel" class="fc-panel">
+          <p class="fc-hint">👆 Tap a station on the map (or search above) to see its forecast.</p>
+        </aside>
+      </div>
+      <div class="fc-legend" id="fc-legend"></div>
+      <p class="fine" id="truth-note"></p>
+    </section>
+
+    <section id="scoring">
+      <h2>Powder Score in 30 seconds</h2>
+      <div class="explain">
+        <p class="explain-lead">Powder Score answers one question: <strong>how much better is this
+          forecast than just guessing the usual amount of snow?</strong></p>
+        <ol class="explain-steps">
+          <li>For every station and day we check the forecast against the snow that <strong>actually fell</strong>
+            and note how far off it was (the “miss”, in inches).</li>
+          <li>We do the same for a no-skill guess: the <strong>typical</strong> snowfall for that
+            station on that date, from decades of records (“climatology”).</li>
+          <li><strong>Powder Score</strong> = how much smaller your misses are than the typical guess's
+            misses, as a percentage.</li>
+        </ol>
+        <div class="scale">
+          <div class="scale-bar"></div>
+          <div class="scale-ticks">
+            <span><b>below 0</b><br>worse than guessing the usual</span>
+            <span><b>0</b><br>same as guessing the usual</span>
+            <span><b>50</b><br>misses half as big</span>
+            <span><b>100</b><br>perfect</span>
+          </div>
+        </div>
+        <p class="example"><strong>Example:</strong> guessing the usual amount misses by 2.0″ on
+          average. Your forecast misses by 1.2″. You cut the misses by 40%, so your
+          <strong>Powder Score is 40</strong>. Higher is better. Anything above the weather models
+          is beating the pros.</p>
+        <details>
+          <summary>The other columns</summary>
+          <ul>
+            <li><strong>Avg miss</strong>: the average error in inches (lower is better).</li>
+            <li><strong>Range score</strong>: for forecasts that give a likely range (low to high), how well
+              the ranges matched reality (lower is better).</li>
+            <li><strong>6″ alert score</strong>: for “chance of 6 inches or more” forecasts, how well those
+              chances matched what happened (lower is better).</li>
+            <li><strong>Weather model</strong> rows are the world's forecast models (ECMWF, GFS, NOAA's
+              blends…), run automatically every day. They're the pros to beat.</li>
+          </ul>
+        </details>
+      </div>
+    </section>
+
     <section id="leaderboard">
       <h2>Leaderboard</h2>
       <div class="board-controls">
@@ -83,12 +144,12 @@
         <table id="board">
           <thead>
             <tr>
-              <th>#</th><th>Team</th>
-              <th title="Skill vs. climatology: 100 × (1 − MAE/MAE_climatology). 0 = climatology, higher is better.">Powder Score</th>
-              <th title="Mean absolute error, inches">MAE</th>
-              <th title="Probabilistic track: mean pinball loss over p10/p25/p50/p75/p90 (lower is better)">Pinball</th>
-              <th title="Powder Alert track: Brier score on P(≥6&quot; in 24h), lower is better">Brier₆</th>
-              <th>Rounds</th><th>Coverage</th>
+              <th>#</th><th>Forecaster</th>
+              <th title="How much smaller the misses are than guessing the usual amount, in %. 0 = no better than the usual; higher is better. See “Powder Score in 30 seconds”.">Powder Score ⓘ</th>
+              <th title="Average miss, in inches (lower is better)">Avg miss</th>
+              <th title="How well the forecast ranges (low–high) matched reality (lower is better)">Range score</th>
+              <th title="How well the chance-of-6″+ forecasts matched reality (lower is better)">6″ alert score</th>
+              <th title="Number of daily rounds scored">Days</th><th title="Share of the ranked stations forecast">Coverage</th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -176,19 +237,6 @@
         (inches/day) at every station in this league, from decades of history. Brighter
         is snowier — this is the no-skill prior every Powder Score is measured against.</p>
       <div class="heatmap-scroll"><div class="heatmap" id="climo-grid"></div></div>
-    </section>
-
-    <section id="stations">
-      <h2>The mountains</h2>
-      <p id="truth-note">Ground truth comes from NRCS SNOTEL telemetry — automated snow
-        pillows and depth sensors high in the mountains, QC’d and voided (for everyone)
-        when sensors glitch. Hover a marker for the station behind each zone.</p>
-      <div class="board-controls">
-        <input id="station-search" type="search" placeholder="Find a station, resort or region…" list="station-list" autocomplete="off">
-        <datalist id="station-list"></datalist>
-        <span class="rounds-note" id="station-count"></span>
-      </div>
-      <div id="map"></div>
     </section>
 
     <section id="archive">

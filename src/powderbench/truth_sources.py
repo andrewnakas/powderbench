@@ -129,8 +129,7 @@ register(TruthSource(
     measured=False,
     note=(
         "Ground truth comes from NRCS SNOTEL telemetry — automated snow pillows and depth "
-        "sensors high in the mountains, QC’d and voided (for everyone) when sensors glitch. "
-        "Hover a marker for the station behind each zone."
+        "sensors high in the mountains, QC’d and voided (for everyone) when sensors glitch."
     ),
 ))
 register(TruthSource(

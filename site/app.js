@@ -5,8 +5,7 @@ const fmt = (v, digits = 2) => (v === null || v === undefined ? "—" : Number(v
 const TRUTH_NOTES = {
   snotel:
     "Ground truth comes from NRCS SNOTEL telemetry — automated snow pillows and depth " +
-    "sensors high in the mountains, QC’d and voided (for everyone) when sensors glitch. " +
-    "Hover a marker for the station behind each zone.",
+    "sensors high in the mountains, QC’d and voided (for everyone) when sensors glitch.",
   era5:
     "Truth is ERA5 model analysis at each resort’s coordinates (no public " +
     "southern-hemisphere station API exists — real feeds get promoted as they become " +
@@ -16,6 +15,27 @@ const TRUTH_NOTES = {
     "resort’s site. Resort numbers run generous — but every team is scored against the " +
     "same report, so it’s a fair fight; cross-check the ERA5 league for the reanalysis view.",
 };
+
+/* Plain-English names for the automated forecasters. */
+const FRIENDLY = {
+  "baseline-gfs": "GFS (US model)", "baseline-ecmwf": "ECMWF (European model)",
+  "baseline-aifs": "ECMWF AI model (AIFS)", "baseline-icon": "ICON (German model)",
+  "baseline-gem": "GEM (Canadian model)", "baseline-ukmo": "UK Met Office model",
+  "baseline-nbm": "NOAA National Blend", "baseline-hrrr": "HRRR (US high-res)",
+  "baseline-wpc": "NOAA WPC snow forecast", "baseline-ndfd": "National Weather Service forecast",
+  "baseline-arome": "AROME (French high-res)", "baseline-openmeteo": "Open-Meteo best match",
+  "baseline-consensus": "Model consensus (median)", "baseline-climatology": "Typical for this date",
+  "baseline-zeros": "Always zero snow", "baseline-persistence": "Same as yesterday",
+  "house-blend": "PowderBench blend", "house-analog": "PowderBench analogs", "house-gbm": "PowderBench ML",
+};
+const prettyTeam = (t) => FRIENDLY[t] || t;
+function kindTag(t) {
+  if (["baseline-climatology", "baseline-zeros", "baseline-persistence"].includes(t))
+    return '<span class="tag tag-climo">simple reference</span>';
+  if (t.startsWith("baseline-")) return '<span class="tag tag-model">weather model</span>';
+  if (t.startsWith("house-")) return '<span class="tag tag-house">house</span>';
+  return '<span class="tag tag-team">competitor</span>';
+}
 
 const PALETTE = ["#7cc4ff", "#7ee2a8", "#ffd28a", "#ff9e9e", "#c9a7ff", "#8ef0e4", "#f0b6d8", "#b3e5ff"];
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -88,7 +108,7 @@ function renderBoard(entries, rounds) {
     const psClass = ps === null ? "" : ps > 0 ? "score-pos" : "score-neg";
     tr.innerHTML = `
       <td>${t.rank ?? "–"}</td>
-      <td class="team"><a href="team.html?t=${encodeURIComponent(t.team)}">${t.team}</a></td>
+      <td class="team"><a href="team.html?t=${encodeURIComponent(t.team)}" title="${t.team}">${prettyTeam(t.team)}</a> ${kindTag(t.team)}</td>
       <td class="${psClass}">${fmt(ps, 1)}</td>
       <td>${fmt(t.mae)}</td>
       <td>${fmt(t.pinball)}</td>
@@ -436,6 +456,41 @@ function renderArchive(history) {
   }
 }
 
+/* ---- Snow forecast map ---- */
+const SNOW_BINS = [
+  [0.05, "#40516e", "none"], [1, "#4f86c6", "< 1″"], [3, "#55b4f0", "1–3″"],
+  [6, "#9fd8ff", "3–6″"], [12, "#c9a7ff", "6–12″"], [Infinity, "#ffffff", "12″+"],
+];
+const snowColor = (v) => (v === null || v === undefined ? "#2a3a57" : SNOW_BINS.find(([max]) => v < max)[1]);
+const inch = (v, d = 1) => (v === null || v === undefined ? "—" : `${Number(v).toFixed(d)}″`);
+const dayName = (iso) => new Date(iso + "T12:00:00Z").toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric", timeZone: "UTC" });
+
+function teamOrder() {
+  return (state.fc?.teams || []).map((t) => t.team);
+}
+
+/* The best available forecast for a station: the most accurate forecaster
+   (by season Powder Score) that forecast it. Climatology is a reference, not a pick. */
+function bestFor(sid) {
+  const rows = state.fc?.current?.rows?.[sid];
+  if (!rows) return null;
+  for (const t of state.fc.teams) {
+    if (t.team === "baseline-climatology") continue;
+    const r = rows[t.team];
+    if (r && (r[2] !== null || r[0] !== null)) return { ...t, r };
+  }
+  return null;
+}
+
+function totalOf(r) { return r ? (r[2] ?? r[1] ?? r[0]) : null; }
+
+function renderLegend() {
+  document.getElementById("fc-legend").innerHTML =
+    '<span class="fine">3-day snow (best forecast):</span>' +
+    SNOW_BINS.map(([, c, l]) => `<span class="lg"><i style="background:${c}"></i>${l}</span>`).join("") +
+    '<span class="lg"><i style="background:#2a3a57"></i>no forecast</span>';
+}
+
 function renderMap(stations) {
   if (!map) {
     // canvas renderer: thousands of network stations stay smooth
@@ -451,19 +506,20 @@ function renderMap(stations) {
   const pts = [];
   const featured = (s) => (s.tier || "featured") === "featured";
   markers = {};
-  // network stations first so the featured ones draw on top
-  for (const s of [...stations].sort((a, b) => featured(a) - featured(b))) {
+  const sorted = [...stations].sort((a, b) => (totalOf(bestFor(a.station_id)?.r) ?? -1) - (totalOf(bestFor(b.station_id)?.r) ?? -1));
+  for (const s of sorted) {
     const f = featured(s);
     if (f) pts.push([s.latitude, s.longitude]);
-    markers[s.station_id] = L.circleMarker([s.latitude, s.longitude], f
-      ? { radius: 6, color: "#7cc4ff", weight: 1.5, fillColor: "#7cc4ff", fillOpacity: 0.55 }
-      : { radius: 3, color: "#7ee2a8", weight: 0, fillColor: "#7ee2a8", fillOpacity: 0.45 })
-      .bindPopup(
-        `<strong>${s.resort}</strong><br>${s.name} · ${s.station_id}<br>` +
-        `${s.region} · ${Math.round(s.elevation_ft).toLocaleString()} ft` +
-        (s.network ? ` · ${s.network}` : "") + (f ? "<br><em>featured (ranked)</em>" : "")
-      )
+    const tot = totalOf(bestFor(s.station_id)?.r);
+    const col = snowColor(tot);
+    const m = L.circleMarker([s.latitude, s.longitude], {
+      radius: f ? 7 : 4, color: f ? "#0b1220" : col, weight: f ? 1.5 : 0,
+      fillColor: col, fillOpacity: tot === null ? 0.5 : 0.9,
+    })
+      .bindTooltip(`${s.resort}${tot !== null ? ` · ${inch(tot)} in 3 days` : ""}`)
+      .on("click", () => showStation(s.station_id))
       .addTo(markerLayer);
+    markers[s.station_id] = m;
   }
   markerLayer.addTo(map);
   if (!pts.length) pts.push(...stations.map((s) => [s.latitude, s.longitude]));
@@ -471,7 +527,7 @@ function renderMap(stations) {
 
   const nFeat = stations.filter(featured).length;
   document.getElementById("station-count").textContent = nFeat < stations.length
-    ? `${stations.length.toLocaleString()} stations · ${nFeat} featured (big dots) are ranked`
+    ? `${stations.length.toLocaleString()} stations · bigger dots are the ${nFeat} headline stations`
     : `${stations.length.toLocaleString()} stations`;
   const list = document.getElementById("station-list");
   list.innerHTML = "";
@@ -480,12 +536,102 @@ function renderMap(stations) {
     o.value = `${s.resort} · ${s.name} · ${s.region} · ${s.station_id}`;
     list.appendChild(o);
   }
+  renderLegend();
+  renderForecastStatus();
+  // open the snowiest headline station so the panel is never empty
+  const top = [...stations].filter(featured).sort((a, b) => (totalOf(bestFor(b.station_id)?.r) ?? -1) - (totalOf(bestFor(a.station_id)?.r) ?? -1))[0];
+  if (top) showStation(top.station_id, false);
+}
+
+function renderForecastStatus() {
+  const el = document.getElementById("fc-status");
+  const c = state.fc?.current;
+  if (!c) { el.textContent = "No forecasts in this league right now (it's off-season or the next round hasn't opened)."; return; }
+  const days = `${dayName(c.target_days[0])} – ${dayName(c.target_days[2])}`;
+  const cut = new Date(c.cutoff_utc).toLocaleString(undefined, { weekday: "short", hour: "numeric", minute: "2-digit", timeZoneName: "short" });
+  el.textContent = c.status === "open"
+    ? `Forecasts for ${days}. Forecasters can still submit until ${cut}.`
+    : `Forecasts for ${days}, locked at ${cut}.`;
+}
+
+function scoreText(t) {
+  if (t.score === null || t.score === undefined) return "not scored yet";
+  return `Powder Score ${fmt(t.score, 1)}`;
+}
+
+function showStation(sid, pan = true) {
+  const s = state.stations.find((x) => x.station_id === sid);
+  if (!s) return;
+  const panel = document.getElementById("fc-panel");
+  const c = state.fc?.current;
+  const best = bestFor(sid);
+  if (pan && markers[sid]) map.setView(markers[sid].getLatLng(), Math.max(map.getZoom(), 8));
+  let html = `<h3 class="fc-name">${s.resort}</h3>
+    <p class="fc-sub">${s.name} · ${s.region} · ${Math.round(s.elevation_ft).toLocaleString()} ft${s.network ? ` · ${s.network}` : ""}</p>`;
+  if (!c || !best) {
+    html += `<p class="fc-hint">No forecasts for this station in the current round${(s.tier || "featured") !== "featured" ? " (only some forecasters cover the full network)" : ""}.</p>`;
+  } else {
+    const r = best.r;
+    const d1 = r[0], d2 = r[1] !== null && r[0] !== null ? Math.max(0, r[1] - r[0]) : null;
+    const d3 = r[2] !== null && r[1] !== null ? Math.max(0, r[2] - r[1]) : null;
+    const tot = totalOf(r);
+    const prob = (() => {  // chance of 6"+ on day 1: best-ranked forecaster that gives one
+      for (const t of state.fc.teams) {
+        const x = c.rows[sid]?.[t.team];
+        if (t.team !== "baseline-climatology" && x && x[3] !== null) return { p: x[3], team: t.team };
+      }
+      return null;
+    })();
+    html += `<div class="fc-big"><span class="fc-total">${inch(tot)}</span>
+        <span class="fc-total-l">new snow expected over the next 3 days</span></div>
+      <div class="fc-days">
+        ${[d1, d2, d3].map((v, i) => `<div class="fc-day"><span class="fc-dn">${dayName(c.target_days[i])}</span>
+          <span class="fc-dv" style="color:${snowColor(v)}">${inch(v)}</span></div>`).join("")}
+      </div>
+      ${r[4] !== null && r[5] !== null ? `<p class="fc-range">Likely range for the 3 days: <b>${inch(r[4])} – ${inch(r[5])}</b> (80% chance it lands in here)</p>` : ""}
+      ${prob ? `<p class="fc-range">Chance of 6″ or more on ${dayName(c.target_days[0])}: <b>${Math.round(prob.p * 100)}%</b></p>` : ""}
+      <p class="fc-src">Forecast from <b>${prettyTeam(best.team)}</b> ${kindTag(best.team)}, ${best.score !== null
+        ? `the most accurate forecaster in this league so far (${scoreText(best)}).`
+        : "the best available (this league has no scores yet)."}</p>`;
+    // every forecaster, best first
+    const rows = state.fc.teams.filter((t) => c.rows[sid]?.[t.team]);
+    html += `<details class="fc-all" open><summary>All ${rows.length} forecasts for this station</summary>
+      <table class="fc-table"><thead><tr><th>Forecaster</th><th title="Season Powder Score in this league">Score</th>
+      <th>${dayName(c.target_days[0]).split(",")[0]}</th><th>3 days</th></tr></thead><tbody>
+      ${rows.map((t) => {
+        const x = c.rows[sid][t.team];
+        const cls = t.team === best.team ? "fc-best" : t.team === "baseline-climatology" ? "fc-climo" : "";
+        return `<tr class="${cls}"><td>${prettyTeam(t.team)}</td><td>${t.score === null || t.score === undefined ? "–" : fmt(t.score, 0)}</td>
+          <td>${inch(x[0])}</td><td>${inch(totalOf(x))}</td></tr>`;
+      }).join("")}</tbody></table></details>`;
+  }
+  // how the last scored round went here
+  const lastR = state.fc?.last;
+  const truth = lastR?.truth?.[sid];
+  const recent = lastR && Date.now() - new Date(lastR.target_days[2] + "T00:00:00Z") < 30 * 86400e3;
+  if (lastR && truth && recent) {
+    const fell = truth[2] ?? truth[1] ?? truth[0];
+    const lrows = lastR.rows[sid] || {};
+    const top = state.fc.teams.filter((t) => lrows[t.team] && t.team !== "baseline-climatology").slice(0, 4);
+    html += `<details class="fc-all"><summary>Last time: ${inch(fell)} actually fell (${dayName(lastR.target_days[0])} – ${dayName(lastR.target_days[2])})</summary>
+      <table class="fc-table"><thead><tr><th>Forecaster</th><th>Predicted</th><th>Missed by</th></tr></thead><tbody>
+      ${top.map((t) => { const p = lrows[t.team][2] ?? lrows[t.team][1] ?? lrows[t.team][0];
+        return `<tr><td>${prettyTeam(t.team)}</td><td>${inch(p)}</td><td>${p === null || fell === null ? "—" : inch(Math.abs(p - fell))}</td></tr>`; }).join("")}
+      </tbody></table></details>`;
+  }
+  if (state.snowfall?.[sid]?.dates?.length) {
+    html += `<p><a href="#snow-history" class="fc-link" data-sid="${sid}">See this season's snow at ${s.resort} →</a></p>`;
+  }
+  panel.innerHTML = html;
+  panel.querySelector(".fc-link")?.addEventListener("click", () => {
+    const sel = document.getElementById("snow-station");
+    sel.value = sid; sel.dispatchEvent(new Event("change"));
+  });
 }
 
 function findStation(q) {
   const sid = q.split(" · ").pop();
-  const m = markers[sid];
-  if (m) { map.setView(m.getLatLng(), 10); m.openPopup(); }
+  if (markers[sid]) showStation(sid);
 }
 
 function renderTrackOptions() {
@@ -535,6 +681,9 @@ async function selectLeague(name) {
   document.getElementById("truth-note").textContent = lg.truth_note || TRUTH_NOTES[lg.truth_source] || "";
   renderHealth(lg);
 
+  state.fc = null;
+  try { state.fc = await loadJSON(`data/forecasts-${name}.json`); } catch (e) { /* none yet */ }
+  try { state.snowfall = await loadJSON(`data/snowfall-${name}.json`); } catch (e) { state.snowfall = {}; }
   try {
     state.stations = await loadJSON(`data/stations-${name}.json`);
     renderMap(state.stations);
