@@ -400,5 +400,34 @@
    "baseline-ukmo": 9.28,
    "baseline-zeros": 0.0
   }
+ },
+ {
+  "round_id": "2026-10-24",
+  "biggest_24h": {
+   "station_id": "327:CO:SNTL",
+   "resort": "Beartown",
+   "inches": 12.0
+  },
+  "qc": {
+   "station_horizons_valid": 2772,
+   "station_horizons_voided": 207
+  },
+  "teams": {
+   "baseline-aifs": 0.88,
+   "baseline-climatology": 0.0,
+   "baseline-consensus": 8.69,
+   "baseline-ecmwf": 6.59,
+   "baseline-gem": -25.82,
+   "baseline-gfs": 3.0,
+   "baseline-icon": -6.68,
+   "baseline-ndfd": 5.04,
+   "baseline-openmeteo": 3.0,
+   "baseline-persistence": 8.39,
+   "baseline-ukmo": 4.41,
+   "baseline-wpc": 31.48,
+   "baseline-zeros": 0.0,
+   "house-blend": 6.01,
+   "open-powder-ml": 10.06
+  }
  }
 ]
