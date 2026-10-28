@@ -13,7 +13,7 @@
 2. Forecast each station_id × horizon_h (24, 48, 72 — cumulative inches of new
    snow from local day D). Any data source is allowed; nothing after the cutoff.
 3. Write a CSV: `station_id,horizon_h,snowfall_in` (+ optional
-   `p10,p25,p50,p75,p90`, `prob_6in` on 24h rows).
+   `p10,p25,p50,p75,p90`, `prob_6in` on 24h rows, `swe_in` = new-snow water in inches).
 4. Open a pull request on https://github.com/andrewnakas/powderbench adding the
    file at `submission_path` before `cutoff_utc`. A bot validates and
    auto-merges valid PRs in minutes.
@@ -28,7 +28,8 @@
 ## Scoring
 Powder Accuracy = 100 × (1 − MAE / MAE_climatology) on the stations you
 predicted; ranked on featured stations (≥70% coverage, ≥5 rounds). Side boards:
-full network and per region. Quantiles → pinball loss; prob_6in → Brier.
+full network and per region. Quantiles → pinball loss; prob_6in → Brier;
+swe_in → SWE Accuracy and Density Accuracy (where truth has SWE: SNOTEL).
 
 ## Docs
 - Rules: https://github.com/andrewnakas/powderbench/blob/main/docs/RULES.md

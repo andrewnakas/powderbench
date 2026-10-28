@@ -16,7 +16,7 @@ def test_forecast_files_shape():
             assert cur["status"] in ("open", "locked") and len(cur["target_days"]) == 3
             for rows in list(cur["rows"].values())[:50]:
                 for vals in rows.values():
-                    assert len(vals) == 6
+                    assert len(vals) == 8
         last = f["last"]
         if last:
             assert set(last["rows"]) <= set(last["truth"])

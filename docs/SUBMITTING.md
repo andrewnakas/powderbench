@@ -55,6 +55,8 @@ Optional columns:
 - `p10,p25,p50,p75,p90` — your quantiles for the probabilistic track
   (all five or none per row, non-decreasing).
 - `prob_6in` — probability of ≥6" in the 24h window (only read on horizon-24 rows).
+- `swe_in` — water equivalent of the new snow, in inches, cumulative like `snowfall_in`.
+  It is scored on the Water (SWE) and Density boards where stations measure SWE.
 
 Check before you push:
 

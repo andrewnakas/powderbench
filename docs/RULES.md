@@ -34,7 +34,8 @@ numbers never leak into the other leagues' truth (see [DATA.md](DATA.md)).
 - Your team name is the filename. One team per person/bot; sockpuppets get removed
   (the only exception is the declared research entries below).
 - Required columns: `station_id, horizon_h, snowfall_in`.
-  Optional: `p10,p25,p50,p75,p90` (all five or none, non-decreasing) and `prob_6in`.
+  Optional: `p10,p25,p50,p75,p90` (all five or none, non-decreasing), `prob_6in`, and
+  `swe_in` (the new snow's water equivalent in inches, cumulative like `snowfall_in`).
 - A submission is **on time** iff its file first landed on `main` before the cutoff.
   GitHub sets merge timestamps — they cannot be forged by backdating commits. Open
   PRs early; a bot verifies and **auto-merges valid submissions within minutes**
@@ -69,6 +70,15 @@ numbers never leak into the other leagues' truth (see [DATA.md](DATA.md)).
 - **Probabilistic track**: mean pinball loss over the five quantiles.
 - **Powder Alert track**: Brier score on the event "≥6 inches in the 24h window",
   from your `prob_6in`.
+- **Water (SWE) and density tracks**: from your optional `swe_in`, wherever the truth
+  source weighs the snow (SNOTEL, in the stations league).
+  - **SWE Accuracy:** the Powder Accuracy formula applied to the new snow's water.
+    The no-skill reference is climatology's snowfall at 10:1.
+  - **Density Accuracy:** the error in the new snow's density (water ÷ depth),
+    measured against always assuming 10%. It is scored on windows with ≥ 2″ of new
+    snow.
+  - Note that SNOTEL's depth change is net of settling, so measured densities run a
+    little high. That affects every team equally.
 - Season aggregates are the mean of your per-round scores.
 
 ## Featured stations, the full network, and regions

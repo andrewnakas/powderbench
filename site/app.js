@@ -484,6 +484,16 @@ function bestFor(sid) {
 
 function totalOf(r) { return r ? (r[2] ?? r[1] ?? r[0]) : null; }
 
+/* New-snow density (water / snow depth) in skier's words. */
+function snowType(d) {
+  if (d < 0.05) return "blower, ultra-light";
+  if (d < 0.08) return "light powder";
+  if (d < 0.11) return "classic powder";
+  if (d < 0.15) return "dense powder";
+  if (d < 0.20) return "heavy, wet snow";
+  return "very wet, ‘Sierra cement’";
+}
+
 function renderLegend() {
   document.getElementById("fc-legend").innerHTML =
     '<span class="fine">3-day snow (best forecast):</span>' +
@@ -590,6 +600,18 @@ function showStation(sid, pan = true) {
       </div>
       ${r[4] !== null && r[5] !== null ? `<p class="fc-range">Likely range for the 3 days: <b>${inch(r[4])} – ${inch(r[5])}</b> (80% chance it lands in here)</p>` : ""}
       ${prob ? `<p class="fc-range">Chance of 6″ or more on ${dayName(c.target_days[0])}: <b>${Math.round(prob.p * 100)}%</b></p>` : ""}
+      ${(() => {  // water content + density, from the most accurate forecaster that gives SWE
+        if (!tot || tot < 0.5) return "";
+        for (const t of state.fc.teams) {
+          const x = c.rows[sid]?.[t.team];
+          if (x && x[7] !== null && x[7] !== undefined && totalOf(x)) {
+            const dens = x[7] / totalOf(x);
+            return `<p class="fc-range">Water in that snow: <b>${inch(x[7], 2)}</b> · density <b>${(dens * 100).toFixed(0)}%</b>
+              (${snowType(dens)}) <span class="fine">from ${prettyTeam(t.team)}</span></p>`;
+          }
+        }
+        return "";
+      })()}
       <p class="fc-src">Forecast from <b>${prettyTeam(best.team)}</b> ${kindTag(best.team)}, ${best.score !== null
         ? `the most accurate forecaster in this league so far (${scoreText(best)}).`
         : "the best available (this league has no scores yet)."}</p>`;
@@ -613,7 +635,8 @@ function showStation(sid, pan = true) {
     const fell = truth[2] ?? truth[1] ?? truth[0];
     const lrows = lastR.rows[sid] || {};
     const top = state.fc.teams.filter((t) => lrows[t.team] && t.team !== "baseline-climatology").slice(0, 4);
-    html += `<details class="fc-all"><summary>Last time: ${inch(fell)} actually fell (${dayName(lastR.target_days[0])} – ${dayName(lastR.target_days[2])})</summary>
+    const fellSwe = truth[3];
+    html += `<details class="fc-all"><summary>Last time: ${inch(fell)} actually fell${fellSwe !== null && fellSwe !== undefined && fell > 0.5 ? ` (${inch(fellSwe, 2)} of water, ${Math.round(100 * fellSwe / fell)}% dense)` : ""} (${dayName(lastR.target_days[0])} – ${dayName(lastR.target_days[2])})</summary>
       <table class="fc-table"><thead><tr><th>Forecaster</th><th>Predicted</th><th>Missed by</th></tr></thead><tbody>
       ${top.map((t) => { const p = lrows[t.team][2] ?? lrows[t.team][1] ?? lrows[t.team][0];
         return `<tr><td>${prettyTeam(t.team)}</td><td>${inch(p)}</td><td>${p === null || fell === null ? "—" : inch(Math.abs(p - fell))}</td></tr>`; }).join("")}
@@ -663,14 +686,47 @@ function renderHall(months) {
     </tr>`).join("");
 }
 
+const METRIC = {
+  swe: { key: "swe_accuracy", label: "SWE Accuracy", days: "swe_rounds",
+    note: "Ranked by <strong>SWE Accuracy</strong>: how much smaller the misses in the snow's <em>water</em> are than guessing the usual amount (at 10:1). Scored where stations weigh the snow (SNOTEL), for forecasters that send water amounts. Higher is better." },
+  density: { key: "density_accuracy", label: "Density Accuracy", days: "swe_rounds",
+    note: "Ranked by <strong>Density Accuracy</strong>: how well the forecast called light vs heavy snow (water ÷ depth), compared with always assuming the classic 10:1 ratio. Scored on days with 2″+ of new snow. Higher is better." },
+};
+let activeMetric = "depth";
+
+function renderMetricBoard(entries) {
+  const m = METRIC[activeMetric];
+  const thead = document.querySelector("#board thead tr");
+  thead.innerHTML = `<th>#</th><th>Forecaster</th><th>${m.label} ⓘ</th><th title="Rounds scored on this track">Days</th>`;
+  const rows = (entries || []).filter((t) => t[m.key] !== null && t[m.key] !== undefined)
+    .sort((a, b) => b[m.key] - a[m.key]);
+  const tbody = document.querySelector("#board tbody");
+  tbody.innerHTML = rows.length ? rows.map((t, i) => `<tr class="${t.is_baseline ? "baseline" : ""}">
+      <td>${i + 1}</td><td class="team">${prettyTeam(t.team)} ${kindTag(t.team)}</td>
+      <td class="${t[m.key] > 0 ? "score-pos" : "score-neg"}">${fmt(t[m.key], 1)}</td><td>${t[m.days] ?? "—"}</td></tr>`).join("")
+    : `<tr><td colspan="4" style="text-align:center;color:var(--muted)">No forecaster has been scored on this yet.
+        Forecasts that include water amounts (<code>swe_in</code>) are scored once their rounds resolve.</td></tr>`;
+}
+
+let depthHead = null;
 function renderCurrentBoard() {
+  const thead = document.querySelector("#board thead tr");
+  if (!depthHead) depthHead = thead.innerHTML;
+  const note = document.getElementById("metric-note");
+  if (activeMetric !== "depth") {
+    note.innerHTML = METRIC[activeMetric].note; note.style.display = "";
+    renderMetricBoard(state.lb[activeWindow()] || state.lb.season);
+    return;
+  }
+  note.style.display = "none";
+  thead.innerHTML = depthHead;
   const track = document.getElementById("board-track").value;
   if (track) renderBoard((state.lb.tracks || {})[track], state.lb.generated_rounds);
   else renderBoard(state.lb[activeWindow()], state.lb.generated_rounds);
 }
 
 function activeWindow() {
-  return document.querySelector(".tab.active")?.dataset.window || "season";
+  return document.querySelector(".tab.active[data-window]")?.dataset.window || "season";
 }
 
 async function selectLeague(name) {
@@ -782,6 +838,14 @@ function renderHeroStats(leagues) {
     })
   );
   document.getElementById("board-track").addEventListener("change", renderCurrentBoard);
+  document.querySelectorAll(".mtab").forEach((btn) =>
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".mtab").forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      activeMetric = btn.dataset.metric;
+      renderCurrentBoard();
+    })
+  );
   document.getElementById("station-search").addEventListener("change", (e) => findStation(e.target.value));
   try { sznArchive = await loadJSON("data/seasons/southern-stations/index.json"); } catch (e) { /* optional */ }
   const fromHash = location.hash.match(/^#league=(\w+)$/)?.[1];

@@ -265,3 +265,10 @@ td.team a:hover { color: var(--accent); }
   .fc-panel { max-height: none; }
   .scale-ticks { font-size: 11.5px; }
 }
+
+.metric-tabs { margin-bottom: 4px; }
+.mtab {
+  background: var(--panel); color: var(--muted); border: 1px solid var(--line);
+  padding: 7px 14px; border-radius: 999px; cursor: pointer; font: inherit; font-size: 14px; font-weight: 600;
+}
+.mtab.active { color: #06121f; background: var(--accent); border-color: var(--accent); }

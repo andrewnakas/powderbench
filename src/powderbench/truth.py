@@ -61,16 +61,19 @@ def daily_snowfall(obs: pd.DataFrame) -> pd.DataFrame:
                     elif w1 - w0 < SWE_SUPPORT_MIN_IN:
                         flag = QC_NO_SWE_SUPPORT
             valid = flag == QC_OK
+            swe_ok = valid and not (pd.isna(w0) or pd.isna(w1))
             out.append(
                 {
                     "station_id": station_id,
                     "date": d,
                     "snow24": max(s1 - s0, 0.0) if valid else float("nan"),
+                    # new water on the snowpack (the SWE track); density = swe24 / snow24
+                    "swe24": max(w1 - w0, 0.0) if swe_ok else float("nan"),
                     "valid": valid,
                     "qc_flag": flag,
                 }
             )
-    return pd.DataFrame(out, columns=["station_id", "date", "snow24", "valid", "qc_flag"])
+    return pd.DataFrame(out, columns=["station_id", "date", "snow24", "swe24", "valid", "qc_flag"])
 
 
 def window_truth(daily: pd.DataFrame, target_day: date, horizons: tuple[int, ...] = HORIZONS) -> pd.DataFrame:
@@ -79,9 +82,11 @@ def window_truth(daily: pd.DataFrame, target_day: date, horizons: tuple[int, ...
     horizon 24 = day 1 total, 48 = days 1-2, 72 = days 1-3. A window is valid
     only if every component day passed QC.
 
-    Returns: station_id, horizon_h, truth_in, valid.
+    Returns: station_id, horizon_h, truth_in, valid, truth_swe_in (the
+    snow-water gain where the source measures SWE and every day has it).
     """
     rows = []
+    has_swe = "swe24" in daily.columns
     for station_id, grp in daily.groupby("station_id"):
         grp = grp.set_index("date")
         for h in horizons:
@@ -89,7 +94,11 @@ def window_truth(daily: pd.DataFrame, target_day: date, horizons: tuple[int, ...
             present = [d for d in days if d in grp.index]
             valid = len(present) == len(days) and all(grp.loc[d, "valid"] for d in days)
             truth = sum(grp.loc[d, "snow24"] for d in days) if valid else float("nan")
-            rows.append(
-                {"station_id": station_id, "horizon_h": h, "truth_in": truth, "valid": valid}
-            )
-    return pd.DataFrame(rows, columns=["station_id", "horizon_h", "truth_in", "valid"])
+            swe = float("nan")
+            if valid and has_swe:
+                vals = [grp.loc[d, "swe24"] for d in days]
+                if not any(pd.isna(v) for v in vals):
+                    swe = float(sum(vals))
+            rows.append({"station_id": station_id, "horizon_h": h, "truth_in": truth, "valid": valid,
+                         "truth_swe_in": swe})
+    return pd.DataFrame(rows, columns=["station_id", "horizon_h", "truth_in", "valid", "truth_swe_in"])

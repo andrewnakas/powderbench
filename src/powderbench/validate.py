@@ -4,6 +4,7 @@ A submission is a CSV with one row per (station_id, horizon_h):
   required: station_id, horizon_h, snowfall_in
   optional: p10, p25, p50, p75, p90 (all five or none, non-decreasing)
   optional: prob_6in (only meaningful on horizon 24 rows)
+  optional: swe_in (new-snow water equivalent, inches; SWE and density tracks)
 """
 
 from __future__ import annotations
@@ -90,6 +91,13 @@ def validate_submission(path: Path | str, league: object = None,
             res.errors.append("quantiles must be non-decreasing (p10 <= p25 <= ... <= p90)")
         if len(q) and ((q < 0) | (q > MAX_SNOWFALL_IN)).any().any():
             res.errors.append(f"quantiles must be within [0, {MAX_SNOWFALL_IN}]")
+
+    if "swe_in" in df.columns:  # optional: new-snow water equivalent, inches (SWE/density tracks)
+        w = pd.to_numeric(df["swe_in"], errors="coerce")
+        if (df["swe_in"].notna() & w.isna()).any():
+            res.errors.append("swe_in contains non-numeric values")
+        elif ((w < 0) | (w > 50)).any():
+            res.errors.append("swe_in must be within [0, 50]")
 
     if "prob_6in" in df.columns:
         p = pd.to_numeric(df["prob_6in"], errors="coerce").dropna()

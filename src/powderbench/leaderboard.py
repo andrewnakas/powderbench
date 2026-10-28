@@ -50,6 +50,10 @@ def aggregate(rows: pd.DataFrame, min_rounds: int = MIN_ROUNDS) -> pd.DataFrame:
             "bias": _mean(grp.get("bias")),
             "pinball": _mean(grp.get("pinball")),
             "brier6": _mean(grp.get("brier6")),
+            # optional SWE / density tracks (rounds where the team sent swe_in)
+            "swe_accuracy": _mean(grp.get("swe_accuracy")),
+            "density_accuracy": _mean(grp.get("density_accuracy")),
+            "swe_rounds": int(grp["swe_accuracy"].notna().sum()) if "swe_accuracy" in grp else 0,
         }
         teams.append(entry)
     board = pd.DataFrame(teams)

@@ -53,7 +53,8 @@ def score_round(pred: pd.DataFrame, truth: pd.DataFrame, climo_pred: pd.DataFram
     }
     if n_scored == 0:
         metrics.update({"mae": None, "rmse": None, "bias": None, "powder_score": None,
-                        "mae_by_horizon": {}, "pinball": None, "brier6": None})
+                        "mae_by_horizon": {}, "pinball": None, "brier6": None,
+                        "swe_accuracy": None, "swe_mae": None, "density_accuracy": None, "density_mae": None})
         return metrics
 
     err = merged["snowfall_in"] - merged["truth_in"]
@@ -94,6 +95,8 @@ def score_round(pred: pd.DataFrame, truth: pd.DataFrame, climo_pred: pd.DataFram
             metrics["pinball"] = round(sum(losses) / len(losses), 4)
             metrics["n_pinball"] = int(len(qrows))
 
+    metrics.update(score_swe(merged, climo_pred))
+
     metrics["brier6"] = None
     if "prob_6in" in merged.columns:
         h24 = merged[(merged["horizon_h"] == 24)].dropna(subset=["prob_6in"])
@@ -105,6 +108,42 @@ def score_round(pred: pd.DataFrame, truth: pd.DataFrame, climo_pred: pd.DataFram
             metrics["brier6"] = round(sum(scores) / len(scores), 4)
             metrics["n_brier6"] = int(len(h24))
     return metrics
+
+
+# SWE and density tracks (optional `swe_in` column; truth where the source
+# measures SWE, i.e. SNOTEL). The no-skill references mirror Powder Accuracy:
+# SWE = climatology's snowfall at the classic 10:1 ratio; density = always 10%.
+REF_DENSITY = 0.10
+DENSITY_MIN_SNOW_IN = 2.0  # density is only meaningful on real snowfalls
+DENSITY_MIN_ROWS = 5
+
+
+def score_swe(merged: pd.DataFrame, climo_pred: pd.DataFrame | None) -> dict:
+    out = {"swe_accuracy": None, "swe_mae": None, "density_accuracy": None, "density_mae": None}
+    if "swe_in" not in merged.columns or "truth_swe_in" not in merged.columns:
+        return out
+    rows = merged.dropna(subset=["swe_in", "truth_swe_in"])
+    if not len(rows):
+        return out
+    out["swe_mae"] = round(float((rows["swe_in"] - rows["truth_swe_in"]).abs().mean()), 4)
+    out["n_swe"] = int(len(rows))
+    if climo_pred is not None:
+        ref = rows.merge(climo_pred[["station_id", "horizon_h", "snowfall_in"]].rename(
+            columns={"snowfall_in": "climo_in"}), on=["station_id", "horizon_h"], how="inner")
+        if len(ref):
+            mae_ref = float((ref["climo_in"] * REF_DENSITY - ref["truth_swe_in"]).abs().mean())
+            acc = powder_score(float((ref["swe_in"] - ref["truth_swe_in"]).abs().mean()), mae_ref)
+            out["swe_accuracy"] = None if acc is None else round(acc, 2)
+    d = rows[(rows["truth_in"] >= DENSITY_MIN_SNOW_IN) & (rows["truth_swe_in"] > 0)
+             & (rows["snowfall_in"] >= 0.5) & (rows["swe_in"] > 0)]
+    if len(d) >= DENSITY_MIN_ROWS:
+        true_dens = d["truth_swe_in"] / d["truth_in"]
+        err = (d["swe_in"] / d["snowfall_in"] - true_dens).abs().mean()
+        acc = powder_score(float(err), float((REF_DENSITY - true_dens).abs().mean()))
+        out["density_mae"] = round(float(err) * 100, 2)  # percentage points
+        out["density_accuracy"] = None if acc is None else round(acc, 2)
+        out["n_density"] = int(len(d))
+    return out
 
 
 TRACK_FULL = "full"

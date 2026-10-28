@@ -134,6 +134,12 @@
       <h2>Leaderboard</h2>
       <p class="section-note">Ranked by <strong>Powder Accuracy</strong>: #1 is the most accurate
         forecaster in this league, and everyone below scored lower. Higher is better.</p>
+      <div class="board-controls metric-tabs" id="metric-tabs">
+        <button class="mtab active" data-metric="depth" title="New snow depth (the headline)">Snow depth</button>
+        <button class="mtab" data-metric="swe" title="Water in the new snow (SWE), where stations measure it">Water (SWE)</button>
+        <button class="mtab" data-metric="density" title="How light or heavy the new snow is (water ÷ depth)">Density</button>
+      </div>
+      <p class="fine" id="metric-note" style="display:none"></p>
       <div class="board-controls">
         <button class="tab active" data-window="season">Season</button>
         <button class="tab" data-window="last30">Last 30 rounds</button>

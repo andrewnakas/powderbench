@@ -7,9 +7,9 @@ site/data/forecasts-<league>.json:
            station is simply the first team in this list that forecast it
   current: the newest round with forecasts — round_id, cutoff_utc, status
            (open = still taking forecasts, locked = cutoff passed), target_days,
-           rows {station_id: {team: [h24, h48, h72, prob_6in, p10_72, p90_72]}}
+           rows {station_id: {team: [h24, h48, h72, prob_6in, p10_72, p90_72, swe_24, swe_72]}}
   last:    the newest resolved round — round_id, target_days,
-           truth {station_id: [h24, h48, h72]}, rows {station_id: {team: [h24, h48, h72]}}
+           truth {station_id: [h24, h48, h72, swe_72]}, rows {station_id: {team: [h24, h48, h72]}}
 
 Numbers are cumulative inches from local day D (as submitted), rounded to 0.1.
 """
@@ -97,7 +97,8 @@ def _current(league: League) -> dict | None:
         for sid, by_h in _read_submission(p).items():
             g = lambda h, c="snowfall_in": _num(by_h.get(h, {}).get(c))  # noqa: E731
             rows.setdefault(sid, {})[p.stem] = [
-                g(24), g(48), g(72), _num(by_h.get(24, {}).get("prob_6in"), 2), g(72, "p10"), g(72, "p90")]
+                g(24), g(48), g(72), _num(by_h.get(24, {}).get("prob_6in"), 2), g(72, "p10"), g(72, "p90"),
+                _num(by_h.get(24, {}).get("swe_in"), 2), _num(by_h.get(72, {}).get("swe_in"), 2)]
     cutoff = datetime.fromisoformat(m["cutoff_utc"])
     return {"round_id": m["round_id"], "cutoff_utc": m["cutoff_utc"],
             "status": "open" if cutoff > now else "locked",
@@ -115,8 +116,11 @@ def _last(league: League) -> dict | None:
             for r in csv.DictReader(f):
                 if str(r.get("valid")).lower() not in ("true", "1"):
                     continue
-                truth.setdefault(r["station_id"], [None, None, None])[
-                    {24: 0, 48: 1, 72: 2}[int(float(r["horizon_h"]))]] = _num(r["truth_in"])
+                t = truth.setdefault(r["station_id"], [None, None, None, None])
+                h = int(float(r["horizon_h"]))
+                t[{24: 0, 48: 1, 72: 2}[h]] = _num(r["truth_in"])
+                if h == 72:
+                    t[3] = _num(r.get("truth_swe_in"), 2)
         rows: dict[str, dict[str, list]] = {}
         for p in sorted((sub_root / rdir.name).glob("*.csv")):
             if p.stem in HIDE:
