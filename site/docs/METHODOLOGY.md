@@ -25,6 +25,7 @@ league's cutoff, a competitor submits, for every station (or any subset):
 | `snowfall_in` (required) | point forecast of new snow, inches, cumulative over the horizon |
 | `p10, p25, p50, p75, p90` (optional) | quantiles of the same quantity |
 | `prob_6in` (optional) | probability of ≥ 6″ in the first 24 h |
+| `swe_in` (optional) | the new snow's water equivalent (inches, cumulative) |
 
 Horizons are **24 h** (station-local day *D*), **48 h** (*D*…*D+1*) and **72 h**
 (*D*…*D+2*). The station set of a round is frozen when the round opens
@@ -149,6 +150,17 @@ exists.
 
 Side metrics: mean **pinball loss** over the five quantiles (probabilistic
 track) and the **Brier score** of `prob_6in` (Powder Alert track).
+
+**Water (SWE) and density.** SNOTEL weighs the snowpack (SWE) as well as measuring its
+depth. A day's water truth is its SWE gain, counted only on days whose depth change
+passed QC, and a window counts only when every day has SWE.
+- **SWE Accuracy** = 100 × (1 − MAE_swe / MAE_ref). The reference is climatology's
+  snowfall at 10:1.
+- **Density Accuracy** compares the forecast density (`swe_in` ÷ `snowfall_in`) with
+  the measured density (SWE gain ÷ depth gain) on windows with ≥ 2″ of new snow. The
+  reference is a constant 10%.
+- The depth change is net of settling, so measured density reads a little high. That
+  bias is the same for every team.
 
 **Featured stations and tracks.** Large leagues rank everyone on a curated
 *featured* set (the marquee ski zones). Forecasting the rest of the network is

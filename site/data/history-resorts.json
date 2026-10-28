@@ -1989,5 +1989,34 @@
    "baseline-ukmo": -138.79,
    "baseline-zeros": 4.64
   }
+ },
+ {
+  "round_id": "2026-10-25",
+  "biggest_24h": {
+   "station_id": "chapelco:AR:RESORT",
+   "resort": "Chapelco",
+   "inches": 0.8
+  },
+  "qc": {
+   "station_horizons_valid": 29,
+   "station_horizons_voided": 10
+  },
+  "teams": {
+   "baseline-aifs": -15.53,
+   "baseline-climatology": 0.0,
+   "baseline-consensus": 4.49,
+   "baseline-ecmwf": 3.62,
+   "baseline-gem": 4.5,
+   "baseline-gfs": -1.02,
+   "baseline-icon": 8.27,
+   "baseline-openmeteo": 21.69,
+   "baseline-persistence": 66.83,
+   "baseline-ukmo": -4.23,
+   "baseline-zeros": 4.5,
+   "house-analog": -161.35,
+   "house-blend": 0.92,
+   "house-gbm": -103.43,
+   "open-powder-ml": -420.8
+  }
  }
 ]

@@ -8,16 +8,16 @@
   "measured": false,
   "n_stations": 996,
   "n_featured": 45,
-  "n_rounds_resolved": 28,
+  "n_rounds_resolved": 29,
   "health": {
-   "last_round": "2026-10-24",
-   "qc_valid_share": 0.931
+   "last_round": "2026-10-25",
+   "qc_valid_share": 0.935
   },
   "open_round": {
-   "round_id": "2026-10-28",
-   "cutoff_utc": "2026-10-28T00:00:00+00:00"
+   "round_id": "2026-10-29",
+   "cutoff_utc": "2026-10-29T00:00:00+00:00"
   },
-  "last_resolved": "2026-10-24"
+  "last_resolved": "2026-10-25"
  },
  {
   "name": "observers",
@@ -28,16 +28,16 @@
   "measured": true,
   "n_stations": 1158,
   "n_featured": 98,
-  "n_rounds_resolved": 1,
+  "n_rounds_resolved": 2,
   "health": {
-   "last_round": "2026-10-21",
-   "qc_valid_share": 0.369
+   "last_round": "2026-10-22",
+   "qc_valid_share": 0.267
   },
   "open_round": {
-   "round_id": "2026-10-28",
-   "cutoff_utc": "2026-10-28T00:00:00+00:00"
+   "round_id": "2026-10-29",
+   "cutoff_utc": "2026-10-29T00:00:00+00:00"
   },
-  "last_resolved": "2026-10-21"
+  "last_resolved": "2026-10-22"
  },
  {
   "name": "resorts-na",
@@ -51,11 +51,11 @@
   "n_rounds_resolved": 0,
   "health": {
    "latest_scrape": {
-    "at": "2026-10-27T00:00:53+00:00",
+    "at": "2026-10-28T00:10:32+00:00",
     "status": {
-     "ok": 17,
-     "no_report": 8,
-     "stale": 12
+     "ok": 16,
+     "no_report": 10,
+     "stale": 11
     }
    }
   },
@@ -85,16 +85,16 @@
   "measured": false,
   "n_stations": 23,
   "n_featured": 23,
-  "n_rounds_resolved": 106,
+  "n_rounds_resolved": 107,
   "health": {
-   "last_round": "2026-10-19",
+   "last_round": "2026-10-20",
    "qc_valid_share": 0.841
   },
   "open_round": {
-   "round_id": "2026-10-29",
-   "cutoff_utc": "2026-10-28T11:00:00+00:00"
+   "round_id": "2026-10-30",
+   "cutoff_utc": "2026-10-29T11:00:00+00:00"
   },
-  "last_resolved": "2026-10-19"
+  "last_resolved": "2026-10-20"
  },
  {
   "name": "resorts",
@@ -105,22 +105,22 @@
   "measured": true,
   "n_stations": 13,
   "n_featured": 13,
-  "n_rounds_resolved": 104,
+  "n_rounds_resolved": 105,
   "health": {
-   "last_round": "2026-10-24",
-   "qc_valid_share": 0.769,
+   "last_round": "2026-10-25",
+   "qc_valid_share": 0.744,
    "latest_scrape": {
-    "at": "2026-10-27T18:43:52+00:00",
+    "at": "2026-10-28T18:39:18+00:00",
     "status": {
-     "no_report": 3,
-     "ok": 10
+     "no_report": 4,
+     "ok": 9
     }
    }
   },
   "open_round": {
-   "round_id": "2026-10-29",
-   "cutoff_utc": "2026-10-28T11:00:00+00:00"
+   "round_id": "2026-10-30",
+   "cutoff_utc": "2026-10-29T11:00:00+00:00"
   },
-  "last_resolved": "2026-10-24"
+  "last_resolved": "2026-10-25"
  }
 ]
