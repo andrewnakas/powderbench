@@ -10,7 +10,7 @@ only if every day in the window is valid — no partial totals).
     data/submissions/events/<event_id>/<team>.csv   station_id, snowfall_in [, p10..p90]
     data/results/events/<event_id>.json         scores
 
-Scoring: MAE and the Powder Score against a climatology storm total (the sum
+Scoring: MAE and the Powder Accuracy against a climatology storm total (the sum
 of each day's climatological mean), plus pinball loss when quantiles are
 given. Baselines: each NWP model's storm total and their median.
 """

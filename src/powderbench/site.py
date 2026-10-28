@@ -95,7 +95,7 @@ H2H_OPPONENTS = ("baseline-climatology", "baseline-gfs", "baseline-ecmwf", "base
 
 def _teams(leagues: list[League], histories: dict[str, list[dict]]) -> dict[str, dict]:
     """Per-team profile for team.html and the badges: season/last-30 board
-    entries per league, per-round Powder Scores, and head-to-head records
+    entries per league, per-round Powder Accuracy scores, and head-to-head records
     against the reference baselines (share of shared rounds won)."""
     teams: dict[str, dict] = {}
     for lg in leagues:

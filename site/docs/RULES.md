@@ -61,7 +61,7 @@ numbers never leak into the other leagues' truth (see [DATA.md](DATA.md)).
 
 ## Scoring
 
-- **Powder Score** (headline): `100 × (1 − MAE_you / MAE_climatology)`, where
+- **Powder Accuracy** (headline): `100 × (1 − MAE_you / MAE_climatology)`, where
   climatology's MAE is computed **on exactly the station-horizons you predicted** —
   partial coverage can't cherry-pick easy stations for an edge. (A station whose
   climatology is still being built drops out of the comparison for everyone.)
@@ -76,7 +76,7 @@ numbers never leak into the other leagues' truth (see [DATA.md](DATA.md)).
 Big leagues carry two kinds of station:
 
 - **Featured** stations (the marquee ski zones — big dots on the map) are the
-  **headline leaderboard**. Coverage, eligibility and the headline Powder Score
+  **headline leaderboard**. Coverage, eligibility and the headline Powder Accuracy
   are all measured on them.
 - **Network** stations (the rest of the league) are optional. Forecast them and
   you also appear on the side tracks:
@@ -84,7 +84,7 @@ Big leagues carry two kinds of station:
   - **Region · …** — one board per region (Wasatch, Tahoe, Colorado…), scored
     on the stations you forecast there.
 
-Side tracks use the same Powder Score, eligibility bar and QC; they're where
+Side tracks use the same Powder Accuracy, eligibility bar and QC; they're where
 regional specialists and full-network ML models get to shine. A round's station
 set is frozen when the round opens (`round.json`), so registry growth never
 changes an open round.
@@ -98,7 +98,7 @@ cutoff for the first storm day). Predict the **window total** at each station:
 `data/submissions/events/<event_id>/<team>.csv` with `station_id,snowfall_in`
 (optional `p10..p90`). Truth is the league's QC'd daily truth summed over the
 window — a station counts only if *every* day is valid. Scored with MAE and the
-Powder Score against a climatology storm (the sum of each day's climatological
+Powder Accuracy against a climatology storm (the sum of each day's climatological
 mean), alongside each weather model's storm total and their consensus. The same
 on-time rule applies (first landed on `main` before the cutoff). Event PRs are
 merged by a maintainer rather than the auto-merge bot.

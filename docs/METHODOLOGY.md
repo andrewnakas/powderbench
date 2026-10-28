@@ -137,7 +137,7 @@ day is. QC is deterministic and public (`powderbench/truth.py`,
 
 ## 4. Scoring
 
-**Powder Score** (headline): `100 × (1 − MAE_team / MAE_climatology)`.
+**Powder Accuracy** (headline): `100 × (1 − MAE_team / MAE_climatology)`.
 Climatology's MAE is computed on exactly the station-horizons the team
 predicted, so partial coverage cannot cherry-pick easy stations. 0 = no better
 than climatology; 100 = perfect.
@@ -230,7 +230,7 @@ tree model or analog can't forecast more snow than it has seen.
 ERA5 league backtest, Jul–Oct 2026. Each agent is compared with the baselines
 on the same rounds:
 
-| | Rounds | Powder Score | MAE (in) | Pinball | GFS on the same rounds | Climatology MAE |
+| | Rounds | Powder Accuracy | MAE (in) | Pinball | GFS on the same rounds | Climatology MAE |
 |---|---|---|---|---|---|---|
 | house-gbm | 63 | **+38.3** | 0.40 | 0.154 | −25.0 | 0.82 |
 | house-analog | 63 | +37.0 | 0.40 | 0.149 | −25.0 | 0.82 |
@@ -238,7 +238,7 @@ on the same rounds:
 
 The raw models run high against ERA5's smoother truth, which is the bias these agents
 learn. Southern resorts with `house-blend`: lowest MAE (4.23″ vs. GFS 4.37″) but a lower
-mean Powder Score (+7.4 vs. +9.4). The leagues that started this season have little
+mean Powder Accuracy (+7.4 vs. +9.4). The leagues that started this season have little
 resolved history, so the agents abstain (submit nothing) until they have enough cases.
 
 ## 6. Fairness and integrity

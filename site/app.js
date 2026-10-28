@@ -141,7 +141,7 @@ function renderRounds(rounds) {
   if (!rounds.length) strip.innerHTML = `<p class="fine">No rounds resolved yet.</p>`;
 }
 
-/* ---- The race: season-to-date mean Powder Score per team ---- */
+/* ---- The race: season-to-date mean Powder Accuracy per team ---- */
 function renderRace(history) {
   const section = document.getElementById("charts");
   const empty = document.getElementById("race-empty");
@@ -180,7 +180,7 @@ function renderRace(history) {
       maintainAspectRatio: false,
       interaction: { mode: "index", intersect: false },
       scales: {
-        y: { title: { display: true, text: "Powder Score, season-to-date" } },
+        y: { title: { display: true, text: "Powder Accuracy, season-to-date" } },
         x: { grid: { display: false } },
       },
       plugins: { legend: { labels: { boxWidth: 18, boxHeight: 3 } } },
@@ -470,7 +470,7 @@ function teamOrder() {
 }
 
 /* The best available forecast for a station: the most accurate forecaster
-   (by season Powder Score) that forecast it. Climatology is a reference, not a pick. */
+   (by season Powder Accuracy) that forecast it. Climatology is a reference, not a pick. */
 function bestFor(sid) {
   const rows = state.fc?.current?.rows?.[sid];
   if (!rows) return null;
@@ -556,7 +556,7 @@ function renderForecastStatus() {
 
 function scoreText(t) {
   if (t.score === null || t.score === undefined) return "not scored yet";
-  return `Powder Score ${fmt(t.score, 1)}`;
+  return `Powder Accuracy ${fmt(t.score, 1)}`;
 }
 
 function showStation(sid, pan = true) {
@@ -596,7 +596,7 @@ function showStation(sid, pan = true) {
     // every forecaster, best first
     const rows = state.fc.teams.filter((t) => c.rows[sid]?.[t.team]);
     html += `<details class="fc-all" open><summary>All ${rows.length} forecasts for this station</summary>
-      <table class="fc-table"><thead><tr><th>Forecaster</th><th title="Season Powder Score in this league">Score</th>
+      <table class="fc-table"><thead><tr><th>Forecaster</th><th title="Season Powder Accuracy in this league (higher = more accurate)">Accuracy</th>
       <th>${dayName(c.target_days[0]).split(",")[0]}</th><th>3 days</th></tr></thead><tbody>
       ${rows.map((t) => {
         const x = c.rows[sid][t.team];
@@ -734,7 +734,7 @@ function renderStorms(events) {
            submit <code>data/submissions/events/${e.event_id}/&lt;team&gt;.csv</code> (station_id, snowfall_in)</p>`
       : `<p>${e.biggest_total ? `Biggest: ${e.biggest_total.inches}″ at ${e.biggest_total.station_id}` : "Scored"}</p>`;
     if (e.board) {
-      body += "<table><thead><tr><th>Team</th><th>Powder Score</th><th>MAE</th></tr></thead><tbody>" +
+      body += "<table><thead><tr><th>Team</th><th>Powder Accuracy</th><th>MAE</th></tr></thead><tbody>" +
         e.board.slice(0, 8).map((b) => `<tr><td class="team">${b.team}</td><td>${fmt(b.powder_score, 1)}</td><td>${fmt(b.mae)}</td></tr>`).join("") +
         "</tbody></table>";
     }

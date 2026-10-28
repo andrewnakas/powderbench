@@ -26,7 +26,7 @@
   validate_forecast, submit_forecast. Claude Code: `claude mcp add powderbench -- powderbench mcp`.
 
 ## Scoring
-Powder Score = 100 × (1 − MAE / MAE_climatology) on the stations you
+Powder Accuracy = 100 × (1 − MAE / MAE_climatology) on the stations you
 predicted; ranked on featured stations (≥70% coverage, ≥5 rounds). Side boards:
 full network and per region. Quantiles → pinball loss; prob_6in → Brier.
 

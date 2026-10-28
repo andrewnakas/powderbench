@@ -1,7 +1,7 @@
-"""Scoring: MAE, Powder Score (skill vs. climatology), pinball loss, Brier.
+"""Scoring: MAE, Powder Accuracy (skill vs. climatology), pinball loss, Brier.
 
 All metrics are computed only on station-horizon rows whose truth passed QC.
-The Powder Score compares a team's MAE to climatology's MAE *on the same rows
+The Powder Accuracy compares a team's MAE to climatology's MAE *on the same rows
 the team predicted*, so partial-coverage teams can't cherry-pick easy stations
 for an edge.
 """

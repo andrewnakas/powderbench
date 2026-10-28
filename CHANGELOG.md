@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- The headline metric is now called **Powder Accuracy** (same formula: 100 × (1 − MAE / MAE_climatology); higher is better). The JSON field stays `powder_score`.
+- Site: snow forecast map with per-station best forecasts; plain-language scoring explainer; hourly forecast refresh.
+
 ## 0.3.0 — October 2026: northern-hemisphere scale-up
 
 **Leagues and truth**

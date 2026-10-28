@@ -113,7 +113,7 @@ def brief_markdown(b: dict) -> str:
          "## Task",
          "For every station, forecast cumulative NEW snowfall in inches for horizons 24, 48 and 72 h. "
          "Optional: quantiles p10..p90 (non-decreasing) and prob_6in (P of >= 6\" in the first 24 h). "
-         "Scored by MAE relative to climatology (Powder Score), pinball loss and Brier.",
+         "Scored by MAE relative to climatology (Powder Accuracy), pinball loss and Brier.",
          "",
          f"Output CSV columns: `{b['output']['columns']}` — {b['output']['horizons']}.",
          f"Submit: `{b['output']['submit']}`",

@@ -155,7 +155,7 @@ there's no key.
 - **Hindcast gate:** 2026-02-01…14, models on the 8 featured stations,
   climatology and persistence on all 22.
 
-  | | Powder Score |
+  | | Powder Accuracy |
   |---|---|
   | AROME | +44.9 |
   | Open-Meteo | +43.7 |
@@ -180,14 +180,14 @@ Honest caveats, disclosed everywhere the league appears:
   mutes maritime peaks (NZ/AU totals read low) and misses microclimates.
   High-resolution models over-forecast relative to ERA5's smoothed totals —
   calibrating your forecasts to the truth's scale is part of the game (July
-  2025 hindcast: GFS +49 Powder Score, the high-res best_match blend −34).
+  2025 hindcast: GFS +49 Powder Accuracy, the high-res best_match blend −34).
 - Truth is pinned to pure reanalysis (`models=era5_seamless`). The archive's
   default "best_match" blends in the same operational data the forecast
   archive serves, which would make the NWP baseline literally identical to
   truth (we hit this: MAE 0.000 before pinning).
 - ERA5 assimilates observations that also feed the live forecast models, so
   the NWP baselines are structurally correlated with the truth — treat their
-  era5-league Powder Scores as a hard, slightly flattered target.
+  era5-league Powder Accuracy scores as a hard, slightly flattered target.
 - The archive lags real time by ~5 days, so rounds resolve from D+8.
 - QC is missing-data-only (no sensor glitches to void).
 
@@ -284,8 +284,8 @@ status (2026-07-10):
 Adding a resort: [RESORTS.md](RESORTS.md).
 
 **Climatology caveat.** The resorts league has no report history yet, so its
-Powder Score reference is ERA5 climatology at the resort coordinates. Resort
-reports read systematically higher than ERA5, so early Powder Scores will look
+Powder Accuracy reference is ERA5 climatology at the resort coordinates. Resort
+reports read systematically higher than ERA5, so early Powder Accuracy scores will look
 flattered vs climatology — identically for every team, hence fair. The
 climatology will be rebuilt from actual report history after a season or two.
 

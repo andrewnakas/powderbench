@@ -2,7 +2,7 @@
 
 Used by both the live pipeline (JSON round results on disk) and hindcast mode
 (in-memory rows). Ranking rules:
-  - official rank sorts by mean Powder Score across rounds where it exists
+  - official rank sorts by mean Powder Accuracy across rounds where it exists
   - a team must appear in >= MIN_ROUNDS rounds and average >= MIN_COVERAGE
     coverage to be ranked; everyone is still listed
 """

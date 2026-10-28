@@ -90,16 +90,16 @@
     </section>
 
     <section id="scoring">
-      <h2>Powder Score in 30 seconds</h2>
+      <h2>Powder Accuracy in 30 seconds</h2>
       <div class="explain">
-        <p class="explain-lead">Powder Score answers one question: <strong>how much better is this
+        <p class="explain-lead">Powder Accuracy answers one question: <strong>how much better is this
           forecast than just guessing the usual amount of snow?</strong></p>
         <ol class="explain-steps">
           <li>For every station and day we check the forecast against the snow that <strong>actually fell</strong>
             and note how far off it was (the “miss”, in inches).</li>
           <li>We do the same for a no-skill guess: the <strong>typical</strong> snowfall for that
             station on that date, from decades of records (“climatology”).</li>
-          <li><strong>Powder Score</strong> = how much smaller your misses are than the typical guess's
+          <li><strong>Powder Accuracy</strong> = how much smaller your misses are than the typical guess's
             misses, as a percentage.</li>
         </ol>
         <div class="scale">
@@ -113,7 +113,7 @@
         </div>
         <p class="example"><strong>Example:</strong> guessing the usual amount misses by 2.0″ on
           average. Your forecast misses by 1.2″. You cut the misses by 40%, so your
-          <strong>Powder Score is 40</strong>. Higher is better. Anything above the weather models
+          <strong>Powder Accuracy is 40</strong>. Higher is better. Anything above the weather models
           is beating the pros.</p>
         <details>
           <summary>The other columns</summary>
@@ -132,6 +132,8 @@
 
     <section id="leaderboard">
       <h2>Leaderboard</h2>
+      <p class="section-note">Ranked by <strong>Powder Accuracy</strong>: #1 is the most accurate
+        forecaster in this league, and everyone below scored lower. Higher is better.</p>
       <div class="board-controls">
         <button class="tab active" data-window="season">Season</button>
         <button class="tab" data-window="last30">Last 30 rounds</button>
@@ -145,7 +147,7 @@
           <thead>
             <tr>
               <th>#</th><th>Forecaster</th>
-              <th title="How much smaller the misses are than guessing the usual amount, in %. 0 = no better than the usual; higher is better. See “Powder Score in 30 seconds”.">Powder Score ⓘ</th>
+              <th title="How much smaller the misses are than guessing the usual amount, in %. 0 = no better than the usual; higher is better. See “Powder Accuracy in 30 seconds”.">Powder Accuracy ⓘ</th>
               <th title="Average miss, in inches (lower is better)">Avg miss</th>
               <th title="How well the forecast ranges (low–high) matched reality (lower is better)">Range score</th>
               <th title="How well the chance-of-6″+ forecasts matched reality (lower is better)">6″ alert score</th>
@@ -161,11 +163,11 @@
       <p class="fine" id="data-health"></p>
       <div id="hall" style="display:none">
         <h3>Monthly champions</h3>
-        <p class="fine">Best Powder Score each month among competitors and house agents
+        <p class="fine">Best Powder Accuracy each month among competitors and house agents
           (10+ of the month's rounds), with the best weather model for comparison.</p>
         <div class="table-scroll">
           <table id="hall-table">
-            <thead><tr><th>Month</th><th>Champion</th><th>Powder Score</th><th>Best model</th><th>Rounds</th></tr></thead>
+            <thead><tr><th>Month</th><th>Champion</th><th>Powder Accuracy</th><th>Best model</th><th>Rounds</th></tr></thead>
             <tbody></tbody>
           </table>
         </div>
@@ -174,7 +176,7 @@
 
     <section id="charts">
       <h2>The race</h2>
-      <p class="section-note">Season-to-date Powder Score, round by round. 0 is
+      <p class="section-note">Season-to-date Powder Accuracy, round by round. 0 is
         climatology; the weather-model baselines are the villains to beat. Dashed
         lines are automated baselines.</p>
       <div class="chart-panel"><canvas id="race-chart"></canvas></div>
@@ -235,7 +237,7 @@
       <h2>When it snows</h2>
       <p class="section-note">Climatology at a glance: average daily snowfall by month
         (inches/day) at every station in this league, from decades of history. Brighter
-        is snowier — this is the no-skill prior every Powder Score is measured against.</p>
+        is snowier — this is the no-skill prior every Powder Accuracy is measured against.</p>
       <div class="heatmap-scroll"><div class="heatmap" id="climo-grid"></div></div>
     </section>
 
@@ -247,7 +249,7 @@
           <thead>
             <tr>
               <th>Round</th><th>Biggest 24h dump</th><th>Best team</th>
-              <th title="Powder Score of the best team that round">Score</th>
+              <th title="Powder Accuracy of the best team that round">Accuracy</th>
               <th title="Station-horizons scored / voided by QC">QC</th>
             </tr>
           </thead>

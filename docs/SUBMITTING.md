@@ -126,7 +126,7 @@ workflow with their own secrets.
 ## Your team page and badge
 
 Every scored team gets a page at `https://powderbench.com/team.html?t=<team>`:
-Powder Score and rank per league, a round-by-round chart, and head-to-head
+Powder Accuracy and rank per league, a round-by-round chart, and head-to-head
 records against GFS, ECMWF, NBM, WPC, NDFD and the consensus. Put the badge in
 your README:
 

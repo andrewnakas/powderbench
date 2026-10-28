@@ -113,7 +113,7 @@ Score yourself against any past period — the baselines run automatically:
 
 | Track | Metric | Field(s) |
 |---|---|---|
-| **Powder Score** (headline) | `100 × (1 − MAE / MAE_climatology)`, on the same station-horizons you predicted | `snowfall_in` (required) |
+| **Powder Accuracy** (headline) | `100 × (1 − MAE / MAE_climatology)`, on the same station-horizons you predicted | `snowfall_in` (required) |
 | Probabilistic | Mean pinball loss over 5 quantiles | `p10,p25,p50,p75,p90` (optional) |
 | Powder Alert | Brier score on P(≥6" in 24h) | `prob_6in` (optional) |
 
