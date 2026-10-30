@@ -1,5 +1,5 @@
 {
- "generated_utc": "2026-10-29T20:55:29+00:00",
+ "generated_utc": "2026-10-30T20:30:35+00:00",
  "note": "refreshed daily ~16 UTC; the round manifest (manifest_url) is canonical",
  "submission_schema": {
   "required": {
@@ -17,12 +17,12 @@
  "open_rounds": [
   {
    "league": "stations",
-   "round_id": "2026-10-30",
-   "cutoff_utc": "2026-10-30T00:00:00+00:00",
+   "round_id": "2026-10-31",
+   "cutoff_utc": "2026-10-31T00:00:00+00:00",
    "target_days": [
-    "2026-10-30",
     "2026-10-31",
-    "2026-11-01"
+    "2026-11-01",
+    "2026-11-02"
    ],
    "horizons_h": [
     24,
@@ -33,18 +33,18 @@
    "measured_new_snow": false,
    "n_stations": 996,
    "n_featured": 45,
-   "manifest_url": "https://raw.githubusercontent.com/andrewnakas/powderbench/main/data/rounds/stations/2026-10-30/round.json",
+   "manifest_url": "https://raw.githubusercontent.com/andrewnakas/powderbench/main/data/rounds/stations/2026-10-31/round.json",
    "stations_url": "https://powderbench.com/data/stations-stations.json",
-   "submission_path": "data/submissions/stations/2026-10-30/<your-team>.csv"
+   "submission_path": "data/submissions/stations/2026-10-31/<your-team>.csv"
   },
   {
    "league": "observers",
-   "round_id": "2026-10-30",
-   "cutoff_utc": "2026-10-30T00:00:00+00:00",
+   "round_id": "2026-10-31",
+   "cutoff_utc": "2026-10-31T00:00:00+00:00",
    "target_days": [
-    "2026-10-30",
     "2026-10-31",
-    "2026-11-01"
+    "2026-11-01",
+    "2026-11-02"
    ],
    "horizons_h": [
     24,
@@ -55,53 +55,31 @@
    "measured_new_snow": true,
    "n_stations": 1158,
    "n_featured": 98,
-   "manifest_url": "https://raw.githubusercontent.com/andrewnakas/powderbench/main/data/rounds/observers/2026-10-30/round.json",
+   "manifest_url": "https://raw.githubusercontent.com/andrewnakas/powderbench/main/data/rounds/observers/2026-10-31/round.json",
    "stations_url": "https://powderbench.com/data/stations-observers.json",
-   "submission_path": "data/submissions/observers/2026-10-30/<your-team>.csv"
+   "submission_path": "data/submissions/observers/2026-10-31/<your-team>.csv"
   },
   {
-   "league": "era5",
-   "round_id": "2026-10-31",
-   "cutoff_utc": "2026-10-30T11:00:00+00:00",
+   "league": "alps",
+   "round_id": "2026-11-01",
+   "cutoff_utc": "2026-10-31T21:00:00+00:00",
    "target_days": [
-    "2026-10-31",
     "2026-11-01",
-    "2026-11-02"
+    "2026-11-02",
+    "2026-11-03"
    ],
    "horizons_h": [
     24,
     48,
     72
    ],
-   "truth_source": "era5",
-   "measured_new_snow": false,
-   "n_stations": 23,
-   "n_featured": 23,
-   "manifest_url": "https://raw.githubusercontent.com/andrewnakas/powderbench/main/data/rounds/era5/2026-10-31/round.json",
-   "stations_url": "https://powderbench.com/data/stations-era5.json",
-   "submission_path": "data/submissions/era5/2026-10-31/<your-team>.csv"
-  },
-  {
-   "league": "resorts",
-   "round_id": "2026-10-31",
-   "cutoff_utc": "2026-10-30T11:00:00+00:00",
-   "target_days": [
-    "2026-10-31",
-    "2026-11-01",
-    "2026-11-02"
-   ],
-   "horizons_h": [
-    24,
-    48,
-    72
-   ],
-   "truth_source": "resort",
+   "truth_source": "slf",
    "measured_new_snow": true,
-   "n_stations": 13,
-   "n_featured": 13,
-   "manifest_url": "https://raw.githubusercontent.com/andrewnakas/powderbench/main/data/rounds/resorts/2026-10-31/round.json",
-   "stations_url": "https://powderbench.com/data/stations-resorts.json",
-   "submission_path": "data/submissions/resorts/2026-10-31/<your-team>.csv"
+   "n_stations": 238,
+   "n_featured": 27,
+   "manifest_url": "https://raw.githubusercontent.com/andrewnakas/powderbench/main/data/rounds/alps/2026-11-01/round.json",
+   "stations_url": "https://powderbench.com/data/stations-alps.json",
+   "submission_path": "data/submissions/alps/2026-11-01/<your-team>.csv"
   }
  ]
 }

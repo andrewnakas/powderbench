@@ -70,5 +70,33 @@
    "baseline-ukmo": 27.96,
    "baseline-zeros": -0.9
   }
+ },
+ {
+  "round_id": "2026-10-24",
+  "biggest_24h": {
+   "station_id": "USC00244978:MT:GHCND",
+   "resort": "Lewistown 11 Sse",
+   "inches": 4.0
+  },
+  "qc": {
+   "station_horizons_valid": 1905,
+   "station_horizons_voided": 1569
+  },
+  "teams": {
+   "baseline-aifs": -1.44,
+   "baseline-climatology": 0.0,
+   "baseline-consensus": 31.36,
+   "baseline-gem": 40.64,
+   "baseline-gfs": 30.26,
+   "baseline-icon": 11.96,
+   "baseline-ndfd": 27.22,
+   "baseline-openmeteo": 37.67,
+   "baseline-persistence": -69.25,
+   "baseline-ukmo": 18.29,
+   "baseline-wpc": 40.16,
+   "baseline-zeros": -0.87,
+   "house-blend": 34.53,
+   "open-powder-ml": 25.72
+  }
  }
 ]

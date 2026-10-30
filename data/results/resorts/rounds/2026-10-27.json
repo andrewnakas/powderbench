@@ -1,0 +1,343 @@
+{
+ "round_id": "2026-10-27",
+ "league": "resorts",
+ "resolved_utc": "2026-10-30T20:30:30+00:00",
+ "observations_72h": null,
+ "qc": {
+  "station_horizons_valid": 27,
+  "station_horizons_voided": 12
+ },
+ "biggest_24h": {
+  "station_id": "chapelco:AR:RESORT",
+  "resort": "Chapelco",
+  "inches": 0.8
+ },
+ "teams": {
+  "baseline-aifs": {
+   "n_scorable": 27,
+   "n_scored": 27,
+   "coverage": 1.0,
+   "mae": 0.2286,
+   "rmse": 0.4415,
+   "bias": 0.0531,
+   "mae_by_horizon": {
+    "24": 0.1797,
+    "48": 0.1888,
+    "72": 0.3174
+   },
+   "powder_score": -111.26,
+   "n_skill": 27,
+   "pinball": null,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-climatology": {
+   "n_scorable": 27,
+   "n_scored": 27,
+   "coverage": 1.0,
+   "mae": 0.1082,
+   "rmse": 0.2698,
+   "bias": -0.0653,
+   "mae_by_horizon": {
+    "24": 0.0878,
+    "48": 0.1031,
+    "72": 0.1338
+   },
+   "powder_score": 0.0,
+   "n_skill": 27,
+   "pinball": 0.0591,
+   "n_pinball": 27,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": 0.0,
+   "n_brier6": 9,
+   "late": false
+  },
+  "baseline-consensus": {
+   "n_scorable": 27,
+   "n_scored": 27,
+   "coverage": 1.0,
+   "mae": 0.2746,
+   "rmse": 0.4978,
+   "bias": 0.099,
+   "mae_by_horizon": {
+    "24": 0.2194,
+    "48": 0.2317,
+    "72": 0.3726
+   },
+   "powder_score": -153.7,
+   "n_skill": 27,
+   "pinball": null,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-ecmwf": {
+   "invalid": true,
+   "errors": [
+    "snowfall_in must be within [0, 200.0]"
+   ]
+  },
+  "baseline-gem": {
+   "n_scorable": 27,
+   "n_scored": 27,
+   "coverage": 1.0,
+   "mae": 0.1664,
+   "rmse": 0.339,
+   "bias": -0.0092,
+   "mae_by_horizon": {
+    "24": 0.1582,
+    "48": 0.1582,
+    "72": 0.1827
+   },
+   "powder_score": -53.73,
+   "n_skill": 27,
+   "pinball": null,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-gfs": {
+   "n_scorable": 27,
+   "n_scored": 27,
+   "coverage": 1.0,
+   "mae": 0.9093,
+   "rmse": 1.9693,
+   "bias": 0.7338,
+   "mae_by_horizon": {
+    "24": 0.8379,
+    "48": 0.8501,
+    "72": 1.04
+   },
+   "powder_score": -740.25,
+   "n_skill": 27,
+   "pinball": null,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-icon": {
+   "n_scorable": 27,
+   "n_scored": 27,
+   "coverage": 1.0,
+   "mae": 0.1734,
+   "rmse": 0.3453,
+   "bias": -0.0021,
+   "mae_by_horizon": {
+    "24": 0.1734,
+    "48": 0.1734,
+    "72": 0.1734
+   },
+   "powder_score": -60.27,
+   "n_skill": 27,
+   "pinball": null,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-openmeteo": {
+   "n_scorable": 27,
+   "n_scored": 27,
+   "coverage": 1.0,
+   "mae": 0.3878,
+   "rmse": 0.7381,
+   "bias": 0.2123,
+   "mae_by_horizon": {
+    "24": 0.3143,
+    "48": 0.3388,
+    "72": 0.5103
+   },
+   "powder_score": -258.35,
+   "n_skill": 27,
+   "pinball": null,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-persistence": {
+   "n_scorable": 27,
+   "n_scored": 27,
+   "coverage": 1.0,
+   "mae": 0.0878,
+   "rmse": 0.34,
+   "bias": 0.0878,
+   "mae_by_horizon": {
+    "24": 0.0,
+    "48": 0.0878,
+    "72": 0.1756
+   },
+   "powder_score": 18.89,
+   "n_skill": 27,
+   "pinball": null,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-ukmo": {
+   "n_scorable": 27,
+   "n_scored": 27,
+   "coverage": 1.0,
+   "mae": 1.0554,
+   "rmse": 1.9549,
+   "bias": 0.8799,
+   "mae_by_horizon": {
+    "24": 0.3204,
+    "48": 0.8289,
+    "72": 2.0169
+   },
+   "powder_score": -875.22,
+   "n_skill": 27,
+   "pinball": null,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-zeros": {
+   "n_scorable": 27,
+   "n_scored": 27,
+   "coverage": 1.0,
+   "mae": 0.0878,
+   "rmse": 0.2633,
+   "bias": -0.0878,
+   "mae_by_horizon": {
+    "24": 0.0878,
+    "48": 0.0878,
+    "72": 0.0878
+   },
+   "powder_score": 18.89,
+   "n_skill": 27,
+   "pinball": 0.0439,
+   "n_pinball": 27,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": 0.0,
+   "n_brier6": 9,
+   "late": false
+  },
+  "house-analog": {
+   "n_scorable": 27,
+   "n_scored": 27,
+   "coverage": 1.0,
+   "mae": 0.7437,
+   "rmse": 3.0547,
+   "bias": 0.5681,
+   "mae_by_horizon": {
+    "24": 1.8378,
+    "48": 0.1744,
+    "72": 0.2189
+   },
+   "powder_score": -587.2,
+   "n_skill": 27,
+   "pinball": 0.4068,
+   "n_pinball": 27,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": 0.0318,
+   "n_brier6": 9,
+   "late": false
+  },
+  "house-blend": {
+   "n_scorable": 27,
+   "n_scored": 27,
+   "coverage": 1.0,
+   "mae": 0.6593,
+   "rmse": 1.2706,
+   "bias": 0.4837,
+   "mae_by_horizon": {
+    "24": 0.6511,
+    "48": 0.5489,
+    "72": 0.7778
+   },
+   "powder_score": -509.17,
+   "n_skill": 27,
+   "pinball": 0.382,
+   "n_pinball": 27,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": 0.0107,
+   "n_brier6": 9,
+   "late": false
+  },
+  "house-gbm": {
+   "n_scorable": 27,
+   "n_scored": 27,
+   "coverage": 1.0,
+   "mae": 0.5337,
+   "rmse": 1.3416,
+   "bias": 0.5085,
+   "mae_by_horizon": {
+    "24": 0.52,
+    "48": 0.52,
+    "72": 0.5611
+   },
+   "powder_score": -393.16,
+   "n_skill": 27,
+   "pinball": 0.2737,
+   "n_pinball": 27,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": 0.0013,
+   "n_brier6": 9,
+   "late": false
+  },
+  "open-powder-ml": {
+   "n_scorable": 27,
+   "n_scored": 27,
+   "coverage": 1.0,
+   "mae": 1.7615,
+   "rmse": 4.3677,
+   "bias": 1.6037,
+   "mae_by_horizon": {
+    "24": 1.33,
+    "48": 1.7922,
+    "72": 2.1622
+   },
+   "powder_score": -1527.65,
+   "n_skill": 27,
+   "pinball": 0.6134,
+   "n_pinball": 27,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": 0.081,
+   "n_brier6": 9,
+   "late": false
+  }
+ }
+}
