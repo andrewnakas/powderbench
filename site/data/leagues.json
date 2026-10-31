@@ -8,16 +8,16 @@
   "measured": false,
   "n_stations": 996,
   "n_featured": 45,
-  "n_rounds_resolved": 31,
+  "n_rounds_resolved": 32,
   "health": {
-   "last_round": "2026-10-27",
-   "qc_valid_share": 0.94
+   "last_round": "2026-10-28",
+   "qc_valid_share": 0.934
   },
   "open_round": {
-   "round_id": "2026-10-31",
-   "cutoff_utc": "2026-10-31T00:00:00+00:00"
+   "round_id": "2026-11-01",
+   "cutoff_utc": "2026-11-01T00:00:00+00:00"
   },
-  "last_resolved": "2026-10-27"
+  "last_resolved": "2026-10-28"
  },
  {
   "name": "observers",
@@ -28,16 +28,16 @@
   "measured": true,
   "n_stations": 1158,
   "n_featured": 98,
-  "n_rounds_resolved": 4,
+  "n_rounds_resolved": 5,
   "health": {
-   "last_round": "2026-10-24",
-   "qc_valid_share": 0.548
+   "last_round": "2026-10-25",
+   "qc_valid_share": 0.526
   },
   "open_round": {
-   "round_id": "2026-10-31",
-   "cutoff_utc": "2026-10-31T00:00:00+00:00"
+   "round_id": "2026-11-01",
+   "cutoff_utc": "2026-11-01T00:00:00+00:00"
   },
-  "last_resolved": "2026-10-24"
+  "last_resolved": "2026-10-25"
  },
  {
   "name": "resorts-na",
@@ -51,15 +51,18 @@
   "n_rounds_resolved": 0,
   "health": {
    "latest_scrape": {
-    "at": "2026-10-30T00:03:35+00:00",
+    "at": "2026-10-31T00:00:47+00:00",
     "status": {
-     "ok": 19,
-     "no_report": 6,
+     "ok": 20,
+     "no_report": 5,
      "stale": 12
     }
    }
   },
-  "open_round": null,
+  "open_round": {
+   "round_id": "2026-11-01",
+   "cutoff_utc": "2026-11-01T00:00:00+00:00"
+  },
   "last_resolved": null
  },
  {
@@ -74,8 +77,8 @@
   "n_rounds_resolved": 0,
   "health": {},
   "open_round": {
-   "round_id": "2026-11-01",
-   "cutoff_utc": "2026-10-31T21:00:00+00:00"
+   "round_id": "2026-11-02",
+   "cutoff_utc": "2026-11-01T21:00:00+00:00"
   },
   "last_resolved": null
  },
@@ -88,16 +91,16 @@
   "measured": false,
   "n_stations": 23,
   "n_featured": 23,
-  "n_rounds_resolved": 109,
+  "n_rounds_resolved": 110,
   "health": {
-   "last_round": "2026-10-22",
+   "last_round": "2026-10-23",
    "qc_valid_share": 0.841
   },
   "open_round": {
    "round_id": "2026-10-31",
    "cutoff_utc": "2026-10-30T11:00:00+00:00"
   },
-  "last_resolved": "2026-10-22"
+  "last_resolved": "2026-10-23"
  },
  {
   "name": "resorts",
@@ -108,12 +111,12 @@
   "measured": true,
   "n_stations": 13,
   "n_featured": 13,
-  "n_rounds_resolved": 107,
+  "n_rounds_resolved": 108,
   "health": {
-   "last_round": "2026-10-27",
+   "last_round": "2026-10-28",
    "qc_valid_share": 0.692,
    "latest_scrape": {
-    "at": "2026-10-30T18:18:28+00:00",
+    "at": "2026-10-31T17:30:40+00:00",
     "status": {
      "no_report": 4,
      "ok": 9
@@ -124,6 +127,6 @@
    "round_id": "2026-10-31",
    "cutoff_utc": "2026-10-30T11:00:00+00:00"
   },
-  "last_resolved": "2026-10-27"
+  "last_resolved": "2026-10-28"
  }
 ]
