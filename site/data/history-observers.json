@@ -238,5 +238,33 @@
    "open-powder-ensemble": 57.88,
    "open-powder-ml": 57.75
   }
+ },
+ {
+  "round_id": "2026-10-30",
+  "biggest_24h": {
+   "station_id": "USC00500243:AK:GHCND",
+   "resort": "Alyeska Resort (1 km)",
+   "inches": 1.0
+  },
+  "qc": {
+   "station_horizons_valid": 1479,
+   "station_horizons_voided": 1995
+  },
+  "teams": {
+   "baseline-climatology": 0.0,
+   "baseline-consensus": -47.47,
+   "baseline-gem": -71.82,
+   "baseline-gfs": -171.33,
+   "baseline-icon": 20.72,
+   "baseline-ndfd": -201.67,
+   "baseline-openmeteo": -264.41,
+   "baseline-persistence": -622.06,
+   "baseline-ukmo": -106.52,
+   "baseline-wpc": -38.9,
+   "baseline-zeros": 20.72,
+   "house-blend": -98.86,
+   "open-powder-ensemble": -24.89,
+   "open-powder-ml": 6.86
+  }
  }
 ]

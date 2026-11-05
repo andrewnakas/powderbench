@@ -1,1 +1,31 @@
-[]
+[
+ {
+  "round_id": "2026-11-01",
+  "biggest_24h": {
+   "station_id": "82:AT:GEO",
+   "resort": "Wei\u00dfsee Gletscherwelt",
+   "inches": 7.9
+  },
+  "qc": {
+   "station_horizons_valid": 562,
+   "station_horizons_voided": 152
+  },
+  "teams": {
+   "baseline-aifs": -27.09,
+   "baseline-arome": -10.12,
+   "baseline-climatology": 0.0,
+   "baseline-consensus": -2.01,
+   "baseline-ecmwf": -39.71,
+   "baseline-gem": 2.41,
+   "baseline-gfs": -36.74,
+   "baseline-icon": -15.63,
+   "baseline-openmeteo": -15.11,
+   "baseline-persistence": -210.35,
+   "baseline-ukmo": 0.09,
+   "baseline-zeros": -13.8,
+   "house-blend": -16.86,
+   "open-powder-ensemble": -22.99,
+   "open-powder-ml": 0.66
+  }
+ }
+]
