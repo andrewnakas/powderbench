@@ -2200,5 +2200,65 @@
    "open-powder-ensemble": 78.71,
    "open-powder-ml": 69.83
   }
+ },
+ {
+  "round_id": "2026-10-29",
+  "biggest_24h": {
+   "station_id": "remarkables:NZ:ERA5",
+   "resort": "The Remarkables",
+   "inches": 1.1
+  },
+  "qc": {
+   "station_horizons_valid": 69,
+   "station_horizons_voided": 0
+  },
+  "teams": {
+   "baseline-aifs": 62.51,
+   "baseline-climatology": 0.0,
+   "baseline-consensus": 26.05,
+   "baseline-ecmwf": 26.04,
+   "baseline-gem": -8.68,
+   "baseline-gfs": -67.0,
+   "baseline-icon": 19.47,
+   "baseline-openmeteo": -101.88,
+   "baseline-persistence": -22.38,
+   "baseline-ukmo": -455.13,
+   "baseline-zeros": 6.78,
+   "house-analog": 36.14,
+   "house-blend": 24.38,
+   "house-gbm": 68.68,
+   "open-powder-ensemble": 86.06,
+   "open-powder-ml": 75.29
+  }
+ },
+ {
+  "round_id": "2026-10-30",
+  "biggest_24h": {
+   "station_id": "coronet-peak:NZ:ERA5",
+   "resort": "Coronet Peak",
+   "inches": 1.0
+  },
+  "qc": {
+   "station_horizons_valid": 58,
+   "station_horizons_voided": 11
+  },
+  "teams": {
+   "baseline-aifs": -28.92,
+   "baseline-climatology": 0.0,
+   "baseline-consensus": -47.95,
+   "baseline-ecmwf": -58.3,
+   "baseline-gem": -47.67,
+   "baseline-gfs": -308.63,
+   "baseline-icon": 13.59,
+   "baseline-openmeteo": -210.19,
+   "baseline-persistence": -30.9,
+   "baseline-ukmo": -532.4,
+   "baseline-zeros": -0.69,
+   "house-analog": 23.22,
+   "house-blend": -31.43,
+   "house-gbm": 58.65,
+   "open-powder-ensemble": 79.75,
+   "open-powder-ml": 65.2
+  }
  }
 ]

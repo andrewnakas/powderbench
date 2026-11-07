@@ -29,5 +29,66 @@
    "open-powder-ensemble": 27.06,
    "open-powder-ml": 24.31
   }
+ },
+ {
+  "round_id": "2026-11-02",
+  "biggest_24h": {
+   "station_id": "wolf-creek:US:RESORT",
+   "resort": "Wolf Creek",
+   "inches": 10.5
+  },
+  "qc": {
+   "station_horizons_valid": 58,
+   "station_horizons_voided": 53
+  },
+  "teams": {
+   "baseline-aifs": 2.33,
+   "baseline-climatology": 0.0,
+   "baseline-consensus": -6.78,
+   "baseline-ecmwf": -8.64,
+   "baseline-gem": -35.57,
+   "baseline-gfs": -3.25,
+   "baseline-icon": -13.91,
+   "baseline-nbm": -25.06,
+   "baseline-ndfd": 0.69,
+   "baseline-openmeteo": -3.25,
+   "baseline-persistence": -58.68,
+   "baseline-ukmo": -25.48,
+   "baseline-wpc": 0.03,
+   "baseline-zeros": 6.48,
+   "house-blend": -11.55,
+   "open-powder-ensemble": -5.79,
+   "open-powder-ml": -12.26
+  }
+ },
+ {
+  "round_id": "2026-11-03",
+  "biggest_24h": {
+   "station_id": "wolf-creek:US:RESORT",
+   "resort": "Wolf Creek",
+   "inches": 10.5
+  },
+  "qc": {
+   "station_horizons_valid": 57,
+   "station_horizons_voided": 54
+  },
+  "teams": {
+   "baseline-aifs": 0.6,
+   "baseline-climatology": 0.0,
+   "baseline-consensus": -0.99,
+   "baseline-gem": -5.37,
+   "baseline-gfs": -8.1,
+   "baseline-icon": 0.93,
+   "baseline-nbm": -6.58,
+   "baseline-ndfd": 1.04,
+   "baseline-openmeteo": -8.1,
+   "baseline-persistence": -98.17,
+   "baseline-ukmo": -16.14,
+   "baseline-wpc": 1.96,
+   "baseline-zeros": 7.52,
+   "house-blend": -4.48,
+   "open-powder-ensemble": 2.21,
+   "open-powder-ml": -3.09
+  }
  }
 ]

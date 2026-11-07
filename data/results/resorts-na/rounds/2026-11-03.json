@@ -1,0 +1,546 @@
+{
+ "round_id": "2026-11-03",
+ "league": "resorts-na",
+ "resolved_utc": "2026-11-07T19:58:26+00:00",
+ "observations_72h": null,
+ "qc": {
+  "station_horizons_valid": 57,
+  "station_horizons_voided": 54
+ },
+ "biggest_24h": {
+  "station_id": "wolf-creek:US:RESORT",
+  "resort": "Wolf Creek",
+  "inches": 10.5
+ },
+ "teams": {
+  "baseline-aifs": {
+   "n_scorable": 57,
+   "n_scored": 57,
+   "coverage": 1.0,
+   "mae": 1.1879,
+   "rmse": 5.2098,
+   "bias": -1.0226,
+   "mae_by_horizon": {
+    "24": 0.5628,
+    "48": 1.1851,
+    "72": 1.816
+   },
+   "powder_score": 0.6,
+   "n_skill": 57,
+   "pinball": null,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": null,
+   "tracks": {
+    "region:Northern Michigan": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    }
+   },
+   "late": false
+  },
+  "baseline-climatology": {
+   "n_scorable": 57,
+   "n_scored": 57,
+   "coverage": 1.0,
+   "mae": 1.1952,
+   "rmse": 5.1985,
+   "bias": -1.0115,
+   "mae_by_horizon": {
+    "24": 0.5642,
+    "48": 1.1778,
+    "72": 1.8435
+   },
+   "powder_score": 0.0,
+   "n_skill": 57,
+   "pinball": 0.5954,
+   "n_pinball": 57,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": 0.0515,
+   "n_brier6": 19,
+   "tracks": {
+    "region:Northern Michigan": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    }
+   },
+   "late": false
+  },
+  "baseline-consensus": {
+   "n_scorable": 57,
+   "n_scored": 57,
+   "coverage": 1.0,
+   "mae": 1.207,
+   "rmse": 5.204,
+   "bias": -1.0006,
+   "mae_by_horizon": {
+    "24": 0.5693,
+    "48": 1.2111,
+    "72": 1.8405
+   },
+   "powder_score": -0.99,
+   "n_skill": 57,
+   "pinball": null,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": null,
+   "tracks": {
+    "region:Northern Michigan": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    }
+   },
+   "late": false
+  },
+  "baseline-ecmwf": {
+   "invalid": true,
+   "errors": [
+    "snowfall_in must be within [0, 200.0]"
+   ]
+  },
+  "baseline-gem": {
+   "n_scorable": 57,
+   "n_scored": 57,
+   "coverage": 1.0,
+   "mae": 1.2594,
+   "rmse": 5.1786,
+   "bias": -0.9318,
+   "mae_by_horizon": {
+    "24": 0.586,
+    "48": 1.2938,
+    "72": 1.8983
+   },
+   "powder_score": -5.37,
+   "n_skill": 57,
+   "pinball": null,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": null,
+   "tracks": {
+    "region:Northern Michigan": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    }
+   },
+   "late": false
+  },
+  "baseline-gfs": {
+   "n_scorable": 57,
+   "n_scored": 57,
+   "coverage": 1.0,
+   "mae": 1.2919,
+   "rmse": 5.2209,
+   "bias": -0.9147,
+   "mae_by_horizon": {
+    "24": 0.6295,
+    "48": 1.3127,
+    "72": 1.9335
+   },
+   "powder_score": -8.1,
+   "n_skill": 57,
+   "pinball": null,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": null,
+   "tracks": {
+    "region:Northern Michigan": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    }
+   },
+   "late": false
+  },
+  "baseline-icon": {
+   "n_scorable": 57,
+   "n_scored": 57,
+   "coverage": 1.0,
+   "mae": 1.1841,
+   "rmse": 5.2101,
+   "bias": -1.0265,
+   "mae_by_horizon": {
+    "24": 0.5744,
+    "48": 1.2126,
+    "72": 1.7652
+   },
+   "powder_score": 0.93,
+   "n_skill": 57,
+   "pinball": null,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": null,
+   "tracks": {
+    "region:Northern Michigan": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    }
+   },
+   "late": false
+  },
+  "baseline-nbm": {
+   "n_scorable": 57,
+   "n_scored": 57,
+   "coverage": 1.0,
+   "mae": 1.2739,
+   "rmse": 5.1808,
+   "bias": -0.9201,
+   "mae_by_horizon": {
+    "24": 0.5878,
+    "48": 1.2949,
+    "72": 1.9388
+   },
+   "powder_score": -6.58,
+   "n_skill": 57,
+   "pinball": null,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": null,
+   "tracks": {
+    "region:Northern Michigan": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    }
+   },
+   "late": false
+  },
+  "baseline-ndfd": {
+   "n_scorable": 57,
+   "n_scored": 30,
+   "coverage": 0.5263,
+   "mae": 1.05,
+   "rmse": 4.2866,
+   "bias": -1.05,
+   "mae_by_horizon": {
+    "24": 0.7,
+    "48": 1.4
+   },
+   "powder_score": 1.04,
+   "n_skill": 30,
+   "pinball": null,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": null,
+   "tracks": {
+    "region:Northern Michigan": {
+     "n_scorable": 6,
+     "n_scored": 4,
+     "coverage": 0.6667,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    }
+   },
+   "late": false
+  },
+  "baseline-openmeteo": {
+   "n_scorable": 57,
+   "n_scored": 57,
+   "coverage": 1.0,
+   "mae": 1.2919,
+   "rmse": 5.2209,
+   "bias": -0.9147,
+   "mae_by_horizon": {
+    "24": 0.6295,
+    "48": 1.3127,
+    "72": 1.9335
+   },
+   "powder_score": -8.1,
+   "n_skill": 57,
+   "pinball": null,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": null,
+   "tracks": {
+    "region:Northern Michigan": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    }
+   },
+   "late": false
+  },
+  "baseline-persistence": {
+   "n_scorable": 57,
+   "n_scored": 57,
+   "coverage": 1.0,
+   "mae": 2.3684,
+   "rmse": 5.4572,
+   "bias": 1.2105,
+   "mae_by_horizon": {
+    "24": 1.1842,
+    "48": 2.3684,
+    "72": 3.5526
+   },
+   "powder_score": -98.17,
+   "n_skill": 57,
+   "pinball": null,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": null,
+   "tracks": {
+    "region:Northern Michigan": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    }
+   },
+   "late": false
+  },
+  "baseline-ukmo": {
+   "n_scorable": 57,
+   "n_scored": 57,
+   "coverage": 1.0,
+   "mae": 1.3881,
+   "rmse": 5.3138,
+   "bias": -0.8224,
+   "mae_by_horizon": {
+    "24": 0.5729,
+    "48": 1.1952,
+    "72": 2.3962
+   },
+   "powder_score": -16.14,
+   "n_skill": 57,
+   "pinball": null,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": null,
+   "tracks": {
+    "region:Northern Michigan": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    }
+   },
+   "late": false
+  },
+  "baseline-wpc": {
+   "n_scorable": 57,
+   "n_scored": 57,
+   "coverage": 1.0,
+   "mae": 1.1718,
+   "rmse": 5.2079,
+   "bias": -1.0388,
+   "mae_by_horizon": {
+    "24": 0.5621,
+    "48": 1.1984,
+    "72": 1.7547
+   },
+   "powder_score": 1.96,
+   "n_skill": 57,
+   "pinball": 0.5672,
+   "n_pinball": 57,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": 0.0526,
+   "n_brier6": 19,
+   "tracks": {
+    "region:Northern Michigan": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.0133,
+     "powder_score": null,
+     "bias": 0.0133
+    }
+   },
+   "late": false
+  },
+  "baseline-zeros": {
+   "n_scorable": 57,
+   "n_scored": 57,
+   "coverage": 1.0,
+   "mae": 1.1053,
+   "rmse": 5.2037,
+   "bias": -1.1053,
+   "mae_by_horizon": {
+    "24": 0.5526,
+    "48": 1.1053,
+    "72": 1.6579
+   },
+   "powder_score": 7.52,
+   "n_skill": 57,
+   "pinball": 0.5526,
+   "n_pinball": 57,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": 0.0526,
+   "n_brier6": 19,
+   "tracks": {
+    "region:Northern Michigan": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    }
+   },
+   "late": false
+  },
+  "house-blend": {
+   "n_scorable": 57,
+   "n_scored": 57,
+   "coverage": 1.0,
+   "mae": 1.2488,
+   "rmse": 5.2001,
+   "bias": -0.9561,
+   "mae_by_horizon": {
+    "24": 0.5889,
+    "48": 1.2332,
+    "72": 1.9242
+   },
+   "powder_score": -4.48,
+   "n_skill": 57,
+   "pinball": 0.5987,
+   "n_pinball": 57,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": 0.0509,
+   "n_brier6": 19,
+   "tracks": {
+    "region:Northern Michigan": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    }
+   },
+   "late": false
+  },
+  "open-powder-ensemble": {
+   "n_scorable": 57,
+   "n_scored": 57,
+   "coverage": 1.0,
+   "mae": 1.1688,
+   "rmse": 5.2073,
+   "bias": -1.0418,
+   "mae_by_horizon": {
+    "24": 0.5816,
+    "48": 1.1789,
+    "72": 1.7458
+   },
+   "powder_score": 2.21,
+   "n_skill": 57,
+   "pinball": 0.5733,
+   "n_pinball": 57,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": 0.0525,
+   "n_brier6": 19,
+   "tracks": {
+    "region:Northern Michigan": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    }
+   },
+   "late": false
+  },
+  "open-powder-ml": {
+   "n_scorable": 57,
+   "n_scored": 57,
+   "coverage": 1.0,
+   "mae": 1.2321,
+   "rmse": 5.2083,
+   "bias": -0.9774,
+   "mae_by_horizon": {
+    "24": 0.6037,
+    "48": 1.2237,
+    "72": 1.8689
+   },
+   "powder_score": -3.09,
+   "n_skill": 57,
+   "pinball": 0.5937,
+   "n_pinball": 57,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": 0.0525,
+   "n_brier6": 19,
+   "tracks": {
+    "region:Northern Michigan": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    }
+   },
+   "late": false
+  }
+ }
+}

@@ -1,0 +1,5618 @@
+{
+ "round_id": "2026-10-31",
+ "league": "observers",
+ "resolved_utc": "2026-11-07T19:57:52+00:00",
+ "observations_72h": null,
+ "qc": {
+  "station_horizons_valid": 1648,
+  "station_horizons_voided": 1826
+ },
+ "biggest_24h": {
+  "station_id": "USC00049063:CA:GHCND",
+  "resort": "Tuolumne Meadows Rs",
+  "inches": 9.0
+ },
+ "teams": {
+  "baseline-aifs": {
+   "n_scorable": 151,
+   "n_scored": 151,
+   "coverage": 1.0,
+   "mae": 0.1927,
+   "rmse": 0.6738,
+   "bias": -0.0803,
+   "mae_by_horizon": {
+    "24": 0.0757,
+    "48": 0.1445,
+    "72": 0.3966
+   },
+   "powder_score": -27.19,
+   "n_skill": 147,
+   "pinball": null,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": null,
+   "tracks": {
+    "full": {
+     "n_scorable": 1648,
+     "n_scored": 151,
+     "coverage": 0.0916,
+     "mae": 0.1927,
+     "powder_score": -27.19,
+     "bias": -0.0803
+    },
+    "region:Absarokas, WY": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.2527,
+     "powder_score": -1416.0,
+     "bias": 0.2527
+    },
+    "region:Adirondacks / Catskills, NY": {
+     "n_scorable": 148,
+     "n_scored": 4,
+     "coverage": 0.027,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Allegheny Highlands, WV": {
+     "n_scorable": 36,
+     "n_scored": 9,
+     "coverage": 0.25,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Arrowhead, MN": {
+     "n_scorable": 42,
+     "n_scored": 9,
+     "coverage": 0.2143,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Beartooths, MT": {
+     "n_scorable": 7,
+     "n_scored": 4,
+     "coverage": 0.5714,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Berkshires, MA": {
+     "n_scorable": 82,
+     "n_scored": 7,
+     "coverage": 0.0854,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Blue Ridge, VA": {
+     "n_scorable": 56,
+     "n_scored": 6,
+     "coverage": 0.1071,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Cariboo, BC": {
+     "n_scorable": 9,
+     "n_scored": 3,
+     "coverage": 0.3333,
+     "mae": 0.0,
+     "powder_score": 100.0,
+     "bias": 0.0
+    },
+    "region:Central CO": {
+     "n_scorable": 12,
+     "n_scored": 4,
+     "coverage": 0.3333,
+     "mae": 0.85,
+     "powder_score": -17.24,
+     "bias": -0.85
+    },
+    "region:Chugach, AK": {
+     "n_scorable": 8,
+     "n_scored": 4,
+     "coverage": 0.5,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Front Range, CO": {
+     "n_scorable": 60,
+     "n_scored": 9,
+     "coverage": 0.15,
+     "mae": 0.2294,
+     "powder_score": -106.5,
+     "bias": -0.215
+    },
+    "region:Green Mountains, VT": {
+     "n_scorable": 69,
+     "n_scored": 6,
+     "coverage": 0.087,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Northern CO": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.0645,
+     "powder_score": 3.25,
+     "bias": -0.0022
+    },
+    "region:Northwoods, WI": {
+     "n_scorable": 138,
+     "n_scored": 7,
+     "coverage": 0.0507,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Poconos / Laurel Highlands, PA": {
+     "n_scorable": 93,
+     "n_scored": 6,
+     "coverage": 0.0645,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:San Juans, CO": {
+     "n_scorable": 8,
+     "n_scored": 0,
+     "coverage": 0.0,
+     "mae": null,
+     "powder_score": null,
+     "bias": null
+    },
+    "region:Sangre de Cristos, NM": {
+     "n_scorable": 16,
+     "n_scored": 3,
+     "coverage": 0.1875,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Sawtooths, ID": {
+     "n_scorable": 5,
+     "n_scored": 4,
+     "coverage": 0.8,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Southern Appalachians": {
+     "n_scorable": 92,
+     "n_scored": 3,
+     "coverage": 0.0326,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Southern CO": {
+     "n_scorable": 3,
+     "n_scored": 3,
+     "coverage": 1.0,
+     "mae": 0.8173,
+     "powder_score": null,
+     "bias": 0.8173
+    },
+    "region:Southern Utah": {
+     "n_scorable": 19,
+     "n_scored": 3,
+     "coverage": 0.1579,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Summit County, CO": {
+     "n_scorable": 11,
+     "n_scored": 7,
+     "coverage": 0.6364,
+     "mae": 0.3731,
+     "powder_score": 12.93,
+     "bias": -0.0594
+    },
+    "region:Tahoe, CA": {
+     "n_scorable": 5,
+     "n_scored": 2,
+     "coverage": 0.4,
+     "mae": 0.6,
+     "powder_score": 0.0,
+     "bias": -0.6
+    },
+    "region:Tahoe, NV": {
+     "n_scorable": 11,
+     "n_scored": 5,
+     "coverage": 0.4545,
+     "mae": 0.36,
+     "powder_score": 0.0,
+     "bias": -0.36
+    },
+    "region:Tetons, WY": {
+     "n_scorable": 10,
+     "n_scored": 3,
+     "coverage": 0.3,
+     "mae": 0.992,
+     "powder_score": null,
+     "bias": 0.992
+    },
+    "region:Upper Michigan": {
+     "n_scorable": 79,
+     "n_scored": 6,
+     "coverage": 0.0759,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Wasatch, UT": {
+     "n_scorable": 26,
+     "n_scored": 6,
+     "coverage": 0.2308,
+     "mae": 1.75,
+     "powder_score": 0.0,
+     "bias": -1.75
+    },
+    "region:Western Maine": {
+     "n_scorable": 40,
+     "n_scored": 4,
+     "coverage": 0.1,
+     "mae": 0.014,
+     "powder_score": null,
+     "bias": 0.014
+    },
+    "region:White Mountains, NH": {
+     "n_scorable": 80,
+     "n_scored": 3,
+     "coverage": 0.0375,
+     "mae": 0.046,
+     "powder_score": 82.75,
+     "bias": 0.046
+    }
+   },
+   "late": false
+  },
+  "baseline-climatology": {
+   "n_scorable": 151,
+   "n_scored": 147,
+   "coverage": 0.9735,
+   "mae": 0.1557,
+   "rmse": 0.6268,
+   "bias": -0.1205,
+   "mae_by_horizon": {
+    "24": 0.0593,
+    "48": 0.1216,
+    "72": 0.3283
+   },
+   "powder_score": 0.0,
+   "n_skill": 147,
+   "pinball": 0.1044,
+   "n_pinball": 147,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": 0.0004,
+   "n_brier6": 59,
+   "tracks": {
+    "full": {
+     "n_scorable": 1648,
+     "n_scored": 1559,
+     "coverage": 0.946,
+     "mae": 0.0425,
+     "powder_score": 0.0,
+     "bias": -0.0374
+    },
+    "region:AK": {
+     "n_scorable": 16,
+     "n_scored": 16,
+     "coverage": 1.0,
+     "mae": 0.0438,
+     "powder_score": 0.0,
+     "bias": 0.0438
+    },
+    "region:AZ": {
+     "n_scorable": 22,
+     "n_scored": 22,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Absarokas, WY": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.0167,
+     "powder_score": 0.0,
+     "bias": 0.0167
+    },
+    "region:Adirondacks / Catskills, NY": {
+     "n_scorable": 148,
+     "n_scored": 130,
+     "coverage": 0.8784,
+     "mae": 0.0031,
+     "powder_score": 0.0,
+     "bias": 0.0031
+    },
+    "region:Allegheny Highlands, WV": {
+     "n_scorable": 36,
+     "n_scored": 36,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Arrowhead, MN": {
+     "n_scorable": 42,
+     "n_scored": 42,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Beartooths, MT": {
+     "n_scorable": 7,
+     "n_scored": 7,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Berkshires, MA": {
+     "n_scorable": 82,
+     "n_scored": 69,
+     "coverage": 0.8415,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Blue Ridge, VA": {
+     "n_scorable": 56,
+     "n_scored": 56,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:CA": {
+     "n_scorable": 11,
+     "n_scored": 11,
+     "coverage": 1.0,
+     "mae": 2.5455,
+     "powder_score": 0.0,
+     "bias": -2.5455
+    },
+    "region:CO": {
+     "n_scorable": 80,
+     "n_scored": 80,
+     "coverage": 1.0,
+     "mae": 0.0312,
+     "powder_score": 0.0,
+     "bias": -0.0312
+    },
+    "region:CT": {
+     "n_scorable": 40,
+     "n_scored": 32,
+     "coverage": 0.8,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Cariboo, BC": {
+     "n_scorable": 9,
+     "n_scored": 9,
+     "coverage": 1.0,
+     "mae": 0.1312,
+     "powder_score": 0.0,
+     "bias": 0.1312
+    },
+    "region:Central CO": {
+     "n_scorable": 12,
+     "n_scored": 12,
+     "coverage": 1.0,
+     "mae": 0.2417,
+     "powder_score": 0.0,
+     "bias": -0.2417
+    },
+    "region:Chugach, AK": {
+     "n_scorable": 8,
+     "n_scored": 8,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Front Range, CO": {
+     "n_scorable": 60,
+     "n_scored": 59,
+     "coverage": 0.9833,
+     "mae": 0.0339,
+     "powder_score": 0.0,
+     "bias": -0.0339
+    },
+    "region:GA": {
+     "n_scorable": 1,
+     "n_scored": 1,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Green Mountains, VT": {
+     "n_scorable": 69,
+     "n_scored": 55,
+     "coverage": 0.7971,
+     "mae": 0.0045,
+     "powder_score": 0.0,
+     "bias": 0.0045
+    },
+    "region:IA": {
+     "n_scorable": 14,
+     "n_scored": 14,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:ID": {
+     "n_scorable": 14,
+     "n_scored": 14,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:IL": {
+     "n_scorable": 32,
+     "n_scored": 32,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:IN": {
+     "n_scorable": 3,
+     "n_scored": 3,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:MD": {
+     "n_scorable": 4,
+     "n_scored": 4,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:MT": {
+     "n_scorable": 3,
+     "n_scored": 3,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:NJ": {
+     "n_scorable": 27,
+     "n_scored": 21,
+     "coverage": 0.7778,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:NM": {
+     "n_scorable": 25,
+     "n_scored": 25,
+     "coverage": 1.0,
+     "mae": 0.08,
+     "powder_score": 0.0,
+     "bias": -0.08
+    },
+    "region:NV": {
+     "n_scorable": 24,
+     "n_scored": 24,
+     "coverage": 1.0,
+     "mae": 0.2125,
+     "powder_score": 0.0,
+     "bias": -0.2125
+    },
+    "region:Northern CO": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.0667,
+     "powder_score": 0.0,
+     "bias": -0.0667
+    },
+    "region:Northwoods, WI": {
+     "n_scorable": 138,
+     "n_scored": 138,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:OH": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Poconos / Laurel Highlands, PA": {
+     "n_scorable": 93,
+     "n_scored": 87,
+     "coverage": 0.9355,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:RI": {
+     "n_scorable": 17,
+     "n_scored": 15,
+     "coverage": 0.8824,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:SC": {
+     "n_scorable": 1,
+     "n_scored": 1,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:SD": {
+     "n_scorable": 21,
+     "n_scored": 21,
+     "coverage": 1.0,
+     "mae": 0.0429,
+     "powder_score": 0.0,
+     "bias": -0.0429
+    },
+    "region:San Juans, CO": {
+     "n_scorable": 8,
+     "n_scored": 8,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Sangre de Cristos, NM": {
+     "n_scorable": 16,
+     "n_scored": 16,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Sawtooths, ID": {
+     "n_scorable": 5,
+     "n_scored": 5,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Southern Appalachians": {
+     "n_scorable": 92,
+     "n_scored": 88,
+     "coverage": 0.9565,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Southern CO": {
+     "n_scorable": 3,
+     "n_scored": 3,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Southern Utah": {
+     "n_scorable": 19,
+     "n_scored": 19,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Summit County, CO": {
+     "n_scorable": 11,
+     "n_scored": 11,
+     "coverage": 1.0,
+     "mae": 0.2727,
+     "powder_score": 0.0,
+     "bias": -0.1818
+    },
+    "region:Tahoe, CA": {
+     "n_scorable": 5,
+     "n_scored": 5,
+     "coverage": 1.0,
+     "mae": 0.24,
+     "powder_score": 0.0,
+     "bias": -0.24
+    },
+    "region:Tahoe, NV": {
+     "n_scorable": 11,
+     "n_scored": 11,
+     "coverage": 1.0,
+     "mae": 0.3,
+     "powder_score": 0.0,
+     "bias": -0.3
+    },
+    "region:Tetons, WY": {
+     "n_scorable": 10,
+     "n_scored": 10,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:UT": {
+     "n_scorable": 49,
+     "n_scored": 49,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Upper Michigan": {
+     "n_scorable": 79,
+     "n_scored": 74,
+     "coverage": 0.9367,
+     "mae": 0.0014,
+     "powder_score": 0.0,
+     "bias": 0.0014
+    },
+    "region:WY": {
+     "n_scorable": 38,
+     "n_scored": 38,
+     "coverage": 1.0,
+     "mae": 0.0263,
+     "powder_score": 0.0,
+     "bias": -0.0263
+    },
+    "region:Wasatch, UT": {
+     "n_scorable": 26,
+     "n_scored": 26,
+     "coverage": 1.0,
+     "mae": 0.4038,
+     "powder_score": 0.0,
+     "bias": -0.4038
+    },
+    "region:Western Maine": {
+     "n_scorable": 40,
+     "n_scored": 38,
+     "coverage": 0.95,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:White Mountains, NH": {
+     "n_scorable": 80,
+     "n_scored": 70,
+     "coverage": 0.875,
+     "mae": 0.0114,
+     "powder_score": 0.0,
+     "bias": 0.0114
+    }
+   },
+   "late": false
+  },
+  "baseline-consensus": {
+   "n_scorable": 151,
+   "n_scored": 151,
+   "coverage": 1.0,
+   "mae": 0.1155,
+   "rmse": 0.3661,
+   "bias": -0.0426,
+   "mae_by_horizon": {
+    "24": 0.0603,
+    "48": 0.1196,
+    "72": 0.1836
+   },
+   "powder_score": 23.8,
+   "n_skill": 147,
+   "pinball": null,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": null,
+   "tracks": {
+    "full": {
+     "n_scorable": 1648,
+     "n_scored": 1186,
+     "coverage": 0.7197,
+     "mae": 0.023,
+     "powder_score": 42.25,
+     "bias": -0.013
+    },
+    "region:AZ": {
+     "n_scorable": 22,
+     "n_scored": 16,
+     "coverage": 0.7273,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Absarokas, WY": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.016,
+     "powder_score": 4.0,
+     "bias": 0.016
+    },
+    "region:Adirondacks / Catskills, NY": {
+     "n_scorable": 148,
+     "n_scored": 105,
+     "coverage": 0.7095,
+     "mae": 0.0,
+     "powder_score": 100.0,
+     "bias": 0.0
+    },
+    "region:Allegheny Highlands, WV": {
+     "n_scorable": 36,
+     "n_scored": 28,
+     "coverage": 0.7778,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Arrowhead, MN": {
+     "n_scorable": 42,
+     "n_scored": 32,
+     "coverage": 0.7619,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Beartooths, MT": {
+     "n_scorable": 7,
+     "n_scored": 6,
+     "coverage": 0.8571,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Berkshires, MA": {
+     "n_scorable": 82,
+     "n_scored": 58,
+     "coverage": 0.7073,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Blue Ridge, VA": {
+     "n_scorable": 56,
+     "n_scored": 46,
+     "coverage": 0.8214,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:CA": {
+     "n_scorable": 11,
+     "n_scored": 6,
+     "coverage": 0.5455,
+     "mae": 0.8167,
+     "powder_score": 73.51,
+     "bias": -0.6933
+    },
+    "region:CO": {
+     "n_scorable": 80,
+     "n_scored": 62,
+     "coverage": 0.775,
+     "mae": 0.0048,
+     "powder_score": 0.0,
+     "bias": -0.0048
+    },
+    "region:CT": {
+     "n_scorable": 40,
+     "n_scored": 28,
+     "coverage": 0.7,
+     "mae": 0.0007,
+     "powder_score": null,
+     "bias": 0.0007
+    },
+    "region:Cariboo, BC": {
+     "n_scorable": 9,
+     "n_scored": 3,
+     "coverage": 0.3333,
+     "mae": 0.0,
+     "powder_score": 100.0,
+     "bias": 0.0
+    },
+    "region:Central CO": {
+     "n_scorable": 12,
+     "n_scored": 10,
+     "coverage": 0.8333,
+     "mae": 0.2959,
+     "powder_score": -2.03,
+     "bias": -0.2959
+    },
+    "region:Chugach, AK": {
+     "n_scorable": 8,
+     "n_scored": 4,
+     "coverage": 0.5,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Front Range, CO": {
+     "n_scorable": 60,
+     "n_scored": 47,
+     "coverage": 0.7833,
+     "mae": 0.0396,
+     "powder_score": -85.9,
+     "bias": -0.0279
+    },
+    "region:GA": {
+     "n_scorable": 1,
+     "n_scored": 1,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Green Mountains, VT": {
+     "n_scorable": 69,
+     "n_scored": 49,
+     "coverage": 0.7101,
+     "mae": 0.0004,
+     "powder_score": null,
+     "bias": 0.0004
+    },
+    "region:IA": {
+     "n_scorable": 14,
+     "n_scored": 10,
+     "coverage": 0.7143,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:ID": {
+     "n_scorable": 14,
+     "n_scored": 7,
+     "coverage": 0.5,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:IL": {
+     "n_scorable": 32,
+     "n_scored": 22,
+     "coverage": 0.6875,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:IN": {
+     "n_scorable": 3,
+     "n_scored": 3,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:MD": {
+     "n_scorable": 4,
+     "n_scored": 3,
+     "coverage": 0.75,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:MT": {
+     "n_scorable": 3,
+     "n_scored": 2,
+     "coverage": 0.6667,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:NJ": {
+     "n_scorable": 27,
+     "n_scored": 18,
+     "coverage": 0.6667,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:NM": {
+     "n_scorable": 25,
+     "n_scored": 18,
+     "coverage": 0.72,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:NV": {
+     "n_scorable": 24,
+     "n_scored": 17,
+     "coverage": 0.7083,
+     "mae": 0.2365,
+     "powder_score": 1.95,
+     "bias": -0.2365
+    },
+    "region:Northern CO": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.198,
+     "powder_score": -197.0,
+     "bias": 0.1347
+    },
+    "region:Northwoods, WI": {
+     "n_scorable": 138,
+     "n_scored": 98,
+     "coverage": 0.7101,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:OH": {
+     "n_scorable": 6,
+     "n_scored": 5,
+     "coverage": 0.8333,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Poconos / Laurel Highlands, PA": {
+     "n_scorable": 93,
+     "n_scored": 69,
+     "coverage": 0.7419,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:RI": {
+     "n_scorable": 17,
+     "n_scored": 13,
+     "coverage": 0.7647,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:SC": {
+     "n_scorable": 1,
+     "n_scored": 1,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:SD": {
+     "n_scorable": 21,
+     "n_scored": 14,
+     "coverage": 0.6667,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:San Juans, CO": {
+     "n_scorable": 8,
+     "n_scored": 6,
+     "coverage": 0.75,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Sangre de Cristos, NM": {
+     "n_scorable": 16,
+     "n_scored": 12,
+     "coverage": 0.75,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Sawtooths, ID": {
+     "n_scorable": 5,
+     "n_scored": 5,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Southern Appalachians": {
+     "n_scorable": 92,
+     "n_scored": 72,
+     "coverage": 0.7826,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Southern CO": {
+     "n_scorable": 3,
+     "n_scored": 3,
+     "coverage": 1.0,
+     "mae": 0.069,
+     "powder_score": null,
+     "bias": 0.069
+    },
+    "region:Southern Utah": {
+     "n_scorable": 19,
+     "n_scored": 14,
+     "coverage": 0.7368,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Summit County, CO": {
+     "n_scorable": 11,
+     "n_scored": 10,
+     "coverage": 0.9091,
+     "mae": 0.3795,
+     "powder_score": -26.5,
+     "bias": 0.0537
+    },
+    "region:Tahoe, CA": {
+     "n_scorable": 5,
+     "n_scored": 4,
+     "coverage": 0.8,
+     "mae": 0.2865,
+     "powder_score": 4.5,
+     "bias": -0.2865
+    },
+    "region:Tahoe, NV": {
+     "n_scorable": 11,
+     "n_scored": 9,
+     "coverage": 0.8182,
+     "mae": 0.2678,
+     "powder_score": 13.93,
+     "bias": -0.2678
+    },
+    "region:Tetons, WY": {
+     "n_scorable": 10,
+     "n_scored": 3,
+     "coverage": 0.3,
+     "mae": 0.023,
+     "powder_score": null,
+     "bias": 0.023
+    },
+    "region:UT": {
+     "n_scorable": 49,
+     "n_scored": 34,
+     "coverage": 0.6939,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Upper Michigan": {
+     "n_scorable": 79,
+     "n_scored": 56,
+     "coverage": 0.7089,
+     "mae": 0.0,
+     "powder_score": 100.0,
+     "bias": 0.0
+    },
+    "region:WY": {
+     "n_scorable": 38,
+     "n_scored": 21,
+     "coverage": 0.5526,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Wasatch, UT": {
+     "n_scorable": 26,
+     "n_scored": 20,
+     "coverage": 0.7692,
+     "mae": 0.2156,
+     "powder_score": 58.93,
+     "bias": -0.0467
+    },
+    "region:Western Maine": {
+     "n_scorable": 40,
+     "n_scored": 32,
+     "coverage": 0.8,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:White Mountains, NH": {
+     "n_scorable": 80,
+     "n_scored": 55,
+     "coverage": 0.6875,
+     "mae": 0.0001,
+     "powder_score": 99.38,
+     "bias": 0.0001
+    }
+   },
+   "late": false
+  },
+  "baseline-ecmwf": {
+   "invalid": true,
+   "errors": [
+    "snowfall_in must be within [0, 200.0]"
+   ]
+  },
+  "baseline-gem": {
+   "n_scorable": 151,
+   "n_scored": 151,
+   "coverage": 1.0,
+   "mae": 0.1415,
+   "rmse": 0.4512,
+   "bias": -0.0308,
+   "mae_by_horizon": {
+    "24": 0.0617,
+    "48": 0.1047,
+    "72": 0.2845
+   },
+   "powder_score": 6.63,
+   "n_skill": 147,
+   "pinball": null,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": null,
+   "tracks": {
+    "full": {
+     "n_scorable": 1648,
+     "n_scored": 151,
+     "coverage": 0.0916,
+     "mae": 0.1415,
+     "powder_score": 6.63,
+     "bias": -0.0308
+    },
+    "region:Absarokas, WY": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.0138,
+     "powder_score": 17.0,
+     "bias": 0.0138
+    },
+    "region:Adirondacks / Catskills, NY": {
+     "n_scorable": 148,
+     "n_scored": 4,
+     "coverage": 0.027,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Allegheny Highlands, WV": {
+     "n_scorable": 36,
+     "n_scored": 9,
+     "coverage": 0.25,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Arrowhead, MN": {
+     "n_scorable": 42,
+     "n_scored": 9,
+     "coverage": 0.2143,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Beartooths, MT": {
+     "n_scorable": 7,
+     "n_scored": 4,
+     "coverage": 0.5714,
+     "mae": 0.002,
+     "powder_score": null,
+     "bias": 0.002
+    },
+    "region:Berkshires, MA": {
+     "n_scorable": 82,
+     "n_scored": 7,
+     "coverage": 0.0854,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Blue Ridge, VA": {
+     "n_scorable": 56,
+     "n_scored": 6,
+     "coverage": 0.1071,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Cariboo, BC": {
+     "n_scorable": 9,
+     "n_scored": 3,
+     "coverage": 0.3333,
+     "mae": 0.0,
+     "powder_score": 100.0,
+     "bias": 0.0
+    },
+    "region:Central CO": {
+     "n_scorable": 12,
+     "n_scored": 4,
+     "coverage": 0.3333,
+     "mae": 0.8343,
+     "powder_score": -15.07,
+     "bias": -0.7518
+    },
+    "region:Chugach, AK": {
+     "n_scorable": 8,
+     "n_scored": 4,
+     "coverage": 0.5,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Front Range, CO": {
+     "n_scorable": 60,
+     "n_scored": 9,
+     "coverage": 0.15,
+     "mae": 0.1489,
+     "powder_score": -34.0,
+     "bias": -0.1078
+    },
+    "region:Green Mountains, VT": {
+     "n_scorable": 69,
+     "n_scored": 6,
+     "coverage": 0.087,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Northern CO": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.195,
+     "powder_score": -192.5,
+     "bias": 0.171
+    },
+    "region:Northwoods, WI": {
+     "n_scorable": 138,
+     "n_scored": 7,
+     "coverage": 0.0507,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Poconos / Laurel Highlands, PA": {
+     "n_scorable": 93,
+     "n_scored": 6,
+     "coverage": 0.0645,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:San Juans, CO": {
+     "n_scorable": 8,
+     "n_scored": 0,
+     "coverage": 0.0,
+     "mae": null,
+     "powder_score": null,
+     "bias": null
+    },
+    "region:Sangre de Cristos, NM": {
+     "n_scorable": 16,
+     "n_scored": 3,
+     "coverage": 0.1875,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Sawtooths, ID": {
+     "n_scorable": 5,
+     "n_scored": 4,
+     "coverage": 0.8,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Southern Appalachians": {
+     "n_scorable": 92,
+     "n_scored": 3,
+     "coverage": 0.0326,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Southern CO": {
+     "n_scorable": 3,
+     "n_scored": 3,
+     "coverage": 1.0,
+     "mae": 0.1013,
+     "powder_score": null,
+     "bias": 0.1013
+    },
+    "region:Southern Utah": {
+     "n_scorable": 19,
+     "n_scored": 3,
+     "coverage": 0.1579,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Summit County, CO": {
+     "n_scorable": 11,
+     "n_scored": 7,
+     "coverage": 0.6364,
+     "mae": 0.4577,
+     "powder_score": -6.8,
+     "bias": -0.28
+    },
+    "region:Tahoe, CA": {
+     "n_scorable": 5,
+     "n_scored": 2,
+     "coverage": 0.4,
+     "mae": 0.586,
+     "powder_score": 2.33,
+     "bias": -0.586
+    },
+    "region:Tahoe, NV": {
+     "n_scorable": 11,
+     "n_scored": 5,
+     "coverage": 0.4545,
+     "mae": 0.3324,
+     "powder_score": 7.67,
+     "bias": -0.3324
+    },
+    "region:Tetons, WY": {
+     "n_scorable": 10,
+     "n_scored": 3,
+     "coverage": 0.3,
+     "mae": 0.046,
+     "powder_score": null,
+     "bias": 0.046
+    },
+    "region:Upper Michigan": {
+     "n_scorable": 79,
+     "n_scored": 6,
+     "coverage": 0.0759,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Wasatch, UT": {
+     "n_scorable": 26,
+     "n_scored": 6,
+     "coverage": 0.2308,
+     "mae": 0.9813,
+     "powder_score": 43.92,
+     "bias": -0.0827
+    },
+    "region:Western Maine": {
+     "n_scorable": 40,
+     "n_scored": 4,
+     "coverage": 0.1,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:White Mountains, NH": {
+     "n_scorable": 80,
+     "n_scored": 3,
+     "coverage": 0.0375,
+     "mae": 0.0,
+     "powder_score": 100.0,
+     "bias": 0.0
+    }
+   },
+   "late": false
+  },
+  "baseline-gfs": {
+   "n_scorable": 151,
+   "n_scored": 151,
+   "coverage": 1.0,
+   "mae": 0.2207,
+   "rmse": 0.7136,
+   "bias": 0.1558,
+   "mae_by_horizon": {
+    "24": 0.0926,
+    "48": 0.2797,
+    "72": 0.3269
+   },
+   "powder_score": -45.62,
+   "n_skill": 147,
+   "pinball": null,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": null,
+   "tracks": {
+    "full": {
+     "n_scorable": 1648,
+     "n_scored": 151,
+     "coverage": 0.0916,
+     "mae": 0.2207,
+     "powder_score": -45.62,
+     "bias": 0.1558
+    },
+    "region:Absarokas, WY": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.3877,
+     "powder_score": -2226.0,
+     "bias": 0.3877
+    },
+    "region:Adirondacks / Catskills, NY": {
+     "n_scorable": 148,
+     "n_scored": 4,
+     "coverage": 0.027,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Allegheny Highlands, WV": {
+     "n_scorable": 36,
+     "n_scored": 9,
+     "coverage": 0.25,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Arrowhead, MN": {
+     "n_scorable": 42,
+     "n_scored": 9,
+     "coverage": 0.2143,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Beartooths, MT": {
+     "n_scorable": 7,
+     "n_scored": 4,
+     "coverage": 0.5714,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Berkshires, MA": {
+     "n_scorable": 82,
+     "n_scored": 7,
+     "coverage": 0.0854,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Blue Ridge, VA": {
+     "n_scorable": 56,
+     "n_scored": 6,
+     "coverage": 0.1071,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Cariboo, BC": {
+     "n_scorable": 9,
+     "n_scored": 3,
+     "coverage": 0.3333,
+     "mae": 0.0,
+     "powder_score": 100.0,
+     "bias": 0.0
+    },
+    "region:Central CO": {
+     "n_scorable": 12,
+     "n_scored": 4,
+     "coverage": 0.3333,
+     "mae": 0.4848,
+     "powder_score": 33.14,
+     "bias": -0.4848
+    },
+    "region:Chugach, AK": {
+     "n_scorable": 8,
+     "n_scored": 4,
+     "coverage": 0.5,
+     "mae": 0.007,
+     "powder_score": null,
+     "bias": 0.007
+    },
+    "region:Front Range, CO": {
+     "n_scorable": 60,
+     "n_scored": 9,
+     "coverage": 0.15,
+     "mae": 0.1598,
+     "powder_score": -43.8,
+     "bias": -0.0802
+    },
+    "region:Green Mountains, VT": {
+     "n_scorable": 69,
+     "n_scored": 6,
+     "coverage": 0.087,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Northern CO": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.3623,
+     "powder_score": -443.5,
+     "bias": 0.3623
+    },
+    "region:Northwoods, WI": {
+     "n_scorable": 138,
+     "n_scored": 7,
+     "coverage": 0.0507,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Poconos / Laurel Highlands, PA": {
+     "n_scorable": 93,
+     "n_scored": 6,
+     "coverage": 0.0645,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:San Juans, CO": {
+     "n_scorable": 8,
+     "n_scored": 0,
+     "coverage": 0.0,
+     "mae": null,
+     "powder_score": null,
+     "bias": null
+    },
+    "region:Sangre de Cristos, NM": {
+     "n_scorable": 16,
+     "n_scored": 3,
+     "coverage": 0.1875,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Sawtooths, ID": {
+     "n_scorable": 5,
+     "n_scored": 4,
+     "coverage": 0.8,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Southern Appalachians": {
+     "n_scorable": 92,
+     "n_scored": 3,
+     "coverage": 0.0326,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Southern CO": {
+     "n_scorable": 3,
+     "n_scored": 3,
+     "coverage": 1.0,
+     "mae": 0.11,
+     "powder_score": null,
+     "bias": 0.11
+    },
+    "region:Southern Utah": {
+     "n_scorable": 19,
+     "n_scored": 3,
+     "coverage": 0.1579,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Summit County, CO": {
+     "n_scorable": 11,
+     "n_scored": 7,
+     "coverage": 0.6364,
+     "mae": 0.8313,
+     "powder_score": -93.97,
+     "bias": 0.517
+    },
+    "region:Tahoe, CA": {
+     "n_scorable": 5,
+     "n_scored": 2,
+     "coverage": 0.4,
+     "mae": 1.6325,
+     "powder_score": -172.08,
+     "bias": 1.6325
+    },
+    "region:Tahoe, NV": {
+     "n_scorable": 11,
+     "n_scored": 5,
+     "coverage": 0.4545,
+     "mae": 0.9096,
+     "powder_score": -152.67,
+     "bias": 0.5992
+    },
+    "region:Tetons, WY": {
+     "n_scorable": 10,
+     "n_scored": 3,
+     "coverage": 0.3,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Upper Michigan": {
+     "n_scorable": 79,
+     "n_scored": 6,
+     "coverage": 0.0759,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Wasatch, UT": {
+     "n_scorable": 26,
+     "n_scored": 6,
+     "coverage": 0.2308,
+     "mae": 1.9088,
+     "powder_score": -9.08,
+     "bias": 1.9088
+    },
+    "region:Western Maine": {
+     "n_scorable": 40,
+     "n_scored": 4,
+     "coverage": 0.1,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:White Mountains, NH": {
+     "n_scorable": 80,
+     "n_scored": 3,
+     "coverage": 0.0375,
+     "mae": 0.0,
+     "powder_score": 100.0,
+     "bias": 0.0
+    }
+   },
+   "late": false
+  },
+  "baseline-icon": {
+   "n_scorable": 151,
+   "n_scored": 151,
+   "coverage": 1.0,
+   "mae": 0.1425,
+   "rmse": 0.4543,
+   "bias": -0.0756,
+   "mae_by_horizon": {
+    "24": 0.0607,
+    "48": 0.1352,
+    "72": 0.2573
+   },
+   "powder_score": 5.97,
+   "n_skill": 147,
+   "pinball": null,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": null,
+   "tracks": {
+    "full": {
+     "n_scorable": 1648,
+     "n_scored": 151,
+     "coverage": 0.0916,
+     "mae": 0.1425,
+     "powder_score": 5.97,
+     "bias": -0.0756
+    },
+    "region:Absarokas, WY": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.0138,
+     "powder_score": 17.0,
+     "bias": 0.0138
+    },
+    "region:Adirondacks / Catskills, NY": {
+     "n_scorable": 148,
+     "n_scored": 4,
+     "coverage": 0.027,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Allegheny Highlands, WV": {
+     "n_scorable": 36,
+     "n_scored": 9,
+     "coverage": 0.25,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Arrowhead, MN": {
+     "n_scorable": 42,
+     "n_scored": 9,
+     "coverage": 0.2143,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Beartooths, MT": {
+     "n_scorable": 7,
+     "n_scored": 4,
+     "coverage": 0.5714,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Berkshires, MA": {
+     "n_scorable": 82,
+     "n_scored": 7,
+     "coverage": 0.0854,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Blue Ridge, VA": {
+     "n_scorable": 56,
+     "n_scored": 6,
+     "coverage": 0.1071,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Cariboo, BC": {
+     "n_scorable": 9,
+     "n_scored": 3,
+     "coverage": 0.3333,
+     "mae": 0.0,
+     "powder_score": 100.0,
+     "bias": 0.0
+    },
+    "region:Central CO": {
+     "n_scorable": 12,
+     "n_scored": 4,
+     "coverage": 0.3333,
+     "mae": 0.788,
+     "powder_score": -8.69,
+     "bias": -0.788
+    },
+    "region:Chugach, AK": {
+     "n_scorable": 8,
+     "n_scored": 4,
+     "coverage": 0.5,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Front Range, CO": {
+     "n_scorable": 60,
+     "n_scored": 9,
+     "coverage": 0.15,
+     "mae": 0.2302,
+     "powder_score": -107.2,
+     "bias": -0.2058
+    },
+    "region:Green Mountains, VT": {
+     "n_scorable": 69,
+     "n_scored": 6,
+     "coverage": 0.087,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Northern CO": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.2813,
+     "powder_score": -322.0,
+     "bias": 0.1813
+    },
+    "region:Northwoods, WI": {
+     "n_scorable": 138,
+     "n_scored": 7,
+     "coverage": 0.0507,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Poconos / Laurel Highlands, PA": {
+     "n_scorable": 93,
+     "n_scored": 6,
+     "coverage": 0.0645,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:San Juans, CO": {
+     "n_scorable": 8,
+     "n_scored": 0,
+     "coverage": 0.0,
+     "mae": null,
+     "powder_score": null,
+     "bias": null
+    },
+    "region:Sangre de Cristos, NM": {
+     "n_scorable": 16,
+     "n_scored": 3,
+     "coverage": 0.1875,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Sawtooths, ID": {
+     "n_scorable": 5,
+     "n_scored": 4,
+     "coverage": 0.8,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Southern Appalachians": {
+     "n_scorable": 92,
+     "n_scored": 3,
+     "coverage": 0.0326,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Southern CO": {
+     "n_scorable": 3,
+     "n_scored": 3,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Southern Utah": {
+     "n_scorable": 19,
+     "n_scored": 3,
+     "coverage": 0.1579,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Summit County, CO": {
+     "n_scorable": 11,
+     "n_scored": 7,
+     "coverage": 0.6364,
+     "mae": 0.6016,
+     "powder_score": -40.37,
+     "bias": -0.1539
+    },
+    "region:Tahoe, CA": {
+     "n_scorable": 5,
+     "n_scored": 2,
+     "coverage": 0.4,
+     "mae": 0.6,
+     "powder_score": 0.0,
+     "bias": -0.6
+    },
+    "region:Tahoe, NV": {
+     "n_scorable": 11,
+     "n_scored": 5,
+     "coverage": 0.4545,
+     "mae": 0.36,
+     "powder_score": 0.0,
+     "bias": -0.36
+    },
+    "region:Tetons, WY": {
+     "n_scorable": 10,
+     "n_scored": 3,
+     "coverage": 0.3,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Upper Michigan": {
+     "n_scorable": 79,
+     "n_scored": 6,
+     "coverage": 0.0759,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Wasatch, UT": {
+     "n_scorable": 26,
+     "n_scored": 6,
+     "coverage": 0.2308,
+     "mae": 1.2183,
+     "powder_score": 30.38,
+     "bias": -0.5833
+    },
+    "region:Western Maine": {
+     "n_scorable": 40,
+     "n_scored": 4,
+     "coverage": 0.1,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:White Mountains, NH": {
+     "n_scorable": 80,
+     "n_scored": 3,
+     "coverage": 0.0375,
+     "mae": 0.0,
+     "powder_score": 100.0,
+     "bias": 0.0
+    }
+   },
+   "late": false
+  },
+  "baseline-ndfd": {
+   "n_scorable": 151,
+   "n_scored": 89,
+   "coverage": 0.5894,
+   "mae": 0.1366,
+   "rmse": 0.7648,
+   "bias": 0.04,
+   "mae_by_horizon": {
+    "24": 0.0322,
+    "48": 0.2645
+   },
+   "powder_score": -113.33,
+   "n_skill": 88,
+   "pinball": null,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": null,
+   "tracks": {
+    "full": {
+     "n_scorable": 1648,
+     "n_scored": 1124,
+     "coverage": 0.682,
+     "mae": 0.0256,
+     "powder_score": 5.38,
+     "bias": -0.0003
+    },
+    "region:AZ": {
+     "n_scorable": 22,
+     "n_scored": 16,
+     "coverage": 0.7273,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Absarokas, WY": {
+     "n_scorable": 6,
+     "n_scored": 0,
+     "coverage": 0.0,
+     "mae": null,
+     "powder_score": null,
+     "bias": null
+    },
+    "region:Adirondacks / Catskills, NY": {
+     "n_scorable": 148,
+     "n_scored": 104,
+     "coverage": 0.7027,
+     "mae": 0.0,
+     "powder_score": 100.0,
+     "bias": 0.0
+    },
+    "region:Allegheny Highlands, WV": {
+     "n_scorable": 36,
+     "n_scored": 25,
+     "coverage": 0.6944,
+     "mae": 0.3828,
+     "powder_score": null,
+     "bias": 0.3828
+    },
+    "region:Arrowhead, MN": {
+     "n_scorable": 42,
+     "n_scored": 29,
+     "coverage": 0.6905,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Beartooths, MT": {
+     "n_scorable": 7,
+     "n_scored": 5,
+     "coverage": 0.7143,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Berkshires, MA": {
+     "n_scorable": 82,
+     "n_scored": 56,
+     "coverage": 0.6829,
+     "mae": 0.0064,
+     "powder_score": null,
+     "bias": 0.0064
+    },
+    "region:Blue Ridge, VA": {
+     "n_scorable": 56,
+     "n_scored": 45,
+     "coverage": 0.8036,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:CA": {
+     "n_scorable": 11,
+     "n_scored": 6,
+     "coverage": 0.5455,
+     "mae": 0.96,
+     "powder_score": 68.86,
+     "bias": -0.7867
+    },
+    "region:CO": {
+     "n_scorable": 80,
+     "n_scored": 62,
+     "coverage": 0.775,
+     "mae": 0.0048,
+     "powder_score": 0.0,
+     "bias": -0.0048
+    },
+    "region:CT": {
+     "n_scorable": 40,
+     "n_scored": 28,
+     "coverage": 0.7,
+     "mae": 0.0086,
+     "powder_score": null,
+     "bias": 0.0086
+    },
+    "region:Central CO": {
+     "n_scorable": 12,
+     "n_scored": 9,
+     "coverage": 0.75,
+     "mae": 0.0422,
+     "powder_score": 68.33,
+     "bias": 0.0422
+    },
+    "region:Front Range, CO": {
+     "n_scorable": 60,
+     "n_scored": 44,
+     "coverage": 0.7333,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:GA": {
+     "n_scorable": 1,
+     "n_scored": 1,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Green Mountains, VT": {
+     "n_scorable": 69,
+     "n_scored": 47,
+     "coverage": 0.6812,
+     "mae": 0.0126,
+     "powder_score": null,
+     "bias": 0.0126
+    },
+    "region:IA": {
+     "n_scorable": 14,
+     "n_scored": 10,
+     "coverage": 0.7143,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:ID": {
+     "n_scorable": 14,
+     "n_scored": 7,
+     "coverage": 0.5,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:IL": {
+     "n_scorable": 32,
+     "n_scored": 22,
+     "coverage": 0.6875,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:IN": {
+     "n_scorable": 3,
+     "n_scored": 3,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:MD": {
+     "n_scorable": 4,
+     "n_scored": 3,
+     "coverage": 0.75,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:MT": {
+     "n_scorable": 3,
+     "n_scored": 2,
+     "coverage": 0.6667,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:NJ": {
+     "n_scorable": 27,
+     "n_scored": 18,
+     "coverage": 0.6667,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:NM": {
+     "n_scorable": 25,
+     "n_scored": 18,
+     "coverage": 0.72,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:NV": {
+     "n_scorable": 24,
+     "n_scored": 17,
+     "coverage": 0.7083,
+     "mae": 0.2412,
+     "powder_score": 0.0,
+     "bias": -0.2412
+    },
+    "region:Northern CO": {
+     "n_scorable": 6,
+     "n_scored": 4,
+     "coverage": 0.6667,
+     "mae": 0.025,
+     "powder_score": 0.0,
+     "bias": -0.025
+    },
+    "region:Northwoods, WI": {
+     "n_scorable": 138,
+     "n_scored": 96,
+     "coverage": 0.6957,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:OH": {
+     "n_scorable": 6,
+     "n_scored": 5,
+     "coverage": 0.8333,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Poconos / Laurel Highlands, PA": {
+     "n_scorable": 93,
+     "n_scored": 67,
+     "coverage": 0.7204,
+     "mae": 0.02,
+     "powder_score": null,
+     "bias": 0.02
+    },
+    "region:RI": {
+     "n_scorable": 17,
+     "n_scored": 13,
+     "coverage": 0.7647,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:SC": {
+     "n_scorable": 1,
+     "n_scored": 1,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:SD": {
+     "n_scorable": 21,
+     "n_scored": 14,
+     "coverage": 0.6667,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:San Juans, CO": {
+     "n_scorable": 8,
+     "n_scored": 6,
+     "coverage": 0.75,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Sangre de Cristos, NM": {
+     "n_scorable": 16,
+     "n_scored": 11,
+     "coverage": 0.6875,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Sawtooths, ID": {
+     "n_scorable": 5,
+     "n_scored": 4,
+     "coverage": 0.8,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Southern Appalachians": {
+     "n_scorable": 92,
+     "n_scored": 71,
+     "coverage": 0.7717,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Southern CO": {
+     "n_scorable": 3,
+     "n_scored": 2,
+     "coverage": 0.6667,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Southern Utah": {
+     "n_scorable": 19,
+     "n_scored": 13,
+     "coverage": 0.6842,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Summit County, CO": {
+     "n_scorable": 11,
+     "n_scored": 8,
+     "coverage": 0.7273,
+     "mae": 0.2762,
+     "powder_score": -16.32,
+     "bias": -0.1988
+    },
+    "region:Tahoe, CA": {
+     "n_scorable": 5,
+     "n_scored": 2,
+     "coverage": 0.4,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Tahoe, NV": {
+     "n_scorable": 11,
+     "n_scored": 6,
+     "coverage": 0.5455,
+     "mae": 0.1017,
+     "powder_score": 39.0,
+     "bias": -0.1017
+    },
+    "region:Tetons, WY": {
+     "n_scorable": 10,
+     "n_scored": 0,
+     "coverage": 0.0,
+     "mae": null,
+     "powder_score": null,
+     "bias": null
+    },
+    "region:UT": {
+     "n_scorable": 49,
+     "n_scored": 34,
+     "coverage": 0.6939,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Upper Michigan": {
+     "n_scorable": 79,
+     "n_scored": 54,
+     "coverage": 0.6835,
+     "mae": 0.0,
+     "powder_score": 100.0,
+     "bias": 0.0
+    },
+    "region:WY": {
+     "n_scorable": 38,
+     "n_scored": 21,
+     "coverage": 0.5526,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Wasatch, UT": {
+     "n_scorable": 26,
+     "n_scored": 18,
+     "coverage": 0.6923,
+     "mae": 0.1278,
+     "powder_score": 0.0,
+     "bias": -0.1278
+    },
+    "region:Western Maine": {
+     "n_scorable": 40,
+     "n_scored": 31,
+     "coverage": 0.775,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:White Mountains, NH": {
+     "n_scorable": 80,
+     "n_scored": 54,
+     "coverage": 0.675,
+     "mae": 0.0174,
+     "powder_score": -270.0,
+     "bias": 0.0174
+    }
+   },
+   "late": false
+  },
+  "baseline-openmeteo": {
+   "n_scorable": 151,
+   "n_scored": 151,
+   "coverage": 1.0,
+   "mae": 0.226,
+   "rmse": 0.7226,
+   "bias": 0.1611,
+   "mae_by_horizon": {
+    "24": 0.0968,
+    "48": 0.2856,
+    "72": 0.333
+   },
+   "powder_score": -49.11,
+   "n_skill": 147,
+   "pinball": null,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": null,
+   "tracks": {
+    "full": {
+     "n_scorable": 1648,
+     "n_scored": 1648,
+     "coverage": 1.0,
+     "mae": 0.0539,
+     "powder_score": -34.02,
+     "bias": 0.0271
+    },
+    "region:AK": {
+     "n_scorable": 16,
+     "n_scored": 16,
+     "coverage": 1.0,
+     "mae": 0.8061,
+     "powder_score": -1742.57,
+     "bias": 0.8061
+    },
+    "region:AZ": {
+     "n_scorable": 22,
+     "n_scored": 22,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Absarokas, WY": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.3877,
+     "powder_score": -2226.0,
+     "bias": 0.3877
+    },
+    "region:Adirondacks / Catskills, NY": {
+     "n_scorable": 148,
+     "n_scored": 148,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": 100.0,
+     "bias": 0.0
+    },
+    "region:Allegheny Highlands, WV": {
+     "n_scorable": 36,
+     "n_scored": 36,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Arrowhead, MN": {
+     "n_scorable": 42,
+     "n_scored": 42,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Beartooths, MT": {
+     "n_scorable": 7,
+     "n_scored": 7,
+     "coverage": 1.0,
+     "mae": 0.0119,
+     "powder_score": null,
+     "bias": 0.0119
+    },
+    "region:Berkshires, MA": {
+     "n_scorable": 82,
+     "n_scored": 82,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Blue Ridge, VA": {
+     "n_scorable": 56,
+     "n_scored": 56,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:CA": {
+     "n_scorable": 11,
+     "n_scored": 11,
+     "coverage": 1.0,
+     "mae": 0.8932,
+     "powder_score": 64.91,
+     "bias": -0.8932
+    },
+    "region:CO": {
+     "n_scorable": 80,
+     "n_scored": 80,
+     "coverage": 1.0,
+     "mae": 0.0732,
+     "powder_score": -134.36,
+     "bias": 0.0185
+    },
+    "region:CT": {
+     "n_scorable": 40,
+     "n_scored": 40,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Cariboo, BC": {
+     "n_scorable": 9,
+     "n_scored": 9,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": 100.0,
+     "bias": 0.0
+    },
+    "region:Central CO": {
+     "n_scorable": 12,
+     "n_scored": 12,
+     "coverage": 1.0,
+     "mae": 0.1688,
+     "powder_score": 30.17,
+     "bias": -0.1544
+    },
+    "region:Chugach, AK": {
+     "n_scorable": 8,
+     "n_scored": 8,
+     "coverage": 1.0,
+     "mae": 0.0481,
+     "powder_score": null,
+     "bias": 0.0481
+    },
+    "region:Front Range, CO": {
+     "n_scorable": 60,
+     "n_scored": 60,
+     "coverage": 1.0,
+     "mae": 0.0653,
+     "powder_score": -96.0,
+     "bias": 0.0293
+    },
+    "region:GA": {
+     "n_scorable": 1,
+     "n_scored": 1,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Green Mountains, VT": {
+     "n_scorable": 69,
+     "n_scored": 69,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": 100.0,
+     "bias": 0.0
+    },
+    "region:IA": {
+     "n_scorable": 14,
+     "n_scored": 14,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:ID": {
+     "n_scorable": 14,
+     "n_scored": 14,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:IL": {
+     "n_scorable": 32,
+     "n_scored": 32,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:IN": {
+     "n_scorable": 3,
+     "n_scored": 3,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:MD": {
+     "n_scorable": 4,
+     "n_scored": 4,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:MT": {
+     "n_scorable": 3,
+     "n_scored": 3,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:NJ": {
+     "n_scorable": 27,
+     "n_scored": 27,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:NM": {
+     "n_scorable": 25,
+     "n_scored": 25,
+     "coverage": 1.0,
+     "mae": 0.0524,
+     "powder_score": 34.45,
+     "bias": -0.0524
+    },
+    "region:NV": {
+     "n_scorable": 24,
+     "n_scored": 24,
+     "coverage": 1.0,
+     "mae": 0.4171,
+     "powder_score": -96.29,
+     "bias": 0.2505
+    },
+    "region:Northern CO": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.3623,
+     "powder_score": -443.5,
+     "bias": 0.3623
+    },
+    "region:Northwoods, WI": {
+     "n_scorable": 138,
+     "n_scored": 138,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:OH": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Poconos / Laurel Highlands, PA": {
+     "n_scorable": 93,
+     "n_scored": 93,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:RI": {
+     "n_scorable": 17,
+     "n_scored": 17,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:SC": {
+     "n_scorable": 1,
+     "n_scored": 1,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:SD": {
+     "n_scorable": 21,
+     "n_scored": 21,
+     "coverage": 1.0,
+     "mae": 0.1044,
+     "powder_score": -143.56,
+     "bias": -0.0099
+    },
+    "region:San Juans, CO": {
+     "n_scorable": 8,
+     "n_scored": 8,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Sangre de Cristos, NM": {
+     "n_scorable": 16,
+     "n_scored": 16,
+     "coverage": 1.0,
+     "mae": 0.0018,
+     "powder_score": null,
+     "bias": 0.0018
+    },
+    "region:Sawtooths, ID": {
+     "n_scorable": 5,
+     "n_scored": 5,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Southern Appalachians": {
+     "n_scorable": 92,
+     "n_scored": 92,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Southern CO": {
+     "n_scorable": 3,
+     "n_scored": 3,
+     "coverage": 1.0,
+     "mae": 0.11,
+     "powder_score": null,
+     "bias": 0.11
+    },
+    "region:Southern Utah": {
+     "n_scorable": 19,
+     "n_scored": 19,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Summit County, CO": {
+     "n_scorable": 11,
+     "n_scored": 11,
+     "coverage": 1.0,
+     "mae": 0.7245,
+     "powder_score": -165.63,
+     "bias": 0.5245
+    },
+    "region:Tahoe, CA": {
+     "n_scorable": 5,
+     "n_scored": 5,
+     "coverage": 1.0,
+     "mae": 1.5512,
+     "powder_score": -546.33,
+     "bias": 1.5512
+    },
+    "region:Tahoe, NV": {
+     "n_scorable": 11,
+     "n_scored": 11,
+     "coverage": 1.0,
+     "mae": 0.4682,
+     "powder_score": -56.06,
+     "bias": 0.3264
+    },
+    "region:Tetons, WY": {
+     "n_scorable": 10,
+     "n_scored": 10,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:UT": {
+     "n_scorable": 49,
+     "n_scored": 49,
+     "coverage": 1.0,
+     "mae": 0.0034,
+     "powder_score": null,
+     "bias": 0.0034
+    },
+    "region:Upper Michigan": {
+     "n_scorable": 79,
+     "n_scored": 79,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": 100.0,
+     "bias": 0.0
+    },
+    "region:WY": {
+     "n_scorable": 38,
+     "n_scored": 38,
+     "coverage": 1.0,
+     "mae": 0.0669,
+     "powder_score": -154.3,
+     "bias": 0.0317
+    },
+    "region:Wasatch, UT": {
+     "n_scorable": 26,
+     "n_scored": 26,
+     "coverage": 1.0,
+     "mae": 0.4469,
+     "powder_score": -10.66,
+     "bias": 0.4469
+    },
+    "region:Western Maine": {
+     "n_scorable": 40,
+     "n_scored": 40,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:White Mountains, NH": {
+     "n_scorable": 80,
+     "n_scored": 80,
+     "coverage": 1.0,
+     "mae": 0.0041,
+     "powder_score": 58.75,
+     "bias": 0.0041
+    }
+   },
+   "late": false
+  },
+  "baseline-persistence": {
+   "n_scorable": 151,
+   "n_scored": 151,
+   "coverage": 1.0,
+   "mae": 0.257,
+   "rmse": 0.8452,
+   "bias": -0.0424,
+   "mae_by_horizon": {
+    "24": 0.1051,
+    "48": 0.2213,
+    "72": 0.4933
+   },
+   "powder_score": -69.57,
+   "n_skill": 147,
+   "pinball": null,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": null,
+   "tracks": {
+    "full": {
+     "n_scorable": 1648,
+     "n_scored": 1579,
+     "coverage": 0.9581,
+     "mae": 0.0495,
+     "powder_score": -23.67,
+     "bias": -0.029
+    },
+    "region:AK": {
+     "n_scorable": 16,
+     "n_scored": 16,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": 100.0,
+     "bias": 0.0
+    },
+    "region:AZ": {
+     "n_scorable": 22,
+     "n_scored": 21,
+     "coverage": 0.9545,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Absarokas, WY": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 2.5,
+     "powder_score": -14900.0,
+     "bias": 2.5
+    },
+    "region:Adirondacks / Catskills, NY": {
+     "n_scorable": 148,
+     "n_scored": 142,
+     "coverage": 0.9595,
+     "mae": 0.0,
+     "powder_score": 100.0,
+     "bias": 0.0
+    },
+    "region:Allegheny Highlands, WV": {
+     "n_scorable": 36,
+     "n_scored": 34,
+     "coverage": 0.9444,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Arrowhead, MN": {
+     "n_scorable": 42,
+     "n_scored": 42,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Beartooths, MT": {
+     "n_scorable": 7,
+     "n_scored": 7,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Berkshires, MA": {
+     "n_scorable": 82,
+     "n_scored": 79,
+     "coverage": 0.9634,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Blue Ridge, VA": {
+     "n_scorable": 56,
+     "n_scored": 53,
+     "coverage": 0.9464,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:CA": {
+     "n_scorable": 11,
+     "n_scored": 9,
+     "coverage": 0.8182,
+     "mae": 3.1111,
+     "powder_score": 0.0,
+     "bias": -3.1111
+    },
+    "region:CO": {
+     "n_scorable": 80,
+     "n_scored": 72,
+     "coverage": 0.9,
+     "mae": 0.0361,
+     "powder_score": -4.0,
+     "bias": -0.0361
+    },
+    "region:CT": {
+     "n_scorable": 40,
+     "n_scored": 34,
+     "coverage": 0.85,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Cariboo, BC": {
+     "n_scorable": 9,
+     "n_scored": 9,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": 100.0,
+     "bias": 0.0
+    },
+    "region:Central CO": {
+     "n_scorable": 12,
+     "n_scored": 12,
+     "coverage": 1.0,
+     "mae": 0.2833,
+     "powder_score": -17.24,
+     "bias": -0.2833
+    },
+    "region:Chugach, AK": {
+     "n_scorable": 8,
+     "n_scored": 8,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Front Range, CO": {
+     "n_scorable": 60,
+     "n_scored": 60,
+     "coverage": 1.0,
+     "mae": 0.0533,
+     "powder_score": -60.0,
+     "bias": -0.0533
+    },
+    "region:GA": {
+     "n_scorable": 1,
+     "n_scored": 1,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Green Mountains, VT": {
+     "n_scorable": 69,
+     "n_scored": 62,
+     "coverage": 0.8986,
+     "mae": 0.0,
+     "powder_score": 100.0,
+     "bias": 0.0
+    },
+    "region:IA": {
+     "n_scorable": 14,
+     "n_scored": 14,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:ID": {
+     "n_scorable": 14,
+     "n_scored": 14,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:IL": {
+     "n_scorable": 32,
+     "n_scored": 32,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:IN": {
+     "n_scorable": 3,
+     "n_scored": 3,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:MD": {
+     "n_scorable": 4,
+     "n_scored": 4,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:MT": {
+     "n_scorable": 3,
+     "n_scored": 3,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:NJ": {
+     "n_scorable": 27,
+     "n_scored": 27,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:NM": {
+     "n_scorable": 25,
+     "n_scored": 25,
+     "coverage": 1.0,
+     "mae": 0.08,
+     "powder_score": 0.0,
+     "bias": -0.08
+    },
+    "region:NV": {
+     "n_scorable": 24,
+     "n_scored": 21,
+     "coverage": 0.875,
+     "mae": 0.0952,
+     "powder_score": 0.0,
+     "bias": -0.0952
+    },
+    "region:Northern CO": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.0667,
+     "powder_score": 0.0,
+     "bias": -0.0667
+    },
+    "region:Northwoods, WI": {
+     "n_scorable": 138,
+     "n_scored": 138,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:OH": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Poconos / Laurel Highlands, PA": {
+     "n_scorable": 93,
+     "n_scored": 88,
+     "coverage": 0.9462,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:RI": {
+     "n_scorable": 17,
+     "n_scored": 17,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:SC": {
+     "n_scorable": 1,
+     "n_scored": 1,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:SD": {
+     "n_scorable": 21,
+     "n_scored": 21,
+     "coverage": 1.0,
+     "mae": 0.0571,
+     "powder_score": -33.33,
+     "bias": -0.0571
+    },
+    "region:San Juans, CO": {
+     "n_scorable": 8,
+     "n_scored": 8,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Sangre de Cristos, NM": {
+     "n_scorable": 16,
+     "n_scored": 16,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Sawtooths, ID": {
+     "n_scorable": 5,
+     "n_scored": 5,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Southern Appalachians": {
+     "n_scorable": 92,
+     "n_scored": 85,
+     "coverage": 0.9239,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Southern CO": {
+     "n_scorable": 3,
+     "n_scored": 3,
+     "coverage": 1.0,
+     "mae": 0.4,
+     "powder_score": null,
+     "bias": 0.4
+    },
+    "region:Southern Utah": {
+     "n_scorable": 19,
+     "n_scored": 18,
+     "coverage": 0.9474,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Summit County, CO": {
+     "n_scorable": 11,
+     "n_scored": 11,
+     "coverage": 1.0,
+     "mae": 0.2909,
+     "powder_score": -6.67,
+     "bias": -0.2909
+    },
+    "region:Tahoe, CA": {
+     "n_scorable": 5,
+     "n_scored": 5,
+     "coverage": 1.0,
+     "mae": 0.24,
+     "powder_score": 0.0,
+     "bias": -0.24
+    },
+    "region:Tahoe, NV": {
+     "n_scorable": 11,
+     "n_scored": 11,
+     "coverage": 1.0,
+     "mae": 0.3,
+     "powder_score": 0.0,
+     "bias": -0.3
+    },
+    "region:Tetons, WY": {
+     "n_scorable": 10,
+     "n_scored": 9,
+     "coverage": 0.9,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:UT": {
+     "n_scorable": 49,
+     "n_scored": 43,
+     "coverage": 0.8776,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Upper Michigan": {
+     "n_scorable": 79,
+     "n_scored": 79,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": 100.0,
+     "bias": 0.0
+    },
+    "region:WY": {
+     "n_scorable": 38,
+     "n_scored": 37,
+     "coverage": 0.9737,
+     "mae": 0.027,
+     "powder_score": 0.0,
+     "bias": -0.027
+    },
+    "region:Wasatch, UT": {
+     "n_scorable": 26,
+     "n_scored": 25,
+     "coverage": 0.9615,
+     "mae": 0.42,
+     "powder_score": 0.0,
+     "bias": -0.42
+    },
+    "region:Western Maine": {
+     "n_scorable": 40,
+     "n_scored": 40,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:White Mountains, NH": {
+     "n_scorable": 80,
+     "n_scored": 77,
+     "coverage": 0.9625,
+     "mae": 0.0,
+     "powder_score": 100.0,
+     "bias": 0.0
+    }
+   },
+   "late": false
+  },
+  "baseline-ukmo": {
+   "n_scorable": 151,
+   "n_scored": 151,
+   "coverage": 1.0,
+   "mae": 0.1709,
+   "rmse": 0.5676,
+   "bias": 0.013,
+   "mae_by_horizon": {
+    "24": 0.0621,
+    "48": 0.1294,
+    "72": 0.357
+   },
+   "powder_score": -12.81,
+   "n_skill": 147,
+   "pinball": null,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": null,
+   "tracks": {
+    "full": {
+     "n_scorable": 1648,
+     "n_scored": 151,
+     "coverage": 0.0916,
+     "mae": 0.1709,
+     "powder_score": -12.81,
+     "bias": 0.013
+    },
+    "region:Absarokas, WY": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": 100.0,
+     "bias": 0.0
+    },
+    "region:Adirondacks / Catskills, NY": {
+     "n_scorable": 148,
+     "n_scored": 4,
+     "coverage": 0.027,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Allegheny Highlands, WV": {
+     "n_scorable": 36,
+     "n_scored": 9,
+     "coverage": 0.25,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Arrowhead, MN": {
+     "n_scorable": 42,
+     "n_scored": 9,
+     "coverage": 0.2143,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Beartooths, MT": {
+     "n_scorable": 7,
+     "n_scored": 4,
+     "coverage": 0.5714,
+     "mae": 1.1987,
+     "powder_score": null,
+     "bias": 1.1987
+    },
+    "region:Berkshires, MA": {
+     "n_scorable": 82,
+     "n_scored": 7,
+     "coverage": 0.0854,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Blue Ridge, VA": {
+     "n_scorable": 56,
+     "n_scored": 6,
+     "coverage": 0.1071,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Cariboo, BC": {
+     "n_scorable": 9,
+     "n_scored": 3,
+     "coverage": 0.3333,
+     "mae": 0.0,
+     "powder_score": 100.0,
+     "bias": 0.0
+    },
+    "region:Central CO": {
+     "n_scorable": 12,
+     "n_scored": 4,
+     "coverage": 0.3333,
+     "mae": 0.6915,
+     "powder_score": 4.62,
+     "bias": -0.6915
+    },
+    "region:Chugach, AK": {
+     "n_scorable": 8,
+     "n_scored": 4,
+     "coverage": 0.5,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Front Range, CO": {
+     "n_scorable": 60,
+     "n_scored": 9,
+     "coverage": 0.15,
+     "mae": 0.5487,
+     "powder_score": -393.8,
+     "bias": 0.1433
+    },
+    "region:Green Mountains, VT": {
+     "n_scorable": 69,
+     "n_scored": 6,
+     "coverage": 0.087,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Northern CO": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.2768,
+     "powder_score": -315.25,
+     "bias": 0.1768
+    },
+    "region:Northwoods, WI": {
+     "n_scorable": 138,
+     "n_scored": 7,
+     "coverage": 0.0507,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Poconos / Laurel Highlands, PA": {
+     "n_scorable": 93,
+     "n_scored": 6,
+     "coverage": 0.0645,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:San Juans, CO": {
+     "n_scorable": 8,
+     "n_scored": 0,
+     "coverage": 0.0,
+     "mae": null,
+     "powder_score": null,
+     "bias": null
+    },
+    "region:Sangre de Cristos, NM": {
+     "n_scorable": 16,
+     "n_scored": 3,
+     "coverage": 0.1875,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Sawtooths, ID": {
+     "n_scorable": 5,
+     "n_scored": 4,
+     "coverage": 0.8,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Southern Appalachians": {
+     "n_scorable": 92,
+     "n_scored": 3,
+     "coverage": 0.0326,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Southern CO": {
+     "n_scorable": 3,
+     "n_scored": 3,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Southern Utah": {
+     "n_scorable": 19,
+     "n_scored": 3,
+     "coverage": 0.1579,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Summit County, CO": {
+     "n_scorable": 11,
+     "n_scored": 7,
+     "coverage": 0.6364,
+     "mae": 0.6213,
+     "powder_score": -44.97,
+     "bias": 0.039
+    },
+    "region:Tahoe, CA": {
+     "n_scorable": 5,
+     "n_scored": 2,
+     "coverage": 0.4,
+     "mae": 0.6,
+     "powder_score": 0.0,
+     "bias": -0.6
+    },
+    "region:Tahoe, NV": {
+     "n_scorable": 11,
+     "n_scored": 5,
+     "coverage": 0.4545,
+     "mae": 0.36,
+     "powder_score": 0.0,
+     "bias": -0.36
+    },
+    "region:Tetons, WY": {
+     "n_scorable": 10,
+     "n_scored": 3,
+     "coverage": 0.3,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Upper Michigan": {
+     "n_scorable": 79,
+     "n_scored": 6,
+     "coverage": 0.0759,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Wasatch, UT": {
+     "n_scorable": 26,
+     "n_scored": 6,
+     "coverage": 0.2308,
+     "mae": 0.6392,
+     "powder_score": 63.48,
+     "bias": -0.0275
+    },
+    "region:Western Maine": {
+     "n_scorable": 40,
+     "n_scored": 4,
+     "coverage": 0.1,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:White Mountains, NH": {
+     "n_scorable": 80,
+     "n_scored": 3,
+     "coverage": 0.0375,
+     "mae": 0.1563,
+     "powder_score": 41.37,
+     "bias": 0.1563
+    }
+   },
+   "late": false
+  },
+  "baseline-wpc": {
+   "n_scorable": 151,
+   "n_scored": 144,
+   "coverage": 0.9536,
+   "mae": 0.2194,
+   "rmse": 0.6694,
+   "bias": 0.1135,
+   "mae_by_horizon": {
+    "24": 0.0786,
+    "48": 0.24,
+    "72": 0.3814
+   },
+   "powder_score": -45.53,
+   "n_skill": 140,
+   "pinball": 0.0737,
+   "n_pinball": 144,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": 0.0,
+   "n_brier6": 56,
+   "tracks": {
+    "full": {
+     "n_scorable": 1648,
+     "n_scored": 1615,
+     "coverage": 0.98,
+     "mae": 0.0436,
+     "powder_score": -8.13,
+     "bias": 0.0108
+    },
+    "region:AZ": {
+     "n_scorable": 22,
+     "n_scored": 22,
+     "coverage": 1.0,
+     "mae": 0.0118,
+     "powder_score": null,
+     "bias": 0.0118
+    },
+    "region:Absarokas, WY": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.7033,
+     "powder_score": -4120.0,
+     "bias": 0.7033
+    },
+    "region:Adirondacks / Catskills, NY": {
+     "n_scorable": 148,
+     "n_scored": 148,
+     "coverage": 1.0,
+     "mae": 0.0104,
+     "powder_score": -262.5,
+     "bias": 0.0104
+    },
+    "region:Allegheny Highlands, WV": {
+     "n_scorable": 36,
+     "n_scored": 36,
+     "coverage": 1.0,
+     "mae": 0.0103,
+     "powder_score": null,
+     "bias": 0.0103
+    },
+    "region:Arrowhead, MN": {
+     "n_scorable": 42,
+     "n_scored": 42,
+     "coverage": 1.0,
+     "mae": 0.0107,
+     "powder_score": null,
+     "bias": 0.0107
+    },
+    "region:Beartooths, MT": {
+     "n_scorable": 7,
+     "n_scored": 7,
+     "coverage": 1.0,
+     "mae": 0.4371,
+     "powder_score": null,
+     "bias": 0.4371
+    },
+    "region:Berkshires, MA": {
+     "n_scorable": 82,
+     "n_scored": 82,
+     "coverage": 1.0,
+     "mae": 0.0102,
+     "powder_score": null,
+     "bias": 0.0102
+    },
+    "region:Blue Ridge, VA": {
+     "n_scorable": 56,
+     "n_scored": 56,
+     "coverage": 1.0,
+     "mae": 0.0116,
+     "powder_score": null,
+     "bias": 0.0116
+    },
+    "region:CA": {
+     "n_scorable": 11,
+     "n_scored": 11,
+     "coverage": 1.0,
+     "mae": 0.6427,
+     "powder_score": 74.75,
+     "bias": -0.1627
+    },
+    "region:CO": {
+     "n_scorable": 80,
+     "n_scored": 80,
+     "coverage": 1.0,
+     "mae": 0.0409,
+     "powder_score": -30.8,
+     "bias": -0.0241
+    },
+    "region:CT": {
+     "n_scorable": 40,
+     "n_scored": 40,
+     "coverage": 1.0,
+     "mae": 0.01,
+     "powder_score": null,
+     "bias": 0.01
+    },
+    "region:Central CO": {
+     "n_scorable": 12,
+     "n_scored": 12,
+     "coverage": 1.0,
+     "mae": 0.5,
+     "powder_score": -106.9,
+     "bias": 0.5
+    },
+    "region:Front Range, CO": {
+     "n_scorable": 60,
+     "n_scored": 60,
+     "coverage": 1.0,
+     "mae": 0.0582,
+     "powder_score": -74.0,
+     "bias": -0.0248
+    },
+    "region:GA": {
+     "n_scorable": 1,
+     "n_scored": 1,
+     "coverage": 1.0,
+     "mae": 0.02,
+     "powder_score": null,
+     "bias": 0.02
+    },
+    "region:Green Mountains, VT": {
+     "n_scorable": 69,
+     "n_scored": 69,
+     "coverage": 1.0,
+     "mae": 0.0101,
+     "powder_score": -140.0,
+     "bias": 0.0101
+    },
+    "region:IA": {
+     "n_scorable": 14,
+     "n_scored": 14,
+     "coverage": 1.0,
+     "mae": 0.01,
+     "powder_score": null,
+     "bias": 0.01
+    },
+    "region:ID": {
+     "n_scorable": 14,
+     "n_scored": 14,
+     "coverage": 1.0,
+     "mae": 0.0086,
+     "powder_score": null,
+     "bias": 0.0086
+    },
+    "region:IL": {
+     "n_scorable": 32,
+     "n_scored": 32,
+     "coverage": 1.0,
+     "mae": 0.01,
+     "powder_score": null,
+     "bias": 0.01
+    },
+    "region:IN": {
+     "n_scorable": 3,
+     "n_scored": 3,
+     "coverage": 1.0,
+     "mae": 0.0133,
+     "powder_score": null,
+     "bias": 0.0133
+    },
+    "region:MD": {
+     "n_scorable": 4,
+     "n_scored": 4,
+     "coverage": 1.0,
+     "mae": 0.0125,
+     "powder_score": null,
+     "bias": 0.0125
+    },
+    "region:MT": {
+     "n_scorable": 3,
+     "n_scored": 3,
+     "coverage": 1.0,
+     "mae": 0.01,
+     "powder_score": null,
+     "bias": 0.01
+    },
+    "region:NJ": {
+     "n_scorable": 27,
+     "n_scored": 27,
+     "coverage": 1.0,
+     "mae": 0.01,
+     "powder_score": null,
+     "bias": 0.01
+    },
+    "region:NM": {
+     "n_scorable": 25,
+     "n_scored": 25,
+     "coverage": 1.0,
+     "mae": 0.0908,
+     "powder_score": -13.5,
+     "bias": -0.0692
+    },
+    "region:NV": {
+     "n_scorable": 24,
+     "n_scored": 24,
+     "coverage": 1.0,
+     "mae": 0.2546,
+     "powder_score": -19.8,
+     "bias": -0.1638
+    },
+    "region:Northern CO": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.0833,
+     "powder_score": -25.0,
+     "bias": -0.0167
+    },
+    "region:Northwoods, WI": {
+     "n_scorable": 138,
+     "n_scored": 138,
+     "coverage": 1.0,
+     "mae": 0.0101,
+     "powder_score": null,
+     "bias": 0.0101
+    },
+    "region:OH": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.0117,
+     "powder_score": null,
+     "bias": 0.0117
+    },
+    "region:Poconos / Laurel Highlands, PA": {
+     "n_scorable": 93,
+     "n_scored": 93,
+     "coverage": 1.0,
+     "mae": 0.0103,
+     "powder_score": null,
+     "bias": 0.0103
+    },
+    "region:RI": {
+     "n_scorable": 17,
+     "n_scored": 17,
+     "coverage": 1.0,
+     "mae": 0.0106,
+     "powder_score": null,
+     "bias": 0.0106
+    },
+    "region:SC": {
+     "n_scorable": 1,
+     "n_scored": 1,
+     "coverage": 1.0,
+     "mae": 0.02,
+     "powder_score": null,
+     "bias": 0.02
+    },
+    "region:SD": {
+     "n_scorable": 21,
+     "n_scored": 21,
+     "coverage": 1.0,
+     "mae": 0.0662,
+     "powder_score": -54.44,
+     "bias": -0.0481
+    },
+    "region:San Juans, CO": {
+     "n_scorable": 8,
+     "n_scored": 8,
+     "coverage": 1.0,
+     "mae": 0.2275,
+     "powder_score": null,
+     "bias": 0.2275
+    },
+    "region:Sangre de Cristos, NM": {
+     "n_scorable": 16,
+     "n_scored": 16,
+     "coverage": 1.0,
+     "mae": 0.0081,
+     "powder_score": null,
+     "bias": 0.0081
+    },
+    "region:Sawtooths, ID": {
+     "n_scorable": 5,
+     "n_scored": 5,
+     "coverage": 1.0,
+     "mae": 0.014,
+     "powder_score": null,
+     "bias": 0.014
+    },
+    "region:Southern Appalachians": {
+     "n_scorable": 92,
+     "n_scored": 92,
+     "coverage": 1.0,
+     "mae": 0.0125,
+     "powder_score": null,
+     "bias": 0.0125
+    },
+    "region:Southern CO": {
+     "n_scorable": 3,
+     "n_scored": 3,
+     "coverage": 1.0,
+     "mae": 0.0067,
+     "powder_score": null,
+     "bias": 0.0067
+    },
+    "region:Southern Utah": {
+     "n_scorable": 19,
+     "n_scored": 19,
+     "coverage": 1.0,
+     "mae": 0.0084,
+     "powder_score": null,
+     "bias": 0.0084
+    },
+    "region:Summit County, CO": {
+     "n_scorable": 11,
+     "n_scored": 11,
+     "coverage": 1.0,
+     "mae": 0.4691,
+     "powder_score": -72.0,
+     "bias": 0.0909
+    },
+    "region:Tahoe, CA": {
+     "n_scorable": 5,
+     "n_scored": 5,
+     "coverage": 1.0,
+     "mae": 0.224,
+     "powder_score": 6.67,
+     "bias": -0.224
+    },
+    "region:Tahoe, NV": {
+     "n_scorable": 11,
+     "n_scored": 11,
+     "coverage": 1.0,
+     "mae": 0.26,
+     "powder_score": 13.33,
+     "bias": -0.2491
+    },
+    "region:Tetons, WY": {
+     "n_scorable": 10,
+     "n_scored": 10,
+     "coverage": 1.0,
+     "mae": 0.024,
+     "powder_score": null,
+     "bias": 0.024
+    },
+    "region:UT": {
+     "n_scorable": 49,
+     "n_scored": 49,
+     "coverage": 1.0,
+     "mae": 0.0082,
+     "powder_score": null,
+     "bias": 0.0082
+    },
+    "region:Upper Michigan": {
+     "n_scorable": 79,
+     "n_scored": 79,
+     "coverage": 1.0,
+     "mae": 0.01,
+     "powder_score": -650.0,
+     "bias": 0.01
+    },
+    "region:WY": {
+     "n_scorable": 38,
+     "n_scored": 38,
+     "coverage": 1.0,
+     "mae": 0.0355,
+     "powder_score": -35.0,
+     "bias": -0.0171
+    },
+    "region:Wasatch, UT": {
+     "n_scorable": 26,
+     "n_scored": 26,
+     "coverage": 1.0,
+     "mae": 0.2877,
+     "powder_score": 28.76,
+     "bias": 0.1777
+    },
+    "region:Western Maine": {
+     "n_scorable": 40,
+     "n_scored": 40,
+     "coverage": 1.0,
+     "mae": 0.0115,
+     "powder_score": null,
+     "bias": 0.0115
+    },
+    "region:White Mountains, NH": {
+     "n_scorable": 80,
+     "n_scored": 80,
+     "coverage": 1.0,
+     "mae": 0.0091,
+     "powder_score": 17.5,
+     "bias": 0.0091
+    }
+   },
+   "late": false
+  },
+  "baseline-zeros": {
+   "n_scorable": 151,
+   "n_scored": 151,
+   "coverage": 1.0,
+   "mae": 0.1497,
+   "rmse": 0.6397,
+   "bias": -0.1497,
+   "mae_by_horizon": {
+    "24": 0.0593,
+    "48": 0.1064,
+    "72": 0.3133
+   },
+   "powder_score": 1.23,
+   "n_skill": 147,
+   "pinball": 0.0748,
+   "n_pinball": 151,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": 0.0,
+   "n_brier6": 59,
+   "tracks": {
+    "full": {
+     "n_scorable": 1648,
+     "n_scored": 1648,
+     "coverage": 1.0,
+     "mae": 0.0395,
+     "powder_score": 1.86,
+     "bias": -0.0395
+    },
+    "region:AK": {
+     "n_scorable": 16,
+     "n_scored": 16,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": 100.0,
+     "bias": 0.0
+    },
+    "region:AZ": {
+     "n_scorable": 22,
+     "n_scored": 22,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Absarokas, WY": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": 100.0,
+     "bias": 0.0
+    },
+    "region:Adirondacks / Catskills, NY": {
+     "n_scorable": 148,
+     "n_scored": 148,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": 100.0,
+     "bias": 0.0
+    },
+    "region:Allegheny Highlands, WV": {
+     "n_scorable": 36,
+     "n_scored": 36,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Arrowhead, MN": {
+     "n_scorable": 42,
+     "n_scored": 42,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Beartooths, MT": {
+     "n_scorable": 7,
+     "n_scored": 7,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Berkshires, MA": {
+     "n_scorable": 82,
+     "n_scored": 82,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Blue Ridge, VA": {
+     "n_scorable": 56,
+     "n_scored": 56,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:CA": {
+     "n_scorable": 11,
+     "n_scored": 11,
+     "coverage": 1.0,
+     "mae": 2.5455,
+     "powder_score": 0.0,
+     "bias": -2.5455
+    },
+    "region:CO": {
+     "n_scorable": 80,
+     "n_scored": 80,
+     "coverage": 1.0,
+     "mae": 0.0325,
+     "powder_score": -4.0,
+     "bias": -0.0325
+    },
+    "region:CT": {
+     "n_scorable": 40,
+     "n_scored": 40,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Cariboo, BC": {
+     "n_scorable": 9,
+     "n_scored": 9,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": 100.0,
+     "bias": 0.0
+    },
+    "region:Central CO": {
+     "n_scorable": 12,
+     "n_scored": 12,
+     "coverage": 1.0,
+     "mae": 0.2833,
+     "powder_score": -17.24,
+     "bias": -0.2833
+    },
+    "region:Chugach, AK": {
+     "n_scorable": 8,
+     "n_scored": 8,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Front Range, CO": {
+     "n_scorable": 60,
+     "n_scored": 60,
+     "coverage": 1.0,
+     "mae": 0.0533,
+     "powder_score": -60.0,
+     "bias": -0.0533
+    },
+    "region:GA": {
+     "n_scorable": 1,
+     "n_scored": 1,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Green Mountains, VT": {
+     "n_scorable": 69,
+     "n_scored": 69,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": 100.0,
+     "bias": 0.0
+    },
+    "region:IA": {
+     "n_scorable": 14,
+     "n_scored": 14,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:ID": {
+     "n_scorable": 14,
+     "n_scored": 14,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:IL": {
+     "n_scorable": 32,
+     "n_scored": 32,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:IN": {
+     "n_scorable": 3,
+     "n_scored": 3,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:MD": {
+     "n_scorable": 4,
+     "n_scored": 4,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:MT": {
+     "n_scorable": 3,
+     "n_scored": 3,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:NJ": {
+     "n_scorable": 27,
+     "n_scored": 27,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:NM": {
+     "n_scorable": 25,
+     "n_scored": 25,
+     "coverage": 1.0,
+     "mae": 0.08,
+     "powder_score": 0.0,
+     "bias": -0.08
+    },
+    "region:NV": {
+     "n_scorable": 24,
+     "n_scored": 24,
+     "coverage": 1.0,
+     "mae": 0.2125,
+     "powder_score": 0.0,
+     "bias": -0.2125
+    },
+    "region:Northern CO": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.0667,
+     "powder_score": 0.0,
+     "bias": -0.0667
+    },
+    "region:Northwoods, WI": {
+     "n_scorable": 138,
+     "n_scored": 138,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:OH": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Poconos / Laurel Highlands, PA": {
+     "n_scorable": 93,
+     "n_scored": 93,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:RI": {
+     "n_scorable": 17,
+     "n_scored": 17,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:SC": {
+     "n_scorable": 1,
+     "n_scored": 1,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:SD": {
+     "n_scorable": 21,
+     "n_scored": 21,
+     "coverage": 1.0,
+     "mae": 0.0571,
+     "powder_score": -33.33,
+     "bias": -0.0571
+    },
+    "region:San Juans, CO": {
+     "n_scorable": 8,
+     "n_scored": 8,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Sangre de Cristos, NM": {
+     "n_scorable": 16,
+     "n_scored": 16,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Sawtooths, ID": {
+     "n_scorable": 5,
+     "n_scored": 5,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Southern Appalachians": {
+     "n_scorable": 92,
+     "n_scored": 92,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Southern CO": {
+     "n_scorable": 3,
+     "n_scored": 3,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Southern Utah": {
+     "n_scorable": 19,
+     "n_scored": 19,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Summit County, CO": {
+     "n_scorable": 11,
+     "n_scored": 11,
+     "coverage": 1.0,
+     "mae": 0.2909,
+     "powder_score": -6.67,
+     "bias": -0.2909
+    },
+    "region:Tahoe, CA": {
+     "n_scorable": 5,
+     "n_scored": 5,
+     "coverage": 1.0,
+     "mae": 0.24,
+     "powder_score": 0.0,
+     "bias": -0.24
+    },
+    "region:Tahoe, NV": {
+     "n_scorable": 11,
+     "n_scored": 11,
+     "coverage": 1.0,
+     "mae": 0.3,
+     "powder_score": 0.0,
+     "bias": -0.3
+    },
+    "region:Tetons, WY": {
+     "n_scorable": 10,
+     "n_scored": 10,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:UT": {
+     "n_scorable": 49,
+     "n_scored": 49,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Upper Michigan": {
+     "n_scorable": 79,
+     "n_scored": 79,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": 100.0,
+     "bias": 0.0
+    },
+    "region:WY": {
+     "n_scorable": 38,
+     "n_scored": 38,
+     "coverage": 1.0,
+     "mae": 0.0263,
+     "powder_score": 0.0,
+     "bias": -0.0263
+    },
+    "region:Wasatch, UT": {
+     "n_scorable": 26,
+     "n_scored": 26,
+     "coverage": 1.0,
+     "mae": 0.4038,
+     "powder_score": 0.0,
+     "bias": -0.4038
+    },
+    "region:Western Maine": {
+     "n_scorable": 40,
+     "n_scored": 40,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:White Mountains, NH": {
+     "n_scorable": 80,
+     "n_scored": 80,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": 100.0,
+     "bias": 0.0
+    }
+   },
+   "late": false
+  },
+  "house-blend": {
+   "n_scorable": 151,
+   "n_scored": 151,
+   "coverage": 1.0,
+   "mae": 0.1629,
+   "rmse": 0.4626,
+   "bias": 0.0866,
+   "mae_by_horizon": {
+    "24": 0.0558,
+    "48": 0.1732,
+    "72": 0.2927
+   },
+   "powder_score": -7.51,
+   "n_skill": 147,
+   "pinball": 0.0815,
+   "n_pinball": 151,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": 0.0,
+   "n_brier6": 59,
+   "tracks": {
+    "full": {
+     "n_scorable": 1648,
+     "n_scored": 1648,
+     "coverage": 1.0,
+     "mae": 0.0454,
+     "powder_score": -11.74,
+     "bias": 0.0218
+    },
+    "region:AK": {
+     "n_scorable": 16,
+     "n_scored": 16,
+     "coverage": 1.0,
+     "mae": 0.8062,
+     "powder_score": -1742.86,
+     "bias": 0.8062
+    },
+    "region:AZ": {
+     "n_scorable": 22,
+     "n_scored": 22,
+     "coverage": 1.0,
+     "mae": 0.0073,
+     "powder_score": null,
+     "bias": 0.0073
+    },
+    "region:Absarokas, WY": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.3883,
+     "powder_score": -2230.0,
+     "bias": 0.3883
+    },
+    "region:Adirondacks / Catskills, NY": {
+     "n_scorable": 148,
+     "n_scored": 148,
+     "coverage": 1.0,
+     "mae": 0.0064,
+     "powder_score": -115.0,
+     "bias": 0.0064
+    },
+    "region:Allegheny Highlands, WV": {
+     "n_scorable": 36,
+     "n_scored": 36,
+     "coverage": 1.0,
+     "mae": 0.0539,
+     "powder_score": null,
+     "bias": 0.0539
+    },
+    "region:Arrowhead, MN": {
+     "n_scorable": 42,
+     "n_scored": 42,
+     "coverage": 1.0,
+     "mae": 0.0055,
+     "powder_score": null,
+     "bias": 0.0055
+    },
+    "region:Beartooths, MT": {
+     "n_scorable": 7,
+     "n_scored": 7,
+     "coverage": 1.0,
+     "mae": 0.32,
+     "powder_score": null,
+     "bias": 0.32
+    },
+    "region:Berkshires, MA": {
+     "n_scorable": 82,
+     "n_scored": 82,
+     "coverage": 1.0,
+     "mae": 0.0072,
+     "powder_score": null,
+     "bias": 0.0072
+    },
+    "region:Blue Ridge, VA": {
+     "n_scorable": 56,
+     "n_scored": 56,
+     "coverage": 1.0,
+     "mae": 0.0061,
+     "powder_score": null,
+     "bias": 0.0061
+    },
+    "region:CA": {
+     "n_scorable": 11,
+     "n_scored": 11,
+     "coverage": 1.0,
+     "mae": 0.6491,
+     "powder_score": 74.5,
+     "bias": -0.1436
+    },
+    "region:CO": {
+     "n_scorable": 80,
+     "n_scored": 80,
+     "coverage": 1.0,
+     "mae": 0.0524,
+     "powder_score": -67.6,
+     "bias": -0.0039
+    },
+    "region:CT": {
+     "n_scorable": 40,
+     "n_scored": 40,
+     "coverage": 1.0,
+     "mae": 0.0077,
+     "powder_score": null,
+     "bias": 0.0077
+    },
+    "region:Cariboo, BC": {
+     "n_scorable": 9,
+     "n_scored": 9,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": 100.0,
+     "bias": 0.0
+    },
+    "region:Central CO": {
+     "n_scorable": 12,
+     "n_scored": 12,
+     "coverage": 1.0,
+     "mae": 0.1517,
+     "powder_score": 37.24,
+     "bias": 0.1133
+    },
+    "region:Chugach, AK": {
+     "n_scorable": 8,
+     "n_scored": 8,
+     "coverage": 1.0,
+     "mae": 0.0725,
+     "powder_score": null,
+     "bias": 0.0725
+    },
+    "region:Front Range, CO": {
+     "n_scorable": 60,
+     "n_scored": 60,
+     "coverage": 1.0,
+     "mae": 0.0495,
+     "powder_score": -48.0,
+     "bias": 0.0052
+    },
+    "region:GA": {
+     "n_scorable": 1,
+     "n_scored": 1,
+     "coverage": 1.0,
+     "mae": 0.01,
+     "powder_score": null,
+     "bias": 0.01
+    },
+    "region:Green Mountains, VT": {
+     "n_scorable": 69,
+     "n_scored": 69,
+     "coverage": 1.0,
+     "mae": 0.0078,
+     "powder_score": -88.0,
+     "bias": 0.0078
+    },
+    "region:IA": {
+     "n_scorable": 14,
+     "n_scored": 14,
+     "coverage": 1.0,
+     "mae": 0.0064,
+     "powder_score": null,
+     "bias": 0.0064
+    },
+    "region:ID": {
+     "n_scorable": 14,
+     "n_scored": 14,
+     "coverage": 1.0,
+     "mae": 0.0043,
+     "powder_score": null,
+     "bias": 0.0043
+    },
+    "region:IL": {
+     "n_scorable": 32,
+     "n_scored": 32,
+     "coverage": 1.0,
+     "mae": 0.0066,
+     "powder_score": null,
+     "bias": 0.0066
+    },
+    "region:IN": {
+     "n_scorable": 3,
+     "n_scored": 3,
+     "coverage": 1.0,
+     "mae": 0.0067,
+     "powder_score": null,
+     "bias": 0.0067
+    },
+    "region:MD": {
+     "n_scorable": 4,
+     "n_scored": 4,
+     "coverage": 1.0,
+     "mae": 0.0075,
+     "powder_score": null,
+     "bias": 0.0075
+    },
+    "region:MT": {
+     "n_scorable": 3,
+     "n_scored": 3,
+     "coverage": 1.0,
+     "mae": 0.0067,
+     "powder_score": null,
+     "bias": 0.0067
+    },
+    "region:NJ": {
+     "n_scorable": 27,
+     "n_scored": 27,
+     "coverage": 1.0,
+     "mae": 0.0067,
+     "powder_score": null,
+     "bias": 0.0067
+    },
+    "region:NM": {
+     "n_scorable": 25,
+     "n_scored": 25,
+     "coverage": 1.0,
+     "mae": 0.0728,
+     "powder_score": 9.0,
+     "bias": -0.06
+    },
+    "region:NV": {
+     "n_scorable": 24,
+     "n_scored": 24,
+     "coverage": 1.0,
+     "mae": 0.2325,
+     "powder_score": -9.41,
+     "bias": 0.0025
+    },
+    "region:Northern CO": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.2083,
+     "powder_score": -212.5,
+     "bias": 0.1617
+    },
+    "region:Northwoods, WI": {
+     "n_scorable": 138,
+     "n_scored": 138,
+     "coverage": 1.0,
+     "mae": 0.0062,
+     "powder_score": null,
+     "bias": 0.0062
+    },
+    "region:OH": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.0067,
+     "powder_score": null,
+     "bias": 0.0067
+    },
+    "region:Poconos / Laurel Highlands, PA": {
+     "n_scorable": 93,
+     "n_scored": 93,
+     "coverage": 1.0,
+     "mae": 0.0095,
+     "powder_score": null,
+     "bias": 0.0095
+    },
+    "region:RI": {
+     "n_scorable": 17,
+     "n_scored": 17,
+     "coverage": 1.0,
+     "mae": 0.0065,
+     "powder_score": null,
+     "bias": 0.0065
+    },
+    "region:SC": {
+     "n_scorable": 1,
+     "n_scored": 1,
+     "coverage": 1.0,
+     "mae": 0.01,
+     "powder_score": null,
+     "bias": 0.01
+    },
+    "region:SD": {
+     "n_scorable": 21,
+     "n_scored": 21,
+     "coverage": 1.0,
+     "mae": 0.0852,
+     "powder_score": -98.89,
+     "bias": -0.029
+    },
+    "region:San Juans, CO": {
+     "n_scorable": 8,
+     "n_scored": 8,
+     "coverage": 1.0,
+     "mae": 0.115,
+     "powder_score": null,
+     "bias": 0.115
+    },
+    "region:Sangre de Cristos, NM": {
+     "n_scorable": 16,
+     "n_scored": 16,
+     "coverage": 1.0,
+     "mae": 0.005,
+     "powder_score": null,
+     "bias": 0.005
+    },
+    "region:Sawtooths, ID": {
+     "n_scorable": 5,
+     "n_scored": 5,
+     "coverage": 1.0,
+     "mae": 0.002,
+     "powder_score": null,
+     "bias": 0.002
+    },
+    "region:Southern Appalachians": {
+     "n_scorable": 92,
+     "n_scored": 92,
+     "coverage": 1.0,
+     "mae": 0.0072,
+     "powder_score": null,
+     "bias": 0.0072
+    },
+    "region:Southern CO": {
+     "n_scorable": 3,
+     "n_scored": 3,
+     "coverage": 1.0,
+     "mae": 0.0667,
+     "powder_score": null,
+     "bias": 0.0667
+    },
+    "region:Southern Utah": {
+     "n_scorable": 19,
+     "n_scored": 19,
+     "coverage": 1.0,
+     "mae": 0.0037,
+     "powder_score": null,
+     "bias": 0.0037
+    },
+    "region:Summit County, CO": {
+     "n_scorable": 11,
+     "n_scored": 11,
+     "coverage": 1.0,
+     "mae": 0.4564,
+     "powder_score": -67.33,
+     "bias": 0.1909
+    },
+    "region:Tahoe, CA": {
+     "n_scorable": 5,
+     "n_scored": 5,
+     "coverage": 1.0,
+     "mae": 0.448,
+     "powder_score": -86.67,
+     "bias": 0.416
+    },
+    "region:Tahoe, NV": {
+     "n_scorable": 11,
+     "n_scored": 11,
+     "coverage": 1.0,
+     "mae": 0.2418,
+     "powder_score": 19.39,
+     "bias": -0.0873
+    },
+    "region:Tetons, WY": {
+     "n_scorable": 10,
+     "n_scored": 10,
+     "coverage": 1.0,
+     "mae": 0.018,
+     "powder_score": null,
+     "bias": 0.018
+    },
+    "region:UT": {
+     "n_scorable": 49,
+     "n_scored": 49,
+     "coverage": 1.0,
+     "mae": 0.0063,
+     "powder_score": null,
+     "bias": 0.0063
+    },
+    "region:Upper Michigan": {
+     "n_scorable": 79,
+     "n_scored": 79,
+     "coverage": 1.0,
+     "mae": 0.0061,
+     "powder_score": -350.0,
+     "bias": 0.0061
+    },
+    "region:WY": {
+     "n_scorable": 38,
+     "n_scored": 38,
+     "coverage": 1.0,
+     "mae": 0.0479,
+     "powder_score": -82.0,
+     "bias": 0.0037
+    },
+    "region:Wasatch, UT": {
+     "n_scorable": 26,
+     "n_scored": 26,
+     "coverage": 1.0,
+     "mae": 0.2342,
+     "powder_score": 42.0,
+     "bias": 0.1342
+    },
+    "region:Western Maine": {
+     "n_scorable": 40,
+     "n_scored": 40,
+     "coverage": 1.0,
+     "mae": 0.006,
+     "powder_score": null,
+     "bias": 0.006
+    },
+    "region:White Mountains, NH": {
+     "n_scorable": 80,
+     "n_scored": 80,
+     "coverage": 1.0,
+     "mae": 0.0116,
+     "powder_score": -1.25,
+     "bias": 0.0116
+    }
+   },
+   "late": false
+  },
+  "open-powder-ensemble": {
+   "n_scorable": 151,
+   "n_scored": 151,
+   "coverage": 1.0,
+   "mae": 0.1462,
+   "rmse": 0.4999,
+   "bias": -0.0044,
+   "mae_by_horizon": {
+    "24": 0.0641,
+    "48": 0.1311,
+    "72": 0.2696
+   },
+   "powder_score": 3.54,
+   "n_skill": 147,
+   "pinball": 0.0552,
+   "n_pinball": 151,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": 0.0,
+   "n_brier6": 59,
+   "tracks": {
+    "full": {
+     "n_scorable": 1648,
+     "n_scored": 1648,
+     "coverage": 1.0,
+     "mae": 0.0514,
+     "powder_score": -27.78,
+     "bias": -0.0056
+    },
+    "region:AK": {
+     "n_scorable": 16,
+     "n_scored": 16,
+     "coverage": 1.0,
+     "mae": 0.2844,
+     "powder_score": -550.0,
+     "bias": 0.2844
+    },
+    "region:AZ": {
+     "n_scorable": 22,
+     "n_scored": 22,
+     "coverage": 1.0,
+     "mae": 0.0059,
+     "powder_score": null,
+     "bias": 0.0059
+    },
+    "region:Absarokas, WY": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.0083,
+     "powder_score": 50.0,
+     "bias": 0.0083
+    },
+    "region:Adirondacks / Catskills, NY": {
+     "n_scorable": 148,
+     "n_scored": 148,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": 100.0,
+     "bias": 0.0
+    },
+    "region:Allegheny Highlands, WV": {
+     "n_scorable": 36,
+     "n_scored": 36,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Arrowhead, MN": {
+     "n_scorable": 42,
+     "n_scored": 42,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Beartooths, MT": {
+     "n_scorable": 7,
+     "n_scored": 7,
+     "coverage": 1.0,
+     "mae": 0.0229,
+     "powder_score": null,
+     "bias": 0.0229
+    },
+    "region:Berkshires, MA": {
+     "n_scorable": 82,
+     "n_scored": 82,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Blue Ridge, VA": {
+     "n_scorable": 56,
+     "n_scored": 56,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:CA": {
+     "n_scorable": 11,
+     "n_scored": 11,
+     "coverage": 1.0,
+     "mae": 2.2082,
+     "powder_score": 13.25,
+     "bias": -2.1955
+    },
+    "region:CO": {
+     "n_scorable": 80,
+     "n_scored": 80,
+     "coverage": 1.0,
+     "mae": 0.0535,
+     "powder_score": -71.2,
+     "bias": -0.0072
+    },
+    "region:CT": {
+     "n_scorable": 40,
+     "n_scored": 40,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Cariboo, BC": {
+     "n_scorable": 9,
+     "n_scored": 9,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": 100.0,
+     "bias": 0.0
+    },
+    "region:Central CO": {
+     "n_scorable": 12,
+     "n_scored": 12,
+     "coverage": 1.0,
+     "mae": 0.315,
+     "powder_score": -30.34,
+     "bias": 0.315
+    },
+    "region:Chugach, AK": {
+     "n_scorable": 8,
+     "n_scored": 8,
+     "coverage": 1.0,
+     "mae": 0.105,
+     "powder_score": null,
+     "bias": 0.105
+    },
+    "region:Front Range, CO": {
+     "n_scorable": 60,
+     "n_scored": 60,
+     "coverage": 1.0,
+     "mae": 0.0327,
+     "powder_score": 2.0,
+     "bias": 0.0057
+    },
+    "region:GA": {
+     "n_scorable": 1,
+     "n_scored": 1,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Green Mountains, VT": {
+     "n_scorable": 69,
+     "n_scored": 69,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": 100.0,
+     "bias": 0.0
+    },
+    "region:IA": {
+     "n_scorable": 14,
+     "n_scored": 14,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:ID": {
+     "n_scorable": 14,
+     "n_scored": 14,
+     "coverage": 1.0,
+     "mae": 0.0529,
+     "powder_score": null,
+     "bias": 0.0529
+    },
+    "region:IL": {
+     "n_scorable": 32,
+     "n_scored": 32,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:IN": {
+     "n_scorable": 3,
+     "n_scored": 3,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:MD": {
+     "n_scorable": 4,
+     "n_scored": 4,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:MT": {
+     "n_scorable": 3,
+     "n_scored": 3,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:NJ": {
+     "n_scorable": 27,
+     "n_scored": 27,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:NM": {
+     "n_scorable": 25,
+     "n_scored": 25,
+     "coverage": 1.0,
+     "mae": 0.0776,
+     "powder_score": 3.0,
+     "bias": -0.0624
+    },
+    "region:NV": {
+     "n_scorable": 24,
+     "n_scored": 24,
+     "coverage": 1.0,
+     "mae": 0.2425,
+     "powder_score": -14.12,
+     "bias": -0.11
+    },
+    "region:Northern CO": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.0617,
+     "powder_score": 7.5,
+     "bias": -0.0017
+    },
+    "region:Northwoods, WI": {
+     "n_scorable": 138,
+     "n_scored": 138,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:OH": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Poconos / Laurel Highlands, PA": {
+     "n_scorable": 93,
+     "n_scored": 93,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:RI": {
+     "n_scorable": 17,
+     "n_scored": 17,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:SC": {
+     "n_scorable": 1,
+     "n_scored": 1,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:SD": {
+     "n_scorable": 21,
+     "n_scored": 21,
+     "coverage": 1.0,
+     "mae": 0.0443,
+     "powder_score": -3.33,
+     "bias": -0.0129
+    },
+    "region:San Juans, CO": {
+     "n_scorable": 8,
+     "n_scored": 8,
+     "coverage": 1.0,
+     "mae": 0.9475,
+     "powder_score": null,
+     "bias": 0.9475
+    },
+    "region:Sangre de Cristos, NM": {
+     "n_scorable": 16,
+     "n_scored": 16,
+     "coverage": 1.0,
+     "mae": 0.035,
+     "powder_score": null,
+     "bias": 0.035
+    },
+    "region:Sawtooths, ID": {
+     "n_scorable": 5,
+     "n_scored": 5,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Southern Appalachians": {
+     "n_scorable": 92,
+     "n_scored": 92,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Southern CO": {
+     "n_scorable": 3,
+     "n_scored": 3,
+     "coverage": 1.0,
+     "mae": 0.08,
+     "powder_score": null,
+     "bias": 0.08
+    },
+    "region:Southern Utah": {
+     "n_scorable": 19,
+     "n_scored": 19,
+     "coverage": 1.0,
+     "mae": 0.0411,
+     "powder_score": null,
+     "bias": 0.0411
+    },
+    "region:Summit County, CO": {
+     "n_scorable": 11,
+     "n_scored": 11,
+     "coverage": 1.0,
+     "mae": 0.5391,
+     "powder_score": -97.67,
+     "bias": 0.1336
+    },
+    "region:Tahoe, CA": {
+     "n_scorable": 5,
+     "n_scored": 5,
+     "coverage": 1.0,
+     "mae": 0.29,
+     "powder_score": -20.83,
+     "bias": -0.118
+    },
+    "region:Tahoe, NV": {
+     "n_scorable": 11,
+     "n_scored": 11,
+     "coverage": 1.0,
+     "mae": 0.2882,
+     "powder_score": 3.94,
+     "bias": -0.2882
+    },
+    "region:Tetons, WY": {
+     "n_scorable": 10,
+     "n_scored": 10,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:UT": {
+     "n_scorable": 49,
+     "n_scored": 49,
+     "coverage": 1.0,
+     "mae": 0.0416,
+     "powder_score": null,
+     "bias": 0.0416
+    },
+    "region:Upper Michigan": {
+     "n_scorable": 79,
+     "n_scored": 79,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": 100.0,
+     "bias": 0.0
+    },
+    "region:WY": {
+     "n_scorable": 38,
+     "n_scored": 38,
+     "coverage": 1.0,
+     "mae": 0.09,
+     "powder_score": -242.0,
+     "bias": 0.0384
+    },
+    "region:Wasatch, UT": {
+     "n_scorable": 26,
+     "n_scored": 26,
+     "coverage": 1.0,
+     "mae": 0.36,
+     "powder_score": 10.86,
+     "bias": -0.0523
+    },
+    "region:Western Maine": {
+     "n_scorable": 40,
+     "n_scored": 40,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:White Mountains, NH": {
+     "n_scorable": 80,
+     "n_scored": 80,
+     "coverage": 1.0,
+     "mae": 0.0047,
+     "powder_score": 52.5,
+     "bias": 0.0047
+    }
+   },
+   "late": false
+  },
+  "open-powder-ml": {
+   "n_scorable": 151,
+   "n_scored": 151,
+   "coverage": 1.0,
+   "mae": 0.6176,
+   "rmse": 2.7021,
+   "bias": 0.5656,
+   "mae_by_horizon": {
+    "24": 0.0771,
+    "48": 0.5036,
+    "72": 1.4453
+   },
+   "powder_score": -307.59,
+   "n_skill": 147,
+   "pinball": 0.219,
+   "n_pinball": 151,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": 0.0,
+   "n_brier6": 59,
+   "tracks": {
+    "full": {
+     "n_scorable": 1648,
+     "n_scored": 1648,
+     "coverage": 1.0,
+     "mae": 0.0793,
+     "powder_score": -97.06,
+     "bias": 0.0353
+    },
+    "region:AK": {
+     "n_scorable": 16,
+     "n_scored": 16,
+     "coverage": 1.0,
+     "mae": 0.1344,
+     "powder_score": -207.14,
+     "bias": 0.1344
+    },
+    "region:AZ": {
+     "n_scorable": 22,
+     "n_scored": 22,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Absarokas, WY": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.105,
+     "powder_score": -530.0,
+     "bias": 0.105
+    },
+    "region:Adirondacks / Catskills, NY": {
+     "n_scorable": 148,
+     "n_scored": 148,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": 100.0,
+     "bias": 0.0
+    },
+    "region:Allegheny Highlands, WV": {
+     "n_scorable": 36,
+     "n_scored": 36,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Arrowhead, MN": {
+     "n_scorable": 42,
+     "n_scored": 42,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Beartooths, MT": {
+     "n_scorable": 7,
+     "n_scored": 7,
+     "coverage": 1.0,
+     "mae": 0.3186,
+     "powder_score": null,
+     "bias": 0.3186
+    },
+    "region:Berkshires, MA": {
+     "n_scorable": 82,
+     "n_scored": 82,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Blue Ridge, VA": {
+     "n_scorable": 56,
+     "n_scored": 56,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:CA": {
+     "n_scorable": 11,
+     "n_scored": 11,
+     "coverage": 1.0,
+     "mae": 1.8218,
+     "powder_score": 28.43,
+     "bias": -1.8218
+    },
+    "region:CO": {
+     "n_scorable": 80,
+     "n_scored": 80,
+     "coverage": 1.0,
+     "mae": 0.0362,
+     "powder_score": -16.0,
+     "bias": -0.0187
+    },
+    "region:CT": {
+     "n_scorable": 40,
+     "n_scored": 40,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Cariboo, BC": {
+     "n_scorable": 9,
+     "n_scored": 9,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": 100.0,
+     "bias": 0.0
+    },
+    "region:Central CO": {
+     "n_scorable": 12,
+     "n_scored": 12,
+     "coverage": 1.0,
+     "mae": 0.98,
+     "powder_score": -305.52,
+     "bias": 0.98
+    },
+    "region:Chugach, AK": {
+     "n_scorable": 8,
+     "n_scored": 8,
+     "coverage": 1.0,
+     "mae": 0.005,
+     "powder_score": null,
+     "bias": 0.005
+    },
+    "region:Front Range, CO": {
+     "n_scorable": 60,
+     "n_scored": 60,
+     "coverage": 1.0,
+     "mae": 0.1345,
+     "powder_score": -303.5,
+     "bias": 0.1155
+    },
+    "region:GA": {
+     "n_scorable": 1,
+     "n_scored": 1,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Green Mountains, VT": {
+     "n_scorable": 69,
+     "n_scored": 69,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": 100.0,
+     "bias": 0.0
+    },
+    "region:IA": {
+     "n_scorable": 14,
+     "n_scored": 14,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:ID": {
+     "n_scorable": 14,
+     "n_scored": 14,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:IL": {
+     "n_scorable": 32,
+     "n_scored": 32,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:IN": {
+     "n_scorable": 3,
+     "n_scored": 3,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:MD": {
+     "n_scorable": 4,
+     "n_scored": 4,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:MT": {
+     "n_scorable": 3,
+     "n_scored": 3,
+     "coverage": 1.0,
+     "mae": 0.0133,
+     "powder_score": null,
+     "bias": 0.0133
+    },
+    "region:NJ": {
+     "n_scorable": 27,
+     "n_scored": 27,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:NM": {
+     "n_scorable": 25,
+     "n_scored": 25,
+     "coverage": 1.0,
+     "mae": 0.0796,
+     "powder_score": 0.5,
+     "bias": -0.0796
+    },
+    "region:NV": {
+     "n_scorable": 24,
+     "n_scored": 24,
+     "coverage": 1.0,
+     "mae": 0.2075,
+     "powder_score": 2.35,
+     "bias": -0.2075
+    },
+    "region:Northern CO": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.665,
+     "powder_score": -897.5,
+     "bias": 0.6317
+    },
+    "region:Northwoods, WI": {
+     "n_scorable": 138,
+     "n_scored": 138,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:OH": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Poconos / Laurel Highlands, PA": {
+     "n_scorable": 93,
+     "n_scored": 93,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:RI": {
+     "n_scorable": 17,
+     "n_scored": 17,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:SC": {
+     "n_scorable": 1,
+     "n_scored": 1,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:SD": {
+     "n_scorable": 21,
+     "n_scored": 21,
+     "coverage": 1.0,
+     "mae": 0.0224,
+     "powder_score": 47.78,
+     "bias": 0.009
+    },
+    "region:San Juans, CO": {
+     "n_scorable": 8,
+     "n_scored": 8,
+     "coverage": 1.0,
+     "mae": 0.0063,
+     "powder_score": null,
+     "bias": 0.0063
+    },
+    "region:Sangre de Cristos, NM": {
+     "n_scorable": 16,
+     "n_scored": 16,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Sawtooths, ID": {
+     "n_scorable": 5,
+     "n_scored": 5,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Southern Appalachians": {
+     "n_scorable": 92,
+     "n_scored": 92,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Southern CO": {
+     "n_scorable": 3,
+     "n_scored": 3,
+     "coverage": 1.0,
+     "mae": 0.24,
+     "powder_score": null,
+     "bias": 0.24
+    },
+    "region:Southern Utah": {
+     "n_scorable": 19,
+     "n_scored": 19,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Summit County, CO": {
+     "n_scorable": 11,
+     "n_scored": 11,
+     "coverage": 1.0,
+     "mae": 1.3973,
+     "powder_score": -412.33,
+     "bias": 1.1318
+    },
+    "region:Tahoe, CA": {
+     "n_scorable": 5,
+     "n_scored": 5,
+     "coverage": 1.0,
+     "mae": 0.518,
+     "powder_score": -115.83,
+     "bias": 0.298
+    },
+    "region:Tahoe, NV": {
+     "n_scorable": 11,
+     "n_scored": 11,
+     "coverage": 1.0,
+     "mae": 0.2973,
+     "powder_score": 0.91,
+     "bias": -0.2973
+    },
+    "region:Tetons, WY": {
+     "n_scorable": 10,
+     "n_scored": 10,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:UT": {
+     "n_scorable": 49,
+     "n_scored": 49,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:Upper Michigan": {
+     "n_scorable": 79,
+     "n_scored": 79,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": 100.0,
+     "bias": 0.0
+    },
+    "region:WY": {
+     "n_scorable": 38,
+     "n_scored": 38,
+     "coverage": 1.0,
+     "mae": 0.0263,
+     "powder_score": 0.0,
+     "bias": -0.0263
+    },
+    "region:Wasatch, UT": {
+     "n_scorable": 26,
+     "n_scored": 26,
+     "coverage": 1.0,
+     "mae": 1.7819,
+     "powder_score": -341.24,
+     "bias": 1.7819
+    },
+    "region:Western Maine": {
+     "n_scorable": 40,
+     "n_scored": 40,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    },
+    "region:White Mountains, NH": {
+     "n_scorable": 80,
+     "n_scored": 80,
+     "coverage": 1.0,
+     "mae": 0.0246,
+     "powder_score": -146.25,
+     "bias": 0.0246
+    }
+   },
+   "late": false
+  }
+ }
+}
