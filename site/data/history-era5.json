@@ -2260,5 +2260,34 @@
    "open-powder-ensemble": 79.75,
    "open-powder-ml": 65.2
   }
+ },
+ {
+  "round_id": "2026-10-31",
+  "biggest_24h": {
+   "station_id": "valle-nevado:CL:ERA5",
+   "resort": "Valle Nevado / Tres Valles",
+   "inches": 0.1
+  },
+  "qc": {
+   "station_horizons_valid": 58,
+   "station_horizons_voided": 11
+  },
+  "teams": {
+   "baseline-aifs": -1911.18,
+   "baseline-climatology": 0.0,
+   "baseline-consensus": -536.49,
+   "baseline-gem": -317.49,
+   "baseline-gfs": -888.52,
+   "baseline-icon": -27.25,
+   "baseline-openmeteo": -1075.93,
+   "baseline-persistence": -2063.3,
+   "baseline-ukmo": -1960.11,
+   "baseline-zeros": -27.25,
+   "house-analog": -27.25,
+   "house-blend": -682.44,
+   "house-gbm": -95.31,
+   "open-powder-ensemble": -49.24,
+   "open-powder-ml": -108.61
+  }
  }
 ]
