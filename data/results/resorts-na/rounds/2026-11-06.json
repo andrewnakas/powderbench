@@ -1,0 +1,85 @@
+{
+ "round_id": "2026-11-06",
+ "league": "resorts-na",
+ "resolved_utc": "2026-11-10T21:41:57+00:00",
+ "observations_72h": null,
+ "qc": {
+  "station_horizons_valid": 60,
+  "station_horizons_voided": 51
+ },
+ "biggest_24h": {
+  "station_id": "wolf-creek:US:RESORT",
+  "resort": "Wolf Creek",
+  "inches": 10.5
+ },
+ "teams": {
+  "open-powder-ensemble": {
+   "n_scorable": 60,
+   "n_scored": 60,
+   "coverage": 1.0,
+   "mae": 1.4485,
+   "rmse": 5.2013,
+   "bias": -1.3195,
+   "mae_by_horizon": {
+    "24": 0.752,
+    "48": 1.419,
+    "72": 2.1745
+   },
+   "powder_score": 1.24,
+   "n_skill": 60,
+   "pinball": 0.67,
+   "n_pinball": 60,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": 0.0499,
+   "n_brier6": 20,
+   "tracks": {
+    "region:Northern Michigan": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    }
+   },
+   "late": false
+  },
+  "open-powder-ml": {
+   "n_scorable": 60,
+   "n_scored": 60,
+   "coverage": 1.0,
+   "mae": 1.5307,
+   "rmse": 5.2416,
+   "bias": -1.3037,
+   "mae_by_horizon": {
+    "24": 0.79,
+    "48": 1.452,
+    "72": 2.35
+   },
+   "powder_score": -4.37,
+   "n_skill": 60,
+   "pinball": 0.7171,
+   "n_pinball": 60,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": 0.0502,
+   "n_brier6": 20,
+   "tracks": {
+    "region:Northern Michigan": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": null,
+     "bias": 0.0
+    }
+   },
+   "late": false
+  }
+ }
+}

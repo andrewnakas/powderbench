@@ -804,5 +804,36 @@
    "open-powder-ensemble": 64.86,
    "open-powder-ml": 60.97
   }
+ },
+ {
+  "round_id": "2026-11-07",
+  "biggest_24h": {
+   "station_id": "2G03P:BC:MSNT",
+   "resort": "Manning Park Resort (5 km)",
+   "inches": 6.0
+  },
+  "qc": {
+   "station_horizons_valid": 2852,
+   "station_horizons_voided": 124
+  },
+  "teams": {
+   "baseline-aifs": 38.42,
+   "baseline-climatology": 0.0,
+   "baseline-consensus": 49.08,
+   "baseline-gem": 30.68,
+   "baseline-gfs": 20.99,
+   "baseline-icon": 41.56,
+   "baseline-ndfd": 3.89,
+   "baseline-openmeteo": 19.56,
+   "baseline-persistence": 13.33,
+   "baseline-ukmo": 23.21,
+   "baseline-wpc": 44.88,
+   "baseline-zeros": 35.56,
+   "house-analog": 44.44,
+   "house-blend": 55.64,
+   "house-gbm": 42.58,
+   "open-powder-ensemble": 44.16,
+   "open-powder-ml": 37.67
+  }
  }
 ]
