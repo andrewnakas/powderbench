@@ -774,5 +774,35 @@
    "open-powder-ensemble": 30.61,
    "open-powder-ml": 34.49
   }
+ },
+ {
+  "round_id": "2026-11-06",
+  "biggest_24h": {
+   "station_id": "1E08P:BC:MSNT",
+   "resort": "Azure",
+   "inches": 4.0
+  },
+  "qc": {
+   "station_horizons_valid": 2845,
+   "station_horizons_voided": 134
+  },
+  "teams": {
+   "baseline-climatology": 0.0,
+   "baseline-consensus": 60.29,
+   "baseline-gem": 32.14,
+   "baseline-gfs": 36.11,
+   "baseline-icon": 52.92,
+   "baseline-ndfd": 84.62,
+   "baseline-openmeteo": 36.19,
+   "baseline-persistence": -283.33,
+   "baseline-ukmo": 63.34,
+   "baseline-wpc": 65.54,
+   "baseline-zeros": 61.11,
+   "house-analog": 61.11,
+   "house-blend": 64.81,
+   "house-gbm": 51.56,
+   "open-powder-ensemble": 64.86,
+   "open-powder-ml": 60.97
+  }
  }
 ]
