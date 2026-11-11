@@ -835,5 +835,37 @@
    "open-powder-ensemble": 44.16,
    "open-powder-ml": 37.67
   }
+ },
+ {
+  "round_id": "2026-11-08",
+  "biggest_24h": {
+   "station_id": "1D17P:BC:MSNT",
+   "resort": "Chilliwack River",
+   "inches": 16.0
+  },
+  "qc": {
+   "station_horizons_valid": 2820,
+   "station_horizons_voided": 153
+  },
+  "teams": {
+   "baseline-aifs": 21.17,
+   "baseline-climatology": 0.0,
+   "baseline-consensus": 28.49,
+   "baseline-ecmwf": 25.35,
+   "baseline-gem": 12.96,
+   "baseline-gfs": -31.09,
+   "baseline-icon": 30.61,
+   "baseline-ndfd": 0.0,
+   "baseline-openmeteo": -4.39,
+   "baseline-persistence": 10.0,
+   "baseline-ukmo": 21.96,
+   "baseline-wpc": 31.02,
+   "baseline-zeros": 23.33,
+   "house-analog": 30.0,
+   "house-blend": 36.9,
+   "house-gbm": 33.17,
+   "open-powder-ensemble": 28.4,
+   "open-powder-ml": 12.63
+  }
  }
 ]
