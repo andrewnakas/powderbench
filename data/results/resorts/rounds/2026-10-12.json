@@ -4,118 +4,136 @@
  "resolved_utc": "2026-10-15T19:43:59+00:00",
  "observations_72h": null,
  "qc": {
-  "station_horizons_valid": 30,
-  "station_horizons_voided": 9
+  "station_horizons_valid": 27,
+  "station_horizons_voided": 12
  },
- "biggest_24h": {
-  "station_id": "chapelco:AR:RESORT",
-  "resort": "Chapelco",
-  "inches": 0.8
- },
+ "biggest_24h": null,
  "teams": {
   "baseline-climatology": {
-   "n_scorable": 30,
-   "n_scored": 30,
+   "n_scorable": 27,
+   "n_scored": 27,
    "coverage": 1.0,
-   "mae": 0.3278,
-   "rmse": 0.7508,
-   "bias": -0.2551,
-   "mae_by_horizon": {
-    "24": 0.079,
-    "48": 0.4023,
-    "72": 0.502
-   },
-   "powder_score": -0.01,
-   "pinball": 0.1243,
-   "n_pinball": 30,
-   "brier6": 0.0,
-   "n_brier6": 10,
-   "late": false,
-   "n_skill": 30,
-   "mae_skill": 0.32777,
-   "mae_climo": 0.32777
-  },
-  "baseline-gfs": {
-   "n_scorable": 30,
-   "n_scored": 30,
-   "coverage": 1.0,
-   "mae": 1.1591,
-   "rmse": 2.3648,
-   "bias": 0.8431,
-   "mae_by_horizon": {
-    "24": 1.0739,
-    "48": 1.1539,
-    "72": 1.2494
-   },
-   "powder_score": -253.64,
-   "pinball": null,
-   "brier6": null,
-   "late": false,
-   "n_skill": 30,
-   "mae_skill": 1.15907,
-   "mae_climo": 0.32777
-  },
-  "baseline-openmeteo": {
-   "n_scorable": 30,
-   "n_scored": 30,
-   "coverage": 1.0,
-   "mae": 0.3704,
-   "rmse": 0.7205,
-   "bias": -0.0636,
-   "mae_by_horizon": {
-    "24": 0.3049,
-    "48": 0.3609,
-    "72": 0.4455
-   },
-   "powder_score": -13.01,
-   "pinball": null,
-   "brier6": null,
-   "late": false,
-   "n_skill": 30,
-   "mae_skill": 0.37043,
-   "mae_climo": 0.32777
-  },
-  "baseline-persistence": {
-   "n_scorable": 30,
-   "n_scored": 30,
-   "coverage": 1.0,
-   "mae": 0.1573,
-   "rmse": 0.6093,
-   "bias": -0.1573,
+   "mae": 0.1978,
+   "rmse": 0.5855,
+   "bias": -0.1171,
    "mae_by_horizon": {
     "24": 0.0,
-    "48": 0.236,
-    "72": 0.236
+    "48": 0.2746,
+    "72": 0.3189
    },
-   "powder_score": 52.01,
+   "powder_score": 0.0,
+   "n_skill": 27,
+   "mae_skill": 0.19781,
+   "mae_climo": 0.19781,
+   "pinball": 0.0941,
+   "n_pinball": 27,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": 0.0,
+   "n_brier6": 9,
+   "late": false
+  },
+  "baseline-gfs": {
+   "n_scorable": 27,
+   "n_scored": 27,
+   "coverage": 1.0,
+   "mae": 1.1123,
+   "rmse": 2.4269,
+   "bias": 1.1123,
+   "mae_by_horizon": {
+    "24": 1.1054,
+    "48": 1.1066,
+    "72": 1.1249
+   },
+   "powder_score": -462.29,
+   "n_skill": 27,
+   "mae_skill": 1.1123,
+   "mae_climo": 0.19781,
    "pinball": null,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
    "brier6": null,
-   "late": false,
-   "n_skill": 30,
-   "mae_skill": 0.15733,
-   "mae_climo": 0.32777
+   "late": false
+  },
+  "baseline-openmeteo": {
+   "n_scorable": 27,
+   "n_scored": 27,
+   "coverage": 1.0,
+   "mae": 0.236,
+   "rmse": 0.5032,
+   "bias": 0.1049,
+   "mae_by_horizon": {
+    "24": 0.251,
+    "48": 0.2254,
+    "72": 0.2317
+   },
+   "powder_score": -19.32,
+   "n_skill": 27,
+   "mae_skill": 0.23604,
+   "mae_climo": 0.19781,
+   "pinball": null,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": null,
+   "late": false
+  },
+  "baseline-persistence": {
+   "n_scorable": 27,
+   "n_scored": 27,
+   "coverage": 1.0,
+   "mae": 0.1748,
+   "rmse": 0.6423,
+   "bias": -0.1748,
+   "mae_by_horizon": {
+    "24": 0.0,
+    "48": 0.2622,
+    "72": 0.2622
+   },
+   "powder_score": 11.63,
+   "n_skill": 27,
+   "mae_skill": 0.17481,
+   "mae_climo": 0.19781,
+   "pinball": null,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": null,
+   "late": false
   },
   "baseline-zeros": {
-   "n_scorable": 30,
-   "n_scored": 30,
+   "n_scorable": 27,
+   "n_scored": 27,
    "coverage": 1.0,
-   "mae": 0.3153,
-   "rmse": 0.814,
-   "bias": -0.3153,
+   "mae": 0.1748,
+   "rmse": 0.6423,
+   "bias": -0.1748,
    "mae_by_horizon": {
-    "24": 0.079,
-    "48": 0.394,
-    "72": 0.473
+    "24": 0.0,
+    "48": 0.2622,
+    "72": 0.2622
    },
-   "powder_score": 3.8,
-   "pinball": 0.1577,
-   "n_pinball": 30,
+   "powder_score": 11.63,
+   "n_skill": 27,
+   "mae_skill": 0.17481,
+   "mae_climo": 0.19781,
+   "pinball": 0.0874,
+   "n_pinball": 27,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
    "brier6": 0.0,
-   "n_brier6": 10,
-   "late": false,
-   "n_skill": 30,
-   "mae_skill": 0.31533,
-   "mae_climo": 0.32777
+   "n_brier6": 9,
+   "late": false
   }
- }
+ },
+ "rescored_utc": "2026-11-13T15:14:49+00:00",
+ "rescored_reason": "stuck-report QC: 3 station-horizons voided (repeated resort figures)"
 }

@@ -4,8 +4,8 @@
  "resolved_utc": "2026-07-28T17:28:44+00:00",
  "observations_72h": null,
  "qc": {
-  "station_horizons_valid": 36,
-  "station_horizons_voided": 3
+  "station_horizons_valid": 32,
+  "station_horizons_voided": 7
  },
  "biggest_24h": {
   "station_id": "catedral:AR:RESORT",
@@ -14,108 +14,130 @@
  },
  "teams": {
   "baseline-climatology": {
-   "n_scorable": 36,
-   "n_scored": 36,
+   "n_scorable": 32,
+   "n_scored": 32,
    "coverage": 1.0,
-   "mae": 8.933,
-   "rmse": 17.3379,
-   "bias": -8.7707,
+   "mae": 5.3097,
+   "rmse": 10.2001,
+   "bias": -5.1271,
    "mae_by_horizon": {
     "24": 5.6988,
-    "48": 8.649,
-    "72": 13.0649
+    "48": 6.5716,
+    "72": 2.9421
    },
-   "powder_score": -0.0,
-   "pinball": 4.0061,
-   "n_pinball": 36,
+   "powder_score": 0.0,
+   "n_skill": 32,
+   "mae_skill": 5.30969,
+   "mae_climo": 5.30969,
+   "pinball": 2.243,
+   "n_pinball": 32,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
    "brier6": 0.3577,
    "n_brier6": 13,
-   "late": false,
-   "n_skill": 36,
-   "mae_skill": 8.93297,
-   "mae_climo": 8.93297
+   "late": false
   },
   "baseline-gfs": {
-   "n_scorable": 36,
-   "n_scored": 36,
+   "n_scorable": 32,
+   "n_scored": 32,
    "coverage": 1.0,
-   "mae": 6.4851,
-   "rmse": 13.4698,
-   "bias": -4.0509,
+   "mae": 3.3576,
+   "rmse": 6.3317,
+   "bias": -0.6191,
    "mae_by_horizon": {
     "24": 3.8646,
-    "48": 6.3334,
-    "72": 9.7475
+    "48": 4.2885,
+    "72": 1.2536
    },
-   "powder_score": 27.4,
+   "powder_score": 36.76,
+   "n_skill": 32,
+   "mae_skill": 3.35759,
+   "mae_climo": 5.30969,
    "pinball": null,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
    "brier6": null,
-   "late": false,
-   "n_skill": 36,
-   "mae_skill": 6.48508,
-   "mae_climo": 8.93297
+   "late": false
   },
   "baseline-openmeteo": {
-   "n_scorable": 36,
-   "n_scored": 36,
+   "n_scorable": 32,
+   "n_scored": 32,
    "coverage": 1.0,
-   "mae": 7.4461,
-   "rmse": 14.5276,
-   "bias": -3.7486,
+   "mae": 4.3474,
+   "rmse": 7.6639,
+   "bias": -0.1878,
    "mae_by_horizon": {
     "24": 4.9386,
-    "48": 6.8793,
-    "72": 11.0276
+    "48": 4.9467,
+    "72": 2.5626
    },
-   "powder_score": 16.64,
+   "powder_score": 18.12,
+   "n_skill": 32,
+   "mae_skill": 4.34741,
+   "mae_climo": 5.30969,
    "pinball": null,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
    "brier6": null,
-   "late": false,
-   "n_skill": 36,
-   "mae_skill": 7.44606,
-   "mae_climo": 8.93297
+   "late": false
   },
   "baseline-persistence": {
-   "n_scorable": 36,
-   "n_scored": 36,
+   "n_scorable": 32,
+   "n_scored": 32,
    "coverage": 1.0,
-   "mae": 9.1325,
-   "rmse": 17.1694,
-   "bias": -5.4392,
+   "mae": 5.6719,
+   "rmse": 10.6183,
+   "bias": -1.5169,
    "mae_by_horizon": {
     "24": 4.3008,
-    "48": 9.0567,
-    "72": 14.9255
+    "48": 7.0164,
+    "72": 6.0512
    },
-   "powder_score": -2.23,
+   "powder_score": -6.82,
+   "n_skill": 32,
+   "mae_skill": 5.67188,
+   "mae_climo": 5.30969,
    "pinball": null,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
    "brier6": null,
-   "late": false,
-   "n_skill": 36,
-   "mae_skill": 9.1325,
-   "mae_climo": 8.93297
+   "late": false
   },
   "baseline-zeros": {
-   "n_scorable": 36,
-   "n_scored": 36,
+   "n_scorable": 32,
+   "n_scored": 32,
    "coverage": 1.0,
-   "mae": 9.1003,
-   "rmse": 17.6957,
-   "bias": -9.1003,
+   "mae": 5.4144,
+   "rmse": 10.4482,
+   "bias": -5.4144,
    "mae_by_horizon": {
     "24": 5.6946,
-    "48": 8.7283,
-    "72": 13.5309
+    "48": 6.6582,
+    "72": 3.2488
    },
-   "powder_score": -1.87,
-   "pinball": 4.5501,
-   "n_pinball": 36,
+   "powder_score": -1.97,
+   "n_skill": 32,
+   "mae_skill": 5.41437,
+   "mae_climo": 5.30969,
+   "pinball": 2.7072,
+   "n_pinball": 32,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
    "brier6": 0.3846,
    "n_brier6": 13,
-   "late": false,
-   "n_skill": 36,
-   "mae_skill": 9.10028,
-   "mae_climo": 8.93297
+   "late": false
   }
- }
+ },
+ "rescored_utc": "2026-11-13T15:14:47+00:00",
+ "rescored_reason": "stuck-report QC: 4 station-horizons voided (repeated resort figures)"
 }

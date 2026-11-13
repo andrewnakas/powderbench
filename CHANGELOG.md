@@ -4,6 +4,7 @@
 
 - The headline metric is now called **Powder Accuracy** (same formula: 100 × (1 − MAE / MAE_climatology); higher is better). The JSON field stays `powder_score`.
 - **Leaderboards pool rounds** (total error over total climatology error) instead of averaging per-round Powder Accuracy, which dry rounds dominated (scores in the minus thousands). Per-round scores are unchanged; all past rounds re-scored to record the terms. See METHODOLOGY §4.
+- **Resort truth: stuck-report QC.** A non-zero 24 h figure repeated unchanged on 3+ consecutive days counts once; the repeats are voided. An audit found 175 such resort-days (40% of all reported resort snow), e.g. La Hoya showing 15.75" for 56 days and Wolf Creek 10.5" for 11. The 114 resort rounds already resolved were re-scored with those 500 station-horizons voided (`rescored_utc` in each result file); nothing else in them changed.
 - Site: snow forecast map with per-station best forecasts; plain-language scoring explainer; hourly forecast refresh.
 
 ## 0.3.0 — October 2026: northern-hemisphere scale-up

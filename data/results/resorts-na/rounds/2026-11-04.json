@@ -4,29 +4,27 @@
  "resolved_utc": "2026-11-08T20:15:28+00:00",
  "observations_72h": null,
  "qc": {
-  "station_horizons_valid": 58,
-  "station_horizons_voided": 53
+  "station_horizons_valid": 55,
+  "station_horizons_voided": 56
  },
- "biggest_24h": {
-  "station_id": "wolf-creek:US:RESORT",
-  "resort": "Wolf Creek",
-  "inches": 10.5
- },
+ "biggest_24h": null,
  "teams": {
   "baseline-aifs": {
-   "n_scorable": 58,
-   "n_scored": 58,
+   "n_scorable": 55,
+   "n_scored": 55,
    "coverage": 1.0,
-   "mae": 1.2565,
-   "rmse": 5.1296,
-   "bias": -0.9751,
+   "mae": 0.1901,
+   "rmse": 0.466,
+   "bias": 0.1066,
    "mae_by_horizon": {
-    "24": 0.6036,
-    "48": 1.2591,
-    "72": 1.9413
+    "24": 0.0885,
+    "48": 0.1685,
+    "72": 0.319
    },
-   "powder_score": -5.09,
-   "n_skill": 58,
+   "powder_score": -61.21,
+   "n_skill": 55,
+   "mae_skill": 0.19011,
+   "mae_climo": 0.11793,
    "pinball": null,
    "swe_accuracy": null,
    "swe_mae": null,
@@ -46,32 +44,32 @@
      "mae_climo": 0.0
     }
    },
-   "late": false,
-   "mae_skill": 1.25652,
-   "mae_climo": 1.19566
+   "late": false
   },
   "baseline-climatology": {
-   "n_scorable": 58,
-   "n_scored": 58,
+   "n_scorable": 55,
+   "n_scored": 55,
    "coverage": 1.0,
-   "mae": 1.1957,
-   "rmse": 5.1551,
-   "bias": -1.0379,
+   "mae": 0.1179,
+   "rmse": 0.3447,
+   "bias": 0.0485,
    "mae_by_horizon": {
-    "24": 0.536,
-    "48": 1.1836,
-    "72": 1.9021
+    "24": 0.0116,
+    "48": 0.0827,
+    "72": 0.2654
    },
    "powder_score": 0.0,
-   "n_skill": 58,
-   "pinball": 0.5909,
-   "n_pinball": 58,
+   "n_skill": 55,
+   "mae_skill": 0.11793,
+   "mae_climo": 0.11793,
+   "pinball": 0.0896,
+   "n_pinball": 55,
    "swe_accuracy": null,
    "swe_mae": null,
    "density_accuracy": null,
    "density_mae": null,
-   "brier6": 0.0492,
-   "n_brier6": 20,
+   "brier6": 0.0002,
+   "n_brier6": 19,
    "tracks": {
     "region:Northern Michigan": {
      "n_scorable": 6,
@@ -85,24 +83,24 @@
      "mae_climo": 0.0
     }
    },
-   "late": false,
-   "mae_skill": 1.19566,
-   "mae_climo": 1.19566
+   "late": false
   },
   "baseline-consensus": {
-   "n_scorable": 58,
-   "n_scored": 58,
+   "n_scorable": 55,
+   "n_scored": 55,
    "coverage": 1.0,
-   "mae": 1.325,
-   "rmse": 5.1618,
-   "bias": -0.9152,
+   "mae": 0.2578,
+   "rmse": 0.5719,
+   "bias": 0.1743,
    "mae_by_horizon": {
-    "24": 0.6406,
-    "48": 1.2864,
-    "72": 2.0842
+    "24": 0.1245,
+    "48": 0.1973,
+    "72": 0.4591
    },
-   "powder_score": -10.82,
-   "n_skill": 58,
+   "powder_score": -118.64,
+   "n_skill": 55,
+   "mae_skill": 0.25784,
+   "mae_climo": 0.11793,
    "pinball": null,
    "swe_accuracy": null,
    "swe_mae": null,
@@ -122,9 +120,7 @@
      "mae_climo": 0.0
     }
    },
-   "late": false,
-   "mae_skill": 1.32503,
-   "mae_climo": 1.19566
+   "late": false
   },
   "baseline-ecmwf": {
    "invalid": true,
@@ -133,19 +129,21 @@
    ]
   },
   "baseline-gem": {
-   "n_scorable": 58,
-   "n_scored": 58,
+   "n_scorable": 55,
+   "n_scored": 55,
    "coverage": 1.0,
-   "mae": 1.956,
-   "rmse": 5.4233,
-   "bias": -0.2716,
+   "mae": 0.9242,
+   "rmse": 1.8074,
+   "bias": 0.852,
    "mae_by_horizon": {
-    "24": 1.0224,
-    "48": 2.0091,
-    "72": 2.8856
+    "24": 0.5294,
+    "48": 0.9601,
+    "72": 1.3051
    },
-   "powder_score": -63.59,
-   "n_skill": 58,
+   "powder_score": -683.72,
+   "n_skill": 55,
+   "mae_skill": 0.92422,
+   "mae_climo": 0.11793,
    "pinball": null,
    "swe_accuracy": null,
    "swe_mae": null,
@@ -165,24 +163,24 @@
      "mae_climo": 0.0
     }
    },
-   "late": false,
-   "mae_skill": 1.95598,
-   "mae_climo": 1.19566
+   "late": false
   },
   "baseline-gfs": {
-   "n_scorable": 58,
-   "n_scored": 58,
+   "n_scorable": 55,
+   "n_scored": 55,
    "coverage": 1.0,
-   "mae": 1.5361,
-   "rmse": 5.2357,
-   "bias": -0.7421,
+   "mae": 0.4745,
+   "rmse": 0.9189,
+   "bias": 0.3629,
    "mae_by_horizon": {
-    "24": 0.8158,
-    "48": 1.5437,
-    "72": 2.2868
+    "24": 0.3061,
+    "48": 0.4628,
+    "72": 0.6638
    },
-   "powder_score": -28.48,
-   "n_skill": 58,
+   "powder_score": -302.33,
+   "n_skill": 55,
+   "mae_skill": 0.47445,
+   "mae_climo": 0.11793,
    "pinball": null,
    "swe_accuracy": null,
    "swe_mae": null,
@@ -202,24 +200,24 @@
      "mae_climo": 0.0
     }
    },
-   "late": false,
-   "mae_skill": 1.53612,
-   "mae_climo": 1.19566
+   "late": false
   },
   "baseline-icon": {
-   "n_scorable": 58,
-   "n_scored": 58,
+   "n_scorable": 55,
+   "n_scored": 55,
    "coverage": 1.0,
-   "mae": 1.1462,
-   "rmse": 5.1512,
-   "bias": -1.1253,
+   "mae": 0.0683,
+   "rmse": 0.4262,
+   "bias": -0.0462,
    "mae_by_horizon": {
-    "24": 0.5319,
-    "48": 1.1067,
-    "72": 1.8324
+    "24": 0.0073,
+    "48": 0.0092,
+    "72": 0.1918
    },
-   "powder_score": 4.13,
-   "n_skill": 58,
+   "powder_score": 42.08,
+   "n_skill": 55,
+   "mae_skill": 0.06831,
+   "mae_climo": 0.11793,
    "pinball": null,
    "swe_accuracy": null,
    "swe_mae": null,
@@ -239,24 +237,24 @@
      "mae_climo": 0.0
     }
    },
-   "late": false,
-   "mae_skill": 1.14622,
-   "mae_climo": 1.19566
+   "late": false
   },
   "baseline-nbm": {
-   "n_scorable": 58,
-   "n_scored": 58,
+   "n_scorable": 55,
+   "n_scored": 55,
    "coverage": 1.0,
-   "mae": 1.5166,
-   "rmse": 5.1933,
-   "bias": -0.7042,
+   "mae": 0.4642,
+   "rmse": 0.9569,
+   "bias": 0.3926,
    "mae_by_horizon": {
-    "24": 0.7819,
-    "48": 1.5274,
-    "72": 2.2792
+    "24": 0.2746,
+    "48": 0.4526,
+    "72": 0.6759
    },
-   "powder_score": -26.84,
-   "n_skill": 58,
+   "powder_score": -293.62,
+   "n_skill": 55,
+   "mae_skill": 0.46418,
+   "mae_climo": 0.11793,
    "pinball": null,
    "swe_accuracy": null,
    "swe_mae": null,
@@ -276,23 +274,23 @@
      "mae_climo": 0.0
     }
    },
-   "late": false,
-   "mae_skill": 1.5166,
-   "mae_climo": 1.19566
+   "late": false
   },
   "baseline-ndfd": {
-   "n_scorable": 58,
-   "n_scored": 30,
-   "coverage": 0.5172,
-   "mae": 1.058,
-   "rmse": 4.2867,
-   "bias": -1.042,
+   "n_scorable": 55,
+   "n_scored": 28,
+   "coverage": 0.5091,
+   "mae": 0.0086,
+   "rmse": 0.0321,
+   "bias": 0.0086,
    "mae_by_horizon": {
-    "24": 0.708,
-    "48": 1.408
+    "24": 0.0086,
+    "48": 0.0086
    },
-   "powder_score": 0.55,
-   "n_skill": 30,
+   "powder_score": 42.03,
+   "n_skill": 28,
+   "mae_skill": 0.00857,
+   "mae_climo": 0.01479,
    "pinball": null,
    "swe_accuracy": null,
    "swe_mae": null,
@@ -312,24 +310,24 @@
      "mae_climo": 0.0
     }
    },
-   "late": false,
-   "mae_skill": 1.058,
-   "mae_climo": 1.0638
+   "late": false
   },
   "baseline-openmeteo": {
-   "n_scorable": 58,
-   "n_scored": 58,
+   "n_scorable": 55,
+   "n_scored": 55,
    "coverage": 1.0,
-   "mae": 1.5361,
-   "rmse": 5.2357,
-   "bias": -0.7421,
+   "mae": 0.4745,
+   "rmse": 0.9189,
+   "bias": 0.3629,
    "mae_by_horizon": {
-    "24": 0.8158,
-    "48": 1.5437,
-    "72": 2.2868
+    "24": 0.3061,
+    "48": 0.4628,
+    "72": 0.6638
    },
-   "powder_score": -28.48,
-   "n_skill": 58,
+   "powder_score": -302.33,
+   "n_skill": 55,
+   "mae_skill": 0.47445,
+   "mae_climo": 0.11793,
    "pinball": null,
    "swe_accuracy": null,
    "swe_mae": null,
@@ -349,24 +347,24 @@
      "mae_climo": 0.0
     }
    },
-   "late": false,
-   "mae_skill": 1.53612,
-   "mae_climo": 1.19566
+   "late": false
   },
   "baseline-persistence": {
-   "n_scorable": 58,
-   "n_scored": 57,
-   "coverage": 0.9828,
-   "mae": 1.6342,
-   "rmse": 4.9981,
-   "bias": 1.5237,
+   "n_scorable": 55,
+   "n_scored": 54,
+   "coverage": 0.9818,
+   "mae": 1.725,
+   "rmse": 5.1351,
+   "bias": 1.6083,
    "mae_by_horizon": {
-    "24": 0.7895,
-    "48": 1.5789,
-    "72": 2.5342
+    "24": 0.8333,
+    "48": 1.6667,
+    "72": 2.675
    },
-   "powder_score": -34.32,
-   "n_skill": 57,
+   "powder_score": -1336.17,
+   "n_skill": 54,
+   "mae_skill": 1.725,
+   "mae_climo": 0.12011,
    "pinball": null,
    "swe_accuracy": null,
    "swe_mae": null,
@@ -386,24 +384,24 @@
      "mae_climo": 0.0
     }
    },
-   "late": false,
-   "mae_skill": 1.63421,
-   "mae_climo": 1.21663
+   "late": false
   },
   "baseline-ukmo": {
-   "n_scorable": 58,
-   "n_scored": 58,
+   "n_scorable": 55,
+   "n_scored": 55,
    "coverage": 1.0,
-   "mae": 1.8042,
-   "rmse": 5.5847,
-   "bias": -0.4368,
+   "mae": 0.7587,
+   "rmse": 2.2116,
+   "bias": 0.6833,
    "mae_by_horizon": {
-    "24": 0.7923,
-    "48": 1.681,
-    "72": 2.9927
+    "24": 0.2828,
+    "48": 0.6093,
+    "72": 1.4105
    },
-   "powder_score": -50.9,
-   "n_skill": 58,
+   "powder_score": -543.39,
+   "n_skill": 55,
+   "mae_skill": 0.75873,
+   "mae_climo": 0.11793,
    "pinball": null,
    "swe_accuracy": null,
    "swe_mae": null,
@@ -423,32 +421,32 @@
      "mae_climo": 0.0
     }
    },
-   "late": false,
-   "mae_skill": 1.80424,
-   "mae_climo": 1.19566
+   "late": false
   },
   "baseline-wpc": {
-   "n_scorable": 58,
-   "n_scored": 58,
+   "n_scorable": 55,
+   "n_scored": 55,
    "coverage": 1.0,
-   "mae": 1.2638,
-   "rmse": 5.087,
-   "bias": -0.9576,
+   "mae": 0.212,
+   "rmse": 0.5705,
+   "bias": 0.1109,
    "mae_by_horizon": {
-    "24": 0.6315,
-    "48": 1.2416,
-    "72": 1.9516
+    "24": 0.1321,
+    "48": 0.1667,
+    "72": 0.3417
    },
-   "powder_score": -5.7,
-   "n_skill": 58,
-   "pinball": 0.5822,
-   "n_pinball": 58,
+   "powder_score": -79.77,
+   "n_skill": 55,
+   "mae_skill": 0.212,
+   "mae_climo": 0.11793,
+   "pinball": 0.0673,
+   "n_pinball": 55,
    "swe_accuracy": null,
    "swe_mae": null,
    "density_accuracy": null,
    "density_mae": null,
-   "brier6": 0.05,
-   "n_brier6": 20,
+   "brier6": 0.0,
+   "n_brier6": 19,
    "tracks": {
     "region:Northern Michigan": {
      "n_scorable": 6,
@@ -462,32 +460,32 @@
      "mae_climo": 0.0
     }
    },
-   "late": false,
-   "mae_skill": 1.26379,
-   "mae_climo": 1.19566
+   "late": false
   },
   "baseline-zeros": {
-   "n_scorable": 58,
-   "n_scored": 58,
+   "n_scorable": 55,
+   "n_scored": 55,
    "coverage": 1.0,
-   "mae": 1.1405,
-   "rmse": 5.1752,
-   "bias": -1.1405,
+   "mae": 0.0573,
+   "rmse": 0.4247,
+   "bias": -0.0573,
    "mae_by_horizon": {
-    "24": 0.525,
-    "48": 1.1053,
-    "72": 1.8237
+    "24": 0.0,
+    "48": 0.0,
+    "72": 0.175
    },
-   "powder_score": 4.61,
-   "n_skill": 58,
-   "pinball": 0.5703,
-   "n_pinball": 58,
+   "powder_score": 51.43,
+   "n_skill": 55,
+   "mae_skill": 0.05727,
+   "mae_climo": 0.11793,
+   "pinball": 0.0286,
+   "n_pinball": 55,
    "swe_accuracy": null,
    "swe_mae": null,
    "density_accuracy": null,
    "density_mae": null,
-   "brier6": 0.05,
-   "n_brier6": 20,
+   "brier6": 0.0,
+   "n_brier6": 19,
    "tracks": {
     "region:Northern Michigan": {
      "n_scorable": 6,
@@ -501,32 +499,32 @@
      "mae_climo": 0.0
     }
    },
-   "late": false,
-   "mae_skill": 1.14052,
-   "mae_climo": 1.19566
+   "late": false
   },
   "house-blend": {
-   "n_scorable": 58,
-   "n_scored": 58,
+   "n_scorable": 55,
+   "n_scored": 55,
    "coverage": 1.0,
-   "mae": 1.4628,
-   "rmse": 5.1776,
-   "bias": -0.7793,
+   "mae": 0.4053,
+   "rmse": 0.7712,
+   "bias": 0.3155,
    "mae_by_horizon": {
-    "24": 0.7115,
-    "48": 1.4316,
-    "72": 2.2847
+    "24": 0.2016,
+    "48": 0.3517,
+    "72": 0.6739
    },
-   "powder_score": -22.34,
-   "n_skill": 58,
-   "pinball": 0.6684,
-   "n_pinball": 58,
+   "powder_score": -243.66,
+   "n_skill": 55,
+   "mae_skill": 0.40527,
+   "mae_climo": 0.11793,
+   "pinball": 0.1382,
+   "n_pinball": 55,
    "swe_accuracy": null,
    "swe_mae": null,
    "density_accuracy": null,
    "density_mae": null,
-   "brier6": 0.0484,
-   "n_brier6": 20,
+   "brier6": 0.0004,
+   "n_brier6": 19,
    "tracks": {
     "region:Northern Michigan": {
      "n_scorable": 6,
@@ -540,32 +538,32 @@
      "mae_climo": 0.0
     }
    },
-   "late": false,
-   "mae_skill": 1.46276,
-   "mae_climo": 1.19566
+   "late": false
   },
   "open-powder-ensemble": {
-   "n_scorable": 58,
-   "n_scored": 58,
+   "n_scorable": 55,
+   "n_scored": 55,
    "coverage": 1.0,
-   "mae": 1.2497,
-   "rmse": 5.1764,
-   "bias": -1.0055,
+   "mae": 0.1736,
+   "rmse": 0.5223,
+   "bias": 0.0838,
    "mae_by_horizon": {
-    "24": 0.6075,
-    "48": 1.22,
-    "72": 1.9553
+    "24": 0.0868,
+    "48": 0.1211,
+    "72": 0.3178
    },
-   "powder_score": -4.52,
-   "n_skill": 58,
-   "pinball": 0.5835,
-   "n_pinball": 58,
+   "powder_score": -47.24,
+   "n_skill": 55,
+   "mae_skill": 0.17364,
+   "mae_climo": 0.11793,
+   "pinball": 0.0566,
+   "n_pinball": 55,
    "swe_accuracy": null,
    "swe_mae": null,
    "density_accuracy": null,
    "density_mae": null,
-   "brier6": 0.0498,
-   "n_brier6": 20,
+   "brier6": 0.0,
+   "n_brier6": 19,
    "tracks": {
     "region:Northern Michigan": {
      "n_scorable": 6,
@@ -579,32 +577,32 @@
      "mae_climo": 0.0
     }
    },
-   "late": false,
-   "mae_skill": 1.24966,
-   "mae_climo": 1.19566
+   "late": false
   },
   "open-powder-ml": {
-   "n_scorable": 58,
-   "n_scored": 58,
+   "n_scorable": 55,
+   "n_scored": 55,
    "coverage": 1.0,
-   "mae": 1.3621,
-   "rmse": 5.1791,
-   "bias": -0.8855,
+   "mae": 0.294,
+   "rmse": 0.6245,
+   "bias": 0.2085,
    "mae_by_horizon": {
-    "24": 0.679,
-    "48": 1.3395,
-    "72": 2.1037
+    "24": 0.1626,
+    "48": 0.25,
+    "72": 0.4767
    },
-   "powder_score": -13.92,
-   "n_skill": 58,
-   "pinball": 0.6191,
-   "n_pinball": 58,
+   "powder_score": -149.31,
+   "n_skill": 55,
+   "mae_skill": 0.294,
+   "mae_climo": 0.11793,
+   "pinball": 0.0978,
+   "n_pinball": 55,
    "swe_accuracy": null,
    "swe_mae": null,
    "density_accuracy": null,
    "density_mae": null,
-   "brier6": 0.0499,
-   "n_brier6": 20,
+   "brier6": 0.0002,
+   "n_brier6": 19,
    "tracks": {
     "region:Northern Michigan": {
      "n_scorable": 6,
@@ -618,9 +616,9 @@
      "mae_climo": 0.0
     }
    },
-   "late": false,
-   "mae_skill": 1.36207,
-   "mae_climo": 1.19566
+   "late": false
   }
- }
+ },
+ "rescored_utc": "2026-11-13T15:14:51+00:00",
+ "rescored_reason": "stuck-report QC: 3 station-horizons voided (repeated resort figures)"
 }
