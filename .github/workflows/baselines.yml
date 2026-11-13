@@ -9,9 +9,9 @@ on:
   workflow_dispatch:
     inputs:
       league:
-        description: "League name (see data/leagues.yaml)"
+        description: "League name (see data/leagues.yaml), or 'due' for every league whose baselines are due"
         required: true
-        default: "stations"
+        default: "due"
       round_date:
         description: "Round date (YYYY-MM-DD); default: next cutoff"
         required: false
@@ -19,7 +19,11 @@ on:
 permissions:
   contents: write
 
-concurrency: benchmark-data
+# its own group: a pending run in a shared group is replaced by the next one
+# queued there, and the keeper queues this workflow every half hour
+concurrency:
+  group: baselines
+  cancel-in-progress: false
 
 jobs:
   submit:
@@ -38,7 +42,7 @@ jobs:
       - name: Generate baseline forecasts
         run: |
           LEAGUES="${{ github.event.inputs.league }}"
-          if [ -z "$LEAGUES" ]; then
+          if [ -z "$LEAGUES" ] || [ "$LEAGUES" = "due" ]; then
             LEAGUES=$(powderbench leagues --due baselines)
           fi
           echo "due: ${LEAGUES:-none}"
@@ -58,5 +62,9 @@ jobs:
           git config user.email "bot@users.noreply.github.com"
           git add data/submissions
           git diff --cached --quiet || git commit -m "Baseline submissions"
-          git pull --rebase origin main
-          git push
+          # main moves all day and GitHub sometimes answers a push with a 500
+          for attempt in 1 2 3 4 5; do
+            git pull --rebase origin main && git push && exit 0
+            sleep $((attempt * 20))
+          done
+          exit 1
