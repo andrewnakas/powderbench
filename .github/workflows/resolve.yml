@@ -39,6 +39,8 @@ jobs:
           powderbench resolve-events || true
       - name: Rebuild leaderboard and site data
         run: |
+          # rounds resolved by older code lack the pooled-score terms; a no-op otherwise
+          python scripts/backfill_skill_terms.py
           powderbench build-leaderboard
           powderbench build-site
           # season-explorer series: resorts reads the local archive; era5/stations

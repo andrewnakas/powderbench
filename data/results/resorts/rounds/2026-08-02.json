@@ -30,7 +30,10 @@
    "n_pinball": 36,
    "brier6": 0.1415,
    "n_brier6": 13,
-   "late": false
+   "late": false,
+   "n_skill": 36,
+   "mae_skill": 4.65917,
+   "mae_climo": 4.65917
   },
   "baseline-gfs": {
    "n_scorable": 36,
@@ -47,7 +50,10 @@
    "powder_score": 30.75,
    "pinball": null,
    "brier6": null,
-   "late": false
+   "late": false,
+   "n_skill": 36,
+   "mae_skill": 3.22636,
+   "mae_climo": 4.65917
   },
   "baseline-openmeteo": {
    "n_scorable": 36,
@@ -64,7 +70,10 @@
    "powder_score": 0.42,
    "pinball": null,
    "brier6": null,
-   "late": false
+   "late": false,
+   "n_skill": 36,
+   "mae_skill": 4.63964,
+   "mae_climo": 4.65917
   },
   "baseline-persistence": {
    "n_scorable": 36,
@@ -81,7 +90,10 @@
    "powder_score": -47.6,
    "pinball": null,
    "brier6": null,
-   "late": false
+   "late": false,
+   "n_skill": 36,
+   "mae_skill": 6.87667,
+   "mae_climo": 4.65917
   },
   "baseline-zeros": {
    "n_scorable": 36,
@@ -100,7 +112,10 @@
    "n_pinball": 36,
    "brier6": 0.1538,
    "n_brier6": 13,
-   "late": false
+   "late": false,
+   "n_skill": 36,
+   "mae_skill": 4.81222,
+   "mae_climo": 4.65917
   }
  }
 }

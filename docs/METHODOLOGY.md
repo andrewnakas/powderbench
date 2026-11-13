@@ -143,6 +143,18 @@ Climatology's MAE is computed on exactly the station-horizons the team
 predicted, so partial coverage cannot cherry-pick easy stations. 0 = no better
 than climatology; 100 = perfect.
 
+**Aggregation over rounds.** Leaderboards pool rounds:
+`100 × (1 − Σ|error_team| / Σ|error_climatology|)` over every station-horizon
+the team was scored on. Until 2026-11-13 the board showed the mean of per-round
+scores instead. That mean is dominated by dry rounds: when it barely snows
+anywhere, climatology's MAE is a few hundredths of an inch, and a forecast
+that is off by a tenth of an inch scores in the minus thousands (the resorts
+league's 2026-10-30 round gave GFS −4,536). Pooling weights each
+station-horizon equally, so rounds count in proportion to how much there was
+to forecast. Per-round scores are unchanged and still published; every past
+round was re-scored to record both error terms (`mae_skill`, `mae_climo`,
+`n_skill`) so the pooled figure covers the full history.
+
 The **climatology** forecast is the per-station, per-day-of-year median of the
 league's own truth history (±7-day window, ≥ 30 samples) — the MAE-optimal
 no-information forecast — built from each station's own record where one

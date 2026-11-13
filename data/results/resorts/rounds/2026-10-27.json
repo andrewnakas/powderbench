@@ -33,7 +33,9 @@
    "density_accuracy": null,
    "density_mae": null,
    "brier6": null,
-   "late": false
+   "late": false,
+   "mae_skill": 0.22863,
+   "mae_climo": 0.10822
   },
   "baseline-climatology": {
    "n_scorable": 27,
@@ -57,7 +59,9 @@
    "density_mae": null,
    "brier6": 0.0,
    "n_brier6": 9,
-   "late": false
+   "late": false,
+   "mae_skill": 0.10822,
+   "mae_climo": 0.10822
   },
   "baseline-consensus": {
    "n_scorable": 27,
@@ -79,7 +83,9 @@
    "density_accuracy": null,
    "density_mae": null,
    "brier6": null,
-   "late": false
+   "late": false,
+   "mae_skill": 0.27456,
+   "mae_climo": 0.10822
   },
   "baseline-ecmwf": {
    "invalid": true,
@@ -107,7 +113,9 @@
    "density_accuracy": null,
    "density_mae": null,
    "brier6": null,
-   "late": false
+   "late": false,
+   "mae_skill": 0.16637,
+   "mae_climo": 0.10822
   },
   "baseline-gfs": {
    "n_scorable": 27,
@@ -129,7 +137,9 @@
    "density_accuracy": null,
    "density_mae": null,
    "brier6": null,
-   "late": false
+   "late": false,
+   "mae_skill": 0.90933,
+   "mae_climo": 0.10822
   },
   "baseline-icon": {
    "n_scorable": 27,
@@ -151,7 +161,9 @@
    "density_accuracy": null,
    "density_mae": null,
    "brier6": null,
-   "late": false
+   "late": false,
+   "mae_skill": 0.17344,
+   "mae_climo": 0.10822
   },
   "baseline-openmeteo": {
    "n_scorable": 27,
@@ -173,7 +185,9 @@
    "density_accuracy": null,
    "density_mae": null,
    "brier6": null,
-   "late": false
+   "late": false,
+   "mae_skill": 0.38781,
+   "mae_climo": 0.10822
   },
   "baseline-persistence": {
    "n_scorable": 27,
@@ -195,7 +209,9 @@
    "density_accuracy": null,
    "density_mae": null,
    "brier6": null,
-   "late": false
+   "late": false,
+   "mae_skill": 0.08778,
+   "mae_climo": 0.10822
   },
   "baseline-ukmo": {
    "n_scorable": 27,
@@ -217,7 +233,9 @@
    "density_accuracy": null,
    "density_mae": null,
    "brier6": null,
-   "late": false
+   "late": false,
+   "mae_skill": 1.05541,
+   "mae_climo": 0.10822
   },
   "baseline-zeros": {
    "n_scorable": 27,
@@ -241,7 +259,9 @@
    "density_mae": null,
    "brier6": 0.0,
    "n_brier6": 9,
-   "late": false
+   "late": false,
+   "mae_skill": 0.08778,
+   "mae_climo": 0.10822
   },
   "house-analog": {
    "n_scorable": 27,
@@ -265,7 +285,9 @@
    "density_mae": null,
    "brier6": 0.0318,
    "n_brier6": 9,
-   "late": false
+   "late": false,
+   "mae_skill": 0.7437,
+   "mae_climo": 0.10822
   },
   "house-blend": {
    "n_scorable": 27,
@@ -289,7 +311,9 @@
    "density_mae": null,
    "brier6": 0.0107,
    "n_brier6": 9,
-   "late": false
+   "late": false,
+   "mae_skill": 0.65926,
+   "mae_climo": 0.10822
   },
   "house-gbm": {
    "n_scorable": 27,
@@ -313,7 +337,9 @@
    "density_mae": null,
    "brier6": 0.0013,
    "n_brier6": 9,
-   "late": false
+   "late": false,
+   "mae_skill": 0.5337,
+   "mae_climo": 0.10822
   },
   "open-powder-ml": {
    "n_scorable": 27,
@@ -337,7 +363,9 @@
    "density_mae": null,
    "brier6": 0.081,
    "n_brier6": 9,
-   "late": false
+   "late": false,
+   "mae_skill": 1.76148,
+   "mae_climo": 0.10822
   }
  }
 }

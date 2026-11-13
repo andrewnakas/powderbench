@@ -67,6 +67,11 @@ numbers never leak into the other leagues' truth (see [DATA.md](DATA.md)).
   partial coverage can't cherry-pick easy stations for an edge. (A station whose
   climatology is still being built drops out of the comparison for everyone.)
   0 = climatology. The NWP baselines run ~+25 to +30.
+  On the leaderboard (season, last 30 rounds, monthly titles) rounds are **pooled**:
+  your total absolute error over climatology's total absolute error on the
+  station-horizons you were scored on. It is not the average of per-round scores:
+  on a dry day climatology's error is nearly zero, so a per-round score can be
+  −4,000 for a tenth of an inch, and one such round used to decide a season.
 - **Probabilistic track**: mean pinball loss over the five quantiles.
 - **Powder Alert track**: Brier score on the event "≥6 inches in the 24h window",
   from your `prob_6in`.
