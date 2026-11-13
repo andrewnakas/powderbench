@@ -113,7 +113,7 @@ Data Service. COOP data is US public domain; CoCoRaHS data is CC BY 3.0
 | Synoptic / NWAC / UAC / CAIC / Avalanche Canada | permission requested | see [OUTREACH.md](OUTREACH.md) |
 | OnTheSnow, OpenSnow, Snow-Forecast, Skiresort.info | rejected | ToS prohibit scraping/redistribution |
 
-## Ground truth: measured new snow, Swiss and Austrian Alps (alps league)
+## Ground truth: measured new snow, Swiss, Austrian and French Alps (alps league)
 
 The alps league scores against **HN — the 24h height of new snow** published by
 the WSL Institute for Snow and Avalanche Research **SLF** (CC BY 4.0; data ©
@@ -143,17 +143,42 @@ there's no key.
 - **Candidates:** active stations at ≥ 900 m with ≥ 100 manual readings last
   winter. GeoSphere lists many sites under two station numbers with identical
   values; one is kept per site.
-- **Day attribution:** the 07:00 reading should hold yesterday's snow, but
-  fitted against ERA5, stations split. St. Anton fits the same day clearly
-  (r = 0.80 vs 0.64), while Obergurgl fits the next morning's report (0.66 vs
-  0.27). So every station is fitted with the strict margin rule, no documented
-  default. Near-ties are excluded (Warth, Langen am Arlberg, Seefeld and 19
-  others), which leaves 22 of 44 sites.
-- **Featured:** St. Anton (village and Galzig), Galtür / Ischgl, Obergurgl,
-  Obertauern, Saalbach, Nauders, Pitztal Glacier.
+- **Day attribution:** the 07:00 reading holds yesterday's snow (the
+  documented protocol, offset +1), and that is the default. A station is set
+  to "same day" only where its fit against ERA5 says so clearly: St. Anton
+  fits the same day (r = 0.80 vs 0.64), Obergurgl the next morning's report
+  (0.66 vs 0.27). 27 sites use +1 and 9 use 0. (The first version admitted only
+  the 22 sites with a clear fit either way; the 14 near-ties, Warth, Langen am
+  Arlberg and Seefeld among them, now follow the documented protocol and
+  passed their own hindcast gate.) 36 of 44 sites are in.
+- **Featured:** St. Anton (village and Galzig), Lech / Zürs (Langen),
+  Warth-Schröcken, Galtür / Ischgl, Obergurgl, Obertauern, Saalbach, Seefeld,
+  Nauders, Pitztal Glacier.
 - **Climatology:** from each station's own record since 2000.
-- **Hindcast gate:** 2026-02-01…14, models on the 8 featured stations,
-  climatology and persistence on all 22.
+- **Hindcast gate:** 2026-02-01…14, run separately for the 22 original sites
+  and the 14 added ones (see METHODOLOGY §6).
+
+### France: Météo-France nivo-meteorological network
+
+The French stations (`:NIVO`, `truth_source: nivo`) are the snow-and-weather
+posts that ski-resort staff and Météo-France observers run through the winter
+(Val d'Isère, Tignes, Val Thorens, Chamonix, Les 2 Alpes, Serre Chevalier…).
+Truth is the fresh snow measured on the morning snow board. Data © Météo-France,
+Licence Ouverte 2.0 (Etalab); yearly files, no key.
+
+- **Only the morning board counts.** A midday reading is already contained in
+  the next morning's 24 h figure, so adding it would count snow twice.
+- **Candidates:** 86 Alpine posts, 58 with a usable record, 54 kept
+  (14 featured). The Pyrenees posts are left out: they would need a league of
+  their own.
+- **Day attribution:** the morning reading belongs to the previous day (+1) by
+  protocol; 31 manual posts use it. The 23 automated posts fit "same day"
+  clearly against ERA5 and use 0.
+- **Climatology:** from each post's own record since 2000.
+- **Hindcast gate:** 2026-02-01…14, a fortnight with one large storm
+  (10-12 Feb: 30-45 in. at most featured resorts). Models beat climatology,
+  zeros and persistence do not, but every model under-forecast the storm by
+  about half, so skill is lower than in Austria (METHODOLOGY §6).
 
   | | Powder Accuracy |
   |---|---|
