@@ -12,6 +12,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # the PR's merge commit plus its two parents (main, PR head), so the
+          # PR's changes are `git diff HEAD^1 HEAD`. A depth-1 checkout has
+          # neither parent: diffing the event's base/head SHAs then died with
+          # "bad object" and this check failed on every PR.
+          fetch-depth: 2
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -19,11 +25,8 @@ jobs:
       - name: Check changed submissions
         env:
           PR_CREATED_AT: ${{ github.event.pull_request.created_at }}
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          git fetch origin "$BASE_SHA" --depth=1
-          FILES=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" -- 'data/submissions/**/*.csv')
+          FILES=$(git diff --name-only --diff-filter=AM HEAD^1 HEAD -- 'data/submissions/**/*.csv')
           if [ -z "$FILES" ]; then echo "no submission CSVs changed"; exit 0; fi
           FAIL=0
           for f in $FILES; do

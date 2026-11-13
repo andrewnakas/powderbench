@@ -56,8 +56,15 @@ jobs:
             [ -e "$p" ] && git add "$p"
           done
           git diff --cached --quiet || git commit -m "Resolve rounds & update leaderboard"
-          git pull --rebase origin main
-          git push
+          # main moves all day (submission merges) and GitHub's git backend
+          # sometimes answers a push with a 500 (11-12: the day's scoring was
+          # computed, then lost at this step), so rebase and retry
+          for attempt in 1 2 3 4 5; do
+            git pull --rebase origin main && git push && exit 0
+            echo "push attempt $attempt failed; retrying in $((attempt * 20))s"
+            sleep $((attempt * 20))
+          done
+          exit 1
       - name: Upload site
         uses: actions/upload-pages-artifact@v3
         with:
