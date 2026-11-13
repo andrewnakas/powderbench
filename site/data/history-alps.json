@@ -132,5 +132,63 @@
    "open-powder-ensemble": -33.99,
    "open-powder-ml": -13.74
   }
+ },
+ {
+  "round_id": "2026-11-08",
+  "biggest_24h": {
+   "station_id": "OFE2:CH:IMIS",
+   "resort": "Minschuns (3 km)",
+   "inches": 2.0
+  },
+  "qc": {
+   "station_horizons_valid": 610,
+   "station_horizons_voided": 104
+  },
+  "teams": {
+   "baseline-aifs": -46.68,
+   "baseline-arome": -37.65,
+   "baseline-climatology": 0.0,
+   "baseline-consensus": -24.98,
+   "baseline-ecmwf": -33.03,
+   "baseline-gem": -60.13,
+   "baseline-gfs": -53.53,
+   "baseline-icon": -7.95,
+   "baseline-openmeteo": -9.91,
+   "baseline-persistence": -92.59,
+   "baseline-ukmo": -0.82,
+   "baseline-zeros": -53.52,
+   "house-blend": -30.01,
+   "open-powder-ensemble": -39.51,
+   "open-powder-ml": -0.71
+  }
+ },
+ {
+  "round_id": "2026-11-09",
+  "biggest_24h": {
+   "station_id": "GAN2:CH:IMIS",
+   "resort": "Lauchernalp",
+   "inches": 4.4
+  },
+  "qc": {
+   "station_horizons_valid": 599,
+   "station_horizons_voided": 115
+  },
+  "teams": {
+   "baseline-aifs": -8.33,
+   "baseline-arome": -4.41,
+   "baseline-climatology": 0.0,
+   "baseline-consensus": 5.87,
+   "baseline-ecmwf": -3.28,
+   "baseline-gem": 8.8,
+   "baseline-gfs": -16.15,
+   "baseline-icon": 7.86,
+   "baseline-openmeteo": 11.71,
+   "baseline-persistence": -37.77,
+   "baseline-ukmo": 16.86,
+   "baseline-zeros": -16.33,
+   "house-blend": 5.64,
+   "open-powder-ensemble": -10.29,
+   "open-powder-ml": -8.43
+  }
  }
 ]

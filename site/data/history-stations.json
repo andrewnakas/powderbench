@@ -867,5 +867,68 @@
    "open-powder-ensemble": 28.4,
    "open-powder-ml": 12.63
   }
+ },
+ {
+  "round_id": "2026-11-09",
+  "biggest_24h": {
+   "station_id": "956:AK:SNTL",
+   "resort": "Grandview",
+   "inches": 12.0
+  },
+  "qc": {
+   "station_horizons_valid": 2837,
+   "station_horizons_voided": 136
+  },
+  "teams": {
+   "baseline-aifs": 70.07,
+   "baseline-climatology": 0.0,
+   "baseline-consensus": 77.01,
+   "baseline-ecmwf": 63.94,
+   "baseline-gem": 67.58,
+   "baseline-gfs": 34.61,
+   "baseline-icon": 72.87,
+   "baseline-ndfd": 29.41,
+   "baseline-openmeteo": 59.32,
+   "baseline-persistence": 27.1,
+   "baseline-ukmo": 19.1,
+   "baseline-zeros": 60.75,
+   "house-analog": 71.96,
+   "house-blend": 58.75,
+   "house-gbm": 69.48,
+   "open-powder-ensemble": 54.62,
+   "open-powder-ml": 31.07
+  }
+ },
+ {
+  "round_id": "2026-11-10",
+  "biggest_24h": {
+   "station_id": "1055:AK:SNTL",
+   "resort": "Upper Tsaina River",
+   "inches": 8.0
+  },
+  "qc": {
+   "station_horizons_valid": 2822,
+   "station_horizons_voided": 148
+  },
+  "teams": {
+   "baseline-aifs": 81.08,
+   "baseline-climatology": 0.0,
+   "baseline-consensus": 84.35,
+   "baseline-ecmwf": 77.15,
+   "baseline-gem": 84.36,
+   "baseline-gfs": -0.99,
+   "baseline-icon": 83.95,
+   "baseline-ndfd": 63.64,
+   "baseline-openmeteo": 45.2,
+   "baseline-persistence": -11.76,
+   "baseline-ukmo": 54.82,
+   "baseline-wpc": 84.43,
+   "baseline-zeros": 82.35,
+   "house-analog": 86.27,
+   "house-blend": 57.9,
+   "house-gbm": 83.47,
+   "open-powder-ensemble": -0.47,
+   "open-powder-ml": 77.65
+  }
  }
 ]
