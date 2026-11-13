@@ -4,37 +4,39 @@
  "resolved_utc": "2026-11-10T21:41:57+00:00",
  "observations_72h": null,
  "qc": {
-  "station_horizons_valid": 60,
-  "station_horizons_voided": 51
+  "station_horizons_valid": 57,
+  "station_horizons_voided": 54
  },
  "biggest_24h": {
-  "station_id": "wolf-creek:US:RESORT",
-  "resort": "Wolf Creek",
-  "inches": 10.5
+  "station_id": "lake-louise:CA:RESORT",
+  "resort": "Lake Louise",
+  "inches": 3.1
  },
  "teams": {
   "open-powder-ensemble": {
-   "n_scorable": 60,
-   "n_scored": 60,
+   "n_scorable": 57,
+   "n_scored": 57,
    "coverage": 1.0,
-   "mae": 1.4485,
-   "rmse": 5.2013,
-   "bias": -1.3195,
+   "mae": 0.4195,
+   "rmse": 1.1826,
+   "bias": -0.2837,
    "mae_by_horizon": {
-    "24": 0.752,
-    "48": 1.419,
-    "72": 2.1745
+    "24": 0.2389,
+    "48": 0.3884,
+    "72": 0.6311
    },
-   "powder_score": 1.24,
-   "n_skill": 60,
-   "pinball": 0.67,
-   "n_pinball": 60,
+   "powder_score": 4.87,
+   "n_skill": 57,
+   "mae_skill": 0.41947,
+   "mae_climo": 0.44096,
+   "pinball": 0.1535,
+   "n_pinball": 57,
    "swe_accuracy": null,
    "swe_mae": null,
    "density_accuracy": null,
    "density_mae": null,
-   "brier6": 0.0499,
-   "n_brier6": 20,
+   "brier6": 0.0,
+   "n_brier6": 19,
    "tracks": {
     "region:Northern Michigan": {
      "n_scorable": 6,
@@ -48,32 +50,32 @@
      "mae_climo": 0.0
     }
    },
-   "late": false,
-   "mae_skill": 1.4485,
-   "mae_climo": 1.46662
+   "late": false
   },
   "open-powder-ml": {
-   "n_scorable": 60,
-   "n_scored": 60,
+   "n_scorable": 57,
+   "n_scored": 57,
    "coverage": 1.0,
-   "mae": 1.5307,
-   "rmse": 5.2416,
-   "bias": -1.3037,
+   "mae": 0.506,
+   "rmse": 1.3568,
+   "bias": -0.267,
    "mae_by_horizon": {
-    "24": 0.79,
-    "48": 1.452,
-    "72": 2.35
+    "24": 0.2789,
+    "48": 0.4232,
+    "72": 0.8158
    },
-   "powder_score": -4.37,
-   "n_skill": 60,
-   "pinball": 0.7171,
-   "n_pinball": 60,
+   "powder_score": -14.74,
+   "n_skill": 57,
+   "mae_skill": 0.50596,
+   "mae_climo": 0.44096,
+   "pinball": 0.2023,
+   "n_pinball": 57,
    "swe_accuracy": null,
    "swe_mae": null,
    "density_accuracy": null,
    "density_mae": null,
-   "brier6": 0.0502,
-   "n_brier6": 20,
+   "brier6": 0.0003,
+   "n_brier6": 19,
    "tracks": {
     "region:Northern Michigan": {
      "n_scorable": 6,
@@ -87,9 +89,9 @@
      "mae_climo": 0.0
     }
    },
-   "late": false,
-   "mae_skill": 1.53067,
-   "mae_climo": 1.46662
+   "late": false
   }
- }
+ },
+ "rescored_utc": "2026-11-13T15:14:51+00:00",
+ "rescored_reason": "stuck-report QC: 3 station-horizons voided (repeated resort figures)"
 }
