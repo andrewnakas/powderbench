@@ -930,5 +930,37 @@
    "open-powder-ensemble": -0.47,
    "open-powder-ml": 77.65
   }
+ },
+ {
+  "round_id": "2026-11-11",
+  "biggest_24h": {
+   "station_id": "1A19P:BC:MSNT",
+   "resort": "Dome Mountain",
+   "inches": 7.0
+  },
+  "qc": {
+   "station_horizons_valid": 2788,
+   "station_horizons_voided": 185
+  },
+  "teams": {
+   "baseline-aifs": 63.71,
+   "baseline-climatology": 0.0,
+   "baseline-consensus": 55.81,
+   "baseline-ecmwf": 63.75,
+   "baseline-gem": 37.66,
+   "baseline-gfs": 58.08,
+   "baseline-icon": 48.49,
+   "baseline-ndfd": 100.0,
+   "baseline-openmeteo": 57.42,
+   "baseline-persistence": 2.2,
+   "baseline-ukmo": 51.18,
+   "baseline-wpc": 29.26,
+   "baseline-zeros": 30.4,
+   "house-analog": 48.02,
+   "house-blend": 55.46,
+   "house-gbm": 40.75,
+   "open-powder-ensemble": 35.72,
+   "open-powder-ml": 58.08
+  }
  }
 ]

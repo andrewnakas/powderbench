@@ -8,16 +8,16 @@
   "measured": false,
   "n_stations": 996,
   "n_featured": 45,
-  "n_rounds_resolved": 45,
+  "n_rounds_resolved": 46,
   "health": {
-   "last_round": "2026-11-10",
-   "qc_valid_share": 0.95
+   "last_round": "2026-11-11",
+   "qc_valid_share": 0.938
   },
   "open_round": {
-   "round_id": "2026-11-14",
-   "cutoff_utc": "2026-11-14T00:00:00+00:00"
+   "round_id": "2026-11-15",
+   "cutoff_utc": "2026-11-15T00:00:00+00:00"
   },
-  "last_resolved": "2026-11-10"
+  "last_resolved": "2026-11-11"
  },
  {
   "name": "observers",
@@ -28,16 +28,16 @@
   "measured": true,
   "n_stations": 1158,
   "n_featured": 98,
-  "n_rounds_resolved": 18,
+  "n_rounds_resolved": 19,
   "health": {
-   "last_round": "2026-11-07",
-   "qc_valid_share": 0.505
+   "last_round": "2026-11-08",
+   "qc_valid_share": 0.418
   },
   "open_round": {
-   "round_id": "2026-11-14",
-   "cutoff_utc": "2026-11-14T00:00:00+00:00"
+   "round_id": "2026-11-15",
+   "cutoff_utc": "2026-11-15T00:00:00+00:00"
   },
-  "last_resolved": "2026-11-07"
+  "last_resolved": "2026-11-08"
  },
  {
   "name": "resorts-na",
@@ -48,24 +48,24 @@
   "measured": true,
   "n_stations": 37,
   "n_featured": 37,
-  "n_rounds_resolved": 9,
+  "n_rounds_resolved": 10,
   "health": {
-   "last_round": "2026-11-09",
-   "qc_valid_share": 0.55,
+   "last_round": "2026-11-10",
+   "qc_valid_share": 0.532,
    "latest_scrape": {
-    "at": "2026-11-13T01:14:16+00:00",
+    "at": "2026-11-14T01:10:04+00:00",
     "status": {
-     "ok": 18,
-     "no_report": 9,
-     "stale": 10
+     "ok": 20,
+     "no_report": 6,
+     "stale": 11
     }
    }
   },
   "open_round": {
-   "round_id": "2026-11-14",
-   "cutoff_utc": "2026-11-14T00:00:00+00:00"
+   "round_id": "2026-11-15",
+   "cutoff_utc": "2026-11-15T00:00:00+00:00"
   },
-  "last_resolved": "2026-11-09"
+  "last_resolved": "2026-11-10"
  },
  {
   "name": "alps",
@@ -76,16 +76,16 @@
   "measured": true,
   "n_stations": 238,
   "n_featured": 27,
-  "n_rounds_resolved": 8,
+  "n_rounds_resolved": 9,
   "health": {
-   "last_round": "2026-11-09",
-   "qc_valid_share": 0.839
+   "last_round": "2026-11-10",
+   "qc_valid_share": 0.847
   },
   "open_round": {
-   "round_id": "2026-11-15",
-   "cutoff_utc": "2026-11-14T21:00:00+00:00"
+   "round_id": "2026-11-16",
+   "cutoff_utc": "2026-11-15T21:00:00+00:00"
   },
-  "last_resolved": "2026-11-09"
+  "last_resolved": "2026-11-10"
  },
  {
   "name": "era5",
@@ -118,7 +118,7 @@
    "last_round": "2026-10-31",
    "qc_valid_share": 0.692,
    "latest_scrape": {
-    "at": "2026-11-13T20:08:30+00:00",
+    "at": "2026-11-14T18:50:41+00:00",
     "status": {
      "no_report": 4,
      "ok": 9
