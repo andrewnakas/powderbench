@@ -962,5 +962,37 @@
    "open-powder-ensemble": 35.72,
    "open-powder-ml": 58.08
   }
+ },
+ {
+  "round_id": "2026-11-12",
+  "biggest_24h": {
+   "station_id": "1089:AK:SNTL",
+   "resort": "Tokositna Valley",
+   "inches": 3.0
+  },
+  "qc": {
+   "station_horizons_valid": 2736,
+   "station_horizons_voided": 237
+  },
+  "teams": {
+   "baseline-aifs": 48.91,
+   "baseline-climatology": 0.0,
+   "baseline-consensus": 52.03,
+   "baseline-ecmwf": 45.26,
+   "baseline-gem": 35.91,
+   "baseline-gfs": 48.19,
+   "baseline-icon": 28.01,
+   "baseline-ndfd": 36.12,
+   "baseline-openmeteo": 48.38,
+   "baseline-persistence": 1.61,
+   "baseline-ukmo": 51.8,
+   "baseline-wpc": 56.97,
+   "baseline-zeros": 7.26,
+   "house-analog": 37.69,
+   "house-blend": 58.29,
+   "house-gbm": 46.55,
+   "open-powder-ensemble": 47.09,
+   "open-powder-ml": 52.52
+  }
  }
 ]

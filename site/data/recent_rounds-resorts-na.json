@@ -5149,5 +5149,86 @@
     "late": false
    }
   }
+ },
+ {
+  "round_id": "2026-11-11",
+  "league": "resorts-na",
+  "resolved_utc": "2026-11-15T20:54:51+00:00",
+  "observations_72h": null,
+  "qc": {
+   "station_horizons_valid": 58,
+   "station_horizons_voided": 53
+  },
+  "biggest_24h": null,
+  "teams": {
+   "open-powder-ensemble": {
+    "n_scorable": 58,
+    "n_scored": 58,
+    "coverage": 1.0,
+    "mae": 0.7684,
+    "rmse": 2.07,
+    "bias": 0.4581,
+    "mae_by_horizon": {
+     "24": 0.0005,
+     "48": 0.2347,
+     "72": 2.1105
+    },
+    "powder_score": -30.89,
+    "n_skill": 58,
+    "pinball": 0.3143,
+    "n_pinball": 58,
+    "swe_accuracy": null,
+    "swe_mae": null,
+    "density_accuracy": null,
+    "density_mae": null,
+    "brier6": 0.0,
+    "n_brier6": 20,
+    "tracks": {
+     "region:Northern Michigan": {
+      "n_scorable": 7,
+      "n_scored": 7,
+      "coverage": 1.0,
+      "mae": 0.3129,
+      "powder_score": -7721.43,
+      "bias": 0.3129
+     }
+    },
+    "late": false
+   },
+   "open-powder-ml": {
+    "n_scorable": 58,
+    "n_scored": 58,
+    "coverage": 1.0,
+    "mae": 0.7252,
+    "rmse": 1.8005,
+    "bias": 0.4148,
+    "mae_by_horizon": {
+     "24": 0.0065,
+     "48": 0.4079,
+     "72": 1.7989
+    },
+    "powder_score": -23.52,
+    "n_skill": 58,
+    "pinball": 0.2666,
+    "n_pinball": 58,
+    "swe_accuracy": null,
+    "swe_mae": null,
+    "density_accuracy": null,
+    "density_mae": null,
+    "brier6": 0.0,
+    "n_brier6": 20,
+    "tracks": {
+     "region:Northern Michigan": {
+      "n_scorable": 7,
+      "n_scored": 7,
+      "coverage": 1.0,
+      "mae": 0.2057,
+      "powder_score": -5042.86,
+      "bias": 0.2057
+     }
+    },
+    "late": false
+   }
+  }
  }
 ]
