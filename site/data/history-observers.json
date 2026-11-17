@@ -555,5 +555,51 @@
    "open-powder-ensemble": 42.09,
    "open-powder-ml": -135.37
   }
+ },
+ {
+  "round_id": "2026-11-10",
+  "biggest_24h": {
+   "station_id": "USW00014755:NH:GHCND",
+   "resort": "Wildcat Mountain (6 km)",
+   "inches": 1.5
+  },
+  "qc": {
+   "station_horizons_valid": 1765,
+   "station_horizons_voided": 1709
+  },
+  "teams": {
+   "baseline-aifs": -17.38,
+   "baseline-climatology": 0.0,
+   "baseline-consensus": 9.59,
+   "baseline-ecmwf": 1.09,
+   "baseline-gem": 25.43,
+   "baseline-gfs": -19.53,
+   "baseline-icon": 19.27,
+   "baseline-ndfd": 13.25,
+   "baseline-openmeteo": -11.74,
+   "baseline-persistence": -14.11,
+   "baseline-ukmo": 33.78,
+   "baseline-wpc": 33.15,
+   "baseline-zeros": 14.58,
+   "house-blend": 16.65,
+   "open-powder-ensemble": 21.99,
+   "open-powder-ml": 0.81
+  }
+ },
+ {
+  "round_id": "2026-11-11",
+  "biggest_24h": {
+   "station_id": "USC00203744:MI:GHCND",
+   "resort": "Herman",
+   "inches": 2.7
+  },
+  "qc": {
+   "station_horizons_valid": 1312,
+   "station_horizons_voided": 2162
+  },
+  "teams": {
+   "open-powder-ensemble": 29.73,
+   "open-powder-ml": 4.51
+  }
  }
 ]

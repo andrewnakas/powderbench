@@ -2,6 +2,24 @@
  "season_start_month": 10,
  "stations": [
   {
+   "slug": "sugar-bowl",
+   "station_id": "sugar-bowl:US:RESORT",
+   "resort": "Sugar Bowl",
+   "seasons": [
+    "2026"
+   ],
+   "latest_total": 46.0
+  },
+  {
+   "slug": "wolf-creek",
+   "station_id": "wolf-creek:US:RESORT",
+   "resort": "Wolf Creek",
+   "seasons": [
+    "2026"
+   ],
+   "latest_total": 29.5
+  },
+  {
    "slug": "alta",
    "station_id": "alta:US:RESORT",
    "resort": "Alta",
@@ -11,22 +29,13 @@
    "latest_total": 24.0
   },
   {
-   "slug": "wolf-creek",
-   "station_id": "wolf-creek:US:RESORT",
-   "resort": "Wolf Creek",
-   "seasons": [
-    "2026"
-   ],
-   "latest_total": 19.5
-  },
-  {
    "slug": "timberline",
    "station_id": "timberline:US:RESORT",
    "resort": "Timberline",
    "seasons": [
     "2026"
    ],
-   "latest_total": 19.0
+   "latest_total": 21.0
   },
   {
    "slug": "white-pass",
@@ -35,16 +44,25 @@
    "seasons": [
     "2026"
    ],
-   "latest_total": 17.0
+   "latest_total": 18.0
   },
   {
-   "slug": "sugar-bowl",
-   "station_id": "sugar-bowl:US:RESORT",
-   "resort": "Sugar Bowl",
+   "slug": "marmot-basin",
+   "station_id": "marmot-basin:CA:RESORT",
+   "resort": "Marmot Basin",
    "seasons": [
     "2026"
    ],
-   "latest_total": 14.0
+   "latest_total": 13.0
+  },
+  {
+   "slug": "lake-louise",
+   "station_id": "lake-louise:CA:RESORT",
+   "resort": "Lake Louise",
+   "seasons": [
+    "2026"
+   ],
+   "latest_total": 12.6
   },
   {
    "slug": "mt-baker",
@@ -54,24 +72,6 @@
     "2026"
    ],
    "latest_total": 12.0
-  },
-  {
-   "slug": "marmot-basin",
-   "station_id": "marmot-basin:CA:RESORT",
-   "resort": "Marmot Basin",
-   "seasons": [
-    "2026"
-   ],
-   "latest_total": 11.4
-  },
-  {
-   "slug": "lake-louise",
-   "station_id": "lake-louise:CA:RESORT",
-   "resort": "Lake Louise",
-   "seasons": [
-    "2026"
-   ],
-   "latest_total": 8.3
   },
   {
    "slug": "red-river",
@@ -101,6 +101,15 @@
    "latest_total": 6.0
   },
   {
+   "slug": "le-massif",
+   "station_id": "le-massif:CA:RESORT",
+   "resort": "Le Massif",
+   "seasons": [
+    "2026"
+   ],
+   "latest_total": 5.1
+  },
+  {
    "slug": "bogus-basin",
    "station_id": "bogus-basin:US:RESORT",
    "resort": "Bogus Basin",
@@ -117,15 +126,6 @@
     "2026"
    ],
    "latest_total": 2.5
-  },
-  {
-   "slug": "le-massif",
-   "station_id": "le-massif:CA:RESORT",
-   "resort": "Le Massif",
-   "seasons": [
-    "2026"
-   ],
-   "latest_total": 2.4
   },
   {
    "slug": "bolton-valley",

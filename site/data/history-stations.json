@@ -994,5 +994,68 @@
    "open-powder-ensemble": 47.09,
    "open-powder-ml": 52.52
   }
+ },
+ {
+  "round_id": "2026-11-13",
+  "biggest_24h": {
+   "station_id": "LOS:CA:CDEC",
+   "resort": "Lake Lois",
+   "inches": 16.0
+  },
+  "qc": {
+   "station_horizons_valid": 2790,
+   "station_horizons_voided": 183
+  },
+  "teams": {
+   "baseline-aifs": 41.99,
+   "baseline-climatology": 0.0,
+   "baseline-consensus": 46.41,
+   "baseline-ecmwf": 38.29,
+   "baseline-gem": 25.04,
+   "baseline-gfs": 47.96,
+   "baseline-icon": 36.68,
+   "baseline-ndfd": 32.15,
+   "baseline-openmeteo": 49.74,
+   "baseline-persistence": 1.51,
+   "baseline-ukmo": 36.16,
+   "baseline-wpc": 52.87,
+   "baseline-zeros": 1.51,
+   "house-analog": 34.57,
+   "house-blend": 59.0,
+   "house-gbm": 47.96,
+   "open-powder-ensemble": 53.19,
+   "open-powder-ml": 52.84
+  }
+ },
+ {
+  "round_id": "2026-11-14",
+  "biggest_24h": {
+   "station_id": "1304:UT:SNTL",
+   "resort": "Gold Basin",
+   "inches": 9.0
+  },
+  "qc": {
+   "station_horizons_valid": 2803,
+   "station_horizons_voided": 170
+  },
+  "teams": {
+   "baseline-aifs": 30.05,
+   "baseline-climatology": 0.0,
+   "baseline-consensus": 38.28,
+   "baseline-ecmwf": 32.88,
+   "baseline-gem": 19.7,
+   "baseline-gfs": 9.62,
+   "baseline-icon": 30.72,
+   "baseline-ndfd": 24.92,
+   "baseline-openmeteo": 12.68,
+   "baseline-persistence": -0.61,
+   "baseline-ukmo": 37.72,
+   "baseline-zeros": 0.0,
+   "house-analog": 25.6,
+   "house-blend": 51.29,
+   "house-gbm": 40.19,
+   "open-powder-ensemble": 45.41,
+   "open-powder-ml": 51.75
+  }
  }
 ]
