@@ -469,17 +469,38 @@ function teamOrder() {
   return (state.fc?.teams || []).map((t) => t.team);
 }
 
-/* The best available forecast for a station: the most accurate forecaster
-   (by season Powder Accuracy) that forecast it. Climatology is a reference, not a pick. */
+/* The forecast the map shows: the median of every forecaster that forecast this station
+   (reference baselines left out), per horizon, never falling with the horizon. Replaying every
+   scored round (2026-11-17, no look-ahead) it beat showing the top-ranked forecaster in every
+   league (stations 40 vs -1 Powder Accuracy, observers 25 vs 13, resorts-na 12 vs -11,
+   alps 9 vs -14), and beat accuracy-weighted blends: rankings change too fast to pick from. */
+const NOT_A_PICK = new Set(["baseline-climatology", "baseline-zeros", "baseline-persistence"]);
+const median = (xs) => {
+  const v = xs.filter((x) => x !== null && x !== undefined).sort((a, b) => a - b);
+  if (!v.length) return null;
+  const m = Math.floor(v.length / 2);
+  return v.length % 2 ? v[m] : (v[m - 1] + v[m]) / 2;
+};
+const quantile = (xs, q) => {
+  const v = xs.filter((x) => x !== null && x !== undefined).sort((a, b) => a - b);
+  if (!v.length) return null;
+  const i = (v.length - 1) * q, lo = Math.floor(i);
+  return v[lo] + (v[Math.min(lo + 1, v.length - 1)] - v[lo]) * (i - lo);
+};
 function bestFor(sid) {
   const rows = state.fc?.current?.rows?.[sid];
   if (!rows) return null;
-  for (const t of state.fc.teams) {
-    if (t.team === "baseline-climatology") continue;
-    const r = rows[t.team];
-    if (r && (r[2] !== null || r[0] !== null)) return { ...t, r };
-  }
-  return null;
+  const xs = state.fc.teams.filter((t) => !NOT_A_PICK.has(t.team)).map((t) => rows[t.team])
+    .filter((x) => x && (x[2] !== null || x[0] !== null));
+  if (!xs.length) return null;
+  const r = [0, 1, 2].map((i) => median(xs.map((x) => x[i])));
+  if (r[1] !== null && r[0] !== null) r[1] = Math.max(r[1], r[0]);
+  if (r[2] !== null && r[1] !== null) r[2] = Math.max(r[2], r[1]);
+  const tots = xs.map(totalOf);
+  // spread of the forecasters' 3-day totals: the middle half when there are enough of them
+  const lo = xs.length >= 4 ? quantile(tots, 0.25) : Math.min(...tots.filter((v) => v !== null));
+  const hi = xs.length >= 4 ? quantile(tots, 0.75) : Math.max(...tots.filter((v) => v !== null));
+  return { team: "median", n: xs.length, r: [r[0], r[1], r[2], null, lo, hi, null, null] };
 }
 
 function totalOf(r) { return r ? (r[2] ?? r[1] ?? r[0]) : null; }
@@ -496,7 +517,7 @@ function snowType(d) {
 
 function renderLegend() {
   document.getElementById("fc-legend").innerHTML =
-    '<span class="fine">3-day snow (best forecast):</span>' +
+    '<span class="fine">3-day snow (median of all forecasts):</span>' +
     SNOW_BINS.map(([, c, l]) => `<span class="lg"><i style="background:${c}"></i>${l}</span>`).join("") +
     '<span class="lg"><i style="background:#2a3a57"></i>no forecast</span>';
 }
@@ -598,7 +619,7 @@ function showStation(sid, pan = true) {
         ${[d1, d2, d3].map((v, i) => `<div class="fc-day"><span class="fc-dn">${dayName(c.target_days[i])}</span>
           <span class="fc-dv" style="color:${snowColor(v)}">${inch(v)}</span></div>`).join("")}
       </div>
-      ${r[4] !== null && r[5] !== null ? `<p class="fc-range">Likely range for the 3 days: <b>${inch(r[4])} – ${inch(r[5])}</b> (80% chance it lands in here)</p>` : ""}
+      ${r[4] !== null && r[5] !== null && best.n > 1 ? `<p class="fc-range">${best.n >= 4 ? "Half the forecasters say" : "Forecasters range from"} <b>${inch(r[4])} – ${inch(r[5])}</b> for the 3 days${r[5] - r[4] > Math.max(2, 0.5 * (tot || 0)) ? " · <b>they disagree a lot</b>: treat the number above loosely" : ""}</p>` : ""}
       ${prob ? `<p class="fc-range">Chance of 6″ or more on ${dayName(c.target_days[0])}: <b>${Math.round(prob.p * 100)}%</b></p>` : ""}
       ${(() => {  // water content + density, from the most accurate forecaster that gives SWE
         if (!tot || tot < 0.5) return "";
@@ -612,9 +633,8 @@ function showStation(sid, pan = true) {
         }
         return "";
       })()}
-      <p class="fc-src">Forecast from <b>${prettyTeam(best.team)}</b> ${kindTag(best.team)}, ${best.score !== null
-        ? `the most accurate forecaster in this league so far (${scoreText(best)}).`
-        : "the best available (this league has no scores yet)."}</p>`;
+      <p class="fc-src">The middle of <b>${best.n} forecasts</b> for this station. In replays of every scored round so far,
+        the middle of all forecasts beat following any one forecaster: the most accurate one keeps changing.</p>`;
     // every forecaster, best first
     const rows = state.fc.teams.filter((t) => c.rows[sid]?.[t.team]);
     html += `<details class="fc-all" open><summary>All ${rows.length} forecasts for this station</summary>
@@ -622,7 +642,7 @@ function showStation(sid, pan = true) {
       <th>${dayName(c.target_days[0]).split(",")[0]}</th><th>3 days</th></tr></thead><tbody>
       ${rows.map((t) => {
         const x = c.rows[sid][t.team];
-        const cls = t.team === best.team ? "fc-best" : t.team === "baseline-climatology" ? "fc-climo" : "";
+        const cls = NOT_A_PICK.has(t.team) ? "fc-climo" : "";
         return `<tr class="${cls}"><td>${prettyTeam(t.team)}</td><td>${t.score === null || t.score === undefined ? "–" : fmt(t.score, 0)}</td>
           <td>${inch(x[0])}</td><td>${inch(totalOf(x))}</td></tr>`;
       }).join("")}</tbody></table></details>`;
@@ -654,7 +674,17 @@ function showStation(sid, pan = true) {
 
 function findStation(q) {
   const sid = q.split(" · ").pop();
-  if (markers[sid]) showStation(sid);
+  const note = document.getElementById("station-count");
+  if (markers[sid]) return showStation(sid);
+  // free text: the first station whose resort, name or region contains every word typed
+  const words = q.toLowerCase().split(/\s+/).filter(Boolean);
+  if (!words.length) return;
+  const hay = (s) => `${s.resort} ${s.name} ${s.region} ${s.station_id}`.toLowerCase();
+  const hits = state.stations.filter((s) => words.every((w) => hay(s).includes(w)) && markers[s.station_id]);
+  const feat = hits.filter((s) => (s.tier || "featured") === "featured");
+  const pick = (feat.length ? feat : hits)[0];
+  if (pick) showStation(pick.station_id);
+  else note.textContent = `No station matches “${q}” in this league. Try a nearby town or range, or another league above.`;
 }
 
 function renderTrackOptions() {
