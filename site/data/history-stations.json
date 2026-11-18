@@ -1057,5 +1057,33 @@
    "open-powder-ensemble": 45.41,
    "open-powder-ml": 51.75
   }
+ },
+ {
+  "round_id": "2026-11-15",
+  "biggest_24h": {
+   "station_id": "964:AK:SNTL",
+   "resort": "Grouse Creek Divide",
+   "inches": 10.0
+  },
+  "qc": {
+   "station_horizons_valid": 2788,
+   "station_horizons_voided": 185
+  },
+  "teams": {
+   "baseline-climatology": 0.0,
+   "baseline-consensus": 34.22,
+   "baseline-ecmwf": 25.48,
+   "baseline-gfs": 26.85,
+   "baseline-ndfd": 18.02,
+   "baseline-openmeteo": 28.43,
+   "baseline-persistence": -46.67,
+   "baseline-wpc": 23.19,
+   "baseline-zeros": -6.06,
+   "house-analog": 26.65,
+   "house-blend": 38.34,
+   "house-gbm": 27.25,
+   "open-powder-ensemble": 30.68,
+   "open-powder-ml": 34.68
+  }
  }
 ]
