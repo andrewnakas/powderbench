@@ -245,6 +245,33 @@ not used.
 - **Licence condition:** Land Tirol's open-data terms ask users to tell
   opendata@tirol.gv.at about applications built on the data.
 
+### Italy: South Tyrol snow-depth stations (Alto Adige)
+
+The South Tyrol stations (`:IT:PROVBZ`, `truth_source: provbz`) are the
+automatic snow-depth (HS) sensors of the provincial weather service, most on
+high pastures and ski slopes of the Dolomites and the Ötztal, Ortler and
+Zillertal ranges. The data is "Misure meteo e idrografiche" on
+data.civis.bz.it (Provincia autonoma di Bolzano – Alto Adige, CC0 1.0), read
+from `geoservices.buergernetz.bz.it/services/meteo/v1/timeseries` (10-minute
+readings, local time, one request per station per season). No key.
+
+- **Truth:** computed exactly as for Land Tirol (same 22:40–23:20 UTC
+  midnight window, 1 cm deadband and QC), so the two networks agree on what a
+  day is. Checked against Meteotrentino's hand-measured new snow 9–12 km away
+  (Karerpass and Obereggen vs Lusia, Piz La Ila vs Belvedere, Dec 2025–Mar
+  2026): same-day correlation 0.63–0.73, lower at a one-day shift either way,
+  so the days line up; totals are 60–75% of the hand-measured board, the
+  settlement every depth-derived network shows.
+- **History:** 10-minute data from the 2014/15 winter on, so the climatology
+  uses the same 10-minute series as live truth.
+- **Candidates:** all 26 stations with an HS sensor. Kept with the Tirol
+  rule (≥ 100 valid days and ≥ 10 days of 2 cm or more last winter): 24
+  (Ladurns had 98 valid days; Gantkofel reported nothing).
+- **Featured:** for each ski area with 10+ lifts (OpenSkiData, the
+  Trentino threshold), its nearest kept station within 4 km: 7 (Alta Badia,
+  Sulden, Schöneben, 3 Zinnen Dolomites, Latemar/Obereggen, Carezza,
+  Ratschings-Jaufen).
+
 ## Ground truth: JMA snow-depth sensors (japan league)
 
 The japan league (`:JP:JMA`, `truth_source: jma`) scores against

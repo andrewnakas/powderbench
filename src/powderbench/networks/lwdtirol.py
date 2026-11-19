@@ -145,19 +145,26 @@ def daily(station_ids: list[str], begin: date, end: date, offsets: dict[str, int
     """Truth frame for local days [begin, end] from midnight-to-midnight depth rises."""
     rows = []
     for sid in station_ids:
-        rec = depths(code(sid), begin)
-        for i in range((end - begin).days + 1):
-            d = begin + timedelta(days=i)
-            s0, s1 = rec.get(d), rec.get(d + timedelta(days=1))
-            flag = truth.QC_OK
-            if s0 is None or s1 is None or pd.isna(s0) or pd.isna(s1):
-                flag = truth.QC_MISSING
-            elif s1 / CM_PER_IN > truth.MAX_DEPTH_IN:
-                flag = truth.QC_BAD_DEPTH
-            elif (s1 - s0) / CM_PER_IN > truth.MAX_PLAUSIBLE_SNOW24_IN:
-                flag = truth.QC_IMPLAUSIBLE
-            valid = flag == truth.QC_OK
-            rise = (s1 - s0) if valid else float("nan")
-            snow = (0.0 if rise < DEADBAND_CM else round(rise / CM_PER_IN, 3)) if valid else float("nan")
-            rows.append({"station_id": sid, "date": d, "snow24": snow, "valid": valid, "qc_flag": flag})
+        rows += rise_rows(sid, depths(code(sid), begin), begin, end)
     return pd.DataFrame(rows, columns=["station_id", "date", "snow24", "valid", "qc_flag"])
+
+
+def rise_rows(sid: str, rec: pd.Series, begin: date, end: date) -> list[dict]:
+    """Day D <- depth(D+1) - depth(D) (midnight depths by date), with the
+    deadband and the shared depth QC. Used by every depth-derived network."""
+    rows = []
+    for i in range((end - begin).days + 1):
+        d = begin + timedelta(days=i)
+        s0, s1 = rec.get(d), rec.get(d + timedelta(days=1))
+        flag = truth.QC_OK
+        if s0 is None or s1 is None or pd.isna(s0) or pd.isna(s1):
+            flag = truth.QC_MISSING
+        elif s1 / CM_PER_IN > truth.MAX_DEPTH_IN:
+            flag = truth.QC_BAD_DEPTH
+        elif (s1 - s0) / CM_PER_IN > truth.MAX_PLAUSIBLE_SNOW24_IN:
+            flag = truth.QC_IMPLAUSIBLE
+        valid = flag == truth.QC_OK
+        rise = (s1 - s0) if valid else float("nan")
+        snow = (0.0 if rise < DEADBAND_CM else round(rise / CM_PER_IN, 3)) if valid else float("nan")
+        rows.append({"station_id": sid, "date": d, "snow24": snow, "valid": valid, "qc_flag": flag})
+    return rows

@@ -428,6 +428,26 @@ register(TruthSource(
 ))
 
 
+def _provbz_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
+    from .networks import provbz
+
+    return provbz.daily(ids, begin, end)
+
+
+register(TruthSource(
+    name="provbz",
+    fetch=_provbz_daily,
+    history_begin=date(2015, 10, 1),
+    climatology=(date(2014, 9, 1), _CLIM_END),
+    measured=False,
+    note=(
+        "Truth is new snow from the automatic snow-depth sensors of the South Tyrol provincial weather "
+        "service, many on Dolomites ski areas (Alta Badia, Obereggen, Sulden, Karerpass, Sexten…): the "
+        "rise in depth from one local midnight to the next. Data: Provincia autonoma di Bolzano – "
+        "Alto Adige (data.civis.bz.it), CC0 1.0."
+    ),
+))
+
 def daily_truth(league: League, station_ids: list[str], begin: date, end: date) -> pd.DataFrame:
     """QC'd daily snowfall for [begin, end], dispatched by truth source.
     Stations with a per-station override are fetched from their own source."""
