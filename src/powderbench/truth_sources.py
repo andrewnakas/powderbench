@@ -467,6 +467,26 @@ register(TruthSource(
     ),
 ))
 
+def _meteoswiss_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
+    from .networks import meteoswiss
+
+    return meteoswiss.daily(ids, begin, end, _offsets(league, ids))
+
+
+register(TruthSource(
+    name="meteoswiss",
+    fetch=_meteoswiss_daily,
+    history_begin=date(2010, 10, 1),
+    climatology=(date(2000, 10, 1), _CLIM_END),
+    measured=True,
+    note=(
+        "Truth is the new snow measured by hand at 06 UTC at MeteoSwiss's manual stations in the ski "
+        "villages and valleys below the SLF study plots (Engelberg, Grindelwald, Pontresina, Sedrun, "
+        "Crans-Montana, Säntis…). Source: MeteoSwiss (opendata.meteoswiss.ch), CC BY 4.0."
+    ),
+))
+
+
 def daily_truth(league: League, station_ids: list[str], begin: date, end: date) -> pd.DataFrame:
     """QC'd daily snowfall for [begin, end], dispatched by truth source.
     Stations with a per-station override are fetched from their own source."""

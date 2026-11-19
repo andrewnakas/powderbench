@@ -305,6 +305,33 @@ midnight are requested.
   out of the Powder Accuracy comparison for every team alike. No older
   sensor sits within 4 km of either ski area.
 
+### Switzerland: MeteoSwiss manual stations (ski villages and valleys)
+
+The MeteoSwiss stations (`:CH:MCH`, `truth_source: meteoswiss`) are manual
+precipitation stations with a new-snow board in the ski villages and valleys
+below the SLF study plots: Engelberg, Grindelwald, Kandersteg, Lenk,
+Pontresina, Samedan, Sedrun, Crans-Montana, Leukerbad, Grächen, Saas Balen,
+Säntis and more. The data is MeteoSwiss's open data (`ogd-nime`, CC BY 4.0,
+"Source: MeteoSwiss"), one CSV per station on data.geo.admin.ch: the record
+to last year (re-read once a year) and this year (re-read at most once per
+UTC day, as MeteoSwiss asks). No key.
+
+- **Truth:** `hns000d0`, the new snow (cm) read by hand at 06 UTC, the same
+  board measurement as SLF's study plots. MeteoSwiss dates the 06–06 UTC
+  reading by its first day, so day D takes the value dated D (offset 0; SLF
+  dates it by the morning it is read, offset 1). Checked at every kept
+  station last winter: the value dated D tracks the station's own depth rise
+  from D to D+1 (correlation 0.90–1.00) and not the rise from D-1 to D
+  (0.02–0.55).
+- **Candidates:** the active manual stations with `hns000d0` at 800 m or
+  higher and within 10 km of a ski area with 5+ lifts. 16 sit within 1 km of
+  an SLF or IMIS station (Adelboden, Andermatt, Arosa, Davos, Gstaad,
+  Weissfluhjoch…, often the same plot) and are dropped: one site, one truth.
+  Kept when last winter (Nov–Mar) has ≥ 120 readings and ≥ 10 days of 2 cm or
+  more: 58.
+- **Tier:** all network. They score in the league's network board; none is
+  featured, so they add no Open-Meteo points.
+
 ## Ground truth: JMA snow-depth sensors (japan league)
 
 The japan league (`:JP:JMA`, `truth_source: jma`) scores against
