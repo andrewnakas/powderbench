@@ -448,6 +448,25 @@ register(TruthSource(
     ),
 ))
 
+def _arpal_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
+    from .networks import arpal
+
+    return arpal.daily(ids, begin, end)
+
+
+register(TruthSource(
+    name="arpal",
+    fetch=_arpal_daily,
+    history_begin=date(2010, 10, 1),
+    climatology=(date(2000, 10, 1), _CLIM_END),
+    measured=False,
+    note=(
+        "Truth is new snow from ARPA Lombardia's automatic snow-depth sensors, several on ski areas "
+        "(Livigno, Bormio, Aprica, Madesimo, Valmalenco…): the rise in depth from one local midnight "
+        "to the next, counted from 2 cm. Data: ARPA Lombardia (dati.lombardia.it), CC0 1.0."
+    ),
+))
+
 def daily_truth(league: League, station_ids: list[str], begin: date, end: date) -> pd.DataFrame:
     """QC'd daily snowfall for [begin, end], dispatched by truth source.
     Stations with a per-station override are fetched from their own source."""

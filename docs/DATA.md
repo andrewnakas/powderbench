@@ -272,6 +272,35 @@ readings, local time, one request per station per season). No key.
   Sulden, Schöneben, 3 Zinnen Dolomites, Latemar/Obereggen, Carezza,
   Ratschings-Jaufen).
 
+### Italy: ARPA Lombardia snow-depth sensors (Lombardy)
+
+The Lombard stations (`:IT:ARPAL`, `truth_source: arpal`) are ARPA
+Lombardia's automatic snow-depth sensors (nivometri), from Livigno and Bormio
+to the Bergamo and Brescia Prealps. The data is CC0 1.0 on dati.lombardia.it
+(Socrata, no key) in four datasets with one schema: up to 2010 (`5kig-ayub`),
+2011–2020 (`id9e-7wf3`), 2021 on (`uqbu-tt6m`, validated, a few months
+behind) and the recent months (`647i-nhxk`, live). Only the readings near
+midnight are requested.
+
+- **Truth:** depth at local midnight is the median of the valid (`stato` VA)
+  readings from 23:00 to 00:50 local solar time (CET); day D is the rise to
+  the next midnight, with the shared depth QC. The sensors report whole
+  centimetres and jitter by 1–2 cm, so rises under 2 cm count as 0 (1 cm for
+  Tirol and South Tyrol). Last season is re-read daily until a year old,
+  because the validated archive fills in months late (March 2026 is not in
+  either dataset yet).
+- **Day check:** against Swiss manual new snow (SLF) last winter, Livigno La
+  Vallaccia vs Berninapass correlates 0.59 same-day (0.40 and 0.25 shifted)
+  and Alpe Motta vs Innerferrera 0.62 (0.04, 0.27): the pattern expected from
+  a midnight day against an 08:00 board.
+- **Candidates:** the 50 active snow-depth sensors in ARPA's register. Kept
+  when either of the last two winters' Dec–Feb has ≥ 75 valid days and ≥ 8
+  days of 2 cm or more: 32 (two winters, so the sensors installed in autumn
+  2025 at Bormio 2000 and Livigno Mottolino qualify).
+- **Featured:** for each ski area with 10+ lifts, its nearest kept station
+  within 4 km: 8 (Livigno, Bormio, San Colombano, Aprica, Madesimo,
+  Valmalenco, Foppolo-Carona, Piani di Bobbio).
+
 ## Ground truth: JMA snow-depth sensors (japan league)
 
 The japan league (`:JP:JMA`, `truth_source: jma`) scores against

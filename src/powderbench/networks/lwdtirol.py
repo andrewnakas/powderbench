@@ -149,7 +149,7 @@ def daily(station_ids: list[str], begin: date, end: date, offsets: dict[str, int
     return pd.DataFrame(rows, columns=["station_id", "date", "snow24", "valid", "qc_flag"])
 
 
-def rise_rows(sid: str, rec: pd.Series, begin: date, end: date) -> list[dict]:
+def rise_rows(sid: str, rec: pd.Series, begin: date, end: date, deadband_cm: float = DEADBAND_CM) -> list[dict]:
     """Day D <- depth(D+1) - depth(D) (midnight depths by date), with the
     deadband and the shared depth QC. Used by every depth-derived network."""
     rows = []
@@ -165,6 +165,6 @@ def rise_rows(sid: str, rec: pd.Series, begin: date, end: date) -> list[dict]:
             flag = truth.QC_IMPLAUSIBLE
         valid = flag == truth.QC_OK
         rise = (s1 - s0) if valid else float("nan")
-        snow = (0.0 if rise < DEADBAND_CM else round(rise / CM_PER_IN, 3)) if valid else float("nan")
+        snow = (0.0 if rise < deadband_cm else round(rise / CM_PER_IN, 3)) if valid else float("nan")
         rows.append({"station_id": sid, "date": d, "snow24": snow, "valid": valid, "qc_flag": flag})
     return rows
