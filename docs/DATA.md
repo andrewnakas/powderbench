@@ -299,7 +299,11 @@ midnight are requested.
   2025 at Bormio 2000 and Livigno Mottolino qualify).
 - **Featured:** for each ski area with 10+ lifts, its nearest kept station
   within 4 km: 8 (Livigno, Bormio, San Colombano, Aprica, Madesimo,
-  Valmalenco, Foppolo-Carona, Piani di Bobbio).
+  Valmalenco, Foppolo-Carona, Piani di Bobbio). Bormio 2000 and Livigno
+  Mottolino started in autumn 2025, after the climatology window (to June
+  2025), so until their climatology can be built they count in MAE but drop
+  out of the Powder Accuracy comparison for every team alike. No older
+  sensor sits within 4 km of either ski area.
 
 ## Ground truth: JMA snow-depth sensors (japan league)
 
