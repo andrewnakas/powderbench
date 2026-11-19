@@ -399,6 +399,12 @@ days: the Tatras, the Czech mountains, Sljeme above Zagreb and Palandöken
 (Erzurum). Every source here is free, needs no key and allows reuse. It grows
 as national feeds are added: Norway needs MET Norway's Frost (a free client
 id), Spain AEMET (a free key), and Poland and Slovenia need their own archives.
+Slovakia's SHMÚ open-data server (opendata.shmu.sk, CC BY 4.0, no
+registration) is the next candidate. It publishes a 1-minute snow-depth
+average for 95 automatic stations every 5 minutes, with about 30 days kept
+online. Its daily climate files carry measured new snow (`sneh_novy`, 07–07
+local time), but they arrive months late and go back only to January 2025,
+too short for a climatology so far.
 
 - **WMO weather stations, via NOAA GHCNh** (`:GHCNH`, `truth_source: ghcnh`):
   the morning snow-depth group of the stations' SYNOP reports (06 UTC in
