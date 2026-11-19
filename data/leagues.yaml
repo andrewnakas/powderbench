@@ -47,6 +47,18 @@ leagues:
     resolve_after: { days: 4, hour_utc: 16 }
     season_start_month: 10 # hydrological year, as SLF
     active_months: [11, 12, 1, 2, 3, 4, 5]
+  - name: japan
+    label: "Japan · Snow-depth sensors (JMA AMeDAS)"
+    status: trial
+    truth_source: jma
+    # JST day D starts 15:00 UTC D-1: the 11:00 UTC D-1 cutoff (shared with
+    # era5/resorts, so the 11:05 open-round slot serves it) precedes it
+    cutoff: { days_before: 1, hour_utc: 11 }
+    # JMA's archive has day D+2's total by the next JST morning (~D+3 00 UTC);
+    # D+3 16:00 rides the resolve cron with half a day of slack
+    resolve_after: { days: 3, hour_utc: 16 }
+    season_start_month: 10
+    active_months: [11, 12, 1, 2, 3, 4]
   - name: era5
     label: "ERA5 · Andes / NZ / AU"
     status: live

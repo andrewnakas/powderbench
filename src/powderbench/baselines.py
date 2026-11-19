@@ -82,7 +82,7 @@ def openmeteo_prediction(league: League, target_day: date, model: str = "best_ma
 
 # Extra NWP baselines, run on featured stations only (Open-Meteo's free tier
 # bills per location). team -> (Open-Meteo model, region): "conus" models
-# only cover the lower 48, "alps" only the Alps leagues.
+# only cover the lower 48, "alps" only the Alps leagues, "japan" only Japan.
 MODEL_BASELINES = {
     "baseline-ecmwf": ("ecmwf_ifs025", None),
     "baseline-aifs": ("ecmwf_aifs025_single", None),  # ECMWF's AI model
@@ -92,6 +92,7 @@ MODEL_BASELINES = {
     "baseline-nbm": ("ncep_nbm_conus", "conus"),  # NOAA's calibrated National Blend
     "baseline-hrrr": ("ncep_hrrr_conus", "conus"),  # 3 km, 48h range
     "baseline-arome": ("meteofrance_seamless", "alps"),
+    "baseline-jma": ("jma_seamless", "japan"),  # JMA MSM 5 km + GSM
 }
 CONSENSUS_TEAM = "baseline-consensus"
 
@@ -104,6 +105,8 @@ def _region_ok(league: League, region: str | None) -> bool:
         return any(24 <= s.latitude <= 50 and -125 <= s.longitude <= -66 for s in sts)
     if region == "alps":
         return any(43 <= s.latitude <= 48.5 and 5 <= s.longitude <= 17 for s in sts)
+    if region == "japan":
+        return any(s.state == "JP" for s in sts)
     return False
 
 

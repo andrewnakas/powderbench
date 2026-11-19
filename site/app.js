@@ -23,7 +23,7 @@ const FRIENDLY = {
   "baseline-gem": "GEM (Canadian model)", "baseline-ukmo": "UK Met Office model",
   "baseline-nbm": "NOAA National Blend", "baseline-hrrr": "HRRR (US high-res)",
   "baseline-wpc": "NOAA WPC snow forecast", "baseline-ndfd": "National Weather Service forecast",
-  "baseline-arome": "AROME (French high-res)", "baseline-openmeteo": "Open-Meteo best match",
+  "baseline-arome": "AROME (French high-res)", "baseline-jma": "JMA MSM (Japanese high-res)", "baseline-openmeteo": "Open-Meteo best match",
   "baseline-consensus": "Model consensus (median)", "baseline-climatology": "Typical for this date",
   "baseline-zeros": "Always zero snow", "baseline-persistence": "Same as yesterday",
   "house-blend": "PowderBench blend", "house-analog": "PowderBench analogs", "house-gbm": "PowderBench ML",

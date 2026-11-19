@@ -165,6 +165,36 @@ there's no key.
   | Climatology | 0 |
   | Persistence | −33.0 |
 
+## Ground truth: JMA snow-depth sensors (japan league)
+
+The japan league (`:JP:JMA`, `truth_source: jma`) scores against
+**降雪の深さの合計**, JMA's daily snowfall total: the sum of each hour's rise
+of the automatic snow-depth sensor over the JST calendar day. It comes from
+JMA's past-weather archive (気象庁 過去の気象データ検索), one page per
+station-month. Yesterday's preliminary value is there by the next JST morning,
+and there's no key. Terms: the JMA website terms of use (compatible with
+CC BY 4.0). Credit: 出典：気象庁ホームページ (Japan Meteorological Agency).
+
+- **What it measures:** a depth sensor, not a snowboard. On long storms
+  settling eats into the hourly rises, so totals read a little lower than an
+  observer's board would. Every team is scored on the same number.
+- **Value marks:** `)` (quasi-normal, a few hourly values missing) is kept.
+  `]` (insufficient data), `#` (suspect), `×`, `///` and blanks are missing.
+  `--` (no phenomenon) is 0.
+- **Day attribution:** none to fit. The total is for the station's own local
+  (JST) day, so day D is the value dated D.
+- **Candidates:** every AMeDAS station that reports snow depth in JMA's live
+  map, matched to its archive page by name (else the nearest page within
+  3 km). A station is kept when last winter (Dec–Mar) has ≥ 100 days with a
+  value, ≥ 10 snowfall days of 2 cm or more, and ≥ 80% of those snowfall days
+  wet on the station's own rain gauge. That last test catches dead or stuck
+  sensors with no external model call.
+- **Featured:** stations within 12 km of a ski area with 3+ lifts
+  (OpenSkiData, `data/skiareas/ski_areas_global.csv`).
+- **Climatology:** from each station's own record since 2015-10. Jun–Sep are
+  not fetched; they are snow-free at every kept station and outside the season.
+- **Regional baseline:** `baseline-jma` (JMA MSM 5 km + GSM via Open-Meteo).
+
 ## Ground truth: ERA5 analysis (era5 league)
 
 There is no southern-hemisphere SNOTEL equivalent with a stable public API
@@ -402,8 +432,9 @@ for 24Z.
   `baseline-icon` (DWD), `baseline-gem` (Environment Canada), `baseline-ukmo`
   (Met Office); US leagues add `baseline-nbm` (NOAA National Blend) and
   `baseline-hrrr` (3 km, 48h range — scored on h24/h48 only); Alps leagues add
-  `baseline-arome` (Météo-France). Models that don't run in a region are
-  skipped. JMA/KMA via Open-Meteo returned no usable snowfall (2026-10).
+  `baseline-arome` (Météo-France); Japan adds `baseline-jma` (JMA MSM 5 km +
+  GSM; snowfall confirmed 2026-11-19). Models that don't run in a region are
+  skipped. KMA via Open-Meteo returned no usable snowfall (2026-10).
 - **`baseline-consensus`**: the median of all NWP baselines per
   station-horizon (≥3 models) — the "beat the crowd" target.
 - **Hindcast**: `historical-forecast-api.open-meteo.com` — the archive of what

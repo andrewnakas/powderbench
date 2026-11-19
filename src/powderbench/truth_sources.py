@@ -299,6 +299,31 @@ register(TruthSource(
 ))
 
 
+def _jma_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
+    from .networks import jma
+
+    wanted = set(ids)
+    ext = {s.station_id: s.external_id for s in load_stations(league.name)
+           if s.station_id in wanted and s.external_id}
+    return jma.daily({sid: ext[sid] for sid in ids if sid in ext}, begin, end, _offsets(league, ids))
+
+
+register(TruthSource(
+    name="jma",
+    fetch=_jma_daily,
+    history_begin=date(2015, 10, 1),
+    # one archive page per station-month: ten winters keep the build to ~10k pages
+    climatology=(date(2015, 10, 1), _CLIM_END),
+    measured=False,
+    note=(
+        "Truth is the daily snowfall total (降雪の深さの合計) from the Japan Meteorological "
+        "Agency's automatic snow-depth sensors at AMeDAS stations (Sukayu/Hakkoda, Kutchan/Niseko, "
+        "Hakuba, Nozawa, Myoko…): the sum of each hour's rise in snow depth over the JST day. "
+        "Source: 気象庁ホームページ (Japan Meteorological Agency)."
+    ),
+))
+
+
 def daily_truth(league: League, station_ids: list[str], begin: date, end: date) -> pd.DataFrame:
     """QC'd daily snowfall for [begin, end], dispatched by truth source.
     Stations with a per-station override are fetched from their own source."""

@@ -196,6 +196,7 @@ jobs up to ~3 h late):
 | `baseline-gfs`, `-ecmwf`, `-aifs`, `-icon`, `-gem`, `-ukmo` | individual global models (AIFS = ECMWF's AI model), featured stations |
 | `baseline-nbm`, `-hrrr` | NOAA National Blend and HRRR (US leagues) |
 | `baseline-arome` | Météo-France AROME (Alps) |
+| `baseline-jma` | Japan Meteorological Agency MSM 5 km + GSM (Japan) |
 | `baseline-wpc` | NOAA WPC official snowfall percentiles + P(≥6″) (US) |
 | `baseline-ndfd` | NWS forecast offices' official snow amount (NDFD), 24/48 h (US) |
 | `baseline-consensus` | median of the NWP baselines (≥ 3 models) |
