@@ -324,6 +324,46 @@ register(TruthSource(
 ))
 
 
+def _smhi_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
+    from .networks import smhi
+
+    return smhi.daily(ids, begin, end)
+
+
+register(TruthSource(
+    name="smhi",
+    fetch=_smhi_daily,
+    history_begin=date(2010, 10, 1),
+    climatology=(date(2010, 10, 1), _CLIM_END),
+    measured=False,
+    note=(
+        "Truth is new snow from the daily 07:00 snow-depth reading at SMHI's Swedish weather "
+        "stations (Storlien, Kittelfjäll, Sälen, Katterjåkk by Riksgränsen…): the rise in depth to the next "
+        "morning's reading. Data © SMHI, CC BY 4.0."
+    ),
+))
+
+
+def _fmi_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
+    from .networks import fmi
+
+    return fmi.daily(ids, begin, end)
+
+
+register(TruthSource(
+    name="fmi",
+    fetch=_fmi_daily,
+    history_begin=date(2010, 10, 1),
+    climatology=(date(2010, 10, 1), _CLIM_END),
+    measured=False,
+    note=(
+        "Truth is new snow from the morning snow-depth reading at the Finnish Meteorological "
+        "Institute's weather stations (Saariselkä, Paljakka, Salla, Kittilä Kenttärova by Levi…): the rise in "
+        "depth to the next morning's reading. Data © Finnish Meteorological Institute, CC BY 4.0."
+    ),
+))
+
+
 def daily_truth(league: League, station_ids: list[str], begin: date, end: date) -> pd.DataFrame:
     """QC'd daily snowfall for [begin, end], dispatched by truth source.
     Stations with a per-station override are fetched from their own source."""
