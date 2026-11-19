@@ -71,6 +71,8 @@ FIXTURE_VALUES = {
     "lost-trail": 3.0,
     "lookout-pass": 6.0,
     "leavenworth": 4.0,
+    "peek-n-peak": 4.0,
+    "shanty-creek": 4.0,
 }
 
 

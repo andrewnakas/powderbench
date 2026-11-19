@@ -100,11 +100,69 @@ Sunday River), Bridger Bowl; Vail resorts by policy; Sierra-at-Tahoe
 (personal-use terms), Brian Head (MCP bot ban), Schweitzer (Alterra), Mt
 Washington BC (OpenSnow).
 
+## North America (2026-11-19 recon)
+
+Three agents re-screened 104 more areas (Rockies/Southwest 29, West 25, East
+and Midwest 50) under the same rules: own data only, robots and terms read,
+and a winter Wayback capture cross-checked against the page's own 48h/7-day
+figures. Seven were enabled, bringing resorts-na to 44:
+
+| Resort | Report | Freshness gate |
+|---|---|---|
+| Monarch (CO) | own `accumulation__table` on /conditions/ | "Last Updated" (fixes the October stale-report hold) |
+| Sundance (UT) | staff-entered `snow-weather` rows | none (page says "updated daily at 5 AM") |
+| Lost Trail (MT) | own Elementor report | "Snow Report for <date time>" |
+| Lookout Pass (ID) | own PowderWatch form, summit block | "Last updated …, PST" |
+| Leavenworth (WA) | club's own Drupal view, 24 HRS field | "Reported at" |
+| Peek'n Peak (NY) | own conditions block | none |
+| Shanty Creek (MI) | own Snowfall block (Schuss Mountain) | none |
+
+Station positions were checked against OpenSkiData (`data/skiareas/`).
+The same pass found that a decimal typed without its leading zero (".5″")
+parsed as 5; both number readers now read it as 0.5.
+
+**Valle Nevado switched off.** Mountain Capital Partners has owned it since
+2023, and MCP's website terms cover "each of our MCP Resort websites",
+including those in Chile, and ban robots. Its history is kept. The same terms
+rule out Purgatory, Sipapu, Pajarito, Arizona Snowbowl and Nordic Valley
+(and Willamette Pass and Brian Head, already rejected).
+
+Held (parser or source not ready): Echo Mountain (no timestamp; robots
+carries an `ai-train=no` content signal), Sunrise Park (sporadic updates),
+Granby Ranch, Powderhorn and Silver Mountain (2026 redesigns, no winter
+capture yet), Sunlight (source unclear), Snow King, Belleayre, Gore and Blue
+Knob (Cloudflare challenge), Antelope Butte, Mt Shasta Ski Park and Whaleback
+(Google Sheets, empty off-season), Tahoe Donner (re-saved at random hours),
+Pomerelle, Donner Ski Ranch, Mt Hood Skibowl, Loup Loup, Kissing Bridge,
+SnowRiver, Lutsen, Granite Peak, Perfect North, Mount Kato, Black Mountain
+ME, Trollhaugen (inconsistent, stale or single captures), Hoodoo (prose
+report), Tenney and Hatley Pointe (parsers ready, re-check in season),
+Waterville Valley and Pats Peak (own feeds never archived), Gunstock and
+Cannon (no fixed 24h), Mount Abram, Swain, Cataloochee, Appalachian Ski Mtn,
+Snow Trails (undefined window), Giants Ridge and Butternut (48h/7-day only),
+Bryce and Ski Sundown (terms render only with JavaScript), Big Powderhorn,
+Ski Brule, Canaan Valley (redesigns), Brundage (disabled after HTTP errors
+from Actions; answers normally from home, so re-test once from a runner).
+Permission needed ([OUTREACH.md](OUTREACH.md)): Beaver Mountain, Eagle
+Point, Anthony Lakes, Diamond Peak, Mt Bohemia.
+
+Rejected: Angel Fire (OpenSnow), Snowy Range (OnTheSnow), White Pine and
+Soldier Mountain (SnoCountry), Magic Mountain ID (OnTheSnow), Lost Valley
+(SnoCountry); by terms: Powder Mountain, Red Lodge, Ski Apache, Bromley,
+Bretton Woods, Titus, Wild Mountain, California Mountain Resort Co. (Dodge
+Ridge, Bear Valley, Mountain High — also robots `Disallow: /`), and the
+October terms rejections (Windham, Greek Peak, Plattekill, Massanutten,
+Whitecap) reconfirmed; Pebble Creek (data endpoint disallowed in robots);
+Soda Springs (POWDR), Snow Valley (Alterra), Pleasant Mountain (Boyne).
+No usable report: Ski Cooper (image only), Howelsen Hill (phone line),
+Cherry Peak, Hogadon, Turner, Teton Pass, Kelly Canyon, Spout Springs,
+Porcupine Mountains, Camelback, Spirit Mountain, Bristol, Mohawk Mountain.
+
 ## Current registry status
 
 See the table in [DATA.md](DATA.md) and the authoritative
-`registry.py` — every entry carries its own verdict and date (13 live as of
-2026-07-11, all four countries covered).
+`registry.py` — every entry carries its own verdict and date (56 live as of
+2026-11-19: 44 in North America).
 
 ## Historical data leads (for backfilling, not yet wired)
 
