@@ -73,6 +73,10 @@ FIXTURE_VALUES = {
     "leavenworth": 4.0,
     "peek-n-peak": 4.0,
     "shanty-creek": 4.0,
+    "panorama": 1.0,
+    "castle-mountain": 6.0,
+    "silver-star": 21.0,
+    "mont-orford": 5.0,
 }
 
 

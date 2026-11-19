@@ -102,10 +102,10 @@ Washington BC (OpenSnow).
 
 ## North America (2026-11-19 recon)
 
-Three agents re-screened 104 more areas (Rockies/Southwest 29, West 25, East
-and Midwest 50) under the same rules: own data only, robots and terms read,
+Four agents re-screened 140 more areas (Rockies/Southwest 29, West 25, East
+and Midwest 50, Canada 36) under the same rules: own data only, robots and terms read,
 and a winter Wayback capture cross-checked against the page's own 48h/7-day
-figures. Seven were enabled, bringing resorts-na to 44:
+figures. Eleven were enabled, bringing resorts-na to 48:
 
 | Resort | Report | Freshness gate |
 |---|---|---|
@@ -116,6 +116,10 @@ figures. Seven were enabled, bringing resorts-na to 44:
 | Leavenworth (WA) | club's own Drupal view, 24 HRS field | "Reported at" |
 | Peek'n Peak (NY) | own conditions block | none |
 | Shanty Creek (MI) | own Snowfall block (Schuss Mountain) | none |
+| Panorama (BC) | own report page | "Updated at"; report hour 10 so the afternoon scrape counts (fixes the October late-post hold) |
+| Castle Mountain (AB) | own table, Mid Mountain 1,915 m | "Last updated … MT" |
+| SilverStar (BC) | own Drupal API, newest report's `amount` | report `date` |
+| Mont Orford (QC) | own conditions page, last 24 h | "Modifié le" |
 
 Station positions were checked against OpenSkiData (`data/skiareas/`).
 The same pass found that a decimal typed without its leading zero (".5″")
@@ -143,6 +147,14 @@ Snow Trails (undefined window), Giants Ridge and Butternut (48h/7-day only),
 Bryce and Ski Sundown (terms render only with JavaScript), Big Powderhorn,
 Ski Brule, Canaan Valley (redesigns), Brundage (disabled after HTTP errors
 from Actions; answers normally from home, so re-test once from a runner).
+Canada held: Revelstoke (rolling 24h, no timestamp), Sunshine Village (no
+24h in the new site's HTML), Mt Seymour and Troll (stamps without a year),
+Grouse (several rolling reports a day), Sasquatch (ambiguous terms), Apex
+(403), Shames (TLS error), Mont Sutton, Les Sommets, Searchmont, Mont Édouard
+(no winter capture), Ski Wentworth, Val-d'Irène (stale, two-language stamps),
+Le Valinouët (no stamp, resets to 0 overnight), Mont Grand-Fonds (posted the
+afternoon before), Marble Mountain (no window or unit), Mount St. Louis
+Moonstone (dry days read "no"; needs its own parser).
 Permission needed ([OUTREACH.md](OUTREACH.md)): Beaver Mountain, Eagle
 Point, Anthony Lakes, Diamond Peak, Mt Bohemia.
 
@@ -153,16 +165,20 @@ Bretton Woods, Titus, Wild Mountain, California Mountain Resort Co. (Dodge
 Ridge, Bear Valley, Mountain High — also robots `Disallow: /`), and the
 October terms rejections (Windham, Greek Peak, Plattekill, Massanutten,
 Whitecap) reconfirmed; Pebble Creek (data endpoint disallowed in robots);
-Soda Springs (POWDR), Snow Valley (Alterra), Pleasant Mountain (Boyne).
+Soda Springs (POWDR), Snow Valley (Alterra), Pleasant Mountain (Boyne);
+Canada: Mt Norquay, Manning Park, Owl's Head, Ski Garceau (terms), Blue
+Mountain ON and Tremblant (Alterra); no first-party 24h at Pass Powderkeg,
+Hudson Bay Mountain, Mount Cain, Mount Sima, Harper Mountain, Massif du Sud.
 No usable report: Ski Cooper (image only), Howelsen Hill (phone line),
 Cherry Peak, Hogadon, Turner, Teton Pass, Kelly Canyon, Spout Springs,
-Porcupine Mountains, Camelback, Spirit Mountain, Bristol, Mohawk Mountain.
+Porcupine Mountains, Camelback, Spirit Mountain, Bristol, Mohawk Mountain,
+Whitetooth, Mont Comi.
 
 ## Current registry status
 
 See the table in [DATA.md](DATA.md) and the authoritative
-`registry.py` — every entry carries its own verdict and date (56 live as of
-2026-11-19: 44 in North America).
+`registry.py` — every entry carries its own verdict and date (60 live as of
+2026-11-19: 48 in North America).
 
 ## Historical data leads (for backfilling, not yet wired)
 
