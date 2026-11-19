@@ -106,7 +106,7 @@ def _month(external_id: str, year: int, month: int) -> dict[int, float | None]:
     root = data_dir() / "cache" / "jma" / f"{prec}-{block}"
     tag = f"{year}-{month:02d}" + (f"-{today:%Y%m%d}" if current else "")
     path = root / f"{tag}.csv"
-    if path.exists():
+    if path.exists() and path.stat().st_size > 0:  # an empty file = a write cut short (disk full)
         df = pd.read_csv(path)
         return {int(d): (None if pd.isna(v) else float(v)) for d, v in zip(df["day"], df["snow_cm"])}
     vals = parse_month(_get(kind, prec, block, year, month), kind)
