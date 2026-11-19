@@ -254,6 +254,9 @@ def test_reading_trace_ranges_and_marks():
     assert _reading('2"-4"') == 3.0 and _reading("3 - 5&quot;") == 4.0
     assert _reading('4"+') == 4.0 and _reading("12 cm") == 12.0
     assert _reading("N/A") is None and _reading("") is None
+    # a decimal typed without its leading zero (Lookout Pass: '.5&#8243;')
+    assert _reading(".5&#8243;") == 0.5
+    assert parse._to_float(".5") == 0.5 and parse._to_float("-.5") == -0.5 and parse._to_float("1,5") == 1.5
 
 
 def test_stale_report_is_never_counted(tmp_path, monkeypatch):
