@@ -165,6 +165,27 @@ there's no key.
   | Climatology | 0 |
   | Persistence | −33.0 |
 
+### Germany: DWD precipitation stations (Bavarian Alps)
+
+The German stations (`:DE:DWD`, `truth_source: dwd`) score against
+`NSH_TAG`, the new snow an observer measures at the morning reading. It comes
+from DWD's daily precipitation-station dataset (`more_precip`, `recent` and
+`historical` zips; Deutscher Wetterdienst open data, CC BY 4.0). No key.
+Automatic stations such as Garmisch-Partenkirchen record only snow depth and
+are not used.
+
+- **Candidates:** active stations at ≥ 600 m in the German Alps (47.2–47.95° N,
+  9.8–13.2° E: Allgäu to Berchtesgaden). Kept when last winter (Nov–Mar) has
+  ≥ 100 new-snow values and ≥ 10 days of 2 cm or more: 52 of 105.
+- **Day attribution:** the value dated D is the morning-of-D measurement, so day
+  D is the value dated D+1. Not fitted per station. All 85 German stations
+  ≥ 700 m with new-snow data correlate best with the precipitation DWD files
+  under the previous day (winter 2025/26), so the documented reading holds
+  everywhere.
+- **Featured:** 12 stations within 6 km of a ski area with 6+ lifts
+  (Mittenwald, Oberammergau, Nesselwang, Pfronten, Reit im Winkl, Lenggries…).
+- **Climatology:** from each station's own record since 2000.
+
 ## Ground truth: JMA snow-depth sensors (japan league)
 
 The japan league (`:JP:JMA`, `truth_source: jma`) scores against
@@ -194,6 +215,35 @@ CC BY 4.0). Credit: 出典：気象庁ホームページ (Japan Meteorological A
 - **Climatology:** from each station's own record since 2015-10. Jun–Sep are
   not fetched; they are snow-free at every kept station and outside the season.
 - **Regional baseline:** `baseline-jma` (JMA MSM 5 km + GSM via Open-Meteo).
+
+## Ground truth: morning snow depth, Sweden and Finland (nordic league)
+
+The nordic league scores against new snow derived from the daily morning
+snow-depth reading at Swedish and Finnish weather stations: day D is
+max(depth at 06 UTC on D+1 − depth at 06 UTC on D, 0), the rise from one
+morning (07:00 CET / 08:00 EET) to the next. Settling makes long storms read a
+little low and melt days read 0, like SNOTEL depth truth. Every team is scored
+on the same number.
+
+- **Sweden, SMHI** (`:SE:SMHI`, `truth_source: smhi`): parameter 8, snow depth
+  once a day at 06 UTC, mostly read by observers. Corrected archive plus
+  `latest-months` (yesterday's reading is in by the morning). Open data,
+  CC BY 4.0, credit SMHI. 52 stations.
+- **Finland, FMI** (`:FI:FMI`, `truth_source: fmi`): daily `snow` from FMI's
+  WFS (`fmi::observations::weather::daily::simple`; −1 = no snow cover = 0).
+  Open data, CC BY 4.0, credit Finnish Meteorological Institute. 49 stations.
+  FMI's station list has no elevation, so elevations come from the Copernicus
+  DEM via Open-Meteo's elevation API.
+- **Candidates:** active stations within 25 km of a ski area, at ≥ 400 m
+  (Sweden) or north of 66° N (Finland). Kept when last winter (Nov–Mar) has
+  ≥ 120 valid days and ≥ 10 days of 2 cm or more.
+- **QC:** missing either reading, negative or > 300 in depth, or a rise of
+  more than 48 in voids the day. Big jumps have no SWE or precipitation
+  cross-check: many SMHI stations have no co-located gauge (Storlien's ends in
+  2023), and the readings are manual.
+- **Featured:** 17 stations within 12 km of a ski area with 3+ lifts (Sälen,
+  Kittelfjäll, Höglekardalen, Abisko, Saariselkä, Paljakka, Salla…).
+- **Climatology:** from each station's own record since 2010.
 
 ## Ground truth: ERA5 analysis (era5 league)
 
