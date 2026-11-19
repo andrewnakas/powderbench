@@ -16,6 +16,7 @@ Every source below permits the use PowderBench makes of it. Please keep these at
 | [Measured new snow (shneu_manu) — climate stations](https://data.hub.geosphere.at/) | GeoSphere Austria | CC BY 4.0 | Austrian snow data © GeoSphere Austria (data.hub.geosphere.at), CC BY 4.0. |
 | [Measured new snow (NSH_TAG) — precipitation stations](https://opendata.dwd.de/climate_environment/CDC/) | Deutscher Wetterdienst | CC BY 4.0 | German snow data © Deutscher Wetterdienst (opendata.dwd.de), CC BY 4.0. |
 | [Measured new snow (HN) — snow fields](https://dati.meteotrentino.it/) | Provincia Autonoma di Trento — Meteotrentino | CC BY 4.0 | Trentino snow data © Provincia Autonoma di Trento — Meteotrentino, CC BY 4.0. |
+| [Snow depth — avalanche-warning and hydrographic stations](https://www.data.gv.at/katalog/datasets/bb43170b-30fb-48aa-893f-51c60d27056f) | Land Tirol (LWD Tirol, HD Tirol) | CC BY 4.0 | Tyrolean snow data © Land Tirol (data.tirol.gv.at), CC BY 4.0. |
 | [Daily snowfall (降雪の深さの合計) — AMeDAS](https://www.data.jma.go.jp/stats/etrn/) | Japan Meteorological Agency | JMA terms of use (compatible with CC BY 4.0) | 出典：気象庁ホームページ (Japan Meteorological Agency). |
 | [Snow depth — weather stations](https://opendata-download-metobs.smhi.se/) | SMHI (Swedish Meteorological and Hydrological Institute) | CC BY 4.0 | Swedish snow data © SMHI, CC BY 4.0. |
 | [Snow depth — weather stations](https://en.ilmatieteenlaitos.fi/open-data) | Finnish Meteorological Institute | CC BY 4.0 | Finnish snow data © Finnish Meteorological Institute, CC BY 4.0. |

@@ -211,6 +211,40 @@ listed on dati.trentino.it). Provincia Autonoma di Trento, CC BY 4.0. No key.
   Passo Valles).
 - **Climatology:** from each field's own record since 2005.
 
+### Austria: Land Tirol snow-depth stations (Tyrol)
+
+The Tyrolean stations (`:AT:LWDT`, `truth_source: lwdtirol`) are the automatic
+snow-depth sensors of Land Tirol's avalanche warning service (LWD Tirol) and
+hydrographic service (HD Tirol), many of them inside ski areas. The data is
+"Wetterstationsdaten Tirol" on data.gv.at (Land Tirol, CC BY 4.0), read from
+the SMET files behind lawinen.report (`wiski.tirol.gv.at/lawine/grafiken/smet`).
+No key. Stations run by third parties (power companies, lift operators,
+universities) appear on the same map but are not under that licence and are
+not used.
+
+- **Truth:** new snow is derived from depth, like SNOTEL: the depth at local
+  midnight (median of the 10-minute readings 22:40–23:20 UTC) on D+1 minus the
+  depth at midnight on D, counted as 0 below 1 cm (sensor jitter). Settling
+  snow reads a little low on long storms, as for every depth-derived network.
+  Midnight is taken at 23:00 UTC all season (CET); in late-season CEST weeks
+  the day starts an hour after local midnight.
+- **History:** the `winter` files hold the last 12 months of 10-minute data.
+  Older days exist only as 24-hour means (`all` files, 1990s on): the
+  climatology uses those, which spread a storm over two days but keep its
+  total (82% of the 10-minute total at Rettenbachferner, same-day correlation
+  0.74, winter 2025/26).
+- **Candidates:** LWD/HD Tirol stations with a snow-depth sensor. Kept when
+  last winter (Dec–Mar) has ≥ 100 days with both midnight depths and ≥ 10
+  days of 2 cm or more: 71 (two co-located HD duplicates of LWD stations
+  dropped).
+- **Featured:** for each ski area with 15+ lifts (OpenSkiData), its nearest
+  kept station within 4 km: 12 (Sölden, Stubai Glacier, Obergurgl, St. Anton,
+  Hintertux, Mayrhofen, Serfaus-Fiss-Ladis, Axamer Lizum, Nordkette, Alpbach,
+  Kals-Matrei, Stubai). One per area, so Sölden's four stations cost one
+  Open-Meteo point.
+- **Licence condition:** Land Tirol's open-data terms ask users to tell
+  opendata@tirol.gv.at about applications built on the data.
+
 ## Ground truth: JMA snow-depth sensors (japan league)
 
 The japan league (`:JP:JMA`, `truth_source: jma`) scores against

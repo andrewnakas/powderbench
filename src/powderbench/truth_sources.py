@@ -407,6 +407,27 @@ register(TruthSource(
 ))
 
 
+def _lwdtirol_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
+    from .networks import lwdtirol
+
+    return lwdtirol.daily(ids, begin, end)
+
+
+register(TruthSource(
+    name="lwdtirol",
+    fetch=_lwdtirol_daily,
+    history_begin=date(2010, 10, 1),
+    climatology=(date(2000, 10, 1), _CLIM_END),
+    measured=False,
+    note=(
+        "Truth is new snow from the automatic snow-depth sensors of Land Tirol's avalanche warning and "
+        "hydrographic services, many of them on ski areas (Sölden, Pitztal glacier, Ischgl, Obergurgl, "
+        "Kühtai…): the rise in depth from one local midnight to the next. Data © Land Tirol "
+        "(data.tirol.gv.at), CC BY 4.0."
+    ),
+))
+
+
 def daily_truth(league: League, station_ids: list[str], begin: date, end: date) -> pd.DataFrame:
     """QC'd daily snowfall for [begin, end], dispatched by truth source.
     Stations with a per-station override are fetched from their own source."""
