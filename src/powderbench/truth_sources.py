@@ -364,6 +364,26 @@ register(TruthSource(
 ))
 
 
+def _dwd_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
+    from .networks import dwd
+
+    return dwd.daily(ids, begin, end, _offsets(league, ids))
+
+
+register(TruthSource(
+    name="dwd",
+    fetch=_dwd_daily,
+    history_begin=date(2010, 10, 1),
+    climatology=(date(2000, 10, 1), _CLIM_END),
+    measured=True,
+    note=(
+        "Truth is the new snow measured by hand at the morning reading of Deutscher Wetterdienst "
+        "stations in the Bavarian Alps (Garmisch/Eibsee, Oberstdorf, Balderschwang, Berchtesgaden, "
+        "Reit im Winkl…). Data © Deutscher Wetterdienst, CC BY 4.0."
+    ),
+))
+
+
 def daily_truth(league: League, station_ids: list[str], begin: date, end: date) -> pd.DataFrame:
     """QC'd daily snowfall for [begin, end], dispatched by truth source.
     Stations with a per-station override are fetched from their own source."""

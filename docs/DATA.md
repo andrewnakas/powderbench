@@ -189,7 +189,7 @@ CC BY 4.0). Credit: 出典：気象庁ホームページ (Japan Meteorological A
   value, ≥ 10 snowfall days of 2 cm or more, and ≥ 80% of those snowfall days
   wet on the station's own rain gauge. That last test catches dead or stuck
   sensors with no external model call.
-- **Featured:** stations within 12 km of a ski area with 3+ lifts
+- **Featured:** stations within 8 km of a ski area with 5+ lifts, plus Sukayu (Hakkoda)
   (OpenSkiData, `data/skiareas/ski_areas_global.csv`).
 - **Climatology:** from each station's own record since 2015-10. Jun–Sep are
   not fetched; they are snow-free at every kept station and outside the season.

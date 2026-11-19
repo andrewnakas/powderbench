@@ -37,8 +37,9 @@ LATEST = "https://www.jma.go.jp/bosai/amedas/data/latest_time.txt"
 MAP = "https://www.jma.go.jp/bosai/amedas/data/map/{:%Y%m%d%H%M%S}.json"
 PREF = "https://www.data.jma.go.jp/stats/etrn/select/prefecture.php"
 UA = {"User-Agent": "PowderBench/0.1 (+https://powderbench.com)"}
-FEATURED_KM = 12.0
-FEATURED_LIFTS = 3
+FEATURED_KM = 8.0
+FEATURED_LIFTS = 5
+FEATURED = {"Sukayu": "Hakkoda (Sukayu)"}  # big-snow site the lift rule misses (Hakkoda has a ropeway, few lifts)
 MIN_DAYS = 100  # Dec-Mar days with a value last winter
 MIN_SNOW_DAYS = 10
 MIN_WET_SHARE = 0.8  # share of snowfall days with precipitation on the same day
@@ -60,6 +61,14 @@ _POINT = re.compile(r"viewPoint\(([^)]*)\)")
 
 def _deg(d, m) -> float:
     return float(d) + float(m) / 60
+
+
+def english(label: str) -> str:
+    """OpenSkiData names often read 'ja, en, romaji (3 km)': keep the first ASCII part."""
+    base, _, dist = label.partition(" (")
+    parts = [p.strip() for p in base.split(",")]
+    en = next((p for p in parts if p.isascii()), parts[0])
+    return f"{en} ({dist}" if dist else en
 
 
 def region(prec: str) -> str:
@@ -134,10 +143,10 @@ def main() -> int:
                 continue
             p = match[0]
             area, d = skiareas.nearest(lat, lon, FEATURED_LIFTS)
-            featured = area is not None and d <= FEATURED_KM
+            featured = (area is not None and d <= FEATURED_KM) or t["enName"] in FEATURED
             rows.append({"station_id": f"{code}:JP:JMA", "slug": f"jma-{code}", "name": t["enName"],
-                         "resort": skiareas.label(t["enName"], lat, lon, within_km=FEATURED_KM,
-                                                  min_lifts=FEATURED_LIFTS),
+                         "resort": FEATURED.get(t["enName"]) or english(
+                             skiareas.label(t["enName"], lat, lon, within_km=FEATURED_KM, min_lifts=FEATURED_LIFTS)),
                          "region": region(prec), "state": "JP", "elevation_ft": round(t["alt"] * 3.28084),
                          "latitude": round(lat, 5), "longitude": round(lon, 5), "league": "japan",
                          "tier": "featured" if featured else "network", "truth_source": "jma",
