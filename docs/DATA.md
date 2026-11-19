@@ -186,6 +186,31 @@ are not used.
   (Mittenwald, Oberammergau, Nesselwang, Pfronten, Reit im Winkl, Lenggries…).
 - **Climatology:** from each station's own record since 2000.
 
+### Italy: Meteotrentino snow fields (Trentino)
+
+The Trentino stations (`:IT:METEOTN`, `truth_source: meteotn`) score against
+HN, the 24-hour new snow an observer reads off a snow board at about 08:00 at
+Meteotrentino's snow fields (AINEVA "Modello 1" observations). It comes from
+Meteotrentino's open web service (`dati.meteotrentino.it`,
+`rilieviNeveStagionaliUnaStazioneJson`, one request per field and season; also
+listed on dati.trentino.it). Provincia Autonoma di Trento, CC BY 4.0. No key.
+
+- **Codes:** HN is read from the raw AINEVA code (`000` and `0` = none, `015` =
+  15 cm, `///` = missing). The service's numeric `HNnum` turns `0` into 1 cm on
+  dry days, so it is not used. A reading after a day without an observer covers
+  several days (`CheckCum` / `HnCum`) and is not scored.
+- **Candidates:** all 55 fields in `listaCampiNeve`. Kept when last winter
+  (Dec–Mar) has ≥ 80 single-day HN values and ≥ 10 days of 2 cm or more: 12
+  of 55. Many fields are only staffed in some seasons.
+- **Day attribution:** HN read on the morning of R matches the field's own
+  depth rise into R (correlation 0.50–0.98 at Tonale, Buffaure, Pejo, Valles,
+  2024–26) and not the rise after R (about 0), so day D is the value dated
+  D+1, as for SLF and DWD.
+- **Featured:** 7 fields within 4 km of a ski area with 10+ lifts (Passo
+  Tonale, Folgarida, Canazei Belvedere, Buffaure, Passo Rolle, San Pellegrino,
+  Passo Valles).
+- **Climatology:** from each field's own record since 2005.
+
 ## Ground truth: JMA snow-depth sensors (japan league)
 
 The japan league (`:JP:JMA`, `truth_source: jma`) scores against

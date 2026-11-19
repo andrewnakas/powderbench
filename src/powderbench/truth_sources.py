@@ -384,6 +384,29 @@ register(TruthSource(
 ))
 
 
+def _meteotn_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
+    from .networks import meteotn
+
+    wanted = set(ids)
+    ext = {s.station_id: s.external_id for s in load_stations(league.name) if s.station_id in wanted and s.external_id}
+    return meteotn.daily({sid: ext[sid] for sid in ids if sid in ext}, begin, end, _offsets(league, ids))
+
+
+register(TruthSource(
+    name="meteotn",
+    fetch=_meteotn_daily,
+    history_begin=date(2010, 10, 1),
+    climatology=(date(2005, 10, 1), _CLIM_END),
+    measured=True,
+    note=(
+        "Truth is the new snow measured on a snow board at the 08:00 reading of Meteotrentino's "
+        "snow fields in the Italian Dolomites and Brenta (Passo Tonale, Presena, Grostè by Madonna di "
+        "Campiglio, Folgarida, Canazei, Passo San Pellegrino…). Data © Provincia Autonoma di Trento "
+        "— Meteotrentino, CC BY 4.0."
+    ),
+))
+
+
 def daily_truth(league: League, station_ids: list[str], begin: date, end: date) -> pd.DataFrame:
     """QC'd daily snowfall for [begin, end], dispatched by truth source.
     Stations with a per-station override are fetched from their own source."""
