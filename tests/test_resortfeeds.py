@@ -66,6 +66,11 @@ FIXTURE_VALUES = {
     "blacktail": 6.0,
     "montana-snowbowl": 7.0,
     "red-river": 0.0,
+    "monarch": 7.0,
+    "sundance": 1.0,
+    "lost-trail": 3.0,
+    "lookout-pass": 6.0,
+    "leavenworth": 4.0,
 }
 
 

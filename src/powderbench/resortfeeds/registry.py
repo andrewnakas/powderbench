@@ -305,7 +305,7 @@ REGISTRY: tuple[ResortSpec, ...] = (
         parse=labeled_number("Nieve caída 24 horas", up=3),
         unit="cm",
         report_hour_local=14,
-        enabled=True,
+        enabled=False,
         verified=(
             "2026-07-10: robots.txt allows all; /es/legal reviewed — no "
             "scraping clause; report is server-rendered on their own page "
@@ -313,7 +313,12 @@ REGISTRY: tuple[ResortSpec, ...] = (
         ),
         notes="Mountain-wide 24h value ('0cm / 0in' format); page updates intraday ~14:00 CLT, so the 20:30 UTC scrape is the fresh capture. "
         "2026-10-20 re-check: owner Mountain Capital Partners bans robots on brianhead.com, but vallenevado.com's own "
-        "/es/legal/ page and 2026 Terminos y Condiciones PDF contain no robots/scraping/reproduction clause.",
+        "/es/legal/ page and 2026 Terminos y Condiciones PDF contain no robots/scraping/reproduction clause. "
+        "2026-11-19 DISABLED (conservative): MCP's Website Terms of Use (Last Updated 2024-12-30, served on every "
+        "MCP resort site, e.g. purgatory.ski/website-terms-of-use/) define the 'Sites' as mcp.ski 'each of our MCP "
+        "Resort websites', with MCP Resorts 'in Chile', and ban 'any robot, spider or other automatic device, process "
+        "or means to access the Sites for any purpose, including monitoring or copying any of the material'. MCP has "
+        "been Valle Nevado's majority owner since 2023. History kept; re-enable only with MCP's permission (OUTREACH.md).",
     ),
     ResortSpec(
         resort_id="antillanca",
@@ -875,9 +880,14 @@ REGISTRY: tuple[ResortSpec, ...] = (
         station_id="monarch:US:RESORT",
         country="US",
         tz="America/Denver",
-        url="https://example.invalid/monarch",
-        parse=_not_scraped,
-        notes="2026-10-20 held: parser ready, but captures show stale reports (Mar 29 report still up in April) — needs a 'Last Updated' freshness gate.",
+        url='https://skimonarch.com/conditions/',
+        parse=_cell('class="accumulation__table">\\s*<thead>\\s*<th>[^<]{0,120}</th>\\s*<th>([^<]{0,120})</th>.{0,3000}?</thead>\\s*<tbody>\\s*<tr>\\s*<td>\\s*Overnight\\s*</td>\\s*<td>\\s*24 hours\\s*</td>'),
+        report_time=_stamp('Last Updated: ([^<]{0,60})</p>', '%B %d, %Y - %I:%M %p', 'America/Denver'),
+        unit="in",
+        report_hour_local=6,
+        enabled=True,
+        verified='2026-11-19: robots.txt (skimonarch.com) disallows only /cgi-bin/, /tmp/, /junk/ - /conditions/ allowed for PowderBench. No website terms of use: /terms redirects to /terms-conditions/, which covers passes, tickets, refunds and cat skiing only (no scraping, automated-access or reproduction clause); /terms-of-use, /privacy-policy, /legal 404; cookie policy has no such clause. Value = Monarch\'s own server-rendered \'accumulation__table\' on its /conditions/ WordPress subsite with \'Last Updated: <Month D, YYYY - hh:mm AM>\'; OpenSnow powers only the separate WEATHER FORECAST block. Wayback 2025-01-06: 24h 7" (overnight 1, 48h 12, 7d 27); 2025-12-04: 5 (48h 7, 7d 14).',
+        notes="Was held 2026-10-20 for stale reports (a Mar 29 report still up in April); now freshness-gated on 'Last Updated'. Values sit in a <thead> row and labels in the <tbody> row below, so the pattern takes the 2nd <th> and asserts the label row reads Overnight, 24 hours. Cells are padded with ~45 chars of whitespace (hence {0,120}). Morning report posts ~05:15-05:45 MT.",
     ),
     ResortSpec(
         resort_id="big-white",
@@ -1292,5 +1302,60 @@ REGISTRY: tuple[ResortSpec, ...] = (
         url="https://example.invalid/berkshire-east",
         parse=_not_scraped,
         notes='2026-10-20 held: terms forbid reproduction without written consent (also Catamount) — outreach. Rejected by terms: Cranmore, Jiminy Peak, Windham, Greek Peak, Plattekill, Massanutten, Whitecap; Lost Valley (SnoCountry-fed); ORDA (Gore, Belleayre) behind Cloudflare.',
+    ),
+    ResortSpec(
+        resort_id="sundance",
+        station_id="sundance:US:RESORT",
+        country="US",
+        tz="America/Denver",
+        url='https://www.sundanceresort.com/mountain-report/',
+        parse=_cell('data-lookup="snow-weather.24hr_snow"[^>]*>([^<]{0,40})</span>'),
+        unit="in",
+        report_hour_local=5,
+        enabled=True,
+        verified='2026-11-19: robots.txt \'User-agent: *\' allows / and disallows only /admin/, /login/, /account/, /cart/, /checkout/, /search/ (page and /api/ allowed). No terms of use (/terms-of-use, /terms-and-conditions 404); the footer links only a privacy policy, which has no scraping or automated-access clause. Value = Sundance\'s own staff-entered \'snow-weather\' rows (id/label/status_value/display/notes, the same sheet as its lift-status/grooming/roads rows), server-rendered into data-lookup spans and also served by the same-host /api/mountain-information; OpenSnow supplies only the separate \'forecast\' object (weather, icons). Wayback 2026-02-18: 24hr 1" (48hr 1, base 15, YTD 41).',
+        notes="No report timestamp on the page ('Snow totals are updated daily at 5 AM'); the 'Updated ... MST' label belongs to the OpenSnow weather block, not the snow totals. The markup before winter 2025-26 was different (no data-lookup), so re-check if the page is redesigned. Alternative cleaner source: JSON https://www.sundanceresort.com/api/mountain-information, row id '24hr_snow' in 'snow-weather' (not Wayback-verified).",
+    ),
+    ResortSpec(
+        resort_id="lost-trail",
+        station_id="lost-trail:US:RESORT",
+        country="US",
+        tz="America/Denver",
+        url='https://losttrail.com/snow-report/',
+        parse=_cell('New Snow, 24 hours</div>\\s*</div>\\s*</div>\\s*<div class="elementor-element[^>]*>\\s*<div class="elementor-widget-container">\\s*<span class="elementor-heading-title[^"]*">([^<]{0,40})</span>'),
+        report_time=_stamp('Snow Report for ([^<]{0,60})</div>', '%B %d, %Y %I:%M %p', 'America/Denver'),
+        unit="in",
+        report_hour_local=6,
+        enabled=True,
+        verified='2026-11-19: robots.txt (losttrail.com) disallows only /wp-admin/ - /snow-report/ allowed for PowderBench. No terms of use (/terms-of-use redirects to the homepage); footer \'Lost Trail Policies\' (skier policies) and privacy policy have no scraping, automated-access or redistribution clause. Value = Lost Trail\'s own staff-written Elementor report (\'Snow Report for <Month D, YYYY h:mm am>\', narrative + New Snow since lifts closed/24h/48h/week tiles); no aggregator feed or credit on the page. Wayback 2025-12-01: 24h 3" (48h 3, week 7); 2025-01-21: 2 (48h 3, week 5).',
+        notes="Open Thu-Sun + holidays, so reports are only posted on operating days (freshness gate drops the rest). Most reports post 05:00-09:00 MT, but some are stamped late afternoon (e.g. 'January 19, 2025 5:00 pm'). Uses the 24-hour tile, not 'since lifts closed'. Off-season the March 30 closing report stays up, and the freshness gate keeps it out.",
+    ),
+    ResortSpec(
+        resort_id="lookout-pass",
+        station_id="lookout-pass:US:RESORT",
+        country="US",
+        tz="America/Los_Angeles",
+        url='https://skilookout.com/snow-report/',
+        parse=_cell('<h4>Summit</h4>\\s*<div class="snow-data">\\s*<div class="data-row">\\s*<span class="label">24h Snow:</span>\\s*<span class="value">([^<]{0,40})</span>'),
+        report_time=_stamp('<div class="powderwatch-timestamp">\\s*Last updated: ([^<]+?), P[SD]T\\s*</div>', '%B %d, %Y at %I:%M %p', 'America/Los_Angeles'),
+        unit="in",
+        report_hour_local=8,
+        enabled=True,
+        verified='2026-11-19: robots.txt on skilookout.com (page and the same-host JSON) disallows only /wp-admin/; PowderBench allowed. No terms of use published (/terms-of-use/ is a 404, no footer link); the privacy policy, SMS terms and \'Mountain Policies\' page have no scraping, automated-access or redistribution clause. The numbers are the resort\'s own PowderWatch WordPress form (saved from /wp-admin/admin.php?page=powderwatch and mirrored to /wp-content/uploads/powderwatch/conditions.json), server-rendered into the snow-report page; no aggregator involved (NOAA is only linked). Wayback 2025-12-02: summit 24h 6" (patrol notes \'6″ summit … as of 7:30 am\'); 2025-12-25: 0 (48h .5, 72h 1); 2026-01-17 and 2026-02-28: 0; live 2026-11-18: 2 (48h 5, 72h 10).',
+        notes="Summit block (Base block follows). MUST FIX BEFORE ENABLING: Lookout types leading-dot decimals ('.5″', 48h on 2025-12-25) and registry `_reading` reads '.5&#8243;' as 5.0 (checked against the repo's code); normalise a leading '.' to '0.' in `_reading` (e.g. re.sub(r'(?<![\\d.])\\.(\\d)', r'0.\\1', text)) or use a custom parser. Stamp: current display 'Last updated: November 18, 2026 at 8:02 AM, PST'. In Dec 2025 it had no zone suffix and showed UTC (3:50 PM for a 7:50 am report), so the pattern requires ', PST/PDT' and gives no stamp for that format. The form is also re-saved in the late afternoon (4-6 PM stamps), so the 30 h gate is coarse. Alternative endpoint (same data): https://skilookout.com/wp-content/uploads/powderwatch/conditions.json -> data.snow_report.summit.24h, last_updated (local), timestamp (epoch); not checked in Wayback. A separate new_snow_since_4pm field exists, so 24h is distinct from the overnight figure.",
+    ),
+    ResortSpec(
+        resort_id="leavenworth",
+        station_id="leavenworth:US:RESORT",
+        country="US",
+        tz="America/Los_Angeles",
+        url='https://skileavenworth.com/conditions',
+        parse=_cell('views-label-field-24-hrs">24 HRS</span><div class="field-content">([^<]{0,40})</div>'),
+        report_time=_stamp('views-label-changed">Reported at: </span><span class="field-content">(?:<time datetime="[^"]+">)?([^<]+)<', '%I:%M%p %m/%d/%Y', 'America/Los_Angeles'),
+        unit="in",
+        report_hour_local=7,
+        enabled=True,
+        verified='2026-11-19: robots.txt is Drupal\'s default (core/profiles/admin/search paths only); /conditions is allowed for PowderBench. No terms of use (/terms is a 404, none linked); the privacy policy has no scraping, automated-access or redistribution clause. The values are the Leavenworth Winter Sports Club\'s own Drupal \'snowfall\' view (staff-entered Overnight / 24 HRS / 7 Day / Base fields plus the node\'s \'Reported at\' time), server-rendered. The Nordic tab\'s Nordic Pulse widget and the wunderground link are separate. Wayback 2023-12-27: 24h 4.00" (overnight 4.00, 7-day 4.25, base 6, reported 8:23AM 12/26/2023); 2024-01-16: 0 (7-day 14.50); 2025-01-20 and 2026-03-23: 0; live 2026-11-01 report: 0.',
+        notes="'24 HRS' is its own field, separate from 'Overnight'. Freshness-gated on 'Reported at'. The pattern reads the display text, so it works on both the 2023 plain-text markup and the 2025+ <time datetime> markup. Reports stay up for weeks or months (a March 2025 report was still showing in Dec 2025), so the gate matters. Empty fields -> None. Very low hill (~1,500-1,700 ft); it only reports when it operates and has many zero or rain days, so it adds little signal. No non-zero 24h capture of the current (2025+) markup exists, but the 24h cell markup is unchanged since 2023.",
     ),
 )
