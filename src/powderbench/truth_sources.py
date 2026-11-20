@@ -530,6 +530,26 @@ register(TruthSource(
 ))
 
 
+def _arpae_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
+    from .networks import arpae
+
+    return arpae.daily(ids, begin, end, _offsets(league, ids))
+
+
+register(TruthSource(
+    name="arpae",
+    fetch=_arpae_daily,
+    history_begin=date(2010, 10, 1),
+    climatology=(date(2010, 10, 1), _CLIM_END),
+    measured=False,
+    note=(
+        "Truth is the rise in snow depth from one 06 UTC reading to the next at Arpae Emilia-Romagna's "
+        "automatic snow stations in the northern Apennines (Corno alle Scale, Cimone, Passo delle Radici, "
+        "Febbio…). Data: Arpae Emilia-Romagna (dati.arpae.it), CC BY 4.0."
+    ),
+))
+
+
 def _meteofrance_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
     from .networks import meteofrance
 
