@@ -150,10 +150,21 @@ there's no key.
   (0.66 vs 0.27). 27 sites use +1 and 9 use 0. (The first version admitted only
   the 22 sites with a clear fit either way; the 14 near-ties, Warth, Langen am
   Arlberg and Seefeld among them, now follow the documented protocol and
-  passed their own hindcast gate.) 36 of 44 sites are in.
+  passed their own hindcast gate.)
+- **NWP gate (2026-11-20):** each station's truth over winter 2025-26
+  (2025-12-01..2026-03-15) correlated with the direct ECMWF IFS snowfall, same
+  local day and a day either way (`scripts/nwp_gate.py`, #832). Where it
+  disagrees with the ERA5 fit it wins (`NWP_GATE` in the generator): a whole
+  winter of a 9–25 km forecast, with a 0.10 margin, against a 31 km reanalysis.
+  - Six of the nine "same day" stations fit the documented +1 better and move
+    to it: St. Anton (r 0.56 against 0.44), Achenkirch, Hochfilzen, Loibl
+    Tunnel, Rinn and Umhausen.
+  - Saalbach (best r 0.36) and Tamsweg (0.20) track no shift of the model and
+    are dropped. Saalbach was featured.
+  - 33 sites use +1 and Semmering 0. 34 of 44 sites are in.
 - **Featured:** St. Anton (village and Galzig), Lech / Zürs (Langen),
-  Warth-Schröcken, Galtür / Ischgl, Obergurgl, Obertauern, Saalbach, Seefeld,
-  Nauders, Pitztal Glacier.
+  Warth-Schröcken, Galtür / Ischgl, Obergurgl, Obertauern, Seefeld, Nauders,
+  Pitztal Glacier.
 - **Climatology:** from each station's own record since 2000.
 - **Hindcast gate:** 2026-02-01…14, run separately for the 22 original sites
   and the 14 added ones (see METHODOLOGY §6).
@@ -173,7 +184,10 @@ Licence Ouverte 2.0 (Etalab); yearly files, no key.
   their own.
 - **Day attribution:** the morning reading belongs to the previous day (+1) by
   protocol; 31 manual posts use it. The 23 automated posts fit "same day"
-  clearly against ERA5 and use 0.
+  clearly against ERA5. The NWP gate (2026-11-20, as for Austria above) moves
+  six of them back to +1: Avoriaz (r 0.79 against 0.62), Chamonix, Arêches,
+  Les Aillons, Olmet and Prapoutel. That leaves 37 posts at +1 and 17 at 0;
+  all 54 pass.
 - **Climatology:** from each post's own record since 2000.
 - **Hindcast gate:** 2026-02-01…14, a fortnight with one large storm
   (10-12 Feb: 30-45 in. at most featured resorts). Models beat climatology,
