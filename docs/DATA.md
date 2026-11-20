@@ -637,10 +637,11 @@ Two paths feed the model baselines:
 - [Open-Meteo](https://open-meteo.com/) (CC BY 4.0, no key) serves every model
   on featured stations, the `baseline-openmeteo` best-match blend on every
   station, and the archive the hindcasts use.
-- **Direct reads** (`src/powderbench/nwp/`, 2026-11): ECMWF IFS (0.1°, see
-  below), ECMWF AIFS 0.25° and NOAA GFS 0.25° straight from the producers'
-  public buckets (`s3://ecmwf-forecasts`, CC BY 4.0, with data.ecmwf.int as the
-  fallback; `s3://noaa-gfs-bdp-pds`, public domain).
+- **Direct reads** (`src/powderbench/nwp/`, 2026-11): ECMWF IFS (0.25°, see
+  below), ECMWF AIFS 0.25°, NOAA GFS 0.25° and the NOAA National Blend (NBM,
+  2.5 km, contiguous US) straight from the producers' public buckets
+  (`s3://ecmwf-forecasts`, CC BY 4.0, with mirrors as the fallback;
+  `s3://noaa-gfs-bdp-pds` and `s3://noaa-nbm-grib2-pds`, public domain).
   Each GRIB file has a byte index, so a round reads one ~0.4 MB message per
   forecast step, and that message covers every station on Earth. That gives
   `baseline-ecmwf`, `-aifs` and `-gfs` (and so `baseline-consensus`) at every
@@ -648,11 +649,12 @@ Two paths feed the model baselines:
   running when Open-Meteo is down or the home IP is out of quota.
 
 How the two combine, per team (`baselines.model_prediction`):
-- **ECMWF IFS, AIFS and GFS (`DIRECT_FIRST`):** the direct read goes first,
-  at every station. Open-Meteo is called only for featured stations it
-  missed, so on a normal day these three teams cost no Open-Meteo calls.
-- **Every other model** (ICON, GEM, UKMO, AROME…) has no direct read and stays
-  on Open-Meteo, featured stations only.
+- **ECMWF IFS, AIFS, GFS and NBM (`DIRECT_FIRST`):** the direct read goes
+  first, at every station (NBM: every station in the contiguous US).
+  Open-Meteo is called only for featured stations it missed, so on a normal
+  day these four teams cost no Open-Meteo calls.
+- **Every other model** (ICON, GEM, UKMO, HRRR, AROME…) has no direct read in
+  use and stays on Open-Meteo, featured stations only.
 
 **Open-Meteo's elevation rule (2026-11-20).** Read raw, the direct ECMWF
 scored well below Open-Meteo's processing of the same run. On the stations
@@ -718,6 +720,28 @@ first day, and there it scores below GFS and ECMWF with the rule
 So `baseline-hrrr` keeps its Open-Meteo-only entry; Open-Meteo's own HRRR
 has the same 48 h limit.
 
+**NBM, read direct (2026-11-20).** `nwp.SOURCES["nbm"]` reads the National
+Blend's own snowfall, ASNOW: calibrated snow depth with the blend's own
+snow-to-liquid ratio, on 2.5 km terrain, so no elevation rule. Its buckets are
+1 h to 36 h and 6 h after (6 h buckets as far as they go, then hourly ones;
+past 36 h days are interpolated inside a 6 h bucket). Probability and
+percentile messages share the name; the index's extra tags tell them apart.
+eccodes has no name for ASNOW in NBM's tables, so its unit reads `unknown`;
+it is WMO 0-1-29, total snowfall, in m. Same rounds and stations as above
+(2026-11-01..14, featured, powder score):
+
+| League | NBM direct | Open-Meteo NBM | ECMWF + rule | GFS + rule | Open-Meteo GFS |
+|---|---|---|---|---|---|
+| resorts-na | **22.2** | −84.4 | −8.7 | −37.2 | −110.5 |
+| stations | 43.8 | — | **49.4** | 40.2 | 20.7 |
+| observers | 11.6 | — | **26.6** | 4.3 | −18.9 |
+
+Open-Meteo's NBM never produced a file for the stations or observers rounds
+(observers has one). On resorts-na the direct read is the best single model
+and 107 points ahead of Open-Meteo's NBM, so `baseline-nbm` reads direct
+first. Over every station it ranks third on stations (13.6 against ECMWF
+26.3) and second on observers; Alaska is off its grid.
+
 **ECMWF IFS at 0.1° or 0.25° (2026-11-20).** Since the runs of late October
 2026, ECMWF's open data also carries IFS on its native ~9 km grid, as 0.1°
 (`ifs/0p1/oper/…-fc-sfc`).
@@ -767,11 +791,14 @@ The snowfall field differs by model:
 - GFS has no snowfall field, so snow = precipitation × the share of each 3 h
   interval that its categorical-snow flag was on (`CSNOW`, de-averaged from
   GFS's 6 h buckets).
+- NBM's ASNOW is already snow depth; it is divided by 0.7 on the way in so
+  the shared conversion gives ASNOW back unchanged.
 
 The run is chosen honestly:
 - Live: the newest run online, never one issued after the cutoff.
 - Hindcast: the newest run that was fully online 3 h before the cutoff. Publish
-  delays were measured 2026-11-15: IFS 7.6 h, AIFS 5.3 h, GFS 4.2 h.
+  delays were measured 2026-11-15: IFS 7.6 h, AIFS 5.3 h, GFS 4.2 h. NBM is
+  taken as online 2 h after its cycle.
 
 So direct hindcast skill at 48/72 h is not optimistic, unlike the Open-Meteo
 archive.

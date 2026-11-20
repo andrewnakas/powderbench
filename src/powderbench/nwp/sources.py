@@ -309,6 +309,93 @@ class EcmwfOpenData(Source):
         return None if any(m is None for m in msgs) else msgs
 
 
+def _ranges(entries: list[dict]) -> list[tuple[int, int, list[tuple[int, int]]]]:
+    """Index entries -> byte ranges with adjacent messages merged: (offset,
+    length, [(start, length) of each message inside the range])."""
+    out: list[tuple[int, int, list[tuple[int, int]]]] = []
+    for e in sorted(entries, key=lambda e: int(e["_offset"])):
+        off, n = int(e["_offset"]), int(e["_length"])
+        if out and out[-1][0] + out[-1][1] == off:
+            o, ln, parts = out[-1]
+            out[-1] = (o, ln + n, parts + [(ln, n)])
+        else:
+            out.append((off, n, [(0, n)]))
+    return out
+
+
+class EcmwfEns(EcmwfOpenData):
+    """ECMWF IFS ensemble, 0.25 deg (CC BY 4.0): the mean of the 50 perturbed
+    members' sf. The elevation rule takes the 2 m temperature of the
+    deterministic run on the same grid (the members' own 2t would be 2.5 times
+    the download for an interval-by-interval rule)."""
+
+    min_members = 40
+
+    def __init__(self):
+        super().__init__("ecmwf_ens", "ECMWF IFS ENS mean", [("ifs", "0p25", "enfo", "")], online_h=8.5, trule=True)
+
+    def _url(self, run, step, base, folder, grid, stream, suffix):
+        return (f"{base}/{run:%Y%m%d}/{run:%H}z/{folder}/{grid}/{stream}/"
+                f"{run:%Y%m%d%H}0000-{step}h-{stream}-ef{suffix}")
+
+    def steps(self, run):
+        if self.layout(run) is None:
+            return None
+        return list(range(0, 145, 3)) + (list(range(150, 361, 6)) if run.hour in (0, 12) else [])
+
+    def _members(self, run, want, base, lay) -> list[list[bytes]] | None:
+        urls = [self._url(run, s, base, *lay) for s in want]
+        indexes = _fetch_all([(u + ".index",) for u in urls], self.workers)
+        if any(t is None for t in indexes):
+            return None
+        reqs, layout = [], []
+        for u, text in zip(urls, indexes):
+            es = [e for e in grib.ecmwf_index(text.decode()) if e.get("param") == "sf" and e.get("levtype") == "sfc"]
+            if len(es) < self.min_members:
+                log.warning("%s: %d members in %s", self.name, len(es), u.rsplit("/", 1)[-1])
+                return None
+            rs = _ranges(es)
+            layout.append((len(reqs), rs))
+            reqs += [(u + ".grib2", o, n) for o, n, _ in rs]
+        blobs = _fetch_all(reqs, self.workers)
+        if any(b is None for b in blobs):
+            return None
+        return [[blobs[first + k][a:a + n] for k, (_, _, parts) in enumerate(rs) for a, n in parts]
+                for first, rs in layout]
+
+    def accum(self, run, steps, lats, lons, elev_m):
+        found = self.layout(run)
+        if found is None:
+            return None
+        base, lay = found
+        hres = SOURCES["ecmwf_ifs"]
+        rule = self.trule and os.environ.get("PB_NWP_TRULE", "1") != "0"
+        want = [s for s in (self.steps(run) or []) if 0 < s <= max(steps)] if rule else [s for s in steps if s > 0]
+        if not want:
+            return {s: np.zeros(len(lats)) for s in steps}
+        groups = self._with_fallback(base, lambda b: self._members(run, want, b, lay))
+        if groups is None:
+            return None
+        pts = _Points(lats, lons, elev_m, lambda: hres.terrain(run))
+        mean = [np.nanmean(np.vstack([pts.take(m, water_mm=True) for m in g]), axis=0) for g in groups]
+        if rule:
+            hfound = hres.layout(run)
+            ter = hres.terrain(run)
+            t2 = None
+            if hfound is not None and ter is not None and hfound[1][1] == lay[1]:
+                t2 = hres._with_fallback(hfound[0], lambda b: hres._messages(run, [0, *want], b, hfound[1], param="2t"))
+            key = tuple(grib.decode(groups[0][0])[1][k] for k in grib.GRID_KEYS)
+            if t2 is not None and tuple(ter[0][k] for k in grib.GRID_KEYS) == key:
+                temps = [pts.take(m) - 273.15 for m in t2]
+                dz = grib.at_points(ter[1], pts._idx[key]) - np.asarray(elev_m, float)
+                mean = temperature_rule(mean, temps, dz)
+            else:
+                log.warning("%s: no deterministic 2t/terrain for %s; mean without the elevation rule", self.name, run)
+        out = dict(zip(want, mean))
+        out[0] = np.zeros(len(lats))
+        return {s: out[s] for s in steps}
+
+
 class Gfs(Source):
     """NOAA GFS 0.25 deg on AWS (public domain). GFS has no snowfall field, so
     snow = precipitation x the share of each 3 h interval that the model's
@@ -494,7 +581,7 @@ class Nbm(Source):
     name = "nbm"
     label = "NOAA NBM 2.5 km"
     licence = "public domain (NOAA)"
-    online_h = 2.0
+    online_h = 2.0  # every core file was up 1 h 07 after the cycle (2026-11-18)
     workers = 8
     hourly_to = 36
 
@@ -504,7 +591,7 @@ class Nbm(Source):
     def steps(self, run):
         if grib.fetch(self._url(run, 1) + ".idx") is None:
             return None
-        return list(range(0, self.hourly_to + 1)) + list(range(42, 265, 6))
+        return list(range(0, self.hourly_to + 1)) + list(range(42, 157, 6))  # core files end at f159
 
     def chain(self, step: int) -> list[tuple[int, int]]:
         """(bucket start, bucket end) pieces that sum to the snow from 0 to step:
@@ -574,4 +661,5 @@ SOURCES: dict[str, Source] = {
     "gfs": Gfs(),
     "hrrr": Hrrr(),
     "nbm": Nbm(),
+    "ecmwf_ens": EcmwfEns(),
 }

@@ -124,7 +124,7 @@ MODEL_BASELINES = {
     "baseline-icon": (None, "icon_seamless", None),
     "baseline-gem": (None, "gem_seamless", None),
     "baseline-ukmo": (None, "ukmo_seamless", None),
-    "baseline-nbm": (None, "ncep_nbm_conus", "conus"),  # NOAA's calibrated National Blend
+    "baseline-nbm": ("nbm", "ncep_nbm_conus", "conus"),  # NOAA's calibrated National Blend
     "baseline-hrrr": (None, "ncep_hrrr_conus", "conus"),  # 3 km, 48h range
     "baseline-arome": (None, "meteofrance_seamless", "alps"),
     "baseline-jma": (None, "jma_seamless", "japan"),  # JMA MSM 5 km + GSM
@@ -153,9 +153,10 @@ def direct_enabled() -> bool:
 # The direct read goes first for these: with Open-Meteo's own elevation rule
 # (nwp/sources.py) it scores better than Open-Meteo's processing of the same
 # model on featured stations (2026-11-01..14, DATA.md), for GFS even against
-# Open-Meteo's HRRR blend. Open-Meteo then only fills featured stations the
-# direct read missed.
-DIRECT_FIRST = {"baseline-ecmwf", "baseline-aifs", "baseline-gfs"}
+# Open-Meteo's HRRR blend. NBM's own snowfall (ASNOW) beats Open-Meteo's NBM
+# by a wide margin. Open-Meteo then only fills featured stations the direct
+# read missed.
+DIRECT_FIRST = {"baseline-ecmwf", "baseline-aifs", "baseline-gfs", "baseline-nbm"}
 
 
 def _direct_first(league: League, target_day: date, team: str, source: str, om_model: str, mode: str,
