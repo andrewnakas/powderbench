@@ -135,6 +135,7 @@ merged by a maintainer rather than the auto-merge bot.
   |---|---|---|
   | `open-powder-ml` | [andrewnakas/open-powder-ml](https://github.com/andrewnakas/open-powder-ml) | LightGBM quantile models on 10-model snow physics |
   | `open-powder-ensemble` | [andrewnakas/open-powder-ensemble](https://github.com/andrewnakas/open-powder-ensemble) | GEFS + ECMWF ENS members, upper-air snow physics, stacked on the public baselines |
+| `deep-powder` | [andrewnakas/deep-powder](https://github.com/andrewnakas/deep-powder) | Two-level stack on the two entries above's public feature stores: LightGBM quantiles, Tweedie mean, hurdle classifiers and a neural net, blended per league and horizon |
 
 ## Fair play
 

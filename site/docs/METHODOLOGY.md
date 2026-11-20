@@ -106,8 +106,15 @@ cross-checked against the page's own 48 h / 7-day figures. Reading rules:
 "Trace" = 0; a range ("2–4″") = its midpoint; where the page carries a report
 date, a report more than 30 h old at scrape time is archived as **stale** and
 never counted (a resort that didn't update must not have yesterday's figure
-credited to today). The scrape archive is append-only and committed, so every
-truth value can be traced to a dated snapshot.
+credited to today). Most pages carry no such date, so a second rule catches
+the pages that simply stop updating: a non-zero 24 h figure that repeats
+unchanged on three or more consecutive days is read as **one report followed
+by a stuck page**: the first day stands and the repeats are voided. (Added
+2026-11-13 after an audit of the archive: 175 of 1,882 resort-days were such
+repeats, carrying 40 % of all the snow the resorts had "reported"; one page
+showed 15.75″ of new snow for 56 days running.) The scrape archive is
+append-only and committed, so every truth value can be traced to a dated
+snapshot.
 
 ### 2.4 Reanalysis (ERA5 league)
 
@@ -135,6 +142,7 @@ day is. QC is deterministic and public (`powderbench/truth.py`,
 | Spike | CDEC | depth > 10″ above both neighbouring days |
 | Source QC | GHCN, ECCC | the provider's own quality flag, accumulated (multi-day) or estimated values |
 | Stale | resorts | the report's own timestamp is > 30 h old |
+| Stuck | resorts | the same non-zero 24 h figure on ≥ 3 consecutive days: repeats after the first are voided |
 
 ## 4. Scoring
 
