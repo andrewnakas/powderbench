@@ -665,11 +665,11 @@ ECMWF's open data carries IFS on its native ~9 km grid, as 0.1°
 0.25° for older runs or a missing file, and to data.ecmwf.int (the last four
 days of runs) when the AWS bucket throttles: it answered one IP with 503
 SlowDown for hours. On a mountain the finer grid matters most. For one run,
-Hakuba's 0.1° cell had 16.4″ in the window against 2.8″ at 0.25°. Scored
+Hakuba's 0.1° cell had about six times the snow of its 0.25° cell. Scored
 against each league's truth, 2026-10-26..11-15, every station, same runs and
 days:
 
-| League | Station-days | MAE 0.1° / 0.25° | Bias | r | Days with 2″+: MAE | Their forecast ÷ truth |
+| League | Station-days | MAE 0.1° / 0.25° | Bias | r | MAE, days with 2″+ | Forecast ÷ truth, days with 2″+ |
 |---|---|---|---|---|---|---|
 | stations | 20,045 | 0.333″ / 0.325″ | +0.067″ / +0.030″ | **0.542** / 0.513 | **2.24″** / 2.39″ | **0.63** / 0.54 |
 | observers | 12,810 | **0.043″** / 0.048″ | +0.018″ / +0.022″ | **0.488** / 0.364 | **2.08″** / 2.19″ | **0.55** / 0.48 |
