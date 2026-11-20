@@ -144,10 +144,10 @@ class EcmwfOpenData(Source):
     accumulated from the run start). IFS writes it in metres, AIFS in kg m-2
     (= mm): the unit is read from each message.
 
-    IFS comes at 0.1 deg (~9 km, the model's native resolution) from runs of
-    late October 2026 on, in separate `-sfc` files; earlier runs only at
-    0.25 deg. Each run takes the finest layout it has, so live forecasts use
-    0.1 deg while last winter's hindcasts use 0.25 deg."""
+    IFS also comes at 0.1 deg (~9 km, the model's native resolution) from
+    runs of late October 2026 on, in separate `-sfc` files. Each run takes the
+    first layout in the list that it has; IFS lists 0.25 deg first (see
+    SOURCES), with 0.1 deg as the fallback."""
 
     licence = "CC BY 4.0 (ECMWF open data)"
     workers = 3  # the bucket answers 503 Slow Down at 8 parallel requests
@@ -373,9 +373,12 @@ def snow_from_buckets(chain: list[int], buckets: list[int], apcp: list[np.ndarra
 
 
 SOURCES: dict[str, Source] = {
-    "ecmwf_ifs": EcmwfOpenData("ecmwf_ifs", "ECMWF IFS", [("ifs", "0p1", "oper", "-sfc"), ("ifs", "0p25", "oper", ""),
-                                                        ("ifs", "0p25", "scda", "")], online_h=7.75, trule=True),
+    # 0.25 deg first: with the elevation rule it scored better than 0.1 deg in
+    # three of four leagues over every station (DATA.md), and it is smaller
+    "ecmwf_ifs": EcmwfOpenData("ecmwf_ifs", "ECMWF IFS", [("ifs", "0p25", "oper", ""), ("ifs", "0p25", "scda", ""),
+                                                        ("ifs", "0p1", "oper", "-sfc")], online_h=7.75, trule=True),
     "ecmwf_aifs": EcmwfOpenData("ecmwf_aifs", "ECMWF AIFS single", [("aifs-single", "0p25", "oper", ""),
-                                                                    ("aifs", "0p25", "oper", "")], online_h=6.0),
+                                                                    ("aifs", "0p25", "oper", "")], online_h=6.0,
+                                trule=True),
     "gfs": Gfs(),
 }

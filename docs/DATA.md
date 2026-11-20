@@ -647,27 +647,57 @@ Two paths feed the model baselines:
   station, not just featured ones, with no Open-Meteo calls. It also keeps them
   running when Open-Meteo is down or the home IP is out of quota.
 
-How the two combine, per team (`baselines.model_prediction`): Open-Meteo first
-on featured stations, then the direct read for every station it did not cover.
-That means all stations whenever Open-Meteo fails. Open-Meteo stays first on
-featured stations because its processing of the same model output scored
-better there. On the stations league, 2026-11-01..16, Open-Meteo's ECMWF scored
-42.4 (MAE 0.86″) against 24.6 (0.93″) for the direct read, and AIFS 39.9
-against 31.4. Its `gfs_seamless` also blends 3 km HRRR into GFS over the US,
-where the direct GFS is plain 0.25° GFS (−8.7). The direct reads are less dry
-on average (bias −0.27″ vs −0.52″ for ECMWF) but noisier. Matching
-Open-Meteo's cell choice did not close the gap, so until a direct variant wins
-on featured stations, it is the coverage and resilience layer.
+How the two combine, per team (`baselines.model_prediction`):
+- **ECMWF IFS and AIFS (`DIRECT_FIRST`):** the direct read goes first, at
+  every station. Open-Meteo is called only for featured stations it missed,
+  so on a normal day these two teams cost no Open-Meteo calls.
+- **Every other model:** Open-Meteo first on featured stations, then the
+  direct read (GFS) for every station Open-Meteo did not cover, which means
+  all stations whenever Open-Meteo fails. Open-Meteo's `gfs_seamless` blends
+  3 km HRRR into GFS over the US; the direct GFS is plain 0.25° GFS.
 
-**ECMWF IFS at 0.1° (2026-11-20).** Since the runs of late October 2026,
-ECMWF's open data carries IFS on its native ~9 km grid, as 0.1°
-(`ifs/0p1/oper/…-fc-sfc`). The direct read takes 0.1° first. It falls back to
-0.25° for older runs or a missing file, and to data.ecmwf.int (the last four
-days of runs) when the AWS bucket throttles: it answered one IP with 503
-SlowDown for hours. On a mountain the finer grid matters most. For one run,
-Hakuba's 0.1° cell had about six times the snow of its 0.25° cell. Scored
-against each league's truth, 2026-10-26..11-15, every station, same runs and
-days:
+**Open-Meteo's elevation rule (2026-11-20).** Read raw, the direct ECMWF
+scored well below Open-Meteo's processing of the same run. On the stations
+league, 2026-11-01..16, ECMWF scored 24.6 against Open-Meteo's 42.4, and
+AIFS 31.4 against 39.9. Matching Open-Meteo's cell choice did not close the
+gap. The rest of it is one rule in Open-Meteo's source
+(`VariableHourly.swift`, `GenericReader.swift`):
+- Where the grid cell's terrain is more than 100 m above or below the
+  station, the 2 m temperature is moved to the station's height at 0.65 K
+  per 100 m.
+- Snowfall is kept only while that temperature is below 0 °C.
+
+The direct read now does the same (`sources.temperature_rule`). It reads
+every step's `sf` and `2t` and keeps each interval's snowfall for the share of
+it below 0 °C, with the temperature linear between steps. `PB_NWP_TRULE=0`
+turns it off. Scored against truth, 2026-11-01..14, same runs and days
+(powder score):
+
+| | Open-Meteo | direct | direct + rule |
+|---|---|---|---|
+| ECMWF IFS, stations, featured | 44.5 | 23.8 | **49.4** |
+| ECMWF IFS, resorts-na, featured | **−8.2** | −15.8 | −8.7 |
+| ECMWF IFS, alps, featured | −3.5 (41% of station-days) | −27.5 | **7.3** |
+| ECMWF IFS, stations, all 996 | – | −0.1 | **26.3** |
+| ECMWF IFS, observers, all | – | −79.5 | **2.8** |
+| AIFS, stations, featured | 40.5 | 31.1 | **51.7** |
+| AIFS, resorts-na, featured | 4.1 | −3.1 | **8.6** |
+| AIFS, alps, featured | −11.9 (41% of station-days) | −37.6 | **9.8** |
+| AIFS, observers, featured | 7.8 | −23.5 | **23.9** |
+| AIFS, stations, all 996 | – | 1.3 | **22.4** |
+| AIFS, observers, all | – | −94.7 | **−0.7** |
+
+The production code reproduces the experiment exactly: ECMWF on featured
+stations scores 49.4 at 0.25° and 50.4 at 0.1°.
+
+**ECMWF IFS at 0.1° or 0.25° (2026-11-20).** Since the runs of late October
+2026, ECMWF's open data also carries IFS on its native ~9 km grid, as 0.1°
+(`ifs/0p1/oper/…-fc-sfc`). The direct read falls back to data.ecmwf.int
+(the last four days of runs) when the AWS bucket throttles; it answered one
+IP with 503 SlowDown for hours.
+
+Without the rule, 0.1° looked better. Scored against each league's truth,
+2026-10-26..11-15, every station, same runs and days:
 
 | League | Station-days | MAE 0.1° / 0.25° | Bias | r | MAE, days with 2″+ | Forecast ÷ truth, days with 2″+ |
 |---|---|---|---|---|---|---|
@@ -675,14 +705,19 @@ days:
 | observers | 12,810 | **0.043″** / 0.048″ | +0.018″ / +0.022″ | **0.488** / 0.364 | **2.08″** / 2.19″ | **0.55** / 0.48 |
 | japan | 4,402 | **0.137″** / 0.146″ | +0.046″ / +0.052″ | **0.555** / 0.531 | **2.54″** / 2.62″ | **0.47** / 0.44 |
 
-- 0.1° is better on correlation and on snowy days in all three leagues, and
-  on MAE in two.
-- On the stations league it adds light snow on dry days (bias +0.067″), so
-  its MAE is 0.008″ worse.
-- Both grids still forecast about half the snow that falls on big days.
-  That is what the models and stackers built on these baselines have to fix.
-- Open-Meteo's featured-station `baseline-ecmwf` is unchanged
-  (`ecmwf_ifs025`).
+With the rule, scored by powder score as the boards are, 0.25° is better
+over every station:
+
+| With the rule, all stations | 0.25° | 0.1° |
+|---|---|---|
+| stations | **26.3** | 22.5 |
+| observers | **2.8** | −10.5 |
+| alps | 6.4 | **7.1** |
+| resorts-na | **−8.7** | −37.7 |
+
+So the read takes 0.25° first and 0.1° only as a fallback. Both grids still
+forecast about half the snow that falls on big days. That is what the
+models and stackers built on these baselines have to fix.
 
 Direct-read conventions match Open-Meteo's, so the two halves of a team agree:
 - Station-local days: the IANA zone from the coordinates (`tzfpy`), DST-aware.
@@ -713,7 +748,10 @@ Switches:
 - `PB_NWP_DIRECT=0` sends everything back through Open-Meteo.
 - `PB_OPENMETEO=0` runs without Open-Meteo; cached responses still serve. The
   2026-11-20 hindcast gates ran this way.
-- `PB_NWP_CACHE` sets where the GRIB messages are cached, for 3 days.
+- `PB_NWP_CACHE` sets where the GRIB messages are cached. A download unused
+  for 3 days is dropped (`PB_NWP_CACHE_DAYS` changes that; a cache hit counts
+  as use).
+- `PB_NWP_TRULE=0` turns off the elevation rule.
 
 ### Open-Meteo details
 

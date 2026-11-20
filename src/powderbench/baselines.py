@@ -154,11 +154,44 @@ def direct_enabled() -> bool:
     return os.environ.get("PB_NWP_DIRECT", "1") != "0"
 
 
+# The direct read goes first for these: with Open-Meteo's own elevation rule
+# (nwp/sources.py) it scores better than Open-Meteo's processing of the same
+# model on featured stations (2026-11-01..14, DATA.md). Open-Meteo then only
+# fills featured stations the direct read missed.
+DIRECT_FIRST = {"baseline-ecmwf", "baseline-aifs"}
+
+
+def _direct_first(league: League, target_day: date, team: str, source: str, om_model: str, mode: str,
+                  featured_only: bool) -> pd.DataFrame:
+    direct = pd.DataFrame()
+    try:
+        direct = direct_prediction(league, target_day, source, mode,
+                                   stations=list(load_stations(league.name, featured_only=featured_only)))
+    except Exception:  # noqa: BLE001 - Open-Meteo still covers the featured stations
+        log.warning("%s: direct %s failed", team, source, exc_info=True)
+    covered = set(direct["station_id"]) if len(direct) else set()
+    if all(s.station_id in covered for s in load_stations(league.name, featured_only=True)):
+        return direct
+    try:
+        om = openmeteo_prediction(league, target_day, om_model, mode, featured_only=True)
+    except Exception as exc:  # noqa: BLE001
+        if not len(direct):
+            raise
+        if not isinstance(exc, openmeteo.OpenMeteoDisabled):
+            log.warning("%s: Open-Meteo %s failed", team, om_model, exc_info=True)
+        return direct
+    om = om[~om["station_id"].isin(covered)] if len(om) else om
+    return pd.concat([direct, om], ignore_index=True) if len(direct) else om
+
+
 def model_prediction(league: League, target_day: date, team: str, mode: str = "live",
                      featured_only: bool = False) -> pd.DataFrame:
     """Open-Meteo on featured stations, then the direct read for every station
-    it did not cover (all of them when Open-Meteo is unavailable)."""
+    it did not cover (all of them when Open-Meteo is unavailable). DIRECT_FIRST
+    teams the other way round."""
     source, om_model, _ = MODEL_BASELINES[team]
+    if source and direct_enabled() and team in DIRECT_FIRST:
+        return _direct_first(league, target_day, team, source, om_model, mode, featured_only)
     om, om_error = pd.DataFrame(), None
     try:
         om = openmeteo_prediction(league, target_day, om_model, mode, featured_only=True)

@@ -183,8 +183,8 @@ def test_model_prediction_open_meteo_first_direct_for_the_rest(monkeypatch):
 
     monkeypatch.setattr(baselines, "openmeteo_prediction", om)
     monkeypatch.setattr(baselines, "direct_prediction", direct)
-    out = baselines.model_prediction(league, date(2026, 2, 1), "baseline-ecmwf")
-    assert got == {"om": ("ecmwf_ifs025", True), "direct": ["net"]}
+    out = baselines.model_prediction(league, date(2026, 2, 1), "baseline-gfs")
+    assert got == {"om": ("gfs_seamless", True), "direct": ["net"]}
     assert dict(zip(out.station_id, out.snowfall_in)) == {"feat": 1.0, "net": 2.0}
 
     # Open-Meteo out of quota: the direct read covers the featured station too
@@ -192,7 +192,7 @@ def test_model_prediction_open_meteo_first_direct_for_the_rest(monkeypatch):
         raise RuntimeError("429")
 
     monkeypatch.setattr(baselines, "openmeteo_prediction", om_down)
-    out = baselines.model_prediction(league, date(2026, 2, 1), "baseline-ecmwf")
+    out = baselines.model_prediction(league, date(2026, 2, 1), "baseline-gfs")
     assert got["direct"] == ["feat", "net"] and len(out) == 2
 
     # an Open-Meteo-only model keeps raising, so model_baselines skips it
@@ -204,6 +204,41 @@ def test_model_prediction_open_meteo_first_direct_for_the_rest(monkeypatch):
     monkeypatch.setattr(baselines, "openmeteo_prediction", om)
     monkeypatch.setattr(baselines, "direct_prediction", lambda *a, **k: pytest.fail("direct disabled"))
     assert len(baselines.model_prediction(league, date(2026, 2, 1), "baseline-gfs")) == 1
+
+
+def test_direct_first_teams_call_open_meteo_only_for_gaps(monkeypatch):
+    league = type("L", (), {"name": "x"})()
+    feat, feat2, net = _st("feat", 40, -111), _st("feat2", 40.5, -111), _st("net", 41, -111)
+    monkeypatch.setattr(baselines, "load_stations",
+                        lambda name, featured_only=False: [feat, feat2] if featured_only else [feat, feat2, net])
+    calls = []
+
+    def om(lg, day, model, mode, featured_only=False):
+        calls.append(model)
+        return pd.DataFrame([{"station_id": s, "horizon_h": 24, "snowfall_in": 1.0} for s in ("feat", "feat2")])
+
+    def direct_all(lg, day, source, mode="live", featured_only=False, stations=None):
+        return pd.DataFrame([{"station_id": s.station_id, "horizon_h": 24, "snowfall_in": 2.0} for s in stations])
+
+    monkeypatch.setattr(baselines, "openmeteo_prediction", om)
+    monkeypatch.setattr(baselines, "direct_prediction", direct_all)
+    out = baselines.model_prediction(league, date(2026, 2, 1), "baseline-ecmwf")
+    assert calls == [] and set(out.snowfall_in) == {2.0} and len(out) == 3  # no Open-Meteo call at all
+
+    def direct_gap(lg, day, source, mode="live", featured_only=False, stations=None):
+        return pd.DataFrame([{"station_id": s, "horizon_h": 24, "snowfall_in": 2.0} for s in ("feat", "net")])
+
+    monkeypatch.setattr(baselines, "direct_prediction", direct_gap)
+    out = baselines.model_prediction(league, date(2026, 2, 1), "baseline-aifs")
+    assert calls == ["ecmwf_aifs025_single"]
+    assert dict(zip(out.station_id, out.snowfall_in)) == {"feat": 2.0, "net": 2.0, "feat2": 1.0}
+
+    def direct_down(*a, **k):
+        raise RuntimeError("bucket down")
+
+    monkeypatch.setattr(baselines, "direct_prediction", direct_down)
+    out = baselines.model_prediction(league, date(2026, 2, 1), "baseline-ecmwf")
+    assert set(out.station_id) == {"feat", "feat2"}  # Open-Meteo keeps the featured stations
 
 
 def test_hindcast_as_of_is_the_baselines_slot():
@@ -233,7 +268,7 @@ def test_terrain_index_follows_open_meteo_rules():
     assert grib.terrain_index(meta, lat, lon, np.array([3000.0]), elev, land, 1)[0] != south
 
 
-def test_ecmwf_layout_prefers_0p1_and_falls_back(monkeypatch):
+def test_ecmwf_layout_order_and_fallback(monkeypatch):
     from datetime import datetime
 
     import requests
@@ -249,7 +284,9 @@ def test_ecmwf_layout_prefers_0p1_and_falls_back(monkeypatch):
         return b"{}" if ("/0p1/" in url and "20261119" in url) or "/0p25/" in url else None
 
     monkeypatch.setattr(grib, "fetch", fake_fetch)
-    src = sources.EcmwfOpenData("ecmwf_ifs", "t", sources.SOURCES["ecmwf_ifs"].layouts, 7.75)
+    assert sources.SOURCES["ecmwf_ifs"].layouts[0] == ("ifs", "0p25", "oper", "")  # the A/B winner
+    fine_first = [("ifs", "0p1", "oper", "-sfc"), ("ifs", "0p25", "oper", ""), ("ifs", "0p25", "scda", "")]
+    src = sources.EcmwfOpenData("ecmwf_ifs", "t", fine_first, 7.75)
     new, old = datetime(2026, 11, 19, 0), datetime(2025, 12, 1, 0)
     assert src.layout(new) == (sources.ECMWF_DIRECT, ("ifs", "0p1", "oper", "-sfc"))  # AWS throttled -> ECMWF
     assert src.grid(new) == "0p1"

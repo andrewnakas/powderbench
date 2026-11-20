@@ -27,7 +27,9 @@ import requests
 
 log = logging.getLogger(__name__)
 
-CACHE_DAYS = 3
+# downloads unused for this many days are dropped; a long-lived machine that
+# re-reads last winter's runs (gates, A/B tests) sets PB_NWP_CACHE_DAYS higher
+CACHE_DAYS = float(os.environ.get("PB_NWP_CACHE_DAYS") or 3)
 ATTEMPTS = 5
 TIMEOUT_S = 60
 USER_AGENT = "powderbench (+https://powderbench.com)"
@@ -71,6 +73,10 @@ def fetch(url: str, offset: int | None = None, length: int | None = None) -> byt
     key = hashlib.sha1(f"{url}|{offset}|{length}".encode()).hexdigest()
     path = cache_dir() / key
     if path.exists():
+        try:
+            os.utime(path)  # a hit counts as use: pruning drops only unused downloads
+        except OSError:
+            pass
         return path.read_bytes()
     headers = {}
     if offset is not None:
