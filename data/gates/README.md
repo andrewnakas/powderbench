@@ -11,9 +11,11 @@ station at its network's default `day_offset` (the generator's), so
   the generators in `scripts/networks/{smhi,fmi,frost}.py` through
   `scripts/networks/gate.py`:
   - a `fail` (best allowed shift below r 0.4) is dropped;
-  - a suggested offset of 0 or 1 is used;
-  - any other suggested offset is dropped as misdated. A morning reading
-    can be dated by its own morning or by the day before, never later.
+  - a suggested offset equal to the network's default, or one less, is used;
+  - any other suggested offset is dropped as misdated. A reading can be
+    dated by its own day or by the day before, never later. The default is
+    1 for depth rises and DWD's morning board, and 0 for boards dated by the
+    day the snow fell (ČHMÚ, Météo-France `HNEIGEF`).
   - Stations missing from the file are not gated yet and keep the default.
   - SMHI and FMI were re-run after the change (2026-11-20): 93 of 93 pass at
     their new offsets, median r 0.59.
@@ -23,3 +25,7 @@ station at its network's default `day_offset` (the generator's), so
   those are worth keeping.
 - The world league's GHCNh drops are in `scripts/networks/ghcnh.py`
   (`NWP_GATE_FAILED`).
+- `world.csv` (DWD outside the Alps, Météo-France, ČHMÚ, GHCNh) is
+  **applied** by `scripts/networks/{dwd,meteofrance}.py` (`dwd.py --world`).
+  GHCNh's three drops (Chopok, Lomnický štít, Puntijarka, from the first
+  world gate run) are also in `scripts/networks/ghcnh.py`'s `NWP_GATE_FAILED`.

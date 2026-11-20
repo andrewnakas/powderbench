@@ -450,14 +450,20 @@ below).
 - **Climatology:** from each station's own record since 2010 (Norway's
   80: from Frost history, each at its gated `day_offset`).
 
-## Ground truth: weather-station snow depth and Czech observers (world league)
+## Ground truth: mountain weather stations outside the Alps (world league)
 
 The world league is for snowy mountains that the national networks above do
-not reach. It starts small, with 11 stations whose truth is online within
-days: the Tatras, the Czech mountains, Sljeme above Zagreb and Palandöken
-(Erzurum). Every source here is free, needs no key and allows reuse. It grows
-as national feeds are added: Norway needs MET Norway's Frost (a free client
-id), Spain AEMET (a free key), and Poland and Slovenia need their own archives.
+not reach. It has 109 stations whose truth is online within days:
+- Germany's mid-mountains (DWD observers);
+- France outside the Alps (Météo-France: the Pyrenees, Massif Central,
+  Vosges, Jura and Corsica);
+- the Czech mountains (ČHMÚ);
+- the Low Tatras (Telgárt) and Palandöken (Erzurum), via WMO reports.
+
+Every source here is free, needs no key and allows reuse. It grows as
+national feeds are added. Norway is in the nordic league via MET Norway's
+Frost. Spain needs AEMET (a free key). Poland and Slovenia need their own
+archives.
 Slovakia's SHMÚ open-data server (opendata.shmu.sk, CC BY 4.0, no
 registration) is the next candidate. It publishes a 1-minute snow-depth
 average for 95 automatic stations every 5 minutes, with about 30 days kept
@@ -566,11 +572,60 @@ too short for a climatology so far.
     4× the model's total).
   - The 2026-02-01..14 hindcast gate before the drop: ECMWF 1.2 against
     climatology 0, consensus −17. The summit truth was the reason.
+- **Germany outside the Alps, DWD** (`:DE:DWD`, `truth_source: dwd`, the
+  alps league's adapter): `NSH_TAG`, the new snow an observer measures at the
+  morning reading. Stations are taken at ≥ 600 m outside the Bavarian Alps
+  box, on the alps league's winter test (≥ 100 values, ≥ 10 days of 2 cm or
+  more). That keeps 66 of 162 (`dwd_world.csv`, `scripts/networks/dwd.py
+  --world`). They are in the Black Forest, Bavarian Forest, Fichtelgebirge,
+  Erzgebirge, Thuringian Forest, Rhön, Harz, Sauerland and Eifel. All are
+  network tier.
+  - All 66 pass the NWP gate (median r 0.67).
+  - Nine stations take `day_offset` 0. Their value dated D is day D's snow,
+    not the next morning's measurement. Fichtelberg-Hüttstadl, for example,
+    scores r 0.81 against 0.62. The nine are mostly in the Fichtelgebirge
+    and Franconian Forest, plus Schmücke, Loßburg and Grafenhausen.
+- **France outside the Alps, Météo-France** (`:FR:MFHN` / `:FR:MF`,
+  `truth_source: meteofrance`): the daily climatological data on
+  meteo.data.gouv.fr (Licence Ouverte 2.0, no key). There is one file pair
+  per département. The current one is refreshed daily around 07:00 UTC with
+  data through two days back, which fits the D+6 resolve.
+  - `:FR:MFHN`, the new-snow board (`HNEIGEF`): ski-resort posts and a few
+    climate stations. The value dated D is the 24 h from 06 UTC on D. At the
+    69 stations that report both, it tracks the station's own depth rise
+    D → D+1 (median r 0.94), not D−1 → D (0.27). So `day_offset` 0.
+  - `:FR:MF`, depth only (`NEIGETOT06`, read at 06 UTC): day D is the rise
+    to the next morning (`day_offset` 1). A rise of 10 cm or more is voided
+    when the station's gauge caught under 0.5 mm over the same 24 h. The
+    gauge (RR) dated D covers 06 UTC D → D+1: it correlates 0.83 with the
+    depth rise D → D+1, against 0.29 and 0.38 a day either side.
+  - Values flagged doubtful (quality code 2) are not used.
+  - **Candidates:** stations at ≥ 600 m in the Pyrenees, Massif Central,
+    Vosges, Jura and Corsica départements. A station needs last winter
+    ≥ 100 valid days and ≥ 8 days of 2 cm or more, ≥ 3 such winters since
+    2010, and current reports. A seasonal resort post needs a reading in
+    last season's March or later. That keeps 41.
+  - **NWP gate:** 35 pass.
+    - Six fail and are dropped. Formiguères, Targasonne, Puigmal and St Paul
+      d'Oueil are Pyrenean stations where the model has about twice the
+      station's snow or half of it. Le Buisson and Vernines are in the
+      Massif Central.
+    - 13 are re-dated by a day. That includes the two Ardèche boards
+      Issanlas and Loubaresse (r 0.73 and 0.86 a day earlier, against 0.18
+      and 0.31), where the depth station Mazan shows the same shift.
+- **NWP gate rule:** the decisions are stored in `data/gates/world.csv` and
+  applied by the DWD and Météo-France generators (`data/gates/README.md`).
+  A station may be re-dated to its network's default offset or one less (a
+  reading dated by its own day or by the day before), never later.
 - **Featured:** for each ski area with 10+ lifts, its nearest kept station
-  within 6 km (GHCNh, also no more than 150 m below the area's lowest lift)
-  or 5 km (ČHMÚ). That gives 3: Pec pod Sněžkou, Skiarena Jizerky (Desná) and
-  Skiareál Klínovec. The Tatras' featured stations were the two summits.
-- **Climatology:** from each station's own record since 2000.
+  within 6 km (GHCNh and Météo-France, also no more than 150 m below the
+  area's lowest lift) or 5 km (ČHMÚ). That gives 5:
+  - Pec pod Sněžkou, Skiarena Jizerky (Desná) and Skiareál Klínovec;
+  - Grand Tourmalet and Saint-Lary in the Pyrenees. These are capped at two,
+    so the league's featured count returns to the 5 it had before the
+    Tatras' summits left.
+- **Climatology:** from each station's own record since 2000 (DWD, ČHMÚ,
+  GHCNh) or 2010 (Météo-France).
 
 ## Ground truth: ERA5 analysis (era5 league)
 

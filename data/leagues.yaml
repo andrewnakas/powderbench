@@ -72,9 +72,9 @@ leagues:
     season_start_month: 10
     active_months: [11, 12, 1, 2, 3, 4, 5]
   - name: world
-    label: "World · Morning snow (WMO weather stations, ČHMÚ)"
+    label: "World · Morning snow (DWD, Météo-France, ČHMÚ, WMO stations)"
     status: trial
-    truth_source: ghcnh # Czech stations carry truth_source: chmi
+    truth_source: ghcnh # Czech stations carry truth_source: chmi, French meteofrance, German dwd
     # Korea's day D starts 15:00 UTC D-1, China's 16:00, Central Asia's
     # 18:00-19:00, Europe's 22:00-23:00: the 11:00 UTC D-1 cutoff (the
     # japan/era5 slot) precedes them all

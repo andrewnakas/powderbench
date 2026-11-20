@@ -530,6 +530,26 @@ register(TruthSource(
 ))
 
 
+def _meteofrance_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
+    from .networks import meteofrance
+
+    return meteofrance.daily(ids, begin, end, _offsets(league, ids))
+
+
+register(TruthSource(
+    name="meteofrance",
+    fetch=_meteofrance_daily,
+    history_begin=date(2010, 10, 1),
+    climatology=(date(2010, 10, 1), _CLIM_END),
+    measured=False,  # most stations are depth-derived; the resort posts' boards are measured
+    note=(
+        "Truth is the 24 h new snow on Météo-France ski-resort snow boards (HNEIGEF), or the rise in the "
+        "06 UTC snow depth (NEIGETOT06) at Météo-France weather stations in the Pyrenees, Massif Central, "
+        "Vosges, Jura and Corsica. Data: Météo-France, Licence Ouverte 2.0."
+    ),
+))
+
+
 def _ghcnh_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
     from .networks import ghcnh
 
@@ -545,9 +565,14 @@ register(TruthSource(
     climatology=(date(2000, 10, 1), _CLIM_END),
     measured=False,
     note=(
-        "Truth is new snow from the morning snow-depth report of WMO weather stations near ski areas "
-        "(Lomnický štít, Chopok, Sněžka, Kopaonik, Shymbulak, Geilo, Hemsedal, Navacerrada…): the rise in "
-        "depth to the next morning's report, read by NOAA NCEI into GHCNh (noaa-ghcnh-pds, CC0 1.0)."
+        # the world league's note on the site, so it credits every network in the league
+        "Truth is the morning snow reading at mountain weather stations: new snow measured on a board where "
+        "the station has one (DWD observers in the Black Forest, Bavarian Forest, Fichtelgebirge, Erzgebirge "
+        "and Harz; ČHMÚ in the Krkonoše, Jizera and Krušné hory; Météo-France ski-resort posts in the "
+        "Pyrenees), otherwise the rise in snow depth to the next morning's reading (WMO stations via NOAA "
+        "GHCNh in the Low Tatras and Palandöken; Météo-France stations in the Pyrenees, Massif Central, "
+        "Vosges, Jura and Corsica). Data: NOAA NCEI GHCNh (CC0 1.0), Deutscher Wetterdienst (CC BY 4.0), "
+        "© ČHMÚ (CC BY 4.0), Météo-France (Licence Ouverte 2.0)."
     ),
 ))
 
