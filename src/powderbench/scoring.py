@@ -81,6 +81,11 @@ def score_round(pred: pd.DataFrame, truth: pd.DataFrame, climo_pred: pd.DataFram
             ps = powder_score(mae_team, mae_ref)
             metrics["powder_score"] = None if ps is None else round(ps, 2)
             metrics["n_skill"] = int(len(ref))
+            # both sides of the ratio, so a leaderboard can pool rounds
+            # (total error over total climatology error) instead of
+            # averaging per-round ratios
+            metrics["mae_skill"] = round(mae_team, 5)
+            metrics["mae_climo"] = round(mae_ref, 5)
 
     metrics["pinball"] = None
     qcols = [c for c in QUANTILE_COLS.values() if c in merged.columns]
@@ -149,7 +154,8 @@ def score_swe(merged: pd.DataFrame, climo_pred: pd.DataFrame | None) -> dict:
 TRACK_FULL = "full"
 REGION_PREFIX = "region:"
 MIN_REGION_STATIONS = 3
-_TRACK_KEYS = ("n_scorable", "n_scored", "coverage", "mae", "powder_score", "bias")
+_TRACK_KEYS = ("n_scorable", "n_scored", "coverage", "mae", "powder_score", "bias",
+               "n_skill", "mae_skill", "mae_climo")
 
 
 def score_tracks(pred: pd.DataFrame, truth: pd.DataFrame, climo_pred: pd.DataFrame | None,

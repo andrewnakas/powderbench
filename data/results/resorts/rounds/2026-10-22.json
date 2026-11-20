@@ -29,7 +29,9 @@
    "n_skill": 30,
    "pinball": null,
    "brier6": null,
-   "late": false
+   "late": false,
+   "mae_skill": 0.30173,
+   "mae_climo": 0.27507
   },
   "baseline-climatology": {
    "n_scorable": 30,
@@ -49,7 +51,9 @@
    "n_pinball": 30,
    "brier6": 0.0001,
    "n_brier6": 10,
-   "late": true
+   "late": true,
+   "mae_skill": 0.27507,
+   "mae_climo": 0.27507
   },
   "baseline-consensus": {
    "n_scorable": 30,
@@ -67,7 +71,9 @@
    "n_skill": 30,
    "pinball": null,
    "brier6": null,
-   "late": false
+   "late": false,
+   "mae_skill": 0.25117,
+   "mae_climo": 0.27507
   },
   "baseline-ecmwf": {
    "n_scorable": 30,
@@ -85,7 +91,9 @@
    "n_skill": 30,
    "pinball": null,
    "brier6": null,
-   "late": false
+   "late": false,
+   "mae_skill": 0.3425,
+   "mae_climo": 0.27507
   },
   "baseline-gem": {
    "n_scorable": 30,
@@ -103,7 +111,9 @@
    "n_skill": 30,
    "pinball": null,
    "brier6": null,
-   "late": false
+   "late": false,
+   "mae_skill": 0.27873,
+   "mae_climo": 0.27507
   },
   "baseline-gfs": {
    "n_scorable": 30,
@@ -121,7 +131,9 @@
    "n_skill": 30,
    "pinball": null,
    "brier6": null,
-   "late": false
+   "late": false,
+   "mae_skill": 0.23773,
+   "mae_climo": 0.27507
   },
   "baseline-icon": {
    "n_scorable": 30,
@@ -139,7 +151,9 @@
    "n_skill": 30,
    "pinball": null,
    "brier6": null,
-   "late": false
+   "late": false,
+   "mae_skill": 0.24657,
+   "mae_climo": 0.27507
   },
   "baseline-openmeteo": {
    "n_scorable": 30,
@@ -157,7 +171,9 @@
    "n_skill": 30,
    "pinball": null,
    "brier6": null,
-   "late": false
+   "late": false,
+   "mae_skill": 0.33237,
+   "mae_climo": 0.27507
   },
   "baseline-persistence": {
    "n_scorable": 30,
@@ -175,7 +191,9 @@
    "n_skill": 30,
    "pinball": null,
    "brier6": null,
-   "late": false
+   "late": false,
+   "mae_skill": 0.066,
+   "mae_climo": 0.27507
   },
   "baseline-ukmo": {
    "n_scorable": 30,
@@ -193,7 +211,9 @@
    "n_skill": 30,
    "pinball": null,
    "brier6": null,
-   "late": false
+   "late": false,
+   "mae_skill": 0.31457,
+   "mae_climo": 0.27507
   },
   "baseline-zeros": {
    "n_scorable": 30,
@@ -213,7 +233,9 @@
    "n_pinball": 30,
    "brier6": 0.0,
    "n_brier6": 10,
-   "late": false
+   "late": false,
+   "mae_skill": 0.276,
+   "mae_climo": 0.27507
   }
  }
 }

@@ -100,3 +100,25 @@ def test_monthly_champions():
     assert aug["champion"]["team"] == "frozen-gradient"  # late-joiner has 2 rounds: not eligible
     assert aug["best_model"]["team"] == "baseline-gfs"
     assert [p["team"] for p in aug["podium"]] == ["frozen-gradient", "house-gbm", "baseline-gfs"]
+
+
+def test_powder_accuracy_pools_rounds_instead_of_averaging_ratios():
+    # a storm round forecast well, and a dry round where climatology is nearly
+    # perfect and the team is off by a tenth of an inch: per-round scores are
+    # +50 and -900, whose mean (-425) says nothing about the forecaster
+    rows = pd.DataFrame([
+        {"team": "t", "round": "2026-11-01", "powder_score": 50.0, "coverage": 1.0, "mae": 1.0,
+         "n_skill": 100, "mae_skill": 1.0, "mae_climo": 2.0},
+        {"team": "t", "round": "2026-11-02", "powder_score": -900.0, "coverage": 1.0, "mae": 0.1,
+         "n_skill": 100, "mae_skill": 0.1, "mae_climo": 0.01},
+    ])
+    board = leaderboard.aggregate(rows, min_rounds=1)
+    assert board.loc[0, "powder_score"] == round(100 * (1 - 110 / 201), 3)  # 45.274
+
+
+def test_pooling_weights_rounds_by_station_horizons_scored():
+    rows = pd.DataFrame([
+        {"team": "t", "round": "a", "powder_score": 0.0, "coverage": 1.0, "mae": 2.0, "n_skill": 300, "mae_skill": 2.0, "mae_climo": 2.0},
+        {"team": "t", "round": "b", "powder_score": 100.0, "coverage": 1.0, "mae": 0.0, "n_skill": 100, "mae_skill": 0.0, "mae_climo": 2.0},
+    ])
+    assert leaderboard.aggregate(rows, min_rounds=1).loc[0, "powder_score"] == 25.0

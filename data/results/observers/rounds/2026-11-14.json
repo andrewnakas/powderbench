@@ -40,7 +40,10 @@
      "coverage": 0.2727,
      "mae": 0.0621,
      "powder_score": 91.24,
-     "bias": -0.0621
+     "bias": -0.0621,
+     "n_skill": 6,
+     "mae_skill": 0.06212,
+     "mae_climo": 0.70905
     },
     "region:Absarokas, WY": {
      "n_scorable": 0,
@@ -104,7 +107,10 @@
      "coverage": 0.3333,
      "mae": 0.1036,
      "powder_score": 91.74,
-     "bias": -0.1036
+     "bias": -0.1036,
+     "n_skill": 3,
+     "mae_skill": 0.10357,
+     "mae_climo": 1.25343
     },
     "region:Central CO": {
      "n_scorable": 0,
@@ -272,10 +278,15 @@
      "coverage": 1.0,
      "mae": 0.062,
      "powder_score": 38.0,
-     "bias": -0.062
+     "bias": -0.062,
+     "n_skill": 1,
+     "mae_skill": 0.062,
+     "mae_climo": 0.1
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 0.06212,
+   "mae_climo": 0.70905
   },
   "baseline-climatology": {
    "n_scorable": 6,
@@ -306,7 +317,10 @@
      "coverage": 1.0,
      "mae": 0.197,
      "powder_score": 0.0,
-     "bias": 0.197
+     "bias": 0.197,
+     "n_skill": 22,
+     "mae_skill": 0.19697,
+     "mae_climo": 0.19697
     },
     "region:AK": {
      "n_scorable": 0,
@@ -354,7 +368,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:Beartooths, MT": {
      "n_scorable": 0,
@@ -378,7 +395,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:CA": {
      "n_scorable": 1,
@@ -386,7 +406,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:CO": {
      "n_scorable": 0,
@@ -410,7 +433,10 @@
      "coverage": 1.0,
      "mae": 0.4266,
      "powder_score": 0.0,
-     "bias": 0.4266
+     "bias": 0.4266,
+     "n_skill": 9,
+     "mae_skill": 0.42659,
+     "mae_climo": 0.42659
     },
     "region:Central CO": {
      "n_scorable": 0,
@@ -458,7 +484,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:ID": {
      "n_scorable": 0,
@@ -522,7 +551,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:Northern CO": {
      "n_scorable": 0,
@@ -538,7 +570,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:OH": {
      "n_scorable": 0,
@@ -610,7 +645,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:Southern CO": {
      "n_scorable": 0,
@@ -706,10 +744,15 @@
      "coverage": 1.0,
      "mae": 0.1,
      "powder_score": 0.0,
-     "bias": 0.1
+     "bias": 0.1,
+     "n_skill": 1,
+     "mae_skill": 0.1,
+     "mae_climo": 0.1
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 0.70905,
+   "mae_climo": 0.70905
   },
   "baseline-consensus": {
    "n_scorable": 6,
@@ -738,7 +781,10 @@
      "coverage": 0.2727,
      "mae": 0.107,
      "powder_score": 84.92,
-     "bias": -0.0243
+     "bias": -0.0243,
+     "n_skill": 6,
+     "mae_skill": 0.10695,
+     "mae_climo": 0.70905
     },
     "region:Absarokas, WY": {
      "n_scorable": 0,
@@ -802,7 +848,10 @@
      "coverage": 0.3333,
      "mae": 0.1312,
      "powder_score": 89.53,
-     "bias": -0.1312
+     "bias": -0.1312,
+     "n_skill": 3,
+     "mae_skill": 0.13123,
+     "mae_climo": 1.25343
     },
     "region:Central CO": {
      "n_scorable": 0,
@@ -970,10 +1019,15 @@
      "coverage": 1.0,
      "mae": 0.248,
      "powder_score": -148.0,
-     "bias": 0.248
+     "bias": 0.248,
+     "n_skill": 1,
+     "mae_skill": 0.248,
+     "mae_climo": 0.1
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 0.10695,
+   "mae_climo": 0.70905
   },
   "baseline-ecmwf": {
    "invalid": true,
@@ -1008,7 +1062,10 @@
      "coverage": 0.2727,
      "mae": 0.3768,
      "powder_score": 46.86,
-     "bias": 0.2732
+     "bias": 0.2732,
+     "n_skill": 6,
+     "mae_skill": 0.37678,
+     "mae_climo": 0.70905
     },
     "region:Absarokas, WY": {
      "n_scorable": 0,
@@ -1072,7 +1129,10 @@
      "coverage": 0.3333,
      "mae": 0.1036,
      "powder_score": 91.74,
-     "bias": -0.1036
+     "bias": -0.1036,
+     "n_skill": 3,
+     "mae_skill": 0.10357,
+     "mae_climo": 1.25343
     },
     "region:Central CO": {
      "n_scorable": 0,
@@ -1240,10 +1300,15 @@
      "coverage": 1.0,
      "mae": 1.426,
      "powder_score": -1326.0,
-     "bias": 1.426
+     "bias": 1.426,
+     "n_skill": 1,
+     "mae_skill": 1.426,
+     "mae_climo": 0.1
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 0.37678,
+   "mae_climo": 0.70905
   },
   "baseline-gfs": {
    "n_scorable": 6,
@@ -1272,7 +1337,10 @@
      "coverage": 0.2727,
      "mae": 0.634,
      "powder_score": 10.59,
-     "bias": 0.5027
+     "bias": 0.5027,
+     "n_skill": 6,
+     "mae_skill": 0.63395,
+     "mae_climo": 0.70905
     },
     "region:Absarokas, WY": {
      "n_scorable": 0,
@@ -1336,7 +1404,10 @@
      "coverage": 0.3333,
      "mae": 0.1312,
      "powder_score": 89.53,
-     "bias": -0.1312
+     "bias": -0.1312,
+     "n_skill": 3,
+     "mae_skill": 0.13123,
+     "mae_climo": 1.25343
     },
     "region:Central CO": {
      "n_scorable": 0,
@@ -1504,10 +1575,15 @@
      "coverage": 1.0,
      "mae": 2.501,
      "powder_score": -2401.0,
-     "bias": 2.501
+     "bias": 2.501,
+     "n_skill": 1,
+     "mae_skill": 2.501,
+     "mae_climo": 0.1
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 0.63395,
+   "mae_climo": 0.70905
   },
   "baseline-icon": {
    "n_scorable": 6,
@@ -1536,7 +1612,10 @@
      "coverage": 0.2727,
      "mae": 0.0898,
      "powder_score": 87.34,
-     "bias": -0.0898
+     "bias": -0.0898,
+     "n_skill": 6,
+     "mae_skill": 0.08978,
+     "mae_climo": 0.70905
     },
     "region:Absarokas, WY": {
      "n_scorable": 0,
@@ -1600,7 +1679,10 @@
      "coverage": 0.3333,
      "mae": 0.1312,
      "powder_score": 89.53,
-     "bias": -0.1312
+     "bias": -0.1312,
+     "n_skill": 3,
+     "mae_skill": 0.13123,
+     "mae_climo": 1.25343
     },
     "region:Central CO": {
      "n_scorable": 0,
@@ -1768,10 +1850,15 @@
      "coverage": 1.0,
      "mae": 0.145,
      "powder_score": -45.0,
-     "bias": -0.145
+     "bias": -0.145,
+     "n_skill": 1,
+     "mae_skill": 0.145,
+     "mae_climo": 0.1
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 0.08978,
+   "mae_climo": 0.70905
   },
   "baseline-ndfd": {
    "n_scorable": 6,
@@ -1798,7 +1885,10 @@
      "coverage": 0.3182,
      "mae": 0.0443,
      "powder_score": -210.0,
-     "bias": 0.0443
+     "bias": 0.0443,
+     "n_skill": 7,
+     "mae_skill": 0.04429,
+     "mae_climo": 0.01429
     },
     "region:AZ": {
      "n_scorable": 0,
@@ -1838,7 +1928,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:Beartooths, MT": {
      "n_scorable": 0,
@@ -1862,7 +1955,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:CA": {
      "n_scorable": 1,
@@ -1926,7 +2022,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:ID": {
      "n_scorable": 0,
@@ -1990,7 +2089,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:Northern CO": {
      "n_scorable": 0,
@@ -2006,7 +2108,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:OH": {
      "n_scorable": 0,
@@ -2078,7 +2183,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:Southern CO": {
      "n_scorable": 0,
@@ -2174,10 +2282,15 @@
      "coverage": 1.0,
      "mae": 0.31,
      "powder_score": -210.0,
-     "bias": 0.31
+     "bias": 0.31,
+     "n_skill": 1,
+     "mae_skill": 0.31,
+     "mae_climo": 0.1
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 0.31,
+   "mae_climo": 0.1
   },
   "baseline-openmeteo": {
    "n_scorable": 6,
@@ -2206,7 +2319,10 @@
      "coverage": 1.0,
      "mae": 0.1779,
      "powder_score": 9.68,
-     "bias": 0.1421
+     "bias": 0.1421,
+     "n_skill": 22,
+     "mae_skill": 0.1779,
+     "mae_climo": 0.19697
     },
     "region:AK": {
      "n_scorable": 0,
@@ -2254,7 +2370,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:Beartooths, MT": {
      "n_scorable": 0,
@@ -2278,7 +2397,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:CA": {
      "n_scorable": 1,
@@ -2286,7 +2408,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:CO": {
      "n_scorable": 0,
@@ -2310,7 +2435,10 @@
      "coverage": 1.0,
      "mae": 0.0437,
      "powder_score": 89.75,
-     "bias": -0.0437
+     "bias": -0.0437,
+     "n_skill": 9,
+     "mae_skill": 0.04374,
+     "mae_climo": 0.42659
     },
     "region:Central CO": {
      "n_scorable": 0,
@@ -2358,7 +2486,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:ID": {
      "n_scorable": 0,
@@ -2422,7 +2553,10 @@
      "coverage": 1.0,
      "mae": 0.11,
      "powder_score": null,
-     "bias": 0.11
+     "bias": 0.11,
+     "n_skill": 1,
+     "mae_skill": 0.11,
+     "mae_climo": 0.0
     },
     "region:Northern CO": {
      "n_scorable": 0,
@@ -2438,7 +2572,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:OH": {
      "n_scorable": 0,
@@ -2510,7 +2647,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:Southern CO": {
      "n_scorable": 0,
@@ -2606,10 +2746,15 @@
      "coverage": 1.0,
      "mae": 2.501,
      "powder_score": -2401.0,
-     "bias": 2.501
+     "bias": 2.501,
+     "n_skill": 1,
+     "mae_skill": 2.501,
+     "mae_climo": 0.1
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 0.63395,
+   "mae_climo": 0.70905
   },
   "baseline-persistence": {
    "n_scorable": 6,
@@ -2638,7 +2783,10 @@
      "coverage": 0.9091,
      "mae": 0.0897,
      "powder_score": 54.47,
-     "bias": 0.0503
+     "bias": 0.0503,
+     "n_skill": 20,
+     "mae_skill": 0.08969,
+     "mae_climo": 0.19696
     },
     "region:AK": {
      "n_scorable": 0,
@@ -2686,7 +2834,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:Beartooths, MT": {
      "n_scorable": 0,
@@ -2710,7 +2861,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:CA": {
      "n_scorable": 1,
@@ -2718,7 +2872,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:CO": {
      "n_scorable": 0,
@@ -2742,7 +2899,10 @@
      "coverage": 1.0,
      "mae": 0.0437,
      "powder_score": 89.75,
-     "bias": -0.0437
+     "bias": -0.0437,
+     "n_skill": 9,
+     "mae_skill": 0.04374,
+     "mae_climo": 0.42659
     },
     "region:Central CO": {
      "n_scorable": 0,
@@ -2790,7 +2950,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:ID": {
      "n_scorable": 0,
@@ -2854,7 +3017,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:Northern CO": {
      "n_scorable": 0,
@@ -2870,7 +3036,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:OH": {
      "n_scorable": 0,
@@ -2942,7 +3111,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:Southern CO": {
      "n_scorable": 0,
@@ -3038,10 +3210,15 @@
      "coverage": 1.0,
      "mae": 1.4,
      "powder_score": -1300.0,
-     "bias": 1.4
+     "bias": 1.4,
+     "n_skill": 1,
+     "mae_skill": 1.4,
+     "mae_climo": 0.1
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 0.44843,
+   "mae_climo": 0.96507
   },
   "baseline-ukmo": {
    "n_scorable": 6,
@@ -3070,7 +3247,10 @@
      "coverage": 0.2727,
      "mae": 0.0828,
      "powder_score": 88.32,
-     "bias": -0.0485
+     "bias": -0.0485,
+     "n_skill": 6,
+     "mae_skill": 0.08278,
+     "mae_climo": 0.70905
     },
     "region:Absarokas, WY": {
      "n_scorable": 0,
@@ -3134,7 +3314,10 @@
      "coverage": 0.3333,
      "mae": 0.1312,
      "powder_score": 89.53,
-     "bias": -0.1312
+     "bias": -0.1312,
+     "n_skill": 3,
+     "mae_skill": 0.13123,
+     "mae_climo": 1.25343
     },
     "region:Central CO": {
      "n_scorable": 0,
@@ -3302,10 +3485,15 @@
      "coverage": 1.0,
      "mae": 0.103,
      "powder_score": -3.0,
-     "bias": 0.103
+     "bias": 0.103,
+     "n_skill": 1,
+     "mae_skill": 0.103,
+     "mae_climo": 0.1
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 0.08278,
+   "mae_climo": 0.70905
   },
   "baseline-zeros": {
    "n_scorable": 6,
@@ -3336,7 +3524,10 @@
      "coverage": 1.0,
      "mae": 0.027,
      "powder_score": 86.3,
-     "bias": -0.027
+     "bias": -0.027,
+     "n_skill": 22,
+     "mae_skill": 0.02699,
+     "mae_climo": 0.19697
     },
     "region:AK": {
      "n_scorable": 0,
@@ -3384,7 +3575,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:Beartooths, MT": {
      "n_scorable": 0,
@@ -3408,7 +3602,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:CA": {
      "n_scorable": 1,
@@ -3416,7 +3613,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:CO": {
      "n_scorable": 0,
@@ -3440,7 +3640,10 @@
      "coverage": 1.0,
      "mae": 0.0437,
      "powder_score": 89.75,
-     "bias": -0.0437
+     "bias": -0.0437,
+     "n_skill": 9,
+     "mae_skill": 0.04374,
+     "mae_climo": 0.42659
     },
     "region:Central CO": {
      "n_scorable": 0,
@@ -3488,7 +3691,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:ID": {
      "n_scorable": 0,
@@ -3552,7 +3758,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:Northern CO": {
      "n_scorable": 0,
@@ -3568,7 +3777,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:OH": {
      "n_scorable": 0,
@@ -3640,7 +3852,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:Southern CO": {
      "n_scorable": 0,
@@ -3736,10 +3951,15 @@
      "coverage": 1.0,
      "mae": 0.2,
      "powder_score": -100.0,
-     "bias": -0.2
+     "bias": -0.2,
+     "n_skill": 1,
+     "mae_skill": 0.2,
+     "mae_climo": 0.1
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 0.09895,
+   "mae_climo": 0.70905
   },
   "house-blend": {
    "n_scorable": 6,
@@ -3770,7 +3990,10 @@
      "coverage": 1.0,
      "mae": 0.072,
      "powder_score": 63.45,
-     "bias": 0.0389
+     "bias": 0.0389,
+     "n_skill": 22,
+     "mae_skill": 0.07199,
+     "mae_climo": 0.19697
     },
     "region:AK": {
      "n_scorable": 0,
@@ -3818,7 +4041,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:Beartooths, MT": {
      "n_scorable": 0,
@@ -3842,7 +4068,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:CA": {
      "n_scorable": 1,
@@ -3850,7 +4079,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:CO": {
      "n_scorable": 0,
@@ -3874,7 +4106,10 @@
      "coverage": 1.0,
      "mae": 0.0404,
      "powder_score": 90.53,
-     "bias": -0.0404
+     "bias": -0.0404,
+     "n_skill": 9,
+     "mae_skill": 0.04041,
+     "mae_climo": 0.42659
     },
     "region:Central CO": {
      "n_scorable": 0,
@@ -3922,7 +4157,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:ID": {
      "n_scorable": 0,
@@ -3986,7 +4224,10 @@
      "coverage": 1.0,
      "mae": 0.05,
      "powder_score": null,
-     "bias": 0.05
+     "bias": 0.05,
+     "n_skill": 1,
+     "mae_skill": 0.05,
+     "mae_climo": 0.0
     },
     "region:Northern CO": {
      "n_scorable": 0,
@@ -4002,7 +4243,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:OH": {
      "n_scorable": 0,
@@ -4074,7 +4318,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:Southern CO": {
      "n_scorable": 0,
@@ -4170,10 +4417,15 @@
      "coverage": 1.0,
      "mae": 0.74,
      "powder_score": -640.0,
-     "bias": 0.74
+     "bias": 0.74,
+     "n_skill": 1,
+     "mae_skill": 0.74,
+     "mae_climo": 0.1
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 0.25562,
+   "mae_climo": 0.70905
   },
   "open-powder-ensemble": {
    "n_scorable": 6,
@@ -4204,7 +4456,10 @@
      "coverage": 1.0,
      "mae": 0.0438,
      "powder_score": 77.76,
-     "bias": 0.0126
+     "bias": 0.0126,
+     "n_skill": 22,
+     "mae_skill": 0.0438,
+     "mae_climo": 0.19697
     },
     "region:AK": {
      "n_scorable": 0,
@@ -4252,7 +4507,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:Beartooths, MT": {
      "n_scorable": 0,
@@ -4276,7 +4534,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:CA": {
      "n_scorable": 1,
@@ -4284,7 +4545,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:CO": {
      "n_scorable": 0,
@@ -4308,7 +4572,10 @@
      "coverage": 1.0,
      "mae": 0.0437,
      "powder_score": 89.75,
-     "bias": -0.0326
+     "bias": -0.0326,
+     "n_skill": 9,
+     "mae_skill": 0.04374,
+     "mae_climo": 0.42659
     },
     "region:Central CO": {
      "n_scorable": 0,
@@ -4356,7 +4623,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:ID": {
      "n_scorable": 0,
@@ -4420,7 +4690,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:Northern CO": {
      "n_scorable": 0,
@@ -4436,7 +4709,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:OH": {
      "n_scorable": 0,
@@ -4508,7 +4784,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:Southern CO": {
      "n_scorable": 0,
@@ -4604,10 +4883,15 @@
      "coverage": 1.0,
      "mae": 0.56,
      "powder_score": -460.0,
-     "bias": 0.56
+     "bias": 0.56,
+     "n_skill": 1,
+     "mae_skill": 0.56,
+     "mae_climo": 0.1
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 0.16062,
+   "mae_climo": 0.70905
   },
   "open-powder-ml": {
    "n_scorable": 6,
@@ -4638,7 +4922,10 @@
      "coverage": 1.0,
      "mae": 0.0865,
      "powder_score": 56.07,
-     "bias": 0.0516
+     "bias": 0.0516,
+     "n_skill": 22,
+     "mae_skill": 0.08653,
+     "mae_climo": 0.19697
     },
     "region:AK": {
      "n_scorable": 0,
@@ -4686,7 +4973,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:Beartooths, MT": {
      "n_scorable": 0,
@@ -4710,7 +5000,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:CA": {
      "n_scorable": 1,
@@ -4718,7 +5011,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:CO": {
      "n_scorable": 0,
@@ -4742,7 +5038,10 @@
      "coverage": 1.0,
      "mae": 0.0426,
      "powder_score": 90.01,
-     "bias": -0.0426
+     "bias": -0.0426,
+     "n_skill": 9,
+     "mae_skill": 0.04263,
+     "mae_climo": 0.42659
     },
     "region:Central CO": {
      "n_scorable": 0,
@@ -4790,7 +5089,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:ID": {
      "n_scorable": 0,
@@ -4854,7 +5156,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:Northern CO": {
      "n_scorable": 0,
@@ -4870,7 +5175,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:OH": {
      "n_scorable": 0,
@@ -4942,7 +5250,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 1,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:Southern CO": {
      "n_scorable": 0,
@@ -5038,10 +5349,15 @@
      "coverage": 1.0,
      "mae": 1.29,
      "powder_score": -1190.0,
-     "bias": 1.29
+     "bias": 1.29,
+     "n_skill": 1,
+     "mae_skill": 1.29,
+     "mae_climo": 0.1
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 0.31728,
+   "mae_climo": 0.70905
   }
  }
 }

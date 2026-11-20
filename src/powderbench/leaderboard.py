@@ -44,7 +44,7 @@ def aggregate(rows: pd.DataFrame, min_rounds: int = MIN_ROUNDS) -> pd.DataFrame:
             "is_house": team.startswith("house-"),
             "rounds": int(len(grp)),
             "avg_coverage": round(float(grp["coverage"].mean()), 4),
-            "powder_score": _mean(grp["powder_score"]),
+            "powder_score": pooled_powder_score(grp),
             "mae": _mean(grp["mae"]),
             "rmse": _mean(grp.get("rmse")),
             "bias": _mean(grp.get("bias")),
@@ -69,6 +69,29 @@ def aggregate(rows: pd.DataFrame, min_rounds: int = MIN_ROUNDS) -> pd.DataFrame:
     board["rank"] = None
     board.loc[board["eligible"], "rank"] = range(1, int(board["eligible"].sum()) + 1)
     return board
+
+
+def pooled_powder_score(grp: pd.DataFrame) -> float | None:
+    """Powder Accuracy over several rounds: 100 x (1 - total |error| / total
+    climatology |error|) on the station-horizons the team was scored on.
+
+    Rounds are pooled, not averaged. A per-round score divides by that round's
+    climatology error, which is close to zero on a dry day: one such round
+    scored -4500 and decided a whole season's average. Pooled, every
+    station-horizon counts the same, so storm days carry the weight their
+    snow deserves and a dry day can only cost what was actually forecast.
+
+    Rounds scored before the two error terms were recorded fall back to the
+    old mean of per-round scores (none remain once results are backfilled)."""
+    need = ("n_skill", "mae_skill", "mae_climo")
+    if all(c in grp for c in need):
+        g = grp.dropna(subset=["powder_score"])
+        if len(g) and g[list(need)].notna().all().all():
+            ref = float((g["n_skill"] * g["mae_climo"]).sum())
+            if ref <= 0:
+                return None
+            return round(100.0 * (1.0 - float((g["n_skill"] * g["mae_skill"]).sum()) / ref), 3)
+    return _mean(grp["powder_score"])
 
 
 def _records(df: pd.DataFrame) -> list[dict]:
