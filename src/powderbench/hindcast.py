@@ -17,7 +17,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from . import baselines, climatology, scoring, truth
+from . import baselines, climatology, openmeteo, scoring, truth
 from .leagues import League
 from .stations import station_ids
 from .truth_sources import daily_truth
@@ -37,6 +37,8 @@ def load_hindcast_submission(path: Path | str) -> dict[date, pd.DataFrame]:
 def _safe(fn) -> pd.DataFrame:
     try:
         return fn()
+    except openmeteo.OpenMeteoDisabled:
+        return pd.DataFrame()
     except Exception:
         log.warning("hindcast baseline failed", exc_info=True)
         return pd.DataFrame()

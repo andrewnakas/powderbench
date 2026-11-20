@@ -173,6 +173,9 @@ def model_baselines(league: League, target_day: date, mode: str = "live",
             continue
         try:
             pred = model_prediction(league, target_day, team, mode, featured_only)
+        except openmeteo.OpenMeteoDisabled:
+            log.info("%s skipped: Open-Meteo is off", team)
+            continue
         except Exception:
             log.warning("%s failed for %s/%s", team, league.name, target_day, exc_info=True)
             continue
