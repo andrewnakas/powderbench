@@ -96,11 +96,16 @@ def depths(code_: str) -> pd.DataFrame:
 def daily(station_ids: list[str], begin: date, end: date, offsets: dict[str, int] | None = None) -> pd.DataFrame:
     """Truth frame for local days [begin, end] from 06 UTC depth deltas."""
     rows = []
+    offsets = offsets or {}
     for sid in station_ids:
+        # day D <- the rise from D+k-1 to D+k, k = day_offset (default 1, the
+        # 06 UTC readings either side of day D; 0 where the dated reading is
+        # taken at the end of day D, as the 2026-11 gate found for some stations)
+        k = offsets.get(sid, 1)
         rec = depths(code(sid)).set_index("date")["depth_m"]
         for i in range((end - begin).days + 1):
             d = begin + timedelta(days=i)
-            s0, s1 = rec.get(d), rec.get(d + timedelta(days=1))
+            s0, s1 = rec.get(d + timedelta(days=k - 1)), rec.get(d + timedelta(days=k))
             flag = truth.QC_OK
             if s0 is None or s1 is None or pd.isna(s0) or pd.isna(s1):
                 flag = truth.QC_MISSING

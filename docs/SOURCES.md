@@ -25,6 +25,7 @@ Every source below permits the use PowderBench makes of it. Please keep these at
 | [Daily snowfall (降雪の深さの合計) — AMeDAS](https://www.data.jma.go.jp/stats/etrn/) | Japan Meteorological Agency | JMA terms of use (compatible with CC BY 4.0) | 出典：気象庁ホームページ (Japan Meteorological Agency). |
 | [Snow depth — weather stations](https://opendata-download-metobs.smhi.se/) | SMHI (Swedish Meteorological and Hydrological Institute) | CC BY 4.0 | Swedish snow data © SMHI, CC BY 4.0. |
 | [Snow depth — weather stations](https://en.ilmatieteenlaitos.fi/open-data) | Finnish Meteorological Institute | CC BY 4.0 | Finnish snow data © Finnish Meteorological Institute, CC BY 4.0. |
+| [Snow depth and precipitation — weather stations (Frost API)](https://frost.met.no/) | MET Norway (Norwegian Meteorological Institute) | CC BY 4.0 / NLOD 2.0 (each Frost response cites CC BY 3.0 NO); free client id | Norwegian snow data from MET Norway (frost.met.no). |
 | [Resort snow reports](https://github.com/andrewnakas/powderbench/blob/main/src/powderbench/resortfeeds/registry.py) | Each resort (first-party pages; per-resort audit in the registry) | Factual figures read from public pages, per-site robots/terms review; resorts may opt out at any time | Snow figures as published by each resort; see the resort registry for sources. |
 | [ERA5 reanalysis (via Open-Meteo)](https://open-meteo.com/) | ECMWF / Copernicus Climate Change Service; Open-Meteo | CC BY 4.0 | Contains modified Copernicus Climate Change Service information; data via Open-Meteo.com (CC BY 4.0). |
 
