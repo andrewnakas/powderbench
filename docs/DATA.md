@@ -762,6 +762,23 @@ added as a member on stations and observers:
 
 So NBM stays a consensus member in every lower-48 league.
 
+**ECMWF ensemble mean, tested and not used (2026-11-20).** ECMWF's open
+data carries the 50 perturbed members of the ensemble (`enfo`, `…-ef`), with
+snowfall (`sf`) at every step. `nwp.SOURCES["ecmwf_ens"]` reads the member
+mean, with the deterministic run's 2 m temperature for the elevation rule.
+Same rounds as above (2026-11-01..14), powder score:
+
+| League | Featured: ENS mean / IFS | Every station: ENS mean / IFS |
+|---|---|---|
+| stations | 47.4 / **49.4** | 25.7 / **26.3** |
+| observers | 22.9 / **26.6** | −1.0 / **2.8** |
+| alps | 6.1 / **7.3** | |
+| resorts-na | **−4.8** / −8.7 | **−4.8** / −8.7 |
+
+The mean is smoother and scores lower than the single run in three of the
+four leagues, so it is not a baseline. The source stays for a probabilistic
+baseline later (exceedance chances from the members).
+
 **ECMWF IFS at 0.1° or 0.25° (2026-11-20).** Since the runs of late October
 2026, ECMWF's open data also carries IFS on its native ~9 km grid, as 0.1°
 (`ifs/0p1/oper/…-fc-sfc`).
