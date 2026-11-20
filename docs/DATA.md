@@ -482,9 +482,13 @@ a misdated record and drops the station.
   Meteocat's OK first.
 - **ARPA FVG (Friuli):** the data sits behind a session and a POST form, and
   the licence is share-alike (CC BY-SA 3.0 IT).
-- **Arpae Emilia-Romagna:** 16 Apennine stations at ≥ 600 m (Corno alle
-  Scale, Cimone, Febbio…), CC BY 4.0, no key. Outside the Alps, so it goes to
-  the world league.
+- **Arpae Emilia-Romagna (northern Apennines), tested and not added:** 16
+  snow-depth sensors at ≥ 600 m (Corno alle Scale, Cimone, Febbio…), CC BY
+  4.0, no key (adapter on the `world-arpae` branch). Six pass the record
+  tests. But the NWP gate fails four, and the two that pass are doubtful: the
+  sensors jitter by several centimetres on bare ground, so depth rises add up
+  to far more than the model's snow (Doccia di Fiumalbo 204″ against 29″
+  over the winter, r 0.17; Monteacuto delle Alpi 43″ against 5″).
 - **ARSO (Slovenia):** free reuse with credit ("Vir: ARSO").
   - Observers' daily new snow and depth at 07:00 go back to 1948 at 48
     stations at ≥ 600 m (Kredarica, Vogel, Rateče, Kranjska Gora…). But only
