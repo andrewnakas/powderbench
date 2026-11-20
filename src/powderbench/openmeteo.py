@@ -40,8 +40,12 @@ NWP_MODELS = ("best_match", "gfs_seamless")
 # With PB_OPENMETEO_PATIENT=1 a 429 that names those windows waits for the
 # window to reset instead of failing after the per-minute retries. Scheduled
 # runs keep the default: a baseline that cannot be fetched in time is skipped.
+# The daily count does not reset at 00:00 UTC for us: on 2026-11-20 the home
+# IP was refused "Daily ... try again tomorrow" at 02:48 UTC, so the daily case
+# probes again hourly (one call) rather than sleeping until midnight.
 PATIENT = os.environ.get("PB_OPENMETEO_PATIENT") == "1"
-MAX_PATIENT_WAITS = 30
+MAX_PATIENT_WAITS = 48
+DAILY_PROBE_S = 3600.0
 
 
 def _window_wait(resp: requests.Response | None, now: datetime | None = None) -> float | None:
@@ -55,7 +59,7 @@ def _window_wait(resp: requests.Response | None, now: datetime | None = None) ->
         return float((59 - now.minute) * 60 + (60 - now.second) + 30)
     if "Daily" in reason:
         midnight = datetime(now.year, now.month, now.day, tzinfo=timezone.utc) + timedelta(days=1)
-        return (midnight - now).total_seconds() + 60
+        return min((midnight - now).total_seconds() + 60, DAILY_PROBE_S)
     return None
 
 
