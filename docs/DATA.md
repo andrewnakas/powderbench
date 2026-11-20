@@ -369,15 +369,17 @@ snow-depth reading at Swedish and Finnish weather stations: day D is
 max(depth at 06 UTC on D+1 − depth at 06 UTC on D, 0), the rise from one
 morning (07:00 CET / 08:00 EET) to the next. Settling makes long storms read a
 little low and melt days read 0, like SNOTEL depth truth. Every team is scored
-on the same number.
+on the same number. At 15 stations the value dated D is read at the end of
+day D, so their day D is the rise D−1 → D (`day_offset` 0; see the NWP gate
+below).
 
 - **Sweden, SMHI** (`:SE:SMHI`, `truth_source: smhi`): parameter 8, snow depth
   once a day at 06 UTC, mostly read by observers. Corrected archive plus
   `latest-months` (yesterday's reading is in by the morning). Open data,
-  CC BY 4.0, credit SMHI. 52 stations.
+  CC BY 4.0, credit SMHI. 48 stations.
 - **Finland, FMI** (`:FI:FMI`, `truth_source: fmi`): daily `snow` from FMI's
   WFS (`fmi::observations::weather::daily::simple`; −1 = no snow cover = 0).
-  Open data, CC BY 4.0, credit Finnish Meteorological Institute. 49 stations.
+  Open data, CC BY 4.0, credit Finnish Meteorological Institute. 45 stations.
   FMI's station list has no elevation, so elevations come from the Copernicus
   DEM via Open-Meteo's elevation API.
 - **Candidates:** active stations within 25 km of a ski area, at ≥ 400 m
@@ -387,8 +389,25 @@ on the same number.
   more than 48 in voids the day. Big jumps have no SWE or precipitation
   cross-check: many SMHI stations have no co-located gauge (Storlien's ends in
   2023), and the readings are manual.
-- **Featured:** 17 stations within 12 km of a ski area with 3+ lifts (Sälen,
-  Kittelfjäll, Höglekardalen, Abisko, Saariselkä, Paljakka, Salla…).
+- **NWP gate (2026-11-20):** each station's daily truth over winter 2025-26
+  (2025-12-01..2026-03-15) is correlated with the direct ECMWF IFS daily
+  snowfall for the same local day, and with the truth shifted a day either way
+  (`scripts/nwp_gate.py`).
+  - **Re-dated:** 15 stations (11 FMI, mostly synoptic and airport sensors,
+    and 4 SMHI: Kindsjön D, Mörsil, Orsa D, Särna D) line up a day earlier by
+    a wide margin. For example, Kindsjön D gives r 0.77 against 0.26 and
+    Rovaniemi airport 0.55 against 0.33. They now take day D as the rise
+    D−1 → D (`day_offset` 0) and their climatology was rebuilt.
+  - **Dropped:** 8 stations whose best shift stays below r 0.4. Four are FMI:
+    Kilpisjärvi, Angeli, Nellim and Tulppio. Four are SMHI: Abisko Aut,
+    Kittelfjäll D, Letafors D and Ljusnedal.
+  - The other 78 pass (median r 0.56).
+  - The 2026-02-01..14 featured hindcast before these changes: AIFS 10.5,
+    consensus 9.9, ECMWF 6.3, GFS 3.6, climatology 0.
+- **Featured:** 14 stations within 12 km of a ski area with 3+ lifts (Sälen,
+  Höglekardalen, Saariselkä, Paljakka, Salla…). Abisko, Kittelfjäll and
+  Ljusnedal (Funäsdalen) left with the gate. Replacing them would add
+  Open-Meteo points, so that waits for approval.
 - **Climatology:** from each station's own record since 2010.
 
 ## Ground truth: ERA5 analysis (era5 league)
