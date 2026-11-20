@@ -693,9 +693,13 @@ stations scores 49.4 at 0.25° and 50.4 at 0.1°.
 
 **ECMWF IFS at 0.1° or 0.25° (2026-11-20).** Since the runs of late October
 2026, ECMWF's open data also carries IFS on its native ~9 km grid, as 0.1°
-(`ifs/0p1/oper/…-fc-sfc`). The direct read falls back to data.ecmwf.int
-(the last four days of runs) when the AWS bucket throttles; it answered one
-IP with 503 SlowDown for hours.
+(`ifs/0p1/oper/…-fc-sfc`).
+
+When the AWS bucket throttles (it answered one IP with 503 SlowDown for
+hours), the direct read falls back to ECMWF's Google Cloud mirror
+(`storage.googleapis.com/ecmwf-open-data`, the full archive), then to
+data.ecmwf.int (the last four days of runs). A server that failed is skipped
+for 15 minutes, so a long hindcast does not pay its retries on every file.
 
 Without the rule, 0.1° looked better. Scored against each league's truth,
 2026-10-26..11-15, every station, same runs and days:

@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import logging
 import os
+import time
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 
@@ -24,10 +25,26 @@ log = logging.getLogger(__name__)
 CELL_RADIUS = 1
 G0 = 9.80665  # ECMWF orography is geopotential (m2 s-2)
 ECMWF_BUCKET = "https://ecmwf-forecasts.s3.eu-central-1.amazonaws.com"
-# ECMWF's own server keeps the last ~4 days: the fallback when the AWS bucket
-# throttles (2026-11-20: every GET from one IP answered 503 SlowDown for hours)
+# The same files on ECMWF's Google Cloud mirror (full archive) and on ECMWF's
+# own server (the last ~4 days): the fallbacks when the AWS bucket throttles
+# (2026-11-20: every GET from one IP answered 503 SlowDown for hours)
+ECMWF_GCS = "https://storage.googleapis.com/ecmwf-open-data"
 ECMWF_DIRECT = "https://data.ecmwf.int/forecasts"
-ECMWF_BASES = (ECMWF_BUCKET, ECMWF_DIRECT)
+ECMWF_BASES = (ECMWF_BUCKET, ECMWF_GCS, ECMWF_DIRECT)
+# a server that failed is skipped for this long, so a throttled one does not
+# cost its retries on every file of a long hindcast
+SERVER_REST_S = 900
+_server_down: dict[str, float] = {}
+
+
+def _resting(server: str) -> bool:
+    return time.monotonic() - _server_down.get(server, -1e12) < SERVER_REST_S
+
+
+def _servers(first: str | None = None) -> list[str]:
+    """ECMWF_BASES in order (first, if given, ahead), resting servers last."""
+    order = [first, *(b for b in ECMWF_BASES if b != first)] if first else list(ECMWF_BASES)
+    return sorted(order, key=_resting)
 GFS_BUCKET = "https://noaa-gfs-bdp-pds.s3.amazonaws.com"
 # Open-Meteo's elevation rule (VariableHourly.swift, GenericReader.swift in
 # open-meteo/open-meteo): where the chosen cell's terrain is more than
@@ -164,11 +181,16 @@ class EcmwfOpenData(Source):
 
     def _probe(self, run: datetime) -> tuple[str, Layout] | None:
         for lay in self.layouts:
-            for base in ECMWF_BASES:
+            answered = False  # a server said "not there": a resting one is not asked too
+            for base in _servers():
+                if answered and _resting(base):
+                    continue
                 try:
                     if grib.fetch(self._url(run, 0, base, *lay) + ".index") is not None:
                         return base, lay
+                    answered = True
                 except (requests.RequestException, OSError) as exc:  # throttled: try the next server
+                    _server_down[base] = time.monotonic()
                     log.warning("%s: %s unreachable (%s)", self.name, base, exc)
         return None
 
@@ -198,11 +220,12 @@ class EcmwfOpenData(Source):
     def _with_fallback(self, base: str, read):
         """read(server) on the probed server, then on the others when it is
         throttled or fails mid-run (the same files, so the same byte offsets)."""
-        order = [base, *(b for b in ECMWF_BASES if b != base)]
+        order = _servers(base)
         for i, b in enumerate(order):
             try:
                 return read(b)
             except (requests.RequestException, OSError) as exc:
+                _server_down[b] = time.monotonic()
                 if i == len(order) - 1:
                     raise
                 log.warning("%s: %s failed (%s), trying %s", self.name, b, exc, order[i + 1])

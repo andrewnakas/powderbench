@@ -281,16 +281,21 @@ def test_ecmwf_layout_order_and_fallback(monkeypatch):
         calls.append(url)
         if url.startswith(sources.ECMWF_BUCKET):
             raise requests.HTTPError("503 SlowDown")
+        if url.startswith(sources.ECMWF_GCS) and "20261119" in url:
+            return None  # the newest run is not mirrored yet
         return b"{}" if ("/0p1/" in url and "20261119" in url) or "/0p25/" in url else None
 
     monkeypatch.setattr(grib, "fetch", fake_fetch)
+    monkeypatch.setattr(sources, "_server_down", {})
     assert sources.SOURCES["ecmwf_ifs"].layouts[0] == ("ifs", "0p25", "oper", "")  # the A/B winner
     fine_first = [("ifs", "0p1", "oper", "-sfc"), ("ifs", "0p25", "oper", ""), ("ifs", "0p25", "scda", "")]
     src = sources.EcmwfOpenData("ecmwf_ifs", "t", fine_first, 7.75)
     new, old = datetime(2026, 11, 19, 0), datetime(2025, 12, 1, 0)
     assert src.layout(new) == (sources.ECMWF_DIRECT, ("ifs", "0p1", "oper", "-sfc"))  # AWS throttled -> ECMWF
     assert src.grid(new) == "0p1"
-    assert src.layout(old)[1] == ("ifs", "0p25", "oper", "")  # no 0.1 deg before late October 2026
+    assert src.layout(old) == (sources.ECMWF_GCS, ("ifs", "0p25", "oper", ""))  # no 0.1 deg before late October 2026
+    n_aws = sum(c.startswith(sources.ECMWF_BUCKET) for c in calls)
+    assert n_aws == 1  # throttled once, then rested for the other probes
     assert src.steps(new)[:3] == [0, 3, 6] and src.steps(new)[-1] == 360
     assert any(c.endswith("20261119000000-0h-oper-fc-sfc.index") for c in calls)
 
