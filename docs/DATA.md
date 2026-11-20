@@ -447,7 +447,8 @@ below).
   (Hølto, 2 km), Oppdal (Maurhaugen, 9 km) and Skimore Oslo (Brunkollen,
   7 km). The featured count stays at 17, so the Open-Meteo budget does not
   rise.
-- **Climatology:** from each station's own record since 2010.
+- **Climatology:** from each station's own record since 2010 (Norway's
+  80: from Frost history, each at its gated `day_offset`).
 
 ## Ground truth: ERA5 analysis (era5 league)
 
