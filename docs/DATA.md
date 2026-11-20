@@ -462,8 +462,29 @@ not reach. It has 109 stations whose truth is online within days:
 
 Every source here is free, needs no key and allows reuse. It grows as
 national feeds are added. Norway is in the nordic league via MET Norway's
-Frost. Spain needs AEMET (a free key). Poland and Slovenia need their own
-archives.
+Frost. Spain needs AEMET (a free key behind a reCAPTCHA sign-up).
+
+Checked on 2026-11-20 and not usable yet:
+- **Slovenia (ARSO).**
+  - The daily archive (`meteo.arso.gov.si/webmet/archive`) has new snow and
+    depth since 1948 for 48 stations at ≥ 600 m. Data is free with credit
+    ("Vir: ARSO").
+  - Only Kredarica and Lisca are current. The other stations arrive as a
+    monthly batch, too late for a D+6 resolve.
+  - The automatic stations (Kanin, Vršič, Krvavec, Vogel, Rogla) publish
+    depth live, but only a 48 h history with no public archive. They would
+    have to be archived forward.
+- **Poland (IMGW-PIB).** Daily snow depth and fresh snow since 1950
+  (`danepubliczne.imgw.pl`, reuse with credit), but posted 6–10 weeks late.
+  The real-time APIs carry no snow.
+- **Bulgaria (NIMH).** `info.meteo.bg/openData` has a daily-updated monthly
+  file of snow depth at 166 stations since January 2022, including Musala,
+  Rozhen, Chepelare (Pamporovo), Bansko and Samokov (Borovets).
+  - It has no new snow, coordinates or documented reading time.
+  - The terms allow use with credit but forbid modifying the content, so
+    derived values need NIMH's permission first.
+- **Romania (ANM).** The open portal has no snow. Snow depth is only in the
+  website's current-conditions feed, whose terms forbid archiving.
 Slovakia's SHMÚ open-data server (opendata.shmu.sk, CC BY 4.0, no
 registration) is the next candidate. It publishes a 1-minute snow-depth
 average for 95 automatic stations every 5 minutes, with about 30 days kept
