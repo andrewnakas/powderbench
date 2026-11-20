@@ -182,6 +182,53 @@ def point_index(meta: dict, lats: np.ndarray, lons: np.ndarray) -> np.ndarray:
     return np.where(ok, j * ni + i, -1)
 
 
+# Open-Meteo's terrain-optimised cell search (Sources/App/Domains/Gridable.swift,
+# findPointTerrainOptimised): keep the nearest cell when its model terrain is
+# within KEEP_M of the station; otherwise take the land cell minimising
+# |height difference| + PENALTY_M_PER_KM x distance, within MAX_KM, unless the
+# best is still more than GIVE_UP_M off.
+KEEP_M, PENALTY_M_PER_KM, MAX_KM, GIVE_UP_M = 100.0, 30.0, 50.0, 1500.0
+
+
+def terrain_index(meta: dict, lats: np.ndarray, lons: np.ndarray, elev_m: np.ndarray,
+                  grid_elev_m: np.ndarray, land: np.ndarray, radius: int) -> np.ndarray:
+    """Open-Meteo's default cell choice ("land"), on the model's own terrain
+    and land mask. A mountain station sits far above the mean height of a
+    25 km cell, so the nearest cell can be a valley that rains when the
+    summit snows. radius 0 = nearest cell."""
+    base = point_index(meta, lats, lons)
+    if radius <= 0:
+        return base
+    ni, nj = int(meta["Ni"]), int(meta["Nj"])
+    di, dj = float(meta["iDirectionIncrementInDegrees"]), float(meta["jDirectionIncrementInDegrees"])
+    lat0, lon0 = float(meta["latitudeOfFirstGridPointInDegrees"]), float(meta["longitudeOfFirstGridPointInDegrees"])
+    jsign = 1.0 if meta["jScansPositively"] else -1.0
+    out = base.copy()
+    for k, b in enumerate(base):
+        if b < 0 or not np.isfinite(elev_m[k]):
+            continue
+        j0, i0 = divmod(int(b), ni)
+        centre_ok = land[b] >= 0.5 and np.isfinite(grid_elev_m[b])
+        best_delta = abs(float(grid_elev_m[b]) - float(elev_m[k])) if centre_ok else np.inf
+        if best_delta <= KEEP_M:
+            continue
+        best = None
+        for j in range(max(j0 - radius, 0), min(j0 + radius + 1, nj)):
+            for i in range(max(i0 - radius, 0), min(i0 + radius + 1, ni)):
+                c = j * ni + i
+                if not land[c] >= 0.5 or not np.isfinite(grid_elev_m[c]):
+                    continue
+                dlat = lat0 + jsign * j * dj - lats[k]
+                dlon = ((lon0 + i * di - lons[k]) + 180.0) % 360.0 - 180.0
+                km = float(np.hypot(dlat, dlon)) * 111.0
+                delta = abs(float(grid_elev_m[c]) - float(elev_m[k])) + km * PENALTY_M_PER_KM
+                if delta < best_delta and km < MAX_KM:
+                    best_delta, best = delta, c
+        if best is not None and best_delta <= GIVE_UP_M:
+            out[k] = best
+    return out
+
+
 def at_points(values: np.ndarray, idx: np.ndarray) -> np.ndarray:
     out = np.full(len(idx), np.nan)
     ok = idx >= 0

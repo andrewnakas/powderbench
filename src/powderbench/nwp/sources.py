@@ -18,6 +18,9 @@ from . import grib
 
 log = logging.getLogger(__name__)
 
+# Grid-cell choice: terrain-matched within this many cells (0 = nearest cell)
+CELL_RADIUS = 1
+G0 = 9.80665  # ECMWF orography is geopotential (m2 s-2)
 ECMWF_BUCKET = "https://ecmwf-forecasts.s3.eu-central-1.amazonaws.com"
 GFS_BUCKET = "https://noaa-gfs-bdp-pds.s3.amazonaws.com"
 
@@ -28,19 +31,31 @@ def _fetch_all(requests_: list[tuple], workers: int) -> list[bytes | None]:
 
 
 class _Points:
-    """Grid-cell index per station set, reused across messages on one grid."""
+    """Grid-cell index per station set, reused across messages on one grid.
+    terrain() -> (grid metadata, model terrain height m, land fraction) on the
+    model grid, or None; without it (or on another grid) the nearest cell is used."""
 
-    def __init__(self, lats: np.ndarray, lons: np.ndarray):
-        self.lats, self.lons = lats, lons
+    def __init__(self, lats: np.ndarray, lons: np.ndarray, elev_m: np.ndarray, terrain=None):
+        self.lats, self.lons, self.elev_m, self.terrain = lats, lons, elev_m, terrain
         self._idx: dict[tuple, np.ndarray] = {}
+
+    def _index(self, meta: dict) -> np.ndarray:
+        key = tuple(meta[k] for k in grib.GRID_KEYS)
+        if key not in self._idx:
+            ter = self.terrain() if (self.terrain and CELL_RADIUS > 0) else None
+            if ter is not None and tuple(ter[0][k] for k in grib.GRID_KEYS) == key:
+                self._idx[key] = grib.terrain_index(meta, self.lats, self.lons, self.elev_m,
+                                                    ter[1], ter[2], CELL_RADIUS)
+            else:
+                self._idx[key] = grib.point_index(meta, self.lats, self.lons)
+        return self._idx[key]
 
     def take(self, message: bytes, water_mm: bool = False) -> np.ndarray:
         """Values at the stations; water_mm converts a water-equivalent field
         to mm from whatever unit the message declares."""
         values, meta = grib.decode(message)
         key = tuple(meta[k] for k in grib.GRID_KEYS)
-        if key not in self._idx:
-            self._idx[key] = grib.point_index(meta, self.lats, self.lons)
+        self._index(meta)
         out = grib.at_points(values, self._idx[key])
         if water_mm:
             out = out * grib.to_mm(meta["units"])
@@ -58,7 +73,25 @@ class Source:
         """Forecast steps (h) this run publishes; None when it is not on the server."""
         raise NotImplementedError
 
-    def accum(self, run: datetime, steps: list[int], lats, lons) -> dict[int, np.ndarray] | None:
+    _terrain: dict | None = None
+
+    def terrain(self, run: datetime):
+        """(grid metadata, terrain height m, land fraction) from the run's
+        analysis step; the grid is fixed, so the first one read is reused."""
+        if self._terrain is None:
+            self._terrain = {}
+        if "t" not in self._terrain:
+            try:
+                self._terrain["t"] = self._read_terrain(run)
+            except Exception:  # noqa: BLE001 - fall back to the nearest cell
+                log.warning("%s: no terrain field; using the nearest grid cell", self.name, exc_info=True)
+                self._terrain["t"] = None
+        return self._terrain["t"]
+
+    def _read_terrain(self, run: datetime):
+        raise NotImplementedError
+
+    def accum(self, run: datetime, steps: list[int], lats, lons, elev_m) -> dict[int, np.ndarray] | None:
         """Snowfall water equivalent (mm) since the run start, per step and
         station; None when a message is missing (run incomplete)."""
         raise NotImplementedError
@@ -100,11 +133,20 @@ class EcmwfOpenData(Source):
             return list(range(0, 145, 3)) + list(range(150, 361, 6))
         return list(range(0, 145, 3))  # 06/18z on the oper stream
 
-    def accum(self, run, steps, lats, lons):
+    def _read_terrain(self, run):
+        lay = self.layout(run)
+        url = self._url(run, 0, *lay)
+        fields = {e["param"]: e for e in grib.ecmwf_index(grib.fetch(url + ".index").decode())
+                  if e.get("levtype") == "sfc"}
+        z, meta = grib.decode(grib.fetch(url + ".grib2", int(fields["z"]["_offset"]), int(fields["z"]["_length"])))
+        lsm, _ = grib.decode(grib.fetch(url + ".grib2", int(fields["lsm"]["_offset"]), int(fields["lsm"]["_length"])))
+        return meta, z / G0, lsm
+
+    def accum(self, run, steps, lats, lons, elev_m):
         lay = self.layout(run)
         if lay is None:
             return None
-        pts = _Points(lats, lons)
+        pts = _Points(lats, lons, elev_m, lambda: self.terrain(run))
         want = [s for s in steps if s > 0]
         urls = [self._url(run, s, *lay) for s in want]
         indexes = _fetch_all([(u + ".index",) for u in urls], self.workers)
@@ -156,7 +198,15 @@ class Gfs(Source):
             return None
         return min(cand, key=lambda r: r["start_h"]) if total else max(cand, key=lambda r: r["start_h"])
 
-    def accum(self, run, steps, lats, lons):
+    def _read_terrain(self, run):
+        url = self._url(run, 0)
+        rows = grib.ncep_index(grib.fetch(url + ".idx").decode())
+        pick = {r["var"]: r for r in rows if r["level"] == "surface" and r["var"] in ("HGT", "LAND")}
+        hgt, meta = grib.decode(grib.fetch(url, pick["HGT"]["offset"], pick["HGT"]["length"]))
+        land, _ = grib.decode(grib.fetch(url, pick["LAND"]["offset"], pick["LAND"]["length"]))
+        return meta, hgt, land
+
+    def accum(self, run, steps, lats, lons, elev_m):
         top = max(steps)
         chain = list(range(self.STEP_H, top + 1, self.STEP_H))
         urls = [self._url(run, s) for s in chain]
@@ -176,7 +226,7 @@ class Gfs(Source):
         msgs = _fetch_all(reqs, self.workers)
         if any(m is None for m in msgs):
             return None
-        pts = _Points(lats, lons)
+        pts = _Points(lats, lons, elev_m, lambda: self.terrain(run))
         apcp = [pts.take(msgs[2 * k], water_mm=True) for k in range(len(chain))]
         csnow = [pts.take(msgs[2 * k + 1]) for k in range(len(chain))]
         cum = snow_from_buckets(chain, buckets, apcp, csnow)

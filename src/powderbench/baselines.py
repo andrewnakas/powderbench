@@ -100,10 +100,11 @@ def nwp_as_of(league: League, target_day: date, mode: str) -> datetime:
 
 
 def direct_prediction(league: League, target_day: date, source: str, mode: str = "live",
-                      featured_only: bool = False) -> pd.DataFrame:
-    """NWP baseline read from the producer's own files (nwp/): every station,
-    no Open-Meteo calls."""
-    stations = list(load_stations(league.name, featured_only=featured_only))
+                      featured_only: bool = False, stations=None) -> pd.DataFrame:
+    """NWP baseline read from the producer's own files (nwp/), no Open-Meteo
+    calls; `stations` defaults to the league's (featured) stations."""
+    if stations is None:
+        stations = list(load_stations(league.name, featured_only=featured_only))
     daily = nwp.daily_snowfall(stations, target_day, target_day + timedelta(days=2), source,
                                as_of=nwp_as_of(league, target_day, mode), live=mode == "live")
     log.info("%s %s: %s run %s for %d stations (direct)", league.name, target_day, source,
@@ -112,10 +113,14 @@ def direct_prediction(league: League, target_day: date, source: str, mode: str =
 
 
 # Extra NWP baselines. team -> (direct source, Open-Meteo model, region).
-# A direct source (nwp.SOURCES) reads the producer's files for every station
-# and falls back to Open-Meteo when that read fails; Open-Meteo-only models run
-# on featured stations (its free tier bills per location). Regions: "conus"
-# covers the lower 48, "alps" the Alps leagues, "japan" Japan.
+# Featured stations come from Open-Meteo (its free tier bills per location).
+# A team with a direct source (nwp.SOURCES) covers every other station from
+# the producer's own files, and the featured ones too whenever Open-Meteo is
+# down, out of quota or switched off. Open-Meteo stays first on featured
+# stations because its processing scored better there (stations league,
+# 2026-11-01..16: ECMWF 42 vs 25, AIFS 40 vs 31; its gfs_seamless blends HRRR
+# into GFS over the US). Regions: "conus" covers the lower 48, "alps" the Alps
+# leagues, "japan" Japan.
 MODEL_BASELINES = {
     "baseline-ecmwf": ("ecmwf_ifs", "ecmwf_ifs025", None),
     "baseline-aifs": ("ecmwf_aifs", "ecmwf_aifs025_single", None),  # ECMWF's AI model
@@ -151,16 +156,32 @@ def direct_enabled() -> bool:
 
 def model_prediction(league: League, target_day: date, team: str, mode: str = "live",
                      featured_only: bool = False) -> pd.DataFrame:
+    """Open-Meteo on featured stations, then the direct read for every station
+    it did not cover (all of them when Open-Meteo is unavailable)."""
     source, om_model, _ = MODEL_BASELINES[team]
-    if source and direct_enabled():
-        try:
-            pred = direct_prediction(league, target_day, source, mode, featured_only)
-            if len(pred):
-                return pred
-            log.warning("%s: direct %s gave no rows; falling back to Open-Meteo", team, source)
-        except Exception:
-            log.warning("%s: direct %s failed; falling back to Open-Meteo", team, source, exc_info=True)
-    return openmeteo_prediction(league, target_day, om_model, mode, featured_only=True)
+    om, om_error = pd.DataFrame(), None
+    try:
+        om = openmeteo_prediction(league, target_day, om_model, mode, featured_only=True)
+    except Exception as exc:  # noqa: BLE001 - one source's outage must not cost the other
+        om_error = exc
+        if not isinstance(exc, openmeteo.OpenMeteoDisabled):
+            log.warning("%s: Open-Meteo %s failed", team, om_model, exc_info=True)
+    if not source or not direct_enabled():
+        if om_error is not None:
+            raise om_error
+        return om
+    covered = set(om["station_id"]) if len(om) else set()
+    rest = [s for s in load_stations(league.name, featured_only=featured_only) if s.station_id not in covered]
+    if not rest:
+        return om
+    try:
+        direct = direct_prediction(league, target_day, source, mode, stations=rest)
+    except Exception:
+        log.warning("%s: direct %s failed for %d stations", team, source, len(rest), exc_info=True)
+        if om_error is not None:
+            raise om_error
+        return om
+    return pd.concat([om, direct], ignore_index=True) if len(om) else direct
 
 
 def model_baselines(league: League, target_day: date, mode: str = "live",

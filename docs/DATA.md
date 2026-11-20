@@ -611,9 +611,66 @@ Alignment check on the resolved stations rounds: 24 h windows starting 06Z and
 12Z fit the truth best (MAE 1.39″ and 1.35″), against 1.55″ for 00Z and 1.62″
 for 24Z.
 
-## NWP baselines: Open-Meteo
+## NWP baselines: Open-Meteo and the producers' own files
 
-[Open-Meteo](https://open-meteo.com/) (CC BY 4.0, no key):
+Two paths feed the model baselines:
+
+- [Open-Meteo](https://open-meteo.com/) (CC BY 4.0, no key) serves every model
+  on featured stations, the `baseline-openmeteo` best-match blend on every
+  station, and the archive the hindcasts use.
+- **Direct reads** (`src/powderbench/nwp/`, 2026-11): ECMWF IFS 0.25°, ECMWF
+  AIFS and NOAA GFS 0.25° straight from the producers' public buckets
+  (`s3://ecmwf-forecasts`, CC BY 4.0; `s3://noaa-gfs-bdp-pds`, public domain).
+  Each GRIB file has a byte index, so a round reads one ~0.4 MB message per
+  forecast step, and that message covers every station on Earth. That gives
+  `baseline-ecmwf`, `-aifs` and `-gfs` (and so `baseline-consensus`) at every
+  station, not just featured ones, with no Open-Meteo calls. It also keeps them
+  running when Open-Meteo is down or the home IP is out of quota.
+
+How the two combine, per team (`baselines.model_prediction`): Open-Meteo first
+on featured stations, then the direct read for every station it did not cover.
+That means all stations whenever Open-Meteo fails. Open-Meteo stays first on
+featured stations because its processing of the same model output scored
+better there. On the stations league, 2026-11-01..16, Open-Meteo's ECMWF scored
+42.4 (MAE 0.86″) against 24.6 (0.93″) for the direct read, and AIFS 39.9
+against 31.4. Its `gfs_seamless` also blends 3 km HRRR into GFS over the US,
+where the direct GFS is plain 0.25° GFS (−8.7). The direct reads are less dry
+on average (bias −0.27″ vs −0.52″ for ECMWF) but noisier. Matching
+Open-Meteo's cell choice did not close the gap, so until a direct variant wins
+on featured stations, it is the coverage and resilience layer.
+
+Direct-read conventions match Open-Meteo's, so the two halves of a team agree:
+- Station-local days: the IANA zone from the coordinates (`tzfpy`), DST-aware.
+- 0.7 cm of snow per mm of snowfall water equivalent.
+- Accumulations interpolated linearly to each local midnight between forecast
+  steps.
+- Grid cell chosen by Open-Meteo's terrain rule (`findPointTerrainOptimised`).
+  The nearest cell is kept when its model terrain is within 100 m of the
+  station. Otherwise the 3×3 land cell minimising height difference + 30 m per
+  km of distance wins.
+
+The snowfall field differs by model:
+- IFS and AIFS publish snowfall water equivalent (`sf`; IFS in m, AIFS in
+  kg m⁻², read from each message).
+- GFS has no snowfall field, so snow = precipitation × the share of each 3 h
+  interval that its categorical-snow flag was on (`CSNOW`, de-averaged from
+  GFS's 6 h buckets).
+
+The run is chosen honestly:
+- Live: the newest run online, never one issued after the cutoff.
+- Hindcast: the newest run that was fully online 3 h before the cutoff. Publish
+  delays were measured 2026-11-15: IFS 7.6 h, AIFS 5.3 h, GFS 4.2 h.
+
+So direct hindcast skill at 48/72 h is not optimistic, unlike the Open-Meteo
+archive.
+
+Switches:
+- `PB_NWP_DIRECT=0` sends everything back through Open-Meteo.
+- `PB_OPENMETEO=0` runs without Open-Meteo; cached responses still serve. The
+  2026-11-20 hindcast gates ran this way.
+- `PB_NWP_CACHE` sets where the GRIB messages are cached, for 3 days.
+
+### Open-Meteo details
 
 - **Timing**: baselines run 3 hours before each league's cutoff — GitHub's
   scheduler routinely starts jobs 30 min–3 h late, and a baseline must never
@@ -636,7 +693,8 @@ for 24Z.
 - **Hindcast**: `historical-forecast-api.open-meteo.com` — the archive of what
   models actually predicted at the time (available from ~2021). Lead times in
   the archive are short, so hindcast NWP skill at 48h/72h is optimistic;
-  live-round NWP baselines are the true benchmark.
+  live-round NWP baselines are the true benchmark. The direct ECMWF/GFS reads
+  use the run a live round would have had instead (above).
 
 ## Layout of generated data
 

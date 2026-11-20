@@ -13,8 +13,10 @@ storage with byte-range indexes, so one ~0.4 MB message covers every station:
 Daily totals follow Open-Meteo's conventions so baselines stay comparable
 across the switch: station-local days (IANA zone from the coordinates, DST
 aware, as timezone=auto), snow depth = 0.7 cm per mm of snowfall water
-equivalent (Open-Meteo's 7:1), nearest grid cell, accumulations interpolated
-linearly to the local-midnight boundaries between forecast steps.
+equivalent (Open-Meteo's 7:1), the grid cell chosen like Open-Meteo's default
+(a nearby land cell whose model terrain height best matches the station's),
+accumulations interpolated linearly to the local-midnight boundaries between
+forecast steps.
 
 Run choice is honest. Live: the newest run whose files are online now (and
 never one issued after the round's cutoff). Hindcast: the newest run that was
@@ -107,7 +109,8 @@ def daily_from_run(source: Source, run: datetime, stations, begin: date, end: da
         return None
     lats = np.array([s.latitude for s in stations])
     lons = np.array([s.longitude for s in stations])
-    acc = source.accum(run, need, lats, lons)
+    elev = np.array([s.elevation_ft * 0.3048 for s in stations], dtype=float)
+    acc = source.accum(run, need, lats, lons, elev)
     if acc is None:
         return None
     xs = np.array(need, dtype=float)

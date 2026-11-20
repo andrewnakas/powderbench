@@ -117,7 +117,7 @@ class _Fake(sources.Source):
             return None
         return list(range(0, 25 if run in self.short else 97, 6))
 
-    def accum(self, run, steps, lats, lons):
+    def accum(self, run, steps, lats, lons, elev_m):
         self.calls.append(run)
         return {s: np.full(len(lats), self.rate * s) for s in steps}
 
@@ -166,26 +166,44 @@ def test_gfs_snow_from_six_hour_buckets():
     assert [float(c[0]) for c in cum] == [0.0, 2.0, 2.0, 2.0]
 
 
-def test_model_prediction_falls_back_to_openmeteo(monkeypatch):
+def test_model_prediction_open_meteo_first_direct_for_the_rest(monkeypatch):
     league = type("L", (), {"name": "x"})()
-    calls = []
-
-    def boom(*a, **k):
-        raise LookupError("bucket down")
+    feat, net = _st("feat", 40, -111), _st("net", 41, -111)
+    monkeypatch.setattr(baselines, "load_stations",
+                        lambda name, featured_only=False: [feat] if featured_only else [feat, net])
+    got = {}
 
     def om(lg, day, model, mode, featured_only=False):
-        calls.append((model, featured_only))
-        return pd.DataFrame([{"station_id": "s", "horizon_h": 24, "snowfall_in": 1.0}])
+        got["om"] = (model, featured_only)
+        return pd.DataFrame([{"station_id": "feat", "horizon_h": 24, "snowfall_in": 1.0}])
 
-    monkeypatch.setattr(baselines, "direct_prediction", boom)
+    def direct(lg, day, source, mode="live", featured_only=False, stations=None):
+        got["direct"] = [s.station_id for s in stations]
+        return pd.DataFrame([{"station_id": s.station_id, "horizon_h": 24, "snowfall_in": 2.0} for s in stations])
+
     monkeypatch.setattr(baselines, "openmeteo_prediction", om)
+    monkeypatch.setattr(baselines, "direct_prediction", direct)
     out = baselines.model_prediction(league, date(2026, 2, 1), "baseline-ecmwf")
-    assert len(out) == 1 and calls == [("ecmwf_ifs025", True)]
+    assert got == {"om": ("ecmwf_ifs025", True), "direct": ["net"]}
+    assert dict(zip(out.station_id, out.snowfall_in)) == {"feat": 1.0, "net": 2.0}
 
+    # Open-Meteo out of quota: the direct read covers the featured station too
+    def om_down(*a, **k):
+        raise RuntimeError("429")
+
+    monkeypatch.setattr(baselines, "openmeteo_prediction", om_down)
+    out = baselines.model_prediction(league, date(2026, 2, 1), "baseline-ecmwf")
+    assert got["direct"] == ["feat", "net"] and len(out) == 2
+
+    # an Open-Meteo-only model keeps raising, so model_baselines skips it
+    with pytest.raises(RuntimeError):
+        baselines.model_prediction(league, date(2026, 2, 1), "baseline-icon")
+
+    # PB_NWP_DIRECT=0: Open-Meteo only, as before
     monkeypatch.setenv("PB_NWP_DIRECT", "0")
+    monkeypatch.setattr(baselines, "openmeteo_prediction", om)
     monkeypatch.setattr(baselines, "direct_prediction", lambda *a, **k: pytest.fail("direct disabled"))
-    baselines.model_prediction(league, date(2026, 2, 1), "baseline-gfs")
-    assert calls[-1] == ("gfs_seamless", True)
+    assert len(baselines.model_prediction(league, date(2026, 2, 1), "baseline-gfs")) == 1
 
 
 def test_hindcast_as_of_is_the_baselines_slot():
@@ -196,3 +214,20 @@ def test_hindcast_as_of_is_the_baselines_slot():
 
     assert baselines.nwp_as_of(L, date(2026, 2, 2), "hindcast") == datetime(2026, 2, 1, 21, tzinfo=timezone.utc)
     assert baselines.nwp_as_of(L, date(2020, 1, 1), "live") == datetime(2020, 1, 1, tzinfo=timezone.utc)
+
+
+def test_terrain_index_follows_open_meteo_rules():
+    meta = _meta(50, -125, 40, 40)  # 0.25 deg cells, lat 50..40.25, lon -125..-115.25
+    elev, land = np.full(1600, 500.0), np.ones(1600)
+    centre, north, south = 4 * 40 + 16, 3 * 40 + 16, 5 * 40 + 16  # (49.0, -121.0) and its neighbours
+    elev[south] = 2900.0
+    lat, lon = np.array([49.0]), np.array([-121.0])
+    # a 3000 m station: the 2900 m cell 28 km away beats the 500 m nearest cell
+    assert grib.terrain_index(meta, lat, lon, np.array([3000.0]), elev, land, 0)[0] == centre
+    assert grib.terrain_index(meta, lat, lon, np.array([3000.0]), elev, land, 1)[0] == south
+    # within 100 m the nearest cell is kept, even if a neighbour matches exactly
+    elev[north] = 580.0
+    assert grib.terrain_index(meta, lat, lon, np.array([580.0]), elev, land, 1)[0] == centre
+    # water cells are never chosen
+    land[south] = 0.0
+    assert grib.terrain_index(meta, lat, lon, np.array([3000.0]), elev, land, 1)[0] != south
