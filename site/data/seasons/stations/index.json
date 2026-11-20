@@ -2,6 +2,26 @@
  "season_start_month": 10,
  "stations": [
   {
+   "slug": "mt-rose",
+   "station_id": "652:NV:SNTL",
+   "resort": "Mt. Rose",
+   "seasons": [
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023",
+    "2024",
+    "2025",
+    "2026"
+   ],
+   "latest_total": 64.0
+  },
+  {
    "slug": "silverton",
    "station_id": "713:CO:SNTL",
    "resort": "Silverton",
@@ -22,9 +42,9 @@
    "latest_total": 58.0
   },
   {
-   "slug": "mt-rose",
-   "station_id": "652:NV:SNTL",
-   "resort": "Mt. Rose",
+   "slug": "alyeska",
+   "station_id": "1103:AK:SNTL",
+   "resort": "Alyeska",
    "seasons": [
     "2015",
     "2016",
@@ -39,7 +59,7 @@
     "2025",
     "2026"
    ],
-   "latest_total": 56.0
+   "latest_total": 55.0
   },
   {
    "slug": "donner-sugar-bowl",
@@ -59,12 +79,92 @@
     "2025",
     "2026"
    ],
-   "latest_total": 44.0
+   "latest_total": 52.0
   },
   {
    "slug": "snowbird",
    "station_id": "766:UT:SNTL",
    "resort": "Snowbird",
+   "seasons": [
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023",
+    "2024",
+    "2025",
+    "2026"
+   ],
+   "latest_total": 48.0
+  },
+  {
+   "slug": "kirkwood",
+   "station_id": "1067:CA:SNTL",
+   "resort": "Kirkwood / Carson Pass",
+   "seasons": [
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023",
+    "2024",
+    "2025",
+    "2026"
+   ],
+   "latest_total": 47.0
+  },
+  {
+   "slug": "brian-head",
+   "station_id": "1154:UT:SNTL",
+   "resort": "Brian Head",
+   "seasons": [
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023",
+    "2024",
+    "2025",
+    "2026"
+   ],
+   "latest_total": 46.0
+  },
+  {
+   "slug": "palisades",
+   "station_id": "784:CA:SNTL",
+   "resort": "Palisades Tahoe",
+   "seasons": [
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023",
+    "2024",
+    "2025",
+    "2026"
+   ],
+   "latest_total": 44.0
+  },
+  {
+   "slug": "homewood-ward",
+   "station_id": "848:CA:SNTL",
+   "resort": "Ward Creek / West Shore",
    "seasons": [
     "2015",
     "2016",
@@ -102,86 +202,6 @@
    "latest_total": 42.0
   },
   {
-   "slug": "kirkwood",
-   "station_id": "1067:CA:SNTL",
-   "resort": "Kirkwood / Carson Pass",
-   "seasons": [
-    "2015",
-    "2016",
-    "2017",
-    "2018",
-    "2019",
-    "2020",
-    "2021",
-    "2022",
-    "2023",
-    "2024",
-    "2025",
-    "2026"
-   ],
-   "latest_total": 40.0
-  },
-  {
-   "slug": "alyeska",
-   "station_id": "1103:AK:SNTL",
-   "resort": "Alyeska",
-   "seasons": [
-    "2015",
-    "2016",
-    "2017",
-    "2018",
-    "2019",
-    "2020",
-    "2021",
-    "2022",
-    "2023",
-    "2024",
-    "2025",
-    "2026"
-   ],
-   "latest_total": 38.0
-  },
-  {
-   "slug": "brian-head",
-   "station_id": "1154:UT:SNTL",
-   "resort": "Brian Head",
-   "seasons": [
-    "2015",
-    "2016",
-    "2017",
-    "2018",
-    "2019",
-    "2020",
-    "2021",
-    "2022",
-    "2023",
-    "2024",
-    "2025",
-    "2026"
-   ],
-   "latest_total": 37.0
-  },
-  {
-   "slug": "palisades",
-   "station_id": "784:CA:SNTL",
-   "resort": "Palisades Tahoe",
-   "seasons": [
-    "2015",
-    "2016",
-    "2017",
-    "2018",
-    "2019",
-    "2020",
-    "2021",
-    "2022",
-    "2023",
-    "2024",
-    "2025",
-    "2026"
-   ],
-   "latest_total": 37.0
-  },
-  {
    "slug": "crested-butte",
    "station_id": "737:CO:SNTL",
    "resort": "Crested Butte",
@@ -202,9 +222,23 @@
    "latest_total": 36.0
   },
   {
-   "slug": "homewood-ward",
-   "station_id": "848:CA:SNTL",
-   "resort": "Ward Creek / West Shore",
+   "slug": "alta-atwater",
+   "station_id": "1308:UT:SNTL",
+   "resort": "Alta",
+   "seasons": [
+    "2021",
+    "2022",
+    "2023",
+    "2024",
+    "2025",
+    "2026"
+   ],
+   "latest_total": 35.0
+  },
+  {
+   "slug": "heavenly",
+   "station_id": "518:CA:SNTL",
+   "resort": "Heavenly",
    "seasons": [
     "2015",
     "2016",
@@ -219,21 +253,7 @@
     "2025",
     "2026"
    ],
-   "latest_total": 34.0
-  },
-  {
-   "slug": "alta-atwater",
-   "station_id": "1308:UT:SNTL",
-   "resort": "Alta",
-   "seasons": [
-    "2021",
-    "2022",
-    "2023",
-    "2024",
-    "2025",
-    "2026"
-   ],
-   "latest_total": 32.0
+   "latest_total": 35.0
   },
   {
    "slug": "bridger-bowl",
@@ -273,7 +293,7 @@
     "2025",
     "2026"
    ],
-   "latest_total": 30.0
+   "latest_total": 31.0
   },
   {
    "slug": "crystal",
@@ -293,12 +313,32 @@
     "2025",
     "2026"
    ],
-   "latest_total": 28.0
+   "latest_total": 30.0
   },
   {
    "slug": "telluride",
    "station_id": "586:CO:SNTL",
    "resort": "Telluride",
+   "seasons": [
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023",
+    "2024",
+    "2025",
+    "2026"
+   ],
+   "latest_total": 27.0
+  },
+  {
+   "slug": "brighton",
+   "station_id": "366:UT:SNTL",
+   "resort": "Brighton / Solitude",
    "seasons": [
     "2015",
     "2016",
@@ -333,7 +373,27 @@
     "2025",
     "2026"
    ],
-   "latest_total": 23.0
+   "latest_total": 25.0
+  },
+  {
+   "slug": "park-city",
+   "station_id": "814:UT:SNTL",
+   "resort": "Park City / Deer Valley",
+   "seasons": [
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023",
+    "2024",
+    "2025",
+    "2026"
+   ],
+   "latest_total": 25.0
   },
   {
    "slug": "sun-valley",
@@ -353,67 +413,7 @@
     "2025",
     "2026"
    ],
-   "latest_total": 23.0
-  },
-  {
-   "slug": "heavenly",
-   "station_id": "518:CA:SNTL",
-   "resort": "Heavenly",
-   "seasons": [
-    "2015",
-    "2016",
-    "2017",
-    "2018",
-    "2019",
-    "2020",
-    "2021",
-    "2022",
-    "2023",
-    "2024",
-    "2025",
-    "2026"
-   ],
-   "latest_total": 23.0
-  },
-  {
-   "slug": "brighton",
-   "station_id": "366:UT:SNTL",
-   "resort": "Brighton / Solitude",
-   "seasons": [
-    "2015",
-    "2016",
-    "2017",
-    "2018",
-    "2019",
-    "2020",
-    "2021",
-    "2022",
-    "2023",
-    "2024",
-    "2025",
-    "2026"
-   ],
-   "latest_total": 21.0
-  },
-  {
-   "slug": "aspen",
-   "station_id": "542:CO:SNTL",
-   "resort": "Aspen / Highlands",
-   "seasons": [
-    "2015",
-    "2016",
-    "2017",
-    "2018",
-    "2019",
-    "2020",
-    "2021",
-    "2022",
-    "2023",
-    "2024",
-    "2025",
-    "2026"
-   ],
-   "latest_total": 20.0
+   "latest_total": 24.0
   },
   {
    "slug": "white-pass",
@@ -433,7 +433,47 @@
     "2025",
     "2026"
    ],
-   "latest_total": 20.0
+   "latest_total": 22.0
+  },
+  {
+   "slug": "aspen",
+   "station_id": "542:CO:SNTL",
+   "resort": "Aspen / Highlands",
+   "seasons": [
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023",
+    "2024",
+    "2025",
+    "2026"
+   ],
+   "latest_total": 21.0
+  },
+  {
+   "slug": "bogus-basin",
+   "station_id": "978:ID:SNTL",
+   "resort": "Bogus Basin",
+   "seasons": [
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023",
+    "2024",
+    "2025",
+    "2026"
+   ],
+   "latest_total": 21.0
   },
   {
    "slug": "taos",
@@ -473,7 +513,27 @@
     "2025",
     "2026"
    ],
-   "latest_total": 16.0
+   "latest_total": 17.0
+  },
+  {
+   "slug": "big-sky",
+   "station_id": "590:MT:SNTL",
+   "resort": "Big Sky",
+   "seasons": [
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023",
+    "2024",
+    "2025",
+    "2026"
+   ],
+   "latest_total": 17.0
   },
   {
    "slug": "rainier-paradise",
@@ -493,32 +553,12 @@
     "2025",
     "2026"
    ],
-   "latest_total": 16.0
+   "latest_total": 17.0
   },
   {
    "slug": "schweitzer",
    "station_id": "738:ID:SNTL",
    "resort": "Schweitzer",
-   "seasons": [
-    "2015",
-    "2016",
-    "2017",
-    "2018",
-    "2019",
-    "2020",
-    "2021",
-    "2022",
-    "2023",
-    "2024",
-    "2025",
-    "2026"
-   ],
-   "latest_total": 16.0
-  },
-  {
-   "slug": "park-city",
-   "station_id": "814:UT:SNTL",
-   "resort": "Park City / Deer Valley",
    "seasons": [
     "2015",
     "2016",
@@ -554,26 +594,6 @@
     "2026"
    ],
    "latest_total": 16.0
-  },
-  {
-   "slug": "big-sky",
-   "station_id": "590:MT:SNTL",
-   "resort": "Big Sky",
-   "seasons": [
-    "2015",
-    "2016",
-    "2017",
-    "2018",
-    "2019",
-    "2020",
-    "2021",
-    "2022",
-    "2023",
-    "2024",
-    "2025",
-    "2026"
-   ],
-   "latest_total": 15.0
   },
   {
    "slug": "mt-hood",
@@ -616,26 +636,6 @@
    "latest_total": 15.0
   },
   {
-   "slug": "bogus-basin",
-   "station_id": "978:ID:SNTL",
-   "resort": "Bogus Basin",
-   "seasons": [
-    "2015",
-    "2016",
-    "2017",
-    "2018",
-    "2019",
-    "2020",
-    "2021",
-    "2022",
-    "2023",
-    "2024",
-    "2025",
-    "2026"
-   ],
-   "latest_total": 15.0
-  },
-  {
    "slug": "breckenridge",
    "station_id": "531:CO:SNTL",
    "resort": "Breckenridge",
@@ -653,7 +653,7 @@
     "2025",
     "2026"
    ],
-   "latest_total": 13.0
+   "latest_total": 14.0
   },
   {
    "slug": "powder-mountain",
@@ -673,7 +673,7 @@
     "2025",
     "2026"
    ],
-   "latest_total": 10.0
+   "latest_total": 13.0
   },
   {
    "slug": "brundage",
@@ -693,7 +693,27 @@
     "2025",
     "2026"
    ],
-   "latest_total": 10.0
+   "latest_total": 12.0
+  },
+  {
+   "slug": "jackson-hole",
+   "station_id": "689:WY:SNTL",
+   "resort": "Jackson Hole / Teton Pass",
+   "seasons": [
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023",
+    "2024",
+    "2025",
+    "2026"
+   ],
+   "latest_total": 12.0
   },
   {
    "slug": "snoqualmie",
@@ -773,27 +793,7 @@
     "2025",
     "2026"
    ],
-   "latest_total": 6.0
-  },
-  {
-   "slug": "jackson-hole",
-   "station_id": "689:WY:SNTL",
-   "resort": "Jackson Hole / Teton Pass",
-   "seasons": [
-    "2015",
-    "2016",
-    "2017",
-    "2018",
-    "2019",
-    "2020",
-    "2021",
-    "2022",
-    "2023",
-    "2024",
-    "2025",
-    "2026"
-   ],
-   "latest_total": 5.0
+   "latest_total": 7.0
   },
   {
    "slug": "vail",
