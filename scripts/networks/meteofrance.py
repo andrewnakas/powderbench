@@ -1,7 +1,14 @@
 """Generate data/stations/meteofrance.csv: Météo-France stations with a daily
 new-snow board or 06 UTC snow depth in France's mountains outside the Alps
-(Pyrenees, Massif Central, Vosges, Jura, Corsica), for the world league. The
-French Alps belong to the alps league (nivo posts).
+(Pyrenees, Massif Central, Vosges, Jura, Corsica), for the world league.
+
+With --alps: data/stations/meteofrance_alps.csv, the French Alps' climate
+stations for the alps league. A candidate within DUP_KM and DUP_ALT_M of a
+station already in the alps league (the nivo resort posts) is skipped, and
+none is featured (the alps featured set comes from the nivo posts).
+
+In both modes two candidates within DUP_KM and DUP_ALT_M of each other are
+one site: the one with the longer record is kept, before the gate.
 
 Candidates: stations in DEPTS at >= MIN_ALT_M. A candidate is kept as a
 new-snow station (`:FR:MFHN`) when last winter (Nov-Mar) has >= MIN_DAYS
@@ -19,7 +26,7 @@ station within FEATURED_KM and no more than BELOW_BASE_M below the lowest
 lift; the FEATURED_MAX biggest areas only (the world league's featured set
 fell from 5 to 3 with the NWP gate, and the Open-Meteo budget does not rise).
 
-    python scripts/networks/meteofrance.py
+    python scripts/networks/meteofrance.py [--alps]
 """
 
 from __future__ import annotations
@@ -38,6 +45,14 @@ import gate  # noqa: E402
 import skiareas  # noqa: E402
 
 OUT = ROOT / "data" / "stations" / "meteofrance.csv"
+OUT_ALPS = ROOT / "data" / "stations" / "meteofrance_alps.csv"
+ALPS_DEPTS = {
+    "74": "Northern French Alps", "73": "Northern French Alps", "38": "Northern French Alps",
+    "26": "Northern French Alps",
+    "05": "Southern French Alps", "04": "Southern French Alps", "06": "Southern French Alps",
+}
+DUP_KM = 2.0
+DUP_ALT_M = 200
 DEPTS = {
     "64": "Pyrenees", "65": "Pyrenees", "31": "Pyrenees", "09": "Pyrenees", "66": "Pyrenees", "11": "Pyrenees",
     "15": "Massif Central", "63": "Massif Central", "43": "Massif Central", "48": "Massif Central",
@@ -79,18 +94,40 @@ def winters_ok(t: pd.DataFrame) -> int:
     return int((seasons.value_counts() >= 100).sum())
 
 
+def alps_neighbours() -> list[tuple[float, float, float, str]]:
+    """(lat, lon, elevation m, id) of every station already in the alps league."""
+    out = []
+    for f in sorted((ROOT / "data" / "stations").glob("*.csv")):
+        if f == OUT_ALPS:
+            continue
+        for r in csv.DictReader(f.open(encoding="utf-8")):
+            if r.get("league") == "alps":
+                out.append((float(r["latitude"]), float(r["longitude"]), float(r["elevation_ft"]) / 3.28084,
+                            r["station_id"]))
+    return out
+
+
 def main() -> int:
     from powderbench.networks import meteofrance as mf
 
+    alps = "--alps" in sys.argv[1:]
+    league, depts, out = ("alps", ALPS_DEPTS, OUT_ALPS) if alps else ("world", DEPTS, OUT)
+    neighbours = alps_neighbours() if alps else []
+    print(f"{league}: {len(neighbours)} stations already in the league to dedupe against", flush=True)
     today = datetime.now(timezone.utc).date()
     last = today.year if today.month >= 4 else today.year - 1
     b, e = date(last - 1, 11, 1), date(last, 3, 31)
     live_end = today - timedelta(days=LAG_DAYS)
     rows = []
-    for dep, massif in DEPTS.items():
+    for dep, massif in depts.items():
         meta = metadata(dep)
         for _, m in meta[meta["ALTI"] >= MIN_ALT_M].iterrows():
             num = m["NUM_POSTE"]
+            dup = [n[3] for n in neighbours if abs(n[2] - float(m["ALTI"])) <= DUP_ALT_M
+                   and skiareas.km(float(m["LAT"]), float(m["LON"]), n[0], n[1]) <= DUP_KM]
+            if dup:
+                print(f"{num} {m['NOM_USUEL'][:26]:<26} -> skip (same site as {dup[0]})", flush=True)
+                continue
             verdict = None
             for suffix in ("MFHN", "MF"):
                 sid = f"{num}:FR:{suffix}"
@@ -114,21 +151,39 @@ def main() -> int:
                 t = mf.daily([sid], live_end - timedelta(days=LIVE_DAYS - 1), live_end)
                 live = t["valid"].mean() >= MIN_LIVE_SHARE
             keep = winters >= MIN_CLIM_WINTERS and live
-            offset, why = gate.decide("world", sid, 0 if sid.endswith("MFHN") else 1) if keep else (None, "")
-            keep = keep and offset is not None
             print(f"{line} {sid.split(':')[-1]:<4} days={ok_days} snow_days={snow_days} winters={winters} "
-                  f"live={live} {why} -> {'keep' if keep else 'drop'}", flush=True)
+                  f"live={live} -> {'candidate' if keep else 'drop'}", flush=True)
             if not keep:
                 continue
             lat, lon, alt = float(m["LAT"]), float(m["LON"]), float(m["ALTI"])
             name = str(m["NOM_USUEL"]).strip().title()
             rows.append({"station_id": sid, "slug": f"mf-{num}", "name": name,
                          "resort": skiareas.label(name, lat, lon, within_km=10.0, min_lifts=3),
-                         "region": "France", "state": "FR", "elevation_ft": round(alt * 3.28084),
-                         "latitude": round(lat, 5), "longitude": round(lon, 5), "league": "world",
+                         "region": massif if alps else "France", "state": "FR", "elevation_ft": round(alt * 3.28084),
+                         "latitude": round(lat, 5), "longitude": round(lon, 5), "league": league,
                          "tier": "network", "truth_source": "meteofrance",
                          "network": f"Météo-France ({massif})", "external_id": num,
-                         "day_offset": offset, "_alt": alt})
+                         "day_offset": None, "_alt": alt, "_winters": winters, "_days": ok_days})
+    # one station per site (Météo-France lists some sites twice, e.g. a
+    # climate station and its snow board): the longest record wins
+    rows.sort(key=lambda r: (-r["_winters"], -r["_days"], r["station_id"]))
+    unique: list[dict] = []
+    for r in rows:
+        twin = next((u for u in unique if abs(u["_alt"] - r["_alt"]) <= DUP_ALT_M
+                     and skiareas.km(r["latitude"], r["longitude"], u["latitude"], u["longitude"]) <= DUP_KM), None)
+        if twin is not None:
+            print(f"{r['station_id']} {r['name']} -> skip (same site as {twin['station_id']})", flush=True)
+            continue
+        unique.append(r)
+    # the gate comes after one station per site is chosen, so a site whose
+    # station fails cannot come back under its twin
+    rows = []
+    for r in unique:
+        offset, why = gate.decide(league, r["station_id"], 0 if r["station_id"].endswith("MFHN") else 1)
+        print(f"{r['station_id']} {r['name']} {why} -> {'keep' if offset is not None else 'drop'}", flush=True)
+        if offset is not None:
+            r["day_offset"] = offset
+            rows.append(r)
     nearest: dict[str, tuple[float, str, int, str]] = {}
     for r in rows:
         area, d = skiareas.nearest(r["latitude"], r["longitude"], FEATURED_LIFTS)
@@ -136,17 +191,18 @@ def main() -> int:
             continue
         if area["id"] not in nearest or d < nearest[area["id"]][0]:
             nearest[area["id"]] = (d, r["station_id"], area["lift_count"], area["name"])
-    top = sorted(nearest.values(), key=lambda v: -v[2])[:FEATURED_MAX]
+    top = sorted(nearest.values(), key=lambda v: -v[2])[:0 if alps else FEATURED_MAX]
     chosen = {v[1] for v in top}
     for r in rows:
         r["tier"] = "featured" if r["station_id"] in chosen else "network"
-        r.pop("_alt")
-    with OUT.open("w", newline="", encoding="utf-8") as f:
+        for k in ("_alt", "_winters", "_days"):
+            r.pop(k)
+    with out.open("w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=FIELDS)
         w.writeheader()
         w.writerows(sorted(rows, key=lambda r: r["name"]))
     print(f"{len(rows)} kept; featured: " + ", ".join(f"{v[3]} ({v[2]} lifts, {v[0]:.1f} km)" for v in top)
-          + f" -> {OUT}")
+          + f" -> {out}")
     return 0
 
 
