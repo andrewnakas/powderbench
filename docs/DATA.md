@@ -709,9 +709,226 @@ Alignment check on the resolved stations rounds: 24 h windows starting 06Z and
 12Z fit the truth best (MAE 1.39″ and 1.35″), against 1.55″ for 00Z and 1.62″
 for 24Z.
 
-## NWP baselines: Open-Meteo
+## NWP baselines: Open-Meteo and the producers' own files
 
-[Open-Meteo](https://open-meteo.com/) (CC BY 4.0, no key):
+Two paths feed the model baselines:
+
+- [Open-Meteo](https://open-meteo.com/) (CC BY 4.0, no key) serves every model
+  on featured stations, the `baseline-openmeteo` best-match blend on every
+  station, and the archive the hindcasts use.
+- **Direct reads** (`src/powderbench/nwp/`, 2026-11): ECMWF IFS (0.25°, see
+  below), ECMWF AIFS 0.25°, NOAA GFS 0.25° and the NOAA National Blend (NBM,
+  2.5 km, contiguous US) straight from the producers' public buckets
+  (`s3://ecmwf-forecasts`, CC BY 4.0, with mirrors as the fallback;
+  `s3://noaa-gfs-bdp-pds` and `s3://noaa-nbm-grib2-pds`, public domain).
+  Each GRIB file has a byte index, so a round reads one ~0.4 MB message per
+  forecast step, and that message covers every station on Earth. That gives
+  `baseline-ecmwf`, `-aifs` and `-gfs` (and so `baseline-consensus`) at every
+  station, not just featured ones, with no Open-Meteo calls. It also keeps them
+  running when Open-Meteo is down or the home IP is out of quota.
+
+How the two combine, per team (`baselines.model_prediction`):
+- **ECMWF IFS, AIFS, GFS and NBM (`DIRECT_FIRST`):** the direct read goes
+  first, at every station (NBM: every station in the contiguous US).
+  Open-Meteo is called only for featured stations it missed, so on a normal
+  day these four teams cost no Open-Meteo calls.
+- **Every other model** (ICON, GEM, UKMO, HRRR, AROME…) has no direct read in
+  use and stays on Open-Meteo, featured stations only.
+
+**Open-Meteo's elevation rule (2026-11-20).** Read raw, the direct ECMWF
+scored well below Open-Meteo's processing of the same run. On the stations
+league, 2026-11-01..16, ECMWF scored 24.6 against Open-Meteo's 42.4, and
+AIFS 31.4 against 39.9. Matching Open-Meteo's cell choice did not close the
+gap. The rest of it is one rule in Open-Meteo's source
+(`VariableHourly.swift`, `GenericReader.swift`):
+- Where the grid cell's terrain is more than 100 m above or below the
+  station, the 2 m temperature is moved to the station's height at 0.65 K
+  per 100 m.
+- Snowfall is kept only while that temperature is below 0 °C.
+
+The direct read now does the same (`sources.temperature_rule`). It reads
+every step's `sf` and `2t` and keeps each interval's snowfall for the share of
+it below 0 °C, with the temperature linear between steps. `PB_NWP_TRULE=0`
+turns it off. Scored against truth, 2026-11-01..14, same runs and days
+(powder score):
+
+| | Open-Meteo | direct | direct + rule |
+|---|---|---|---|
+| ECMWF IFS, stations, featured | 44.5 | 23.8 | **49.4** |
+| ECMWF IFS, resorts-na, featured | **−8.2** | −15.8 | −8.7 |
+| ECMWF IFS, alps, featured | −3.5 (41% of station-days) | −27.5 | **7.3** |
+| ECMWF IFS, observers, featured | 24.2 | −19.1 | **26.6** |
+| ECMWF IFS, stations, all 996 | – | −0.1 | **26.3** |
+| ECMWF IFS, observers, all | – | −79.5 | **2.8** |
+| AIFS, stations, featured | 40.5 | 31.1 | **51.7** |
+| AIFS, resorts-na, featured | 4.1 | −3.1 | **8.6** |
+| AIFS, alps, featured | −11.9 (41% of station-days) | −37.6 | **9.8** |
+| AIFS, observers, featured | 7.8 | −23.5 | **23.9** |
+| AIFS, stations, all 996 | – | 1.3 | **22.4** |
+| AIFS, observers, all | – | −94.7 | **−0.7** |
+| GFS, stations, featured | 20.7 | −14.2 | **40.2** |
+| GFS, resorts-na, featured | −110.5 | −72.4 | **−37.2** |
+| GFS, alps, featured | −14.3 (41% of station-days) | −55.5 | **−0.2** |
+| GFS, observers, featured | −18.9 | −59.3 | **4.3** |
+| GFS, stations, all 996 | – | −26.9 | **15.3** |
+| GFS, observers, all | – | −216.0 | **−53.5** |
+
+The production code reproduces the experiment exactly: ECMWF on featured
+stations scores 49.4 at 0.25° and 50.4 at 0.1°.
+
+GFS has no snowfall field: its snow is precipitation times the share of
+time the model's categorical-snow flag was on. The rule then applies to that
+snow the same way, with GFS's 2 m temperature at every 3 h step. With it,
+the plain 0.25° GFS beats Open-Meteo's `gfs_seamless` on featured stations in
+all four leagues, although Open-Meteo blends 3 km HRRR into it over the US.
+
+**HRRR, tested and not used (2026-11-20).** The direct read handles NCEP's
+Lambert grids (`grib.lambert_ij`, cell-for-cell equal to eccodes' own
+coordinates on HRRR), and `nwp.SOURCES["hrrr"]` reads HRRR's accumulated
+snowfall water (WEASD) with the hourly 2 m temperature. But a round is
+issued the evening before its first day, so HRRR's 48 h runs reach only that
+first day, and there it scores below GFS and ECMWF with the rule
+(2026-11-01..14, featured stations, MAE of the 24 h window):
+
+| League | HRRR | GFS + rule | ECMWF + rule | Open-Meteo GFS |
+|---|---|---|---|---|
+| stations | 0.380″ | 0.338″ | **0.330″** | 0.498″ |
+| resorts-na | 0.503″ | 0.433″ | **0.424″** | 0.637″ |
+| observers | 0.214″ | **0.133″** | 0.136″ | 0.246″ |
+
+So `baseline-hrrr` keeps its Open-Meteo-only entry; Open-Meteo's own HRRR
+has the same 48 h limit.
+
+**NBM, read direct (2026-11-20).** `nwp.SOURCES["nbm"]` reads the National
+Blend's own snowfall, ASNOW: calibrated snow depth with the blend's own
+snow-to-liquid ratio, on 2.5 km terrain, so no elevation rule. Its buckets are
+1 h to 36 h and 6 h after (6 h buckets as far as they go, then hourly ones;
+past 36 h days are interpolated inside a 6 h bucket). Probability and
+percentile messages share the name; the index's extra tags tell them apart.
+eccodes has no name for ASNOW in NBM's tables, so its unit reads `unknown`;
+it is WMO 0-1-29, total snowfall, in m. NBM's grids store every other row
+backwards (`alternativeRowScanning=1`); `grib.decode` puts them back in plain
+row order, and 300 random cells then match eccodes' own nearest-point value
+exactly (HRRR does not alternate). Same rounds and stations as above
+(2026-11-01..14, featured, powder score):
+
+| League | NBM direct | Open-Meteo NBM | ECMWF + rule | GFS + rule | Open-Meteo GFS |
+|---|---|---|---|---|---|
+| resorts-na | −30.6 | −84.4 | **−8.7** | −37.2 | −110.5 |
+| stations | 36.0 | — | **49.4** | 40.2 | 20.7 |
+| observers | 1.2 | — | **26.6** | 4.3 | −18.9 |
+
+Open-Meteo's NBM never produced a file for the stations or observers rounds
+(observers has one). On resorts-na the direct read is 54 points ahead of
+Open-Meteo's NBM, with a lower error at every horizon (24 h MAE 0.45 against
+0.57 in), so `baseline-nbm` reads direct first. ECMWF with the elevation
+rule is still the better single model there. Over every station NBM ranks
+third on stations (10.1 against ECMWF 26.3 and GFS 15.3) and second on
+observers (−10.3 against ECMWF 2.8); Alaska is off its grid. (A first run
+read mirrored cells on odd grid rows, before the row fix, and scored NBM
+higher; those numbers are withdrawn.)
+
+NBM also changes `baseline-consensus`, the median of the NWP baselines. Rebuilt
+from the baseline files PowderBench issued over the same rounds (featured
+stations), with direct NBM swapped in for Open-Meteo's on resorts-na and
+added as a member on stations and observers:
+
+| League | Consensus as issued | With direct NBM |
+|---|---|---|
+| resorts-na | −11.9 | **−2.0** (lower error at every horizon) |
+| stations | 53.6 | **53.8** (lower error at every horizon) |
+| observers | **36.7** | 36.3 (72 h error 0.21 against 0.20 in) |
+
+So NBM stays a consensus member in every lower-48 league.
+
+**ECMWF ensemble mean, tested and not used (2026-11-20).** ECMWF's open
+data carries the 50 perturbed members of the ensemble (`enfo`, `…-ef`), with
+snowfall (`sf`) at every step. `nwp.SOURCES["ecmwf_ens"]` reads the member
+mean, with the deterministic run's 2 m temperature for the elevation rule.
+Same rounds as above (2026-11-01..14), powder score:
+
+| League | Featured: ENS mean / IFS | Every station: ENS mean / IFS |
+|---|---|---|
+| stations | 47.4 / **49.4** | 25.7 / **26.3** |
+| observers | 22.9 / **26.6** | −1.0 / **2.8** |
+| alps | 6.1 / **7.3** | |
+| resorts-na | **−4.8** / −8.7 | **−4.8** / −8.7 |
+
+The mean is smoother and scores lower than the single run in three of the
+four leagues, so it is not a baseline. The source stays for a probabilistic
+baseline later (exceedance chances from the members).
+
+**ECMWF IFS at 0.1° or 0.25° (2026-11-20).** Since the runs of late October
+2026, ECMWF's open data also carries IFS on its native ~9 km grid, as 0.1°
+(`ifs/0p1/oper/…-fc-sfc`).
+
+When the AWS bucket throttles (it answered one IP with 503 SlowDown for
+hours), the direct read falls back to ECMWF's Google Cloud mirror
+(`storage.googleapis.com/ecmwf-open-data`, the full archive), then to
+data.ecmwf.int (the last four days of runs). A server that failed is skipped
+for 15 minutes, so a long hindcast does not pay its retries on every file.
+
+Without the rule, 0.1° looked better. Scored against each league's truth,
+2026-10-26..11-15, every station, same runs and days:
+
+| League | Station-days | MAE 0.1° / 0.25° | Bias | r | MAE, days with 2″+ | Forecast ÷ truth, days with 2″+ |
+|---|---|---|---|---|---|---|
+| stations | 20,045 | 0.333″ / 0.325″ | +0.067″ / +0.030″ | **0.542** / 0.513 | **2.24″** / 2.39″ | **0.63** / 0.54 |
+| observers | 12,810 | **0.043″** / 0.048″ | +0.018″ / +0.022″ | **0.488** / 0.364 | **2.08″** / 2.19″ | **0.55** / 0.48 |
+| japan | 4,402 | **0.137″** / 0.146″ | +0.046″ / +0.052″ | **0.555** / 0.531 | **2.54″** / 2.62″ | **0.47** / 0.44 |
+
+With the rule, scored by powder score as the boards are, 0.25° is better
+over every station:
+
+| With the rule, all stations | 0.25° | 0.1° |
+|---|---|---|
+| stations | **26.3** | 22.5 |
+| observers | **2.8** | −10.5 |
+| alps | 6.4 | **7.1** |
+| resorts-na | **−8.7** | −37.7 |
+
+So the read takes 0.25° first and 0.1° only as a fallback. Both grids still
+forecast about half the snow that falls on big days. That is what the
+models and stackers built on these baselines have to fix.
+
+Direct-read conventions match Open-Meteo's, so the two halves of a team agree:
+- Station-local days: the IANA zone from the coordinates (`tzfpy`), DST-aware.
+- 0.7 cm of snow per mm of snowfall water equivalent.
+- Accumulations interpolated linearly to each local midnight between forecast
+  steps.
+- Grid cell chosen by Open-Meteo's terrain rule (`findPointTerrainOptimised`).
+  The nearest cell is kept when its model terrain is within 100 m of the
+  station. Otherwise the 3×3 land cell minimising height difference + 30 m per
+  km of distance wins.
+
+The snowfall field differs by model:
+- IFS and AIFS publish snowfall water equivalent (`sf`; IFS in m, AIFS in
+  kg m⁻², read from each message).
+- GFS has no snowfall field, so snow = precipitation × the share of each 3 h
+  interval that its categorical-snow flag was on (`CSNOW`, de-averaged from
+  GFS's 6 h buckets).
+- NBM's ASNOW is already snow depth; it is divided by 0.7 on the way in so
+  the shared conversion gives ASNOW back unchanged.
+
+The run is chosen honestly:
+- Live: the newest run online, never one issued after the cutoff.
+- Hindcast: the newest run that was fully online 3 h before the cutoff. Publish
+  delays were measured 2026-11-15: IFS 7.6 h, AIFS 5.3 h, GFS 4.2 h. NBM is
+  taken as online 2 h after its cycle.
+
+So direct hindcast skill at 48/72 h is not optimistic, unlike the Open-Meteo
+archive.
+
+Switches:
+- `PB_NWP_DIRECT=0` sends everything back through Open-Meteo.
+- `PB_OPENMETEO=0` runs without Open-Meteo; cached responses still serve. The
+  2026-11-20 hindcast gates ran this way.
+- `PB_NWP_CACHE` sets where the GRIB messages are cached. A download unused
+  for 3 days is dropped (`PB_NWP_CACHE_DAYS` changes that; a cache hit counts
+  as use).
+- `PB_NWP_TRULE=0` turns off the elevation rule.
+
+### Open-Meteo details
 
 - **Timing**: baselines run 3 hours before each league's cutoff — GitHub's
   scheduler routinely starts jobs 30 min–3 h late, and a baseline must never
@@ -734,7 +951,8 @@ for 24Z.
 - **Hindcast**: `historical-forecast-api.open-meteo.com` — the archive of what
   models actually predicted at the time (available from ~2021). Lead times in
   the archive are short, so hindcast NWP skill at 48h/72h is optimistic;
-  live-round NWP baselines are the true benchmark.
+  live-round NWP baselines are the true benchmark. The direct ECMWF/GFS reads
+  use the run a live round would have had instead (above).
 
 ## Layout of generated data
 

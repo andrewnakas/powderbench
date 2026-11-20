@@ -148,6 +148,8 @@ powderbench hindcast 2025-07-01 2025-07-14 --league era5   # austral winter
 ```
 
 The hindcast prints an unofficial leaderboard against all baselines for that
-period. NWP baselines in hindcast mode use Open-Meteo's archive of real past
-model runs (short lead times), so their 48h/72h hindcast skill is a bit
-flattering — beat them at 24h and you're genuinely good.
+period. On featured stations, hindcast NWP baselines come from Open-Meteo's
+archive of real past model runs (short lead times), so their 48h/72h hindcast
+skill is a bit flattering — beat them at 24h and you're genuinely good. The
+ECMWF, AIFS and GFS values on other stations come from the run a live round
+would actually have had.
