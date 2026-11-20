@@ -678,6 +678,7 @@ turns it off. Scored against truth, 2026-11-01..14, same runs and days
 | ECMWF IFS, stations, featured | 44.5 | 23.8 | **49.4** |
 | ECMWF IFS, resorts-na, featured | **−8.2** | −15.8 | −8.7 |
 | ECMWF IFS, alps, featured | −3.5 (41% of station-days) | −27.5 | **7.3** |
+| ECMWF IFS, observers, featured | 24.2 | −19.1 | **26.6** |
 | ECMWF IFS, stations, all 996 | – | −0.1 | **26.3** |
 | ECMWF IFS, observers, all | – | −79.5 | **2.8** |
 | AIFS, stations, featured | 40.5 | 31.1 | **51.7** |
