@@ -25,7 +25,8 @@ station at its network's default `day_offset` (the generator's), so
   those are worth keeping.
 - The world league's GHCNh drops are in `scripts/networks/ghcnh.py`
   (`NWP_GATE_FAILED`).
-- `world.csv` (DWD outside the Alps, Météo-France, ČHMÚ, GHCNh) is
-  **applied** by `scripts/networks/{dwd,meteofrance}.py` (`dwd.py --world`).
+- `world.csv` (DWD outside the Alps, Météo-France, ČHMÚ, GHCNh, ECCC) is
+  **applied** by `scripts/networks/{dwd,meteofrance,eccc_depth}.py`
+  (`dwd.py --world`).
   GHCNh's three drops (Chopok, Lomnický štít, Puntijarka, from the first
   world gate run) are also in `scripts/networks/ghcnh.py`'s `NWP_GATE_FAILED`.

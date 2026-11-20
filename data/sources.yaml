@@ -32,6 +32,13 @@ sources:
     attribution: "Contains information licensed under the Open Government Licence – Canada (ECCC climate data)."
     role: truth
     leagues: [observers]
+  - name: Climate daily (SNOW_ON_GROUND)
+    provider: Environment and Climate Change Canada
+    url: https://api.weather.gc.ca/
+    licence: Open Government Licence – Canada
+    attribution: "Contains information licensed under the Open Government Licence – Canada (ECCC climate data)."
+    role: truth
+    leagues: [world]
   - name: Measured new snow (HN) — study plots and IMIS
     provider: WSL Institute for Snow and Avalanche Research SLF
     url: https://www.slf.ch/
