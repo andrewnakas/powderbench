@@ -735,15 +735,32 @@ exactly (HRRR does not alternate). Same rounds and stations as above
 
 | League | NBM direct | Open-Meteo NBM | ECMWF + rule | GFS + rule | Open-Meteo GFS |
 |---|---|---|---|---|---|
-| resorts-na | **22.2** | −84.4 | −8.7 | −37.2 | −110.5 |
-| stations | 43.8 | — | **49.4** | 40.2 | 20.7 |
-| observers | 11.6 | — | **26.6** | 4.3 | −18.9 |
+| resorts-na | −30.6 | −84.4 | **−8.7** | −37.2 | −110.5 |
+| stations | 36.0 | — | **49.4** | 40.2 | 20.7 |
+| observers | 1.2 | — | **26.6** | 4.3 | −18.9 |
 
 Open-Meteo's NBM never produced a file for the stations or observers rounds
-(observers has one). On resorts-na the direct read is the best single model
-and 107 points ahead of Open-Meteo's NBM, so `baseline-nbm` reads direct
-first. Over every station it ranks third on stations (13.6 against ECMWF
-26.3) and second on observers; Alaska is off its grid.
+(observers has one). On resorts-na the direct read is 54 points ahead of
+Open-Meteo's NBM, with a lower error at every horizon (24 h MAE 0.45 against
+0.57 in), so `baseline-nbm` reads direct first. ECMWF with the elevation
+rule is still the better single model there. Over every station NBM ranks
+third on stations (10.1 against ECMWF 26.3 and GFS 15.3) and second on
+observers (−10.3 against ECMWF 2.8); Alaska is off its grid. (A first run
+read mirrored cells on odd grid rows, before the row fix, and scored NBM
+higher; those numbers are withdrawn.)
+
+NBM also changes `baseline-consensus`, the median of the NWP baselines. Rebuilt
+from the baseline files PowderBench issued over the same rounds (featured
+stations), with direct NBM swapped in for Open-Meteo's on resorts-na and
+added as a member on stations and observers:
+
+| League | Consensus as issued | With direct NBM |
+|---|---|---|
+| resorts-na | −11.9 | **−2.0** (lower error at every horizon) |
+| stations | 53.6 | **53.8** (lower error at every horizon) |
+| observers | **36.7** | 36.3 (72 h error 0.21 against 0.20 in) |
+
+So NBM stays a consensus member in every lower-48 league.
 
 **ECMWF IFS at 0.1° or 0.25° (2026-11-20).** Since the runs of late October
 2026, ECMWF's open data also carries IFS on its native ~9 km grid, as 0.1°
