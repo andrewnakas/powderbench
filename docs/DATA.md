@@ -727,7 +727,10 @@ snow-to-liquid ratio, on 2.5 km terrain, so no elevation rule. Its buckets are
 past 36 h days are interpolated inside a 6 h bucket). Probability and
 percentile messages share the name; the index's extra tags tell them apart.
 eccodes has no name for ASNOW in NBM's tables, so its unit reads `unknown`;
-it is WMO 0-1-29, total snowfall, in m. Same rounds and stations as above
+it is WMO 0-1-29, total snowfall, in m. NBM's grids store every other row
+backwards (`alternativeRowScanning=1`); `grib.decode` puts them back in plain
+row order, and 300 random cells then match eccodes' own nearest-point value
+exactly (HRRR does not alternate). Same rounds and stations as above
 (2026-11-01..14, featured, powder score):
 
 | League | NBM direct | Open-Meteo NBM | ECMWF + rule | GFS + rule | Open-Meteo GFS |

@@ -158,9 +158,23 @@ def decode(message: bytes) -> tuple[np.ndarray, dict]:
             values[values == eccodes.codes_get(gid, "missingValue")] = np.nan
         meta = {k: _get(gid, k) for k in GRID_KEYS}
         meta["units"] = eccodes.codes_get(gid, "units")
+        if _get(gid, "alternativeRowScanning"):
+            # NBM: every other row is stored in the opposite direction; put the
+            # values in plain row order so (j, i) indexing holds
+            if meta["jPointsAreConsecutive"]:
+                raise ValueError(f"unsupported grid layout: alternative row scanning, {meta}")
+            values = plain_rows(values, int(meta["Ni"]), int(meta["Nj"]))
     finally:
         eccodes.codes_release(gid)
     return values, meta
+
+
+def plain_rows(values: np.ndarray, ni: int, nj: int) -> np.ndarray:
+    """Values stored with alternative row scanning (odd rows run the other
+    way, as in NBM) -> plain row order."""
+    v = values.reshape(nj, ni).copy()
+    v[1::2] = v[1::2, ::-1]
+    return v.ravel()
 
 
 def _get(gid, key: str):

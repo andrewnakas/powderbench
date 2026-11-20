@@ -366,3 +366,12 @@ def test_ncep_index_keeps_probability_and_percentile_tags():
     rows = grib.ncep_index(text)
     assert [r["extra"] for r in rows] == ["", "prob >0.0254:prob fcst 255/255", "10% level"]
     assert rows[0]["start_h"] == 18 and rows[0]["end_h"] == 24 and rows[0]["length"] == 100
+
+
+def test_alternative_row_scanning_is_undone():
+    import numpy as np
+
+    from powderbench.nwp import grib
+
+    stored = np.array([0, 1, 2, 5, 4, 3, 6, 7, 8], dtype=float)  # 3 x 3, the middle row stored backwards
+    assert grib.plain_rows(stored, 3, 3).tolist() == [0, 1, 2, 3, 4, 5, 6, 7, 8]
