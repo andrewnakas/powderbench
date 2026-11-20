@@ -37,6 +37,17 @@ FEATURED = {  # station name -> resort
 }
 FIELDS = ["station_id", "slug", "name", "resort", "region", "state", "elevation_ft", "latitude", "longitude",
           "league", "tier", "truth_source", "network", "external_id", "day_offset"]
+# The per-station NWP gate of 2026-11-20 (scripts/nwp_gate.py, PR #832)
+# correlated each station's truth over 2025-12-01..2026-03-15 with the direct
+# ECMWF IFS snowfall, same local day and a day either way. Where it disagrees
+# with the ERA5 fit, it wins: an offset it found clearly better, or None
+# (dropped) where no shift reaches r 0.4. ERA5 is a reanalysis at 31 km and
+# the gate a 9-25 km forecast on a whole winter, with no near-ties allowed.
+NWP_GATE = {
+    "119:AT:GEO": 1, "8807:AT:GEO": 1, "12352:AT:GEO": 1, "206:AT:GEO": 1, "127:AT:GEO": 1, "136:AT:GEO": 1,
+    "83:AT:GEO": None,  # Saalbach: r 0.24 / 0.27 / 0.36
+    "98:AT:GEO": None,  # Tamsweg: r 0.00 / 0.18 / 0.20
+}
 
 
 def _norm(name: str) -> str:
@@ -90,7 +101,7 @@ def main() -> int:
     kept = []
     for r in rows:
         fit = fits.get(r["station_id"], {})
-        off = fit.get("offset")
+        off = NWP_GATE.get(r["station_id"], fit.get("offset"))
         print(f"{r['station_id']:>12} {r['name']:<28} {r['tier']:<8} corr={fit.get('corr')} -> {off}")
         if off is not None:
             r["day_offset"] = off

@@ -46,6 +46,13 @@ sources:
     attribution: "Austrian snow data © GeoSphere Austria (data.hub.geosphere.at), CC BY 4.0."
     role: truth
     leagues: [alps]
+  - name: Fresh snow on the morning board — nivo-meteorological network
+    provider: Météo-France
+    url: https://meteo.data.gouv.fr/
+    licence: Licence Ouverte 2.0 (Etalab)
+    attribution: "French snow data © Météo-France (réseau nivo-météorologique), Licence Ouverte 2.0."
+    role: truth
+    leagues: [alps]
   - name: Resort snow reports
     provider: Each resort (first-party pages; per-resort audit in the registry)
     url: https://github.com/andrewnakas/powderbench/blob/main/src/powderbench/resortfeeds/registry.py

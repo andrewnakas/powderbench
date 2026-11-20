@@ -4,6 +4,7 @@
 
 - The headline metric is now called **Powder Accuracy** (same formula: 100 × (1 − MAE / MAE_climatology); higher is better). The JSON field stays `powder_score`.
 - **Resort truth: stuck-report QC.** A non-zero 24 h figure repeated unchanged on 3+ consecutive days counts once; the repeats are voided. An audit found 175 such resort-days (40% of all reported resort snow), e.g. La Hoya showing 15.75" for 56 days and Wolf Creek 10.5" for 11.
+- **Alps league grows from 238 to 304 sites:** 54 French resort snow posts (Météo-France nivo network: Val d'Isère, Tignes, Val Thorens, Chamonix, Les 2 Alpes…) and 14 more Austrian stations (Lech/Zürs, Warth, Seefeld…). Featured stations 27 → 43. Each group passed its own hindcast gate. A per-station NWP gate then re-dated 12 stations to the documented next-morning reading (St. Anton, Avoriaz, Chamonix…) and dropped Saalbach and Tamsweg, whose truth tracks no day of the model.
 - Site: snow forecast map with per-station best forecasts; plain-language scoring explainer; hourly forecast refresh.
 
 ## 0.3.0 — October 2026: northern-hemisphere scale-up
