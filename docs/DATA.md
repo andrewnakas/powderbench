@@ -637,9 +637,10 @@ Two paths feed the model baselines:
 - [Open-Meteo](https://open-meteo.com/) (CC BY 4.0, no key) serves every model
   on featured stations, the `baseline-openmeteo` best-match blend on every
   station, and the archive the hindcasts use.
-- **Direct reads** (`src/powderbench/nwp/`, 2026-11): ECMWF IFS 0.25°, ECMWF
-  AIFS and NOAA GFS 0.25° straight from the producers' public buckets
-  (`s3://ecmwf-forecasts`, CC BY 4.0; `s3://noaa-gfs-bdp-pds`, public domain).
+- **Direct reads** (`src/powderbench/nwp/`, 2026-11): ECMWF IFS (0.1°, see
+  below), ECMWF AIFS 0.25° and NOAA GFS 0.25° straight from the producers'
+  public buckets (`s3://ecmwf-forecasts`, CC BY 4.0, with data.ecmwf.int as the
+  fallback; `s3://noaa-gfs-bdp-pds`, public domain).
   Each GRIB file has a byte index, so a round reads one ~0.4 MB message per
   forecast step, and that message covers every station on Earth. That gives
   `baseline-ecmwf`, `-aifs` and `-gfs` (and so `baseline-consensus`) at every
@@ -657,6 +658,31 @@ where the direct GFS is plain 0.25° GFS (−8.7). The direct reads are less dry
 on average (bias −0.27″ vs −0.52″ for ECMWF) but noisier. Matching
 Open-Meteo's cell choice did not close the gap, so until a direct variant wins
 on featured stations, it is the coverage and resilience layer.
+
+**ECMWF IFS at 0.1° (2026-11-20).** Since the runs of late October 2026,
+ECMWF's open data carries IFS on its native ~9 km grid, as 0.1°
+(`ifs/0p1/oper/…-fc-sfc`). The direct read takes 0.1° first. It falls back to
+0.25° for older runs or a missing file, and to data.ecmwf.int (the last four
+days of runs) when the AWS bucket throttles: it answered one IP with 503
+SlowDown for hours. On a mountain the finer grid matters most. For one run,
+Hakuba's 0.1° cell had 16.4″ in the window against 2.8″ at 0.25°. Scored
+against each league's truth, 2026-10-26..11-15, every station, same runs and
+days:
+
+| League | Station-days | MAE 0.1° / 0.25° | Bias | r | Days with 2″+: MAE | Their forecast ÷ truth |
+|---|---|---|---|---|---|---|
+| stations | 20,045 | 0.333″ / 0.325″ | +0.067″ / +0.030″ | **0.542** / 0.513 | **2.24″** / 2.39″ | **0.63** / 0.54 |
+| observers | 12,810 | **0.043″** / 0.048″ | +0.018″ / +0.022″ | **0.488** / 0.364 | **2.08″** / 2.19″ | **0.55** / 0.48 |
+| japan | 4,402 | **0.137″** / 0.146″ | +0.046″ / +0.052″ | **0.555** / 0.531 | **2.54″** / 2.62″ | **0.47** / 0.44 |
+
+- 0.1° is better on correlation and on snowy days in all three leagues, and
+  on MAE in two.
+- On the stations league it adds light snow on dry days (bias +0.067″), so
+  its MAE is 0.008″ worse.
+- Both grids still forecast about half the snow that falls on big days.
+  That is what the models and stackers built on these baselines have to fix.
+- Open-Meteo's featured-station `baseline-ecmwf` is unchanged
+  (`ecmwf_ifs025`).
 
 Direct-read conventions match Open-Meteo's, so the two halves of a team agree:
 - Station-local days: the IANA zone from the coordinates (`tzfpy`), DST-aware.
