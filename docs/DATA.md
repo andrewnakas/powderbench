@@ -398,6 +398,43 @@ rest (`geosphere_more.csv`), all network tier.
   Katschberg, Kölnbreinsperre and Feuerkogel.
 - **Climatology:** from each station's own record since 2010.
 
+### Italy: ARPA Piemonte snow stations (Piedmont)
+
+The Piedmont stations (`:IT:PIE`, `truth_source: arpapie`) are ARPA
+Piemonte's automatic snow stations, from the Ossola and Monte Rosa
+(Macugnaga, Formazza, Alpe Veglia) through the Graians and Cottians
+(Sestriere, Bardonecchia, Pragelato, Prali, Pontechianale) to the Maritime and
+Ligurian Alps (Limone, Argentera, Colle Lombarda, Ormea). CC BY 4.0, "Fonte:
+Arpa Piemonte – www.arpa.piemonte.it". No key.
+
+- **Truth:** the validated snow depth read at 08:00 local time. Day D is the
+  rise from 08:00 on D to 08:00 on D+1 (`day_offset` 1), with the shared
+  depth QC; there is no precipitation value beside it.
+- **Data:** the live feed (`api_realtime/pie_neve`) gives every station's
+  last 7 days in one request, and each day's response is kept, so days that
+  leave the window stay available. The history (`meteoidro/
+  dati_giornalieri_nivo`, from 1990) is validated about once a year, through
+  30 June of the last season; it is re-read monthly. The registry
+  (`api_realtime/pie_anag`) maps station codes to history keys.
+- **Candidates:** the stations in the live feed at ≥ 600 m: 71. Kept on last
+  winter ≥ 100 valid days and ≥ 8 days of 2 cm or more, ≥ 3 such winters
+  since 2010, and a reading on ≥ 70% of the live feed's 7 days: 63. None sits
+  within 2 km and 200 m of a station already in the league. Alagna (live
+  4 of 7 days) and three stations with no history are among those left out.
+- **NWP gate:** 61 pass; Colleretto and Graglia fail. 20 are re-dated to
+  `day_offset` 0, most by a wide margin (Paesana r 0.85 against 0.40,
+  Capanne Marcarolo 0.70 against 0.22, Piani di Carrega 0.47 against 0.03):
+  their validated value dated D is the depth on the morning after. The gate
+  ran on the validated history; the live feed of those stations can only be
+  checked against it once the history reaches this winter (July 2027), so the
+  gate is re-run then.
+- **Stations:** 61, from 610 m to 2,977 m (median 1,770 m), 37 within 10 km
+  of a ski area, among them Sestriere, Bardonecchia (Pian del Sole,
+  Pranudin), Sauze Cesana, Prali, Limone, Bielmonte, Macugnaga (Pecetto,
+  Rifugio Zamboni) and Alpe Veglia (San Domenico).
+- **Tier:** all network. None is featured, so they add no Open-Meteo points.
+- **Climatology:** from each station's own record since 2010.
+
 ### Alps NWP gate (2026-11-20)
 
 Every station of the league, and every candidate above, was checked the
@@ -406,7 +443,7 @@ winter 2025-26 (2025-12-01..2026-03-15) is correlated with the direct ECMWF
 IFS daily snowfall (raw, 0.25°) for the same local day, and with the truth
 shifted a day either way. A station needs r ≥ 0.4 at its best shift, and a
 best shift ahead of the next by 0.10 to move its day. The decisions are in
-`data/gates/alps.csv` (642 stations, median best r 0.78), applied by the
+`data/gates/alps.csv` (719 stations, median best r 0.77), applied by the
 generators through `scripts/networks/gate.py`. A station may be re-dated to
 its network's default offset or one less, never later; a later best shift is
 a misdated record and drops the station.
@@ -417,6 +454,8 @@ a misdated record and drops the station.
   - DWD Schönau am Königssee (0.33).
   - Land Tirol Grubigstein and Wandspitze: their best shift is a day later
     than a midnight depth sensor allows.
+- **New networks:** Météo-France 52 of 59, GeoSphere 36 of 42 and ARPA
+  Piemonte 61 of 63 (above).
 - **Everything else passes:** all 121 IMIS stations, 58 MeteoSwiss, 32 ARPA
   Lombardia, 24 South Tyrol, 12 Meteotrentino, 69 of 71 Land Tirol, 51 of 52
   DWD and 92 of 95 SLF study plots.
