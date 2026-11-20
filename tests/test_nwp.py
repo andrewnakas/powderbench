@@ -256,3 +256,28 @@ def test_ecmwf_layout_prefers_0p1_and_falls_back(monkeypatch):
     assert src.layout(old)[1] == ("ifs", "0p25", "oper", "")  # no 0.1 deg before late October 2026
     assert src.steps(new)[:3] == [0, 3, 6] and src.steps(new)[-1] == 360
     assert any(c.endswith("20261119000000-0h-oper-fc-sfc.index") for c in calls)
+
+
+def test_below_zero_share():
+    import numpy as np
+    from powderbench.nwp.sources import below_zero_share
+
+    got = below_zero_share(np.array([-2.0, 2.0, -2.0, 2.0, -1.0]), np.array([-1.0, 3.0, 2.0, -2.0, 3.0]))
+    assert np.allclose(got, [1.0, 0.0, 0.5, 0.5, 0.25])
+
+
+def test_temperature_rule_matches_open_meteo():
+    """Open-Meteo zeroes snowfall where the 2 m temperature, moved to the
+    station's height at 0.65 K / 100 m, is >= 0 C, but only when the cell is
+    more than 100 m above or below the station."""
+    import numpy as np
+    from powderbench.nwp.sources import temperature_rule
+
+    acc = [np.array([2.0, 2.0, 2.0]), np.array([5.0, 5.0, 5.0])]   # 2 mm, then 3 mm more
+    temps = [np.array([1.0, 1.0, 1.0])] * 3                          # +1 C in the cell throughout
+    dz = np.array([50.0, 400.0, -400.0])                               # cell 50 m above / 400 m above / 400 m below
+    out = temperature_rule(acc, temps, dz)
+    # 50 m: no correction, raw snowfall; cell 400 m above the station: the
+    # station is 2.6 K warmer (3.6 C), no snow; cell 400 m below: -1.6 C, all snow
+    assert np.allclose(out[-1], [5.0, 0.0, 5.0])
+    assert np.allclose(out[0], [2.0, 0.0, 2.0])

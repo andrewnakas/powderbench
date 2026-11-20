@@ -9,6 +9,7 @@ IFS 00z f144 7.6 h, 06z f90 6.5 h; AIFS f96 5.3-5.4 h; GFS f096 4.0-4.2 h.
 from __future__ import annotations
 
 import logging
+import os
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 
@@ -28,6 +29,39 @@ ECMWF_BUCKET = "https://ecmwf-forecasts.s3.eu-central-1.amazonaws.com"
 ECMWF_DIRECT = "https://data.ecmwf.int/forecasts"
 ECMWF_BASES = (ECMWF_BUCKET, ECMWF_DIRECT)
 GFS_BUCKET = "https://noaa-gfs-bdp-pds.s3.amazonaws.com"
+# Open-Meteo's elevation rule (VariableHourly.swift, GenericReader.swift in
+# open-meteo/open-meteo): where the chosen cell's terrain is more than
+# RULE_MIN_DZ_M above or below the station, the 2 m temperature is moved to the
+# station's height at LAPSE_K_PER_M, and snowfall is kept only while that
+# temperature is below 0 C. PB_NWP_TRULE=0 turns it off.
+LAPSE_K_PER_M = 0.0065
+RULE_MIN_DZ_M = 100.0
+
+
+def below_zero_share(t0: np.ndarray, t1: np.ndarray) -> np.ndarray:
+    """Share of an interval below 0 C, the temperature linear between its ends."""
+    t0, t1 = np.asarray(t0, float), np.asarray(t1, float)
+    mixed = (t0 < 0) != (t1 < 0)
+    with np.errstate(divide="ignore", invalid="ignore"):
+        cross = np.where(t0 < 0, -t0 / (t1 - t0), -t1 / (t0 - t1))
+    return np.where(mixed, cross, np.where(t0 < 0, 1.0, 0.0))
+
+
+def temperature_rule(acc: list[np.ndarray], temp_c: list[np.ndarray], dz_m: np.ndarray) -> list[np.ndarray]:
+    """Accumulated snow water (mm) at consecutive steps after the elevation
+    rule. acc[i] is the run's accumulation at step i+1 (the run start is 0);
+    temp_c[i] the cell's 2 m temperature at step i (0 = the run start); dz_m
+    the cell's terrain height minus the station's."""
+    dz = np.asarray(dz_m, float)
+    apply, shift = np.abs(dz) > RULE_MIN_DZ_M, dz * LAPSE_K_PER_M
+    cum, prev, out = np.zeros(len(dz)), np.zeros(len(dz)), []
+    for i, a in enumerate(acc):
+        inc = np.clip(a - prev, 0.0, None)
+        keep = below_zero_share(temp_c[i] + shift, temp_c[i + 1] + shift)
+        cum = cum + np.where(apply, inc * keep, inc)
+        prev = a
+        out.append(cum.copy())
+    return out
 
 
 def _fetch_all(requests_: list[tuple], workers: int) -> list[bytes | None]:
@@ -118,8 +152,9 @@ class EcmwfOpenData(Source):
     licence = "CC BY 4.0 (ECMWF open data)"
     workers = 3  # the bucket answers 503 Slow Down at 8 parallel requests
 
-    def __init__(self, name: str, label: str, layouts: list[Layout], online_h: float):
+    def __init__(self, name: str, label: str, layouts: list[Layout], online_h: float, trule: bool = False):
         self.name, self.label, self.online_h = name, label, online_h
+        self.trule = trule  # apply Open-Meteo's elevation rule (needs every step's sf and 2t)
         self.layouts = layouts  # tried in order: finest first, and the layout changed over time
         self._layout: dict[datetime, tuple[str, Layout] | None] = {}
 
@@ -192,6 +227,11 @@ class EcmwfOpenData(Source):
         found = self.layout(run)
         if found is None:
             return None
+        if self.trule and os.environ.get("PB_NWP_TRULE", "1") != "0":
+            out = self._accum_trule(run, steps, lats, lons, elev_m, *found)
+            if out is not None:
+                return out
+            log.warning("%s: elevation rule unavailable for %s; raw snowfall", self.name, run)
         base, lay = found
         pts = _Points(lats, lons, elev_m, lambda: self.terrain(run))
         want = [s for s in steps if s > 0]
@@ -203,7 +243,31 @@ class EcmwfOpenData(Source):
             out[s] = pts.take(m, water_mm=True)
         return out
 
-    def _messages(self, run, want, base, lay) -> list[bytes] | None:
+    def _accum_trule(self, run, steps, lats, lons, elev_m, base, lay):
+        """accum() with the elevation rule: every step from the run start to
+        the last one asked for, since the rule works interval by interval."""
+        ter = self.terrain(run)
+        if ter is None:
+            return None
+        full = [s for s in (self.steps(run) or []) if 0 < s <= max(steps)]
+        if not full:
+            return {s: np.zeros(len(lats)) for s in steps}
+        sf = self._with_fallback(base, lambda b: self._messages(run, full, b, lay))
+        t2 = self._with_fallback(base, lambda b: self._messages(run, [0, *full], b, lay, param="2t"))
+        if sf is None or t2 is None:
+            return None
+        pts = _Points(lats, lons, elev_m, lambda: ter)
+        acc = [pts.take(m, water_mm=True) for m in sf]
+        temps = [pts.take(m) - 273.15 for m in t2]
+        key = tuple(grib.decode(sf[0])[1][k] for k in grib.GRID_KEYS)
+        if tuple(ter[0][k] for k in grib.GRID_KEYS) != key:
+            return None
+        dz = grib.at_points(ter[1], pts._idx[key]) - np.asarray(elev_m, float)
+        out = dict(zip(full, temperature_rule(acc, temps, dz)))
+        out[0] = np.zeros(len(lats))
+        return {s: out[s] for s in steps}
+
+    def _messages(self, run, want, base, lay, param: str = "sf") -> list[bytes] | None:
         urls = [self._url(run, s, base, *lay) for s in want]
         indexes = _fetch_all([(u + ".index",) for u in urls], self.workers)
         if any(t is None for t in indexes):
@@ -211,9 +275,9 @@ class EcmwfOpenData(Source):
         reqs = []
         for u, text in zip(urls, indexes):
             entry = next((e for e in grib.ecmwf_index(text.decode())
-                          if e.get("param") == "sf" and e.get("levtype") == "sfc"), None)
+                          if e.get("param") == param and e.get("levtype") == "sfc"), None)
             if entry is None:
-                log.warning("%s: no sf field in %s", self.name, u.rsplit("/", 1)[-1])
+                log.warning("%s: no %s field in %s", self.name, param, u.rsplit("/", 1)[-1])
                 return None
             reqs.append((u + ".grib2", int(entry["_offset"]), int(entry["_length"])))
         msgs = _fetch_all(reqs, self.workers)
@@ -310,7 +374,7 @@ def snow_from_buckets(chain: list[int], buckets: list[int], apcp: list[np.ndarra
 
 SOURCES: dict[str, Source] = {
     "ecmwf_ifs": EcmwfOpenData("ecmwf_ifs", "ECMWF IFS", [("ifs", "0p1", "oper", "-sfc"), ("ifs", "0p25", "oper", ""),
-                                                        ("ifs", "0p25", "scda", "")], online_h=7.75),
+                                                        ("ifs", "0p25", "scda", "")], online_h=7.75, trule=True),
     "ecmwf_aifs": EcmwfOpenData("ecmwf_aifs", "ECMWF AIFS single", [("aifs-single", "0p25", "oper", ""),
                                                                     ("aifs", "0p25", "oper", "")], online_h=6.0),
     "gfs": Gfs(),
