@@ -35,9 +35,10 @@ def test_morning_depth_is_the_median_of_05_to_07_utc():
     df = arpae.parse([_line("2026-01-02T04:30:00Z", 0.90),  # outside the window
                       _line("2026-01-02T05:00:00Z", 0.40), _line("2026-01-02T06:00:00Z", 0.42),
                       _line("2026-01-02T07:00:00Z", 0.41), _line("2026-01-02T07:30:00Z", 0.90),
-                      _line("2026-01-03T06:00:00Z", -0.01)])  # negative: no reading
+                      _line("2026-01-03T06:00:00Z", -0.02),  # bare ground
+                      _line("2026-01-04T06:00:00Z", -0.40)])  # a fault: no reading
     deps = arpae.morning_depths(df)
-    assert deps[SID] == {date(2026, 1, 2): 41.0}
+    assert deps[SID] == {date(2026, 1, 2): 41.0, date(2026, 1, 3): 0.0}
 
 
 def test_daily_rise_threshold_and_offset(monkeypatch):

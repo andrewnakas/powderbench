@@ -14,7 +14,10 @@ A station has no code of its own: it is (network, lon, lat), with lon/lat in
 1e-5 degrees, as Arpae writes them. The station id is built from them.
 
 Depth at a day's 06 UTC (07:00 CET, the morning-board time of the other
-networks) is the median of the readings from 05:00 to 07:00 UTC. New snow is
+networks) is the median of the readings from 05:00 to 07:00 UTC. Bare ground
+reads a little below zero (-0.01 and -0.02 m are up to 45% of a station's
+winter readings), so readings down to BARE_GROUND_M count as 0; lower ones
+are faults and are dropped. New snow is
 derived from depth like the nordic networks: day D <- max(depth(D+k) -
 depth(D+k-1), 0) with k = the station's day_offset (default 1: the rise 06 UTC
 D .. 06 UTC D+1). The sensors report whole centimetres and jitter, so rises
@@ -46,6 +49,7 @@ SNOW_DEPTH = "B13013"  # total snow depth, m
 NAME, HEIGHT, LAT, LON = "B01019", "B07030", "B05001", "B06001"
 TERM_FROM, TERM_TO = 5 * 60, 7 * 60  # minutes after 00 UTC: the 06 UTC depth window
 MIN_RISE_CM = 2.0
+BARE_GROUND_M = -0.05
 IN_PER_CM = 1 / 2.54
 LIVE_MONTHS = 2  # the current and the previous month are re-read daily
 RETRIES = 4
@@ -144,8 +148,9 @@ def morning_depths(df: pd.DataFrame) -> dict[str, dict[date, float]]:
         return {}
     t = pd.to_datetime(df["time"], utc=True)
     minute = t.dt.hour * 60 + t.dt.minute
-    sel = df[(minute >= TERM_FROM) & (minute <= TERM_TO) & (df["depth_m"] >= 0)].copy()
+    sel = df[(minute >= TERM_FROM) & (minute <= TERM_TO) & (df["depth_m"] >= BARE_GROUND_M)].copy()
     sel["day"] = t[sel.index].dt.date
+    sel["depth_m"] = sel["depth_m"].clip(lower=0.0)
     med = sel.groupby(["sid", "day"])["depth_m"].median() * 100
     out: dict[str, dict[date, float]] = {}
     for (sid, day), cm in med.items():
