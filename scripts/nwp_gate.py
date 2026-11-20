@@ -22,6 +22,7 @@ It needs no Open-Meteo calls (run with PB_OPENMETEO=0):
 from __future__ import annotations
 
 import argparse
+import csv
 import logging
 from datetime import date, timedelta
 
@@ -66,12 +67,17 @@ def main() -> None:
     ap.add_argument("--margin", type=float, default=0.10)
     ap.add_argument("--min-r", type=float, default=0.40)
     ap.add_argument("--featured", action="store_true", help="featured stations only")
+    ap.add_argument("--stations", help="a station CSV: gate only the league's stations listed in it")
     ap.add_argument("--out", help="report CSV")
     a = ap.parse_args()
     logging.basicConfig(level=logging.ERROR)
 
     league = get_league(a.league)
     stations = list(load_stations(league.name, featured_only=a.featured))
+    if a.stations:
+        with open(a.stations, encoding="utf-8") as f:
+            only = {r["station_id"] for r in csv.DictReader(f)}
+        stations = [s for s in stations if s.station_id in only]
     ids = [s.station_id for s in stations]
     tr = daily_truth(league, ids, a.begin - timedelta(days=2), a.end + timedelta(days=2))
     tr = tr[tr["valid"]].pivot_table(index="date", columns="station_id", values="snow24")
