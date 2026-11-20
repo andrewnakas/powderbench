@@ -38,6 +38,8 @@ GRID_KEYS = (
     "latitudeOfFirstGridPointInDegrees", "longitudeOfFirstGridPointInDegrees",
     "iDirectionIncrementInDegrees", "jDirectionIncrementInDegrees",
     "jScansPositively", "iScansNegatively", "jPointsAreConsecutive",
+    # Lambert conformal (HRRR, NBM); None on a lat/lon grid
+    "DxInMetres", "DyInMetres", "LoVInDegrees", "Latin1InDegrees", "Latin2InDegrees", "radius",
 )
 
 _session: requests.Session | None = None
@@ -153,11 +155,20 @@ def decode(message: bytes) -> tuple[np.ndarray, dict]:
         values = np.asarray(eccodes.codes_get_values(gid), dtype=float)
         if eccodes.codes_get(gid, "bitmapPresent"):
             values[values == eccodes.codes_get(gid, "missingValue")] = np.nan
-        meta = {k: eccodes.codes_get(gid, k) for k in GRID_KEYS}
+        meta = {k: _get(gid, k) for k in GRID_KEYS}
         meta["units"] = eccodes.codes_get(gid, "units")
     finally:
         eccodes.codes_release(gid)
     return values, meta
+
+
+def _get(gid, key: str):
+    import eccodes
+
+    try:
+        return eccodes.codes_get(gid, key)
+    except eccodes.KeyValueNotFoundError:
+        return None
 
 
 _MM_PER_UNIT = {"m": 1000.0, "m of water equivalent": 1000.0, "kg m**-2": 1.0, "kg m-2": 1.0, "kg/m^2": 1.0, "mm": 1.0}
@@ -171,12 +182,45 @@ def to_mm(units: str) -> float:
         raise ValueError(f"unknown water-equivalent unit {units!r}") from None
 
 
-def point_index(meta: dict, lats: np.ndarray, lons: np.ndarray) -> np.ndarray:
-    """Nearest grid cell of a regular lat/lon grid for each point (flat index
-    into the message's values; -1 when the point is off the grid)."""
-    if meta["gridType"] != "regular_ll" or meta["iScansNegatively"] or meta["jPointsAreConsecutive"]:
+def lambert_ij(meta: dict, lats: np.ndarray, lons: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """Fractional (i, j) grid position on a Lambert conformal grid (spherical
+    earth, the usual NCEP layout: i east, j north from the first point)."""
+    rad = float(meta.get("radius") or 6371229.0)
+    p1, p2 = np.radians(float(meta["Latin1InDegrees"])), np.radians(float(meta["Latin2InDegrees"]))
+    lon0 = np.radians(float(meta["LoVInDegrees"]))
+    if abs(p1 - p2) < 1e-10:
+        n = np.sin(p1)
+    else:
+        n = np.log(np.cos(p1) / np.cos(p2)) / np.log(np.tan(np.pi / 4 + p2 / 2) / np.tan(np.pi / 4 + p1 / 2))
+    f = np.cos(p1) * np.tan(np.pi / 4 + p1 / 2) ** n / n
+
+    def xy(lat, lon):
+        rho = rad * f / np.tan(np.pi / 4 + np.radians(np.asarray(lat, float)) / 2) ** n
+        theta = n * ((np.radians(np.asarray(lon, float)) - lon0 + np.pi) % (2 * np.pi) - np.pi)
+        return rho * np.sin(theta), -rho * np.cos(theta)
+
+    x0, y0 = xy(meta["latitudeOfFirstGridPointInDegrees"], meta["longitudeOfFirstGridPointInDegrees"])
+    x, y = xy(lats, lons)
+    return (x - x0) / float(meta["DxInMetres"]), (y - y0) / float(meta["DyInMetres"])
+
+
+def _check_layout(meta: dict) -> None:
+    ok = meta["gridType"] in ("regular_ll", "lambert") and not meta["iScansNegatively"] \
+        and not meta["jPointsAreConsecutive"] and (meta["gridType"] == "regular_ll" or meta["jScansPositively"])
+    if not ok:
         raise ValueError(f"unsupported grid layout: {meta}")
+
+
+def point_index(meta: dict, lats: np.ndarray, lons: np.ndarray) -> np.ndarray:
+    """Nearest grid cell of a regular lat/lon or Lambert grid for each point
+    (flat index into the message's values; -1 when the point is off the grid)."""
+    _check_layout(meta)
     ni, nj = int(meta["Ni"]), int(meta["Nj"])
+    if meta["gridType"] == "lambert":
+        fi, fj = lambert_ij(meta, lats, lons)
+        i, j = np.rint(fi).astype(np.int64), np.rint(fj).astype(np.int64)
+        ok = (j >= 0) & (j < nj) & (i >= 0) & (i < ni)
+        return np.where(ok, j * ni + i, -1)
     di, dj = float(meta["iDirectionIncrementInDegrees"]), float(meta["jDirectionIncrementInDegrees"])
     lat0, lon0 = float(meta["latitudeOfFirstGridPointInDegrees"]), float(meta["longitudeOfFirstGridPointInDegrees"])
     dlat = (lats - lat0) if meta["jScansPositively"] else (lat0 - lats)
@@ -206,9 +250,15 @@ def terrain_index(meta: dict, lats: np.ndarray, lons: np.ndarray, elev_m: np.nda
     if radius <= 0:
         return base
     ni, nj = int(meta["Ni"]), int(meta["Nj"])
-    di, dj = float(meta["iDirectionIncrementInDegrees"]), float(meta["jDirectionIncrementInDegrees"])
-    lat0, lon0 = float(meta["latitudeOfFirstGridPointInDegrees"]), float(meta["longitudeOfFirstGridPointInDegrees"])
-    jsign = 1.0 if meta["jScansPositively"] else -1.0
+    lambert = meta["gridType"] == "lambert"
+    if lambert:
+        fi, fj = lambert_ij(meta, lats, lons)
+        dx_km, dy_km = float(meta["DxInMetres"]) / 1000, float(meta["DyInMetres"]) / 1000
+    else:
+        di, dj = float(meta["iDirectionIncrementInDegrees"]), float(meta["jDirectionIncrementInDegrees"])
+        lat0 = float(meta["latitudeOfFirstGridPointInDegrees"])
+        lon0 = float(meta["longitudeOfFirstGridPointInDegrees"])
+        jsign = 1.0 if meta["jScansPositively"] else -1.0
     out = base.copy()
     for k, b in enumerate(base):
         if b < 0 or not np.isfinite(elev_m[k]):
@@ -224,9 +274,12 @@ def terrain_index(meta: dict, lats: np.ndarray, lons: np.ndarray, elev_m: np.nda
                 c = j * ni + i
                 if not land[c] >= 0.5 or not np.isfinite(grid_elev_m[c]):
                     continue
-                dlat = lat0 + jsign * j * dj - lats[k]
-                dlon = ((lon0 + i * di - lons[k]) + 180.0) % 360.0 - 180.0
-                km = float(np.hypot(dlat, dlon)) * 111.0
+                if lambert:
+                    km = float(np.hypot((i - fi[k]) * dx_km, (j - fj[k]) * dy_km))
+                else:
+                    dlat = lat0 + jsign * j * dj - lats[k]
+                    dlon = ((lon0 + i * di - lons[k]) + 180.0) % 360.0 - 180.0
+                    km = float(np.hypot(dlat, dlon)) * 111.0
                 delta = abs(float(grid_elev_m[c]) - float(elev_m[k])) + km * PENALTY_M_PER_KM
                 if delta < best_delta and km < MAX_KM:
                     best_delta, best = delta, c

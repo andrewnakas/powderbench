@@ -46,6 +46,7 @@ def _servers(first: str | None = None) -> list[str]:
     order = [first, *(b for b in ECMWF_BASES if b != first)] if first else list(ECMWF_BASES)
     return sorted(order, key=_resting)
 GFS_BUCKET = "https://noaa-gfs-bdp-pds.s3.amazonaws.com"
+HRRR_BUCKET = "https://noaa-hrrr-bdp-pds.s3.amazonaws.com"
 # Open-Meteo's elevation rule (VariableHourly.swift, GenericReader.swift in
 # open-meteo/open-meteo): where the chosen cell's terrain is more than
 # RULE_MIN_DZ_M above or below the station, the 2 m temperature is moved to the
@@ -408,6 +409,79 @@ class Gfs(Source):
         return temperature_rule(cum, temps, dz)
 
 
+class Hrrr(Source):
+    """NOAA HRRR, 3 km over the contiguous US (Lambert grid), on AWS (public
+    domain). Snow is WEASD accumulated from the run start: the model's own
+    frozen precipitation, water equivalent. 00/06/12/18z reach 48 h, so the
+    third day of a round is left empty. The elevation rule uses the hourly
+    2 m temperature; at 3 km it moves less than on the global grids."""
+
+    name = "hrrr"
+    label = "NOAA HRRR 3 km"
+    licence = "public domain (NOAA)"
+    online_h = 2.5
+    workers = 8
+    trule = True
+
+    def _url(self, run: datetime, step: int) -> str:
+        return f"{HRRR_BUCKET}/hrrr.{run:%Y%m%d}/conus/hrrr.t{run:%H}z.wrfsfcf{step:02d}.grib2"
+
+    def steps(self, run):
+        if grib.fetch(self._url(run, 0) + ".idx") is None:
+            return None
+        return list(range(0, 49))
+
+    def _read_terrain(self, run):
+        url = self._url(run, 0)
+        rows = grib.ncep_index(grib.fetch(url + ".idx").decode())
+        pick = {r["var"]: r for r in rows if r["level"] == "surface" and r["var"] in ("HGT", "LAND")}
+        hgt, meta = grib.decode(grib.fetch(url, pick["HGT"]["offset"], pick["HGT"]["length"]))
+        land, _ = grib.decode(grib.fetch(url, pick["LAND"]["offset"], pick["LAND"]["length"]))
+        return meta, hgt, land
+
+    def accum(self, run, steps, lats, lons, elev_m):
+        top = max(steps)
+        if top == 0:
+            return {0: np.zeros(len(lats))}
+        chain = list(range(1, top + 1))  # hourly: the rule works interval by interval
+        urls = [self._url(run, s) for s in [0, *chain]]
+        idx_texts = _fetch_all([(u + ".idx",) for u in urls], self.workers)
+        if any(t is None for t in idx_texts):
+            return None
+        reqs = []
+        for k, (u, text) in enumerate(zip(urls, idx_texts)):
+            rows = grib.ncep_index(text.decode())
+            tmp = next((r for r in rows if r["var"] == "TMP" and r["level"] == "2 m above ground"), None)
+            if tmp is None:
+                log.warning("hrrr: TMP 2 m missing at f%02d of %s", k, run)
+                return None
+            reqs.append((u, tmp["offset"], tmp["length"]))
+            if k:
+                we = next((r for r in rows if r["var"] == "WEASD" and r["level"] == "surface"
+                           and r.get("stat") == "acc" and r.get("start_h") == 0 and r.get("end_h") == k), None)
+                if we is None:
+                    log.warning("hrrr: WEASD 0-%d h missing in %s", k, run)
+                    return None
+                reqs.append((u, we["offset"], we["length"]))
+        msgs = _fetch_all(reqs, self.workers)
+        if any(m is None for m in msgs):
+            return None
+        pts = _Points(lats, lons, elev_m, lambda: self.terrain(run))
+        temps = [pts.take(msgs[0]) - 273.15] + [pts.take(msgs[2 * k - 1]) - 273.15 for k in chain]
+        acc = [pts.take(msgs[2 * k], water_mm=True) for k in chain]
+        if self.trule and os.environ.get("PB_NWP_TRULE") != "0":
+            ter = self.terrain(run)
+            key = tuple(grib.decode(msgs[0])[1][k] for k in grib.GRID_KEYS)
+            if ter is not None and tuple(ter[0][k] for k in grib.GRID_KEYS) == key:
+                dz = grib.at_points(ter[1], pts._idx[key]) - np.asarray(elev_m, float)
+                acc = temperature_rule(acc, temps, dz)
+            else:
+                log.warning("hrrr: no terrain for %s; snow without the elevation rule", run)
+        out = dict(zip(chain, acc))
+        out[0] = np.zeros(len(lats))
+        return {s: out[s] for s in steps}
+
+
 def snow_from_buckets(chain: list[int], buckets: list[int], apcp: list[np.ndarray],
                       csnow: list[np.ndarray]) -> list[np.ndarray]:
     """Cumulative snow water (mm) at each step of `chain` (3 h apart, from 0).
@@ -438,4 +512,5 @@ SOURCES: dict[str, Source] = {
                                                                     ("aifs", "0p25", "oper", "")], online_h=6.0,
                                 trule=True),
     "gfs": Gfs(),
+    "hrrr": Hrrr(),
 }

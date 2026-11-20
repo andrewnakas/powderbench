@@ -324,3 +324,24 @@ def test_temperature_rule_matches_open_meteo():
     # station is 2.6 K warmer (3.6 C), no snow; cell 400 m below: -1.6 C, all snow
     assert np.allclose(out[-1], [5.0, 0.0, 5.0])
     assert np.allclose(out[0], [2.0, 0.0, 2.0])
+
+
+HRRR_META = {"gridType": "lambert", "Ni": 1799, "Nj": 1059, "latitudeOfFirstGridPointInDegrees": 21.138123,
+             "longitudeOfFirstGridPointInDegrees": 237.280472, "DxInMetres": 3000.0, "DyInMetres": 3000.0,
+             "LoVInDegrees": 262.5, "Latin1InDegrees": 38.5, "Latin2InDegrees": 38.5, "radius": 6371229,
+             "jScansPositively": 1, "iScansNegatively": 0, "jPointsAreConsecutive": 0}
+
+
+def test_lambert_grid_position():
+    import numpy as np
+
+    from powderbench.nwp import grib
+
+    fi, fj = grib.lambert_ij(HRRR_META, np.array([21.138123]), np.array([-122.719528]))
+    assert abs(fi[0]) < 1e-6 and abs(fj[0]) < 1e-6  # the first grid point; longitudes wrap
+    # true scale on the standard parallel: one grid length north along LoV is one row
+    dlat = np.degrees(3000.0 / 6371229)
+    fi, fj = grib.lambert_ij(HRRR_META, np.array([38.5, 38.5 + dlat]), np.array([-97.5, -97.5]))
+    assert abs(fi[0] - fi[1]) < 1e-6 and abs((fj[1] - fj[0]) - 1.0) < 1e-3
+    idx = grib.point_index(HRRR_META, np.array([21.138123, 40.59, 60.0]), np.array([-122.719528, -111.64, -150.0]))
+    assert idx[0] == 0 and 0 < idx[1] < 1799 * 1059 and idx[2] == -1  # Alaska is off the CONUS grid
