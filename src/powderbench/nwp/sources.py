@@ -319,6 +319,7 @@ class Gfs(Source):
     online_h = 4.5
     workers = 8
     STEP_H = 3
+    trule = False  # Open-Meteo's elevation rule on the derived snow (see temperature_rule)
 
     def _url(self, run: datetime, step: int) -> str:
         return f"{GFS_BUCKET}/gfs.{run:%Y%m%d}/{run:%H}/atmos/gfs.t{run:%H}z.pgrb2.0p25.f{step:03d}"
@@ -368,10 +369,43 @@ class Gfs(Source):
         apcp = [pts.take(msgs[2 * k], water_mm=True) for k in range(len(chain))]
         csnow = [pts.take(msgs[2 * k + 1]) for k in range(len(chain))]
         cum = snow_from_buckets(chain, buckets, apcp, csnow)
+        if self.trule and os.environ.get("PB_NWP_TRULE") != "0":
+            ruled = self._trule(run, chain, urls, idx_texts, pts, msgs[0], cum, elev_m)
+            if ruled is None:
+                log.warning("gfs: no 2 m temperature or terrain for %s; snow without the elevation rule", run)
+            else:
+                cum = ruled
         out = {t: c for t, c in zip(chain, cum) if t in steps}
         if 0 in steps:
             out[0] = np.zeros(len(lats))
         return out
+
+
+    def _tmp2m(self, rows: list[dict]) -> dict | None:
+        return next((r for r in rows if r["var"] == "TMP" and r["level"] == "2 m above ground"), None)
+
+    def _trule(self, run, chain, urls, idx_texts, pts, any_msg, cum, elev_m):
+        """cum after the elevation rule: 2 m temperature at the run start and
+        every step of the chain, terrain height at the chosen cells."""
+        ter = self.terrain(run)
+        if ter is None:
+            return None
+        f0 = self._url(run, 0)
+        t0_idx = grib.fetch(f0 + ".idx")
+        rows = [grib.ncep_index(t0_idx.decode())] if t0_idx else [None]
+        rows += [grib.ncep_index(t.decode()) for t in idx_texts]
+        picks = [self._tmp2m(r) if r else None for r in rows]
+        if any(p is None for p in picks):
+            return None
+        msgs = _fetch_all([(u, p["offset"], p["length"]) for u, p in zip([f0, *urls], picks)], self.workers)
+        if any(m is None for m in msgs):
+            return None
+        temps = [pts.take(m) - 273.15 for m in msgs]
+        key = tuple(grib.decode(any_msg)[1][k] for k in grib.GRID_KEYS)
+        if tuple(ter[0][k] for k in grib.GRID_KEYS) != key:
+            return None
+        dz = grib.at_points(ter[1], pts._idx[key]) - np.asarray(elev_m, float)
+        return temperature_rule(cum, temps, dz)
 
 
 def snow_from_buckets(chain: list[int], buckets: list[int], apcp: list[np.ndarray],
