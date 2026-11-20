@@ -1085,5 +1085,36 @@
    "open-powder-ensemble": 30.68,
    "open-powder-ml": 34.68
   }
+ },
+ {
+  "round_id": "2026-11-16",
+  "biggest_24h": {
+   "station_id": "LOS:CA:CDEC",
+   "resort": "Lake Lois",
+   "inches": 17.0
+  },
+  "qc": {
+   "station_horizons_valid": 2840,
+   "station_horizons_voided": 136
+  },
+  "teams": {
+   "baseline-aifs": 31.19,
+   "baseline-climatology": 0.0,
+   "baseline-consensus": 43.38,
+   "baseline-gem": 36.8,
+   "baseline-gfs": 51.01,
+   "baseline-icon": 36.98,
+   "baseline-ndfd": 26.37,
+   "baseline-openmeteo": 51.4,
+   "baseline-persistence": -10.6,
+   "baseline-ukmo": 36.51,
+   "baseline-wpc": 55.65,
+   "baseline-zeros": -4.59,
+   "house-analog": 35.13,
+   "house-blend": 54.13,
+   "house-gbm": 49.46,
+   "open-powder-ensemble": 50.28,
+   "open-powder-ml": 50.41
+  }
  }
 ]
