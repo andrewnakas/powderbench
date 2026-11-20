@@ -362,10 +362,10 @@ CC BY 4.0). Credit: 出典：気象庁ホームページ (Japan Meteorological A
   not fetched; they are snow-free at every kept station and outside the season.
 - **Regional baseline:** `baseline-jma` (JMA MSM 5 km + GSM via Open-Meteo).
 
-## Ground truth: morning snow depth, Sweden and Finland (nordic league)
+## Ground truth: morning snow depth, Sweden, Finland and Norway (nordic league)
 
 The nordic league scores against new snow derived from the daily morning
-snow-depth reading at Swedish and Finnish weather stations: day D is
+snow-depth reading at Swedish, Finnish and Norwegian weather stations: day D is
 max(depth at 06 UTC on D+1 − depth at 06 UTC on D, 0), the rise from one
 morning (07:00 CET / 08:00 EET) to the next. Settling makes long storms read a
 little low and melt days read 0, like SNOTEL depth truth. Every team is scored
@@ -382,6 +382,39 @@ below).
   Open data, CC BY 4.0, credit Finnish Meteorological Institute. 45 stations.
   FMI's station list has no elevation, so elevations come from the Copernicus
   DEM via Open-Meteo's elevation API.
+- **Norway, MET Norway** (`:NO:FROST`, `truth_source: frost`): element
+  `surface_snow_thickness`, daily at 06 UTC (time offset PT6H), from the
+  Frost API. Most stations are read by observers. Frost needs a free client
+  id (`FROST_CLIENT_ID`, sent as the basic-auth user; an Actions secret for
+  the resolve and baselines jobs). Licensed CC BY 4.0 / NLOD (each response
+  cites CC BY 3.0 NO), credit MET Norway. 80 stations.
+  - Readings with qualityCode 5 (very uncertain), 6 (model data) or 7
+    (erroneous) are not used. Codes 0–4 are kept; the last few days are
+    always 2 or 4 (not yet controlled).
+  - **Drift check:** a rise of 10 cm or more is voided (`no_swe_support`)
+    when the station's own gauge recorded under 0.5 mm over the same 24 h.
+    The gauge value dated D covers the 24 h ending at 06 UTC D. Over winter
+    2025-26 it correlates 0.39 with the depth rise D−1 → D and 0.03 with
+    D → D+1, across 208 stations. A missing gauge reading voids nothing.
+  - **Candidates:** Norwegian stations (not Svalbard) within 25 km of a ski
+    area or at ≥ 400 m. Kept on the shared gate below. The series must
+    also have started by October 2022 (≥ 3 winters of climatology), and the
+    station must have reported on ≥ 70% of the last 14 days. That keeps 136
+    of 282. The rest: 75 had too few snow days (mostly summits and coast),
+    31 too few valid days, 29 are not reporting this November, and 11
+    series are too new. The NWP gate then keeps 80 of the 136.
+  - **Gate:** Norway is noisier than Sweden and Finland: median r 0.39
+    against 0.55–0.63.
+    - 54 stations fail, mostly in the western fjords and mountains. There
+      ECMWF has about twice the snow the depth record shows: wet snow
+      settles fast and rain falls on snow. Tryvannshøgda (Oslo) is among
+      them.
+    - The dating differs by observer. 85 stations line up on the standard
+      rise D → D+1, and 45 a day earlier. The 21 kept stations where the
+      earlier day wins by 0.1 take `day_offset` 0. Hemsedal Hølto is one:
+      r 0.52 against 0.39.
+    - Meråker and Tågdalen line up a day *later*. A morning reading cannot
+      do that, so they are treated as misdated and dropped.
 - **Candidates:** active stations within 25 km of a ski area, at ≥ 400 m
   (Sweden) or north of 66° N (Finland). Kept when last winter (Nov–Mar) has
   ≥ 120 valid days and ≥ 10 days of 2 cm or more.
@@ -392,7 +425,9 @@ below).
 - **NWP gate (2026-11-20):** each station's daily truth over winter 2025-26
   (2025-12-01..2026-03-15) is correlated with the direct ECMWF IFS daily
   snowfall for the same local day, and with the truth shifted a day either way
-  (`scripts/nwp_gate.py`).
+  (`scripts/nwp_gate.py`). The decisions are stored in `data/gates/nordic.csv`
+  and applied by the three generators (`data/gates/README.md`), so a
+  regenerated list keeps them.
   - **Re-dated:** 15 stations (11 FMI, mostly synoptic and airport sensors,
     and 4 SMHI: Kindsjön D, Mörsil, Orsa D, Särna D) line up a day earlier by
     a wide margin. For example, Kindsjön D gives r 0.77 against 0.26 and
@@ -404,11 +439,16 @@ below).
   - The other 78 pass (median r 0.56).
   - The 2026-02-01..14 featured hindcast before these changes: AIFS 10.5,
     consensus 9.9, ECMWF 6.3, GFS 3.6, climatology 0.
-- **Featured:** 14 stations within 12 km of a ski area with 3+ lifts (Sälen,
-  Höglekardalen, Saariselkä, Paljakka, Salla…). Abisko, Kittelfjäll and
-  Ljusnedal (Funäsdalen) left with the gate. Replacing them would add
-  Open-Meteo points, so that waits for approval.
-- **Climatology:** from each station's own record since 2010.
+- **Featured:** 14 Swedish and Finnish stations within 12 km of a ski area
+  with 3+ lifts (Sälen, Höglekardalen, Saariselkä, Paljakka, Salla…), plus 3
+  Norwegian ones, which replace Abisko, Kittelfjäll and Ljusnedal
+  (Funäsdalen) after the gate. The Norwegian three are the nearest kept
+  station that passes the gate for each of the three biggest areas: Hemsedal
+  (Hølto, 2 km), Oppdal (Maurhaugen, 9 km) and Skimore Oslo (Brunkollen,
+  7 km). The featured count stays at 17, so the Open-Meteo budget does not
+  rise.
+- **Climatology:** from each station's own record since 2010 (Norway's
+  80: from Frost history, each at its gated `day_offset`).
 
 ## Ground truth: ERA5 analysis (era5 league)
 

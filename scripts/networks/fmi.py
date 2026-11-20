@@ -22,6 +22,7 @@ import requests
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import gate  # noqa: E402
 import skiareas  # noqa: E402
 
 OUT = ROOT / "data" / "stations" / "fmi.csv"
@@ -81,10 +82,12 @@ def main() -> int:
         ok_days = int(t["valid"].sum())
         snow_days = int((t["snow24"] >= 2 / 2.54).sum())
         keep = ok_days >= MIN_DAYS and snow_days >= MIN_SNOW_DAYS
+        offset, why = gate.decide("nordic", sid, 1) if keep else (None, "")
+        keep = keep and offset is not None
         big, bd = skiareas.nearest(s["lat"], s["lon"], FEATURED_LIFTS)
         featured = big is not None and bd <= FEATURED_KM
         print(f"{sid:>14} {s['name']:<30} {s['alt']:6.0f} m days={ok_days} snow_days={snow_days} "
-              f"{'featured' if featured else 'network'} -> {'keep' if keep else 'drop'}")
+              f"{'featured' if featured else 'network'} {why} -> {'keep' if keep else 'drop'}")
         if keep:
             rows.append({"station_id": sid, "slug": f"fmi-{s['id']}", "name": s["name"],
                          "resort": skiareas.label(s["name"], s["lat"], s["lon"], within_km=FEATURED_KM,
@@ -92,7 +95,7 @@ def main() -> int:
                          "region": "Finland", "state": "FI", "elevation_ft": round(s["alt"] * 3.28084),
                          "latitude": round(s["lat"], 5), "longitude": round(s["lon"], 5), "league": "nordic",
                          "tier": "featured" if featured else "network", "truth_source": "fmi",
-                         "network": "FMI", "external_id": s["id"], "day_offset": 1})
+                         "network": "FMI", "external_id": s["id"], "day_offset": offset})
     with OUT.open("w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=FIELDS)
         w.writeheader()
