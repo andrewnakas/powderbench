@@ -1,9 +1,12 @@
 """Training camp: score forecasts against past seasons, offline, per league.
 
 Hindcast rounds use the same truth pipeline and scoring as live rounds. The
-NWP baselines come from Open-Meteo's archive of *actual past model runs*
-(short lead time), so treat their 48h/72h skill as optimistic. Hindcast
-results are for practice and never count toward the official leaderboard.
+ECMWF IFS, AIFS and GFS baselines are read from the producers' archived runs
+(nwp/): the newest run that was online at the baselines slot, so their 48h/72h
+skill is what a live round would have seen. Models only Open-Meteo serves come
+from its archive of past runs, which stitches each run's first hours together:
+treat their 48h/72h skill as optimistic. Hindcast results are for practice and
+never count toward the official leaderboard.
 """
 
 from __future__ import annotations
@@ -74,11 +77,9 @@ def run_hindcast(
                     "baseline-persistence": baselines.persistence_prediction(day, daily),
                     "baseline-openmeteo": _safe(lambda: baselines.openmeteo_prediction(
                         league, day, "best_match", "hindcast", featured_only)),
-                    "baseline-gfs": _safe(lambda: baselines.openmeteo_prediction(
-                        league, day, "gfs_seamless", "hindcast", featured_only)),
                 }
             )
-            subs.update(baselines.model_baselines(league, day, "hindcast"))
+            subs.update(baselines.model_baselines(league, day, "hindcast", featured_only))
             subs[baselines.CONSENSUS_TEAM] = baselines.consensus_prediction(subs)
         for team, by_round in submissions.items():
             if day in by_round:

@@ -8,6 +8,7 @@ given league.
 from __future__ import annotations
 
 import logging
+import os
 from datetime import date, datetime, timedelta, timezone
 
 import pandas as pd
@@ -16,7 +17,7 @@ from . import HORIZONS
 from .leagues import League
 from .scoring import QUANTILE_COLS
 from .stations import load_stations, station_ids
-from . import climatology, openmeteo
+from . import climatology, nwp, openmeteo
 
 log = logging.getLogger(__name__)
 
@@ -56,15 +57,8 @@ def persistence_prediction(target_day: date, obs_daily: pd.DataFrame) -> pd.Data
     return pd.DataFrame(rows)
 
 
-def openmeteo_prediction(league: League, target_day: date, model: str = "best_match", mode: str = "live",
-                         featured_only: bool = False) -> pd.DataFrame:
-    """NWP baseline: cumulative daily snowfall over the round's 3 target days.
-    featured_only keeps secondary models inside Open-Meteo's free daily call
-    budget (it bills per location) once leagues run thousands of stations."""
-    stations = list(load_stations(league.name, featured_only=featured_only))
-    end = target_day + timedelta(days=2)
-    fetch = openmeteo.forecast_daily_snowfall if mode == "live" else openmeteo.hindcast_daily_snowfall
-    daily = fetch(stations, target_day, end, model=model)
+def _cumulative(daily: pd.DataFrame, target_day: date) -> pd.DataFrame:
+    """Daily snowfall (station_id, date, snowfall_in) -> cumulative horizons."""
     rows = []
     for sid, grp in daily.groupby("station_id"):
         grp = grp.set_index("date")["snowfall_in"]
@@ -80,19 +74,59 @@ def openmeteo_prediction(league: League, target_day: date, model: str = "best_ma
     return pd.DataFrame(rows)
 
 
-# Extra NWP baselines, run on featured stations only (Open-Meteo's free tier
-# bills per location). team -> (Open-Meteo model, region): "conus" models
-# only cover the lower 48, "alps" only the Alps leagues, "japan" only Japan.
+def openmeteo_prediction(league: League, target_day: date, model: str = "best_match", mode: str = "live",
+                         featured_only: bool = False) -> pd.DataFrame:
+    """NWP baseline via Open-Meteo: cumulative daily snowfall over the round's
+    3 target days. featured_only keeps secondary models inside Open-Meteo's
+    free daily call budget (it bills per location)."""
+    stations = list(load_stations(league.name, featured_only=featured_only))
+    end = target_day + timedelta(days=2)
+    fetch = openmeteo.forecast_daily_snowfall if mode == "live" else openmeteo.hindcast_daily_snowfall
+    return _cumulative(fetch(stations, target_day, end, model=model), target_day)
+
+
+# Baselines are generated 2.5-9 h before the cutoff; a hindcast takes the run
+# that was online 3 h before it, like the NDFD baseline.
+HINDCAST_SLOT_H = 3
+
+
+def nwp_as_of(league: League, target_day: date, mode: str) -> datetime:
+    """The moment whose newest model run a baseline may use: now for a live
+    round (never past its cutoff), the baselines slot for a hindcast."""
+    cutoff = league.cutoff_utc(target_day)
+    if mode == "live":
+        return min(datetime.now(timezone.utc), cutoff)
+    return cutoff - timedelta(hours=HINDCAST_SLOT_H)
+
+
+def direct_prediction(league: League, target_day: date, source: str, mode: str = "live",
+                      featured_only: bool = False) -> pd.DataFrame:
+    """NWP baseline read from the producer's own files (nwp/): every station,
+    no Open-Meteo calls."""
+    stations = list(load_stations(league.name, featured_only=featured_only))
+    daily = nwp.daily_snowfall(stations, target_day, target_day + timedelta(days=2), source,
+                               as_of=nwp_as_of(league, target_day, mode), live=mode == "live")
+    log.info("%s %s: %s run %s for %d stations (direct)", league.name, target_day, source,
+             daily.attrs.get("run"), len(stations))
+    return _cumulative(daily, target_day)
+
+
+# Extra NWP baselines. team -> (direct source, Open-Meteo model, region).
+# A direct source (nwp.SOURCES) reads the producer's files for every station
+# and falls back to Open-Meteo when that read fails; Open-Meteo-only models run
+# on featured stations (its free tier bills per location). Regions: "conus"
+# covers the lower 48, "alps" the Alps leagues, "japan" Japan.
 MODEL_BASELINES = {
-    "baseline-ecmwf": ("ecmwf_ifs025", None),
-    "baseline-aifs": ("ecmwf_aifs025_single", None),  # ECMWF's AI model
-    "baseline-icon": ("icon_seamless", None),
-    "baseline-gem": ("gem_seamless", None),
-    "baseline-ukmo": ("ukmo_seamless", None),
-    "baseline-nbm": ("ncep_nbm_conus", "conus"),  # NOAA's calibrated National Blend
-    "baseline-hrrr": ("ncep_hrrr_conus", "conus"),  # 3 km, 48h range
-    "baseline-arome": ("meteofrance_seamless", "alps"),
-    "baseline-jma": ("jma_seamless", "japan"),  # JMA MSM 5 km + GSM
+    "baseline-ecmwf": ("ecmwf_ifs", "ecmwf_ifs025", None),
+    "baseline-aifs": ("ecmwf_aifs", "ecmwf_aifs025_single", None),  # ECMWF's AI model
+    "baseline-gfs": ("gfs", "gfs_seamless", None),
+    "baseline-icon": (None, "icon_seamless", None),
+    "baseline-gem": (None, "gem_seamless", None),
+    "baseline-ukmo": (None, "ukmo_seamless", None),
+    "baseline-nbm": (None, "ncep_nbm_conus", "conus"),  # NOAA's calibrated National Blend
+    "baseline-hrrr": (None, "ncep_hrrr_conus", "conus"),  # 3 km, 48h range
+    "baseline-arome": (None, "meteofrance_seamless", "alps"),
+    "baseline-jma": (None, "jma_seamless", "japan"),  # JMA MSM 5 km + GSM
 }
 CONSENSUS_TEAM = "baseline-consensus"
 
@@ -110,13 +144,35 @@ def _region_ok(league: League, region: str | None) -> bool:
     return False
 
 
-def model_baselines(league: League, target_day: date, mode: str = "live") -> dict[str, pd.DataFrame]:
+def direct_enabled() -> bool:
+    """PB_NWP_DIRECT=0 sends every model baseline back through Open-Meteo."""
+    return os.environ.get("PB_NWP_DIRECT", "1") != "0"
+
+
+def model_prediction(league: League, target_day: date, team: str, mode: str = "live",
+                     featured_only: bool = False) -> pd.DataFrame:
+    source, om_model, _ = MODEL_BASELINES[team]
+    if source and direct_enabled():
+        try:
+            pred = direct_prediction(league, target_day, source, mode, featured_only)
+            if len(pred):
+                return pred
+            log.warning("%s: direct %s gave no rows; falling back to Open-Meteo", team, source)
+        except Exception:
+            log.warning("%s: direct %s failed; falling back to Open-Meteo", team, source, exc_info=True)
+    return openmeteo_prediction(league, target_day, om_model, mode, featured_only=True)
+
+
+def model_baselines(league: League, target_day: date, mode: str = "live",
+                    featured_only: bool = False) -> dict[str, pd.DataFrame]:
+    """featured_only limits the direct models too (hindcasts that score only
+    the headline stations); live rounds give them every station."""
     out = {}
-    for team, (model, region) in MODEL_BASELINES.items():
+    for team, (_, _, region) in MODEL_BASELINES.items():
         if not _region_ok(league, region):
             continue
         try:
-            pred = openmeteo_prediction(league, target_day, model, mode, featured_only=True)
+            pred = model_prediction(league, target_day, team, mode, featured_only)
         except Exception:
             log.warning("%s failed for %s/%s", team, league.name, target_day, exc_info=True)
             continue
@@ -169,8 +225,6 @@ def all_baselines(league: League, target_day: date, mode: str = "live") -> dict[
         "baseline-persistence": safe("baseline-persistence", persistence),
         "baseline-openmeteo": safe("baseline-openmeteo",
                                    lambda: openmeteo_prediction(league, target_day, "best_match", mode)),
-        "baseline-gfs": safe("baseline-gfs", lambda: openmeteo_prediction(
-            league, target_day, "gfs_seamless", mode, featured_only=True)),
     }
     subs.update(model_baselines(league, target_day, mode))
     if mode == "live" and _in_conus(league):

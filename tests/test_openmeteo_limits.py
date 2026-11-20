@@ -23,3 +23,11 @@ def test_window_wait_hourly_and_daily():
     assert openmeteo._window_wait(_Resp("Daily API request limit exceeded."), late) == 10 * 60 + 60
     assert openmeteo._window_wait(_Resp("Minutely API request limit exceeded."), now) is None
     assert openmeteo._window_wait(None, now) is None
+
+
+def test_disabled_raises_before_any_request(monkeypatch):
+    monkeypatch.setenv("PB_OPENMETEO", "0")
+    monkeypatch.setattr(openmeteo.requests, "get", lambda *a, **k: (_ for _ in ()).throw(AssertionError("called")))
+    import pytest
+    with pytest.raises(openmeteo.OpenMeteoDisabled):
+        openmeteo._get(openmeteo.FORECAST_URL, {"latitude": "1"}, cacheable=False)
