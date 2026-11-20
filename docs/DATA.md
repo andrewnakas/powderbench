@@ -458,10 +458,11 @@ too short for a climatology so far.
     - at ≥ 1,200 m, snow lies on ≥ 50% of Dec–Feb mornings;
     - ≤ 3 dropouts;
     - a morning report on ≥ 70% of the last 14 days, as read in real time;
-    - ≥ 3 such winters inside the climatology window.
+    - ≥ 3 such winters inside the climatology window;
+    - the per-station NWP gate (below).
 
-    That keeps 6: Chopok, Lomnický štít and Telgárt (Slovakia), Puntijarka
-    (Croatia), and Erzurum and Erzurum Bölge (Turkey). The 12 Norwegian
+    That keeps 3: Telgárt (Slovakia), and Erzurum and Erzurum Bölge (Turkey).
+    The 12 Norwegian
     stations and Navacerrada pass everything but the real-time test. Central
     Asia and Korea report too sparsely (Shymbulak had 2 snow days on record
     last winter).
@@ -493,11 +494,23 @@ too short for a climatology so far.
       snow, are left out: Luční bouda and Labská bouda (since November
       2023), Harrachov (2021), Šerák (2025), Jizerka (2000) and eight more.
     - Praděd's observer record stops in 1998 and resumes in 2025.
+- **NWP gate (2026-11-20):** each station's daily truth over winter 2025-26
+  (2025-12-01..2026-03-15, ~100 days) is correlated with the direct ECMWF IFS
+  daily snowfall for the same local day, and with the truth shifted a day
+  either way (`scripts/nwp_gate.py`). A station needs r ≥ 0.4 at its best
+  shift.
+  - **Kept:** the ČHMÚ observers at r 0.65–0.76 (all best at shift 0),
+    Erzurum Bölge 0.73, Telgárt 0.59, Erzurum 0.56.
+  - **Dropped:** the summit stations Chopok (r 0.27) and Lomnický štít
+    (0.30): wind, not snowfall, moves their depth. Their "new snow" ran 1.3×
+    and 2.4× the model's. Also Puntijarka (0.01 same day, 0.37 a day later;
+    4× the model's total).
+  - The 2026-02-01..14 hindcast gate before the drop: ECMWF 1.2 against
+    climatology 0, consensus −17. The summit truth was the reason.
 - **Featured:** for each ski area with 10+ lifts, its nearest kept station
   within 6 km (GHCNh, also no more than 150 m below the area's lowest lift)
-  or 5 km (ČHMÚ). That gives 5: Jasná (Chopok), Tatranská Lomnica
-  (Lomnický štít), Pec pod Sněžkou, Skiarena Jizerky (Desná) and Skiareál
-  Klínovec.
+  or 5 km (ČHMÚ). That gives 3: Pec pod Sněžkou, Skiarena Jizerky (Desná) and
+  Skiareál Klínovec. The Tatras' featured stations were the two summits.
 - **Climatology:** from each station's own record since 2000.
 
 ## Ground truth: ERA5 analysis (era5 league)

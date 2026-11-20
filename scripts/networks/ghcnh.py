@@ -21,6 +21,10 @@ A kept station also needs >= MIN_CLIM_WINTERS winters (>= 100 valid Nov-Mar
 days) inside the climatology window, or the league's climatology has no
 forecast for it (Lesko's depth reports before 2023 come only from the unusable
 IMGW feed).
+NWP_GATE_FAILED lists stations whose truth failed the per-station NWP gate
+(scripts/nwp_gate.py on the direct-NWP branch: daily truth vs ECMWF IFS over
+winter 2025-26, best day shift below r 0.4). Summit stations fail it: wind,
+not snowfall, moves their depth.
 Featured: for each ski area with >= FEATURED_LIFTS lifts, its nearest kept
 station within FEATURED_KM and no more than BELOW_BASE_M below the area's
 lowest lift (a valley-floor station says little about the slopes).
@@ -62,6 +66,12 @@ LIVE_DAYS = 14
 LAG_DAYS = 3
 MIN_LIVE_SHARE = 0.7
 FEATURED_KM = 6.0
+# r vs ECMWF IFS, 2025-12-01..2026-03-15, shifts -1/0/+1 (n ~90-105 days)
+NWP_GATE_FAILED = {
+    "LOM00011916": "Chopok summit: r 0.28/0.27/0.07, truth 25 in vs model 19",
+    "LOM00011930": "Lomnicky stit summit: r 0.30/0.30/-0.02, truth 48 in vs model 20",
+    "HRM00014235": "Puntijarka: r -0.01/0.01/0.37, truth 71 in vs model 17",
+}
 FEATURED_LIFTS = 10
 BELOW_BASE_M = 150
 FIELDS = ["station_id", "slug", "name", "resort", "region", "state", "elevation_ft", "latitude", "longitude",
@@ -148,6 +158,9 @@ def main() -> int:
         keep = keep and live >= MIN_LIVE_SHARE
         winters = clim_winters(ghcnh, sid, s["lon"]) if keep else None
         keep = keep and winters >= MIN_CLIM_WINTERS
+        if keep and s["id"] in NWP_GATE_FAILED:
+            print(f"{sid:>18} failed the NWP gate ({NWP_GATE_FAILED[s['id']]}) -> drop", flush=True)
+            keep = False
         print(f"{sid:>18} {s['iso']} {s['name'][:24]:<24} {s['alt']:6.0f} m hour={hour} days={ok_days} "
               f"snow_days={snow_days} total={t['snow24'].sum():5.1f} in cover={cover:.2f} dropouts={drops} "
               f"near={s['area'][:28]} ({s['km']:.1f} km) live={live if live is None else round(live, 2)} winters={winters} -> {'keep' if keep else 'drop'}", flush=True)
