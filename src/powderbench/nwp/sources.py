@@ -319,7 +319,7 @@ class Gfs(Source):
     online_h = 4.5
     workers = 8
     STEP_H = 3
-    trule = False  # Open-Meteo's elevation rule on the derived snow (see temperature_rule)
+    trule = True  # Open-Meteo's elevation rule on the derived snow (see temperature_rule)
 
     def _url(self, run: datetime, step: int) -> str:
         return f"{GFS_BUCKET}/gfs.{run:%Y%m%d}/{run:%H}/atmos/gfs.t{run:%H}z.pgrb2.0p25.f{step:03d}"

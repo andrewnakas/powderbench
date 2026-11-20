@@ -183,6 +183,7 @@ def test_model_prediction_open_meteo_first_direct_for_the_rest(monkeypatch):
 
     monkeypatch.setattr(baselines, "openmeteo_prediction", om)
     monkeypatch.setattr(baselines, "direct_prediction", direct)
+    monkeypatch.setattr(baselines, "DIRECT_FIRST", set())  # the Open-Meteo-first path, for any future model
     out = baselines.model_prediction(league, date(2026, 2, 1), "baseline-gfs")
     assert got == {"om": ("gfs_seamless", True), "direct": ["net"]}
     assert dict(zip(out.station_id, out.snowfall_in)) == {"feat": 1.0, "net": 2.0}

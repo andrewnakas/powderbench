@@ -156,9 +156,10 @@ def direct_enabled() -> bool:
 
 # The direct read goes first for these: with Open-Meteo's own elevation rule
 # (nwp/sources.py) it scores better than Open-Meteo's processing of the same
-# model on featured stations (2026-11-01..14, DATA.md). Open-Meteo then only
-# fills featured stations the direct read missed.
-DIRECT_FIRST = {"baseline-ecmwf", "baseline-aifs"}
+# model on featured stations (2026-11-01..14, DATA.md), for GFS even against
+# Open-Meteo's HRRR blend. Open-Meteo then only fills featured stations the
+# direct read missed.
+DIRECT_FIRST = {"baseline-ecmwf", "baseline-aifs", "baseline-gfs"}
 
 
 def _direct_first(league: League, target_day: date, team: str, source: str, om_model: str, mode: str,

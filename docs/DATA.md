@@ -648,13 +648,11 @@ Two paths feed the model baselines:
   running when Open-Meteo is down or the home IP is out of quota.
 
 How the two combine, per team (`baselines.model_prediction`):
-- **ECMWF IFS and AIFS (`DIRECT_FIRST`):** the direct read goes first, at
-  every station. Open-Meteo is called only for featured stations it missed,
-  so on a normal day these two teams cost no Open-Meteo calls.
-- **Every other model:** Open-Meteo first on featured stations, then the
-  direct read (GFS) for every station Open-Meteo did not cover, which means
-  all stations whenever Open-Meteo fails. Open-Meteo's `gfs_seamless` blends
-  3 km HRRR into GFS over the US; the direct GFS is plain 0.25° GFS.
+- **ECMWF IFS, AIFS and GFS (`DIRECT_FIRST`):** the direct read goes first,
+  at every station. Open-Meteo is called only for featured stations it
+  missed, so on a normal day these three teams cost no Open-Meteo calls.
+- **Every other model** (ICON, GEM, UKMO, AROME…) has no direct read and stays
+  on Open-Meteo, featured stations only.
 
 **Open-Meteo's elevation rule (2026-11-20).** Read raw, the direct ECMWF
 scored well below Open-Meteo's processing of the same run. On the stations
@@ -687,9 +685,21 @@ turns it off. Scored against truth, 2026-11-01..14, same runs and days
 | AIFS, observers, featured | 7.8 | −23.5 | **23.9** |
 | AIFS, stations, all 996 | – | 1.3 | **22.4** |
 | AIFS, observers, all | – | −94.7 | **−0.7** |
+| GFS, stations, featured | 20.7 | −14.2 | **40.2** |
+| GFS, resorts-na, featured | −110.5 | −72.4 | **−37.2** |
+| GFS, alps, featured | −14.3 (41% of station-days) | −55.5 | **−0.2** |
+| GFS, observers, featured | −18.9 | −59.3 | **4.3** |
+| GFS, stations, all 996 | – | −26.9 | **15.3** |
+| GFS, observers, all | – | −216.0 | **−53.5** |
 
 The production code reproduces the experiment exactly: ECMWF on featured
 stations scores 49.4 at 0.25° and 50.4 at 0.1°.
+
+GFS has no snowfall field: its snow is precipitation times the share of
+time the model's categorical-snow flag was on. The rule then applies to that
+snow the same way, with GFS's 2 m temperature at every 3 h step. With it,
+the plain 0.25° GFS beats Open-Meteo's `gfs_seamless` on featured stations in
+all four leagues, although Open-Meteo blends 3 km HRRR into it over the US.
 
 **ECMWF IFS at 0.1° or 0.25° (2026-11-20).** Since the runs of late October
 2026, ECMWF's open data also carries IFS on its native ~9 km grid, as 0.1°
