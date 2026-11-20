@@ -19,6 +19,13 @@ include the next day's accumulation, so first-wins is the clean end-of-day
 value.) Cumulative sources (kind=season_total) yield daily snowfall as the
 day-over-day delta, requiring the previous attributed day to be present.
 
+Stuck reports: most resort pages carry no "updated" stamp, and off-season or
+between patrol updates a page keeps showing its last number (one resort showed
+15.75 in. of "new snow" for 56 days). A direct 24 h value above zero that
+repeats unchanged on STUCK_DAYS or more consecutive days is therefore read as
+one report followed by a stale page: the first day stands, the repeats are
+dropped (and become `missing` QC voids at truth time).
+
 Failed scrapes are recorded as status rows too — the archive doubles as the
 public audit trail behind `missing` QC voids.
 """
@@ -53,6 +60,8 @@ STATUS_PARSE_FAILED = "parse_failed"
 STATUS_HTTP_ERROR = "http_error"
 STATUS_ROBOTS_BLOCKED = "robots_blocked"
 STATUS_STALE = "stale"
+
+STUCK_DAYS = 3  # this many identical non-zero days in a row = a page that stopped updating
 
 _STEM_RE = re.compile(r"^(\d{4}-\d{2}-\d{2})T\d{4}Z$")
 
@@ -151,6 +160,22 @@ def _dedup(begin: date, end: date, station_ids: list[str] | None) -> pd.DataFram
     return df.sort_values("scraped_utc").groupby(["station_id", "date"], as_index=False).first()
 
 
+def _drop_stuck(direct: pd.DataFrame) -> pd.DataFrame:
+    """Remove the repeats of a stuck report: within a run of STUCK_DAYS or more
+    consecutive days showing the same non-zero value, keep only the first day."""
+    direct = direct.sort_values(["station_id", "date"]).reset_index(drop=True)
+    day = pd.to_datetime(direct["date"])
+    same = (
+        (direct["station_id"] == direct["station_id"].shift())
+        & (direct["snow24_in"] == direct["snow24_in"].shift())
+        & ((day - day.shift()).dt.days == 1)
+    )
+    run = (~same).cumsum()
+    length = run.map(run.value_counts())
+    stuck = same & (length >= STUCK_DAYS) & (direct["snow24_in"] > 0)
+    return direct[~stuck]
+
+
 def daily_from_archive(begin: date, end: date, station_ids: list[str] | None = None) -> pd.DataFrame:
     """Deduped daily snowfall from the snapshot archive for [begin, end].
 
@@ -158,8 +183,9 @@ def daily_from_archive(begin: date, end: date, station_ids: list[str] | None = N
     stations need the previous attributed day on record — days after a gap
     are absent (they become `missing` QC voids at truth time).
     """
-    # cumulative deltas for `begin` need the day before on hand
-    df = _dedup(begin - timedelta(days=1), end, station_ids)
+    # cumulative deltas for `begin` need the day before on hand; a stuck run
+    # is only recognisable with the days around the window
+    df = _dedup(begin - timedelta(days=STUCK_DAYS), end + timedelta(days=STUCK_DAYS - 1), station_ids)
     if not len(df):
         return pd.DataFrame(columns=["station_id", "date", "snow24_in", "scraped_utc"])
 
@@ -167,7 +193,7 @@ def daily_from_archive(begin: date, end: date, station_ids: list[str] | None = N
     direct = df[df["kind"] == KIND_SNOW24].copy()
     if len(direct):
         direct["snow24_in"] = direct["value_in"]
-        parts.append(direct)
+        parts.append(_drop_stuck(direct))
     for _, grp in df[df["kind"] == KIND_SEASON_TOTAL].groupby("station_id"):
         grp = grp.sort_values("date").reset_index(drop=True)
         prev_day_gap = pd.to_datetime(grp["date"]).diff().dt.days

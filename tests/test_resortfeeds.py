@@ -271,3 +271,34 @@ def test_stale_report_is_never_counted(tmp_path, monkeypatch):
     fresh = pd.read_csv(archive.scrape_all(now_utc=datetime(2026, 2, 10, 20, tzinfo=timezone.utc)))
     stale = pd.read_csv(archive.scrape_all(now_utc=datetime(2026, 2, 12, 20, tzinfo=timezone.utc)))
     assert fresh["status"].iloc[0] == "ok" and stale["status"].iloc[0] == "stale"
+
+
+def _scrape_days(monkeypatch, values_cm, first_day=10):
+    """One scrape a day from 2026-07-<first_day>, the page showing values_cm in turn."""
+    for i, v in enumerate(values_cm):
+        _fake_http(monkeypatch, {"https://a/x.json": '{"snow": %s}' % v})
+        archive.scrape_all(now_utc=datetime(2026, 7, first_day + i, 20, 30, tzinfo=timezone.utc))
+
+
+def test_stuck_report_counts_once(monkeypatch, tmp_path):
+    """A page that keeps showing the same non-zero number is one report, not a
+    storm every day (Wolf Creek showed 10.5 in. for 11 days, La Hoya 15.75 for 56)."""
+    monkeypatch.setenv("POWDERBENCH_DATA_DIR", str(tmp_path))
+    monkeypatch.setattr(archive, "REGISTRY", (_spec(url="https://a/x.json"),))
+    _scrape_days(monkeypatch, [0.0, 40.0, 40.0, 40.0, 40.0, 5.0])
+
+    out = archive.daily_from_archive(date(2026, 7, 10), date(2026, 7, 15))
+    got = {d.isoformat(): v for d, v in zip(out["date"], out["snow24_in"])}
+    assert got == {"2026-07-10": 0.0, "2026-07-11": 15.75, "2026-07-15": 1.97}
+    # the same answer when the window starts or ends inside the run
+    mid = archive.daily_from_archive(date(2026, 7, 12), date(2026, 7, 13))
+    assert len(mid) == 0
+
+
+def test_two_equal_days_and_dry_spells_are_kept(monkeypatch, tmp_path):
+    monkeypatch.setenv("POWDERBENCH_DATA_DIR", str(tmp_path))
+    monkeypatch.setattr(archive, "REGISTRY", (_spec(url="https://a/x.json"),))
+    _scrape_days(monkeypatch, [5.0, 5.0, 0.0, 0.0, 0.0, 0.0])
+
+    out = archive.daily_from_archive(date(2026, 7, 10), date(2026, 7, 15))
+    assert out["snow24_in"].tolist() == [1.97, 1.97, 0.0, 0.0, 0.0, 0.0]
