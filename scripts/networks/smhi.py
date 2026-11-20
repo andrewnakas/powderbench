@@ -21,6 +21,7 @@ import requests
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import gate  # noqa: E402
 import skiareas  # noqa: E402
 
 OUT = ROOT / "data" / "stations" / "smhi.csv"
@@ -56,10 +57,12 @@ def main() -> int:
         ok_days = int(t["valid"].sum())
         snow_days = int((t["snow24"] >= 2 / 2.54).sum())
         keep = ok_days >= MIN_DAYS and snow_days >= MIN_SNOW_DAYS
+        offset, why = gate.decide("nordic", sid, 1) if keep else (None, "")
+        keep = keep and offset is not None
         big, bd = skiareas.nearest(lat, lon, FEATURED_LIFTS)
         featured = big is not None and bd <= FEATURED_KM
         print(f"{sid:>16} {s['name']:<28} {alt:6.0f} m days={ok_days} snow_days={snow_days} "
-              f"{'featured' if featured else 'network'} -> {'keep' if keep else 'drop'}")
+              f"{'featured' if featured else 'network'} {why} -> {'keep' if keep else 'drop'}")
         if not keep:
             continue
         kept += 1
@@ -68,7 +71,7 @@ def main() -> int:
                      "region": "Sweden", "state": "SE", "elevation_ft": round(alt * 3.28084),
                      "latitude": round(lat, 5), "longitude": round(lon, 5), "league": "nordic",
                      "tier": "featured" if featured else "network", "truth_source": "smhi",
-                     "network": "SMHI", "external_id": str(s["id"]), "day_offset": 1})
+                     "network": "SMHI", "external_id": str(s["id"]), "day_offset": offset})
     with OUT.open("w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=FIELDS)
         w.writeheader()

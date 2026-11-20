@@ -60,9 +60,9 @@ leagues:
     season_start_month: 10
     active_months: [11, 12, 1, 2, 3, 4]
   - name: nordic
-    label: "Nordic · Morning snow depth (SMHI, FMI)"
+    label: "Nordic · Morning snow depth (SMHI, FMI, MET Norway)"
     status: trial
-    truth_source: smhi # Finnish stations carry truth_source: fmi
+    truth_source: smhi # Finnish stations carry truth_source: fmi, Norwegian ones frost
     # Swedish day D starts 23:00 UTC D-1, Finnish 22:00 UTC D-1: the 21:00
     # UTC D-1 cutoff (the alps slot) precedes both
     cutoff: { days_before: 1, hour_utc: 21 }

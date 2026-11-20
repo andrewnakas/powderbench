@@ -337,9 +337,11 @@ register(TruthSource(
     climatology=(date(2010, 10, 1), _CLIM_END),
     measured=False,
     note=(
-        "Truth is new snow from the daily 07:00 snow-depth reading at SMHI's Swedish weather "
-        "stations (Storlien, Kittelfjäll, Sälen, Katterjåkk by Riksgränsen…): the rise in depth to the next "
-        "morning's reading. Data © SMHI, CC BY 4.0."
+        # the nordic league's note on the site, so it credits all three networks
+        "Truth is new snow from the daily morning snow-depth reading at Swedish (SMHI), Finnish (FMI) "
+        "and Norwegian (MET Norway) weather stations (Sälen, Storlien, Saariselkä, Salla, Hemsedal, "
+        "Oppdal…): the rise in depth between two morning readings. Data © SMHI, © Finnish "
+        "Meteorological Institute and MET Norway (frost.met.no), CC BY 4.0."
     ),
 ))
 
@@ -360,6 +362,27 @@ register(TruthSource(
         "Truth is new snow from the morning snow-depth reading at the Finnish Meteorological "
         "Institute's weather stations (Saariselkä, Paljakka, Salla, Kittilä Kenttärova by Levi…): the rise in "
         "depth to the next morning's reading. Data © Finnish Meteorological Institute, CC BY 4.0."
+    ),
+))
+
+
+def _frost_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
+    from .networks import frost
+
+    return frost.daily(ids, begin, end, _offsets(league, ids))
+
+
+register(TruthSource(
+    name="frost",
+    fetch=_frost_daily,
+    history_begin=date(2010, 10, 1),
+    climatology=(date(2010, 10, 1), _CLIM_END),
+    measured=False,
+    note=(
+        "Truth is new snow from the daily 07:00 snow-depth reading at MET Norway's weather "
+        "stations (Hemsedal, Trysil, Geilo, Oppdal…): the rise in depth to the next morning's reading, "
+        "voided when the station's own rain gauge stayed dry (wind drift). Data © MET Norway (Frost), "
+        "CC BY 4.0."
     ),
 ))
 
