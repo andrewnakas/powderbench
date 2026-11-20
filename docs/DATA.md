@@ -113,7 +113,7 @@ Data Service. COOP data is US public domain; CoCoRaHS data is CC BY 3.0
 | Synoptic / NWAC / UAC / CAIC / Avalanche Canada | permission requested | see [OUTREACH.md](OUTREACH.md) |
 | OnTheSnow, OpenSnow, Snow-Forecast, Skiresort.info | rejected | ToS prohibit scraping/redistribution |
 
-## Ground truth: measured new snow, Swiss and Austrian Alps (alps league)
+## Ground truth: measured new snow, Swiss, Austrian and French Alps (alps league)
 
 The alps league scores against **HN — the 24h height of new snow** published by
 the WSL Institute for Snow and Avalanche Research **SLF** (CC BY 4.0; data ©
@@ -143,17 +143,56 @@ there's no key.
 - **Candidates:** active stations at ≥ 900 m with ≥ 100 manual readings last
   winter. GeoSphere lists many sites under two station numbers with identical
   values; one is kept per site.
-- **Day attribution:** the 07:00 reading should hold yesterday's snow, but
-  fitted against ERA5, stations split. St. Anton fits the same day clearly
-  (r = 0.80 vs 0.64), while Obergurgl fits the next morning's report (0.66 vs
-  0.27). So every station is fitted with the strict margin rule, no documented
-  default. Near-ties are excluded (Warth, Langen am Arlberg, Seefeld and 19
-  others), which leaves 22 of 44 sites.
-- **Featured:** St. Anton (village and Galzig), Galtür / Ischgl, Obergurgl,
-  Obertauern, Saalbach, Nauders, Pitztal Glacier.
+- **Day attribution:** the 07:00 reading holds yesterday's snow (the
+  documented protocol, offset +1), and that is the default. A station is set
+  to "same day" only where its fit against ERA5 says so clearly: St. Anton
+  fits the same day (r = 0.80 vs 0.64), Obergurgl the next morning's report
+  (0.66 vs 0.27). 27 sites use +1 and 9 use 0. (The first version admitted only
+  the 22 sites with a clear fit either way; the 14 near-ties, Warth, Langen am
+  Arlberg and Seefeld among them, now follow the documented protocol and
+  passed their own hindcast gate.)
+- **NWP gate (2026-11-20):** each station's truth over winter 2025-26
+  (2025-12-01..2026-03-15) correlated with the direct ECMWF IFS snowfall, same
+  local day and a day either way (`scripts/nwp_gate.py`, #832). Where it
+  disagrees with the ERA5 fit it wins (`NWP_GATE` in the generator): a whole
+  winter of a 9–25 km forecast, with a 0.10 margin, against a 31 km reanalysis.
+  - Six of the nine "same day" stations fit the documented +1 better and move
+    to it: St. Anton (r 0.56 against 0.44), Achenkirch, Hochfilzen, Loibl
+    Tunnel, Rinn and Umhausen.
+  - Saalbach (best r 0.36) and Tamsweg (0.20) track no shift of the model and
+    are dropped. Saalbach was featured.
+  - 33 sites use +1 and Semmering 0. 34 of 44 sites are in.
+- **Featured:** St. Anton (village and Galzig), Lech / Zürs (Langen),
+  Warth-Schröcken, Galtür / Ischgl, Obergurgl, Obertauern, Seefeld, Nauders,
+  Pitztal Glacier.
 - **Climatology:** from each station's own record since 2000.
-- **Hindcast gate:** 2026-02-01…14, models on the 8 featured stations,
-  climatology and persistence on all 22.
+- **Hindcast gate:** 2026-02-01…14, run separately for the 22 original sites
+  and the 14 added ones (see METHODOLOGY §6).
+
+### France: Météo-France nivo-meteorological network
+
+The French stations (`:NIVO`, `truth_source: nivo`) are the snow-and-weather
+posts that ski-resort staff and Météo-France observers run through the winter
+(Val d'Isère, Tignes, Val Thorens, Chamonix, Les 2 Alpes, Serre Chevalier…).
+Truth is the fresh snow measured on the morning snow board. Data © Météo-France,
+Licence Ouverte 2.0 (Etalab); yearly files, no key.
+
+- **Only the morning board counts.** A midday reading is already contained in
+  the next morning's 24 h figure, so adding it would count snow twice.
+- **Candidates:** 86 Alpine posts, 58 with a usable record, 54 kept
+  (14 featured). The Pyrenees posts are left out: they would need a league of
+  their own.
+- **Day attribution:** the morning reading belongs to the previous day (+1) by
+  protocol; 31 manual posts use it. The 23 automated posts fit "same day"
+  clearly against ERA5. The NWP gate (2026-11-20, as for Austria above) moves
+  six of them back to +1: Avoriaz (r 0.79 against 0.62), Chamonix, Arêches,
+  Les Aillons, Olmet and Prapoutel. That leaves 37 posts at +1 and 17 at 0;
+  all 54 pass.
+- **Climatology:** from each post's own record since 2000.
+- **Hindcast gate:** 2026-02-01…14, a fortnight with one large storm
+  (10-12 Feb: 30-45 in. at most featured resorts). Models beat climatology,
+  zeros and persistence do not, but every model under-forecast the storm by
+  about half, so skill is lower than in Austria (METHODOLOGY §6).
 
   | | Powder Accuracy |
   |---|---|
@@ -164,6 +203,291 @@ there's no key.
   | Zeros | +4.8 |
   | Climatology | 0 |
   | Persistence | −33.0 |
+
+### Germany: DWD precipitation stations (Bavarian Alps)
+
+The German stations (`:DE:DWD`, `truth_source: dwd`) score against
+`NSH_TAG`, the new snow an observer measures at the morning reading. It comes
+from DWD's daily precipitation-station dataset (`more_precip`, `recent` and
+`historical` zips; Deutscher Wetterdienst open data, CC BY 4.0). No key.
+Automatic stations such as Garmisch-Partenkirchen record only snow depth and
+are not used.
+
+- **Candidates:** active stations at ≥ 600 m in the German Alps (47.2–47.95° N,
+  9.8–13.2° E: Allgäu to Berchtesgaden). Kept when last winter (Nov–Mar) has
+  ≥ 100 new-snow values and ≥ 10 days of 2 cm or more: 52 of 105.
+- **Day attribution:** the value dated D is the morning-of-D measurement, so day
+  D is the value dated D+1. Not fitted per station. All 85 German stations
+  ≥ 700 m with new-snow data correlate best with the precipitation DWD files
+  under the previous day (winter 2025/26), so the documented reading holds
+  everywhere.
+- **Featured:** 12 stations within 6 km of a ski area with 6+ lifts
+  (Mittenwald, Oberammergau, Nesselwang, Pfronten, Reit im Winkl, Lenggries…).
+- **Climatology:** from each station's own record since 2000.
+
+### Italy: Meteotrentino snow fields (Trentino)
+
+The Trentino stations (`:IT:METEOTN`, `truth_source: meteotn`) score against
+HN, the 24-hour new snow an observer reads off a snow board at about 08:00 at
+Meteotrentino's snow fields (AINEVA "Modello 1" observations). It comes from
+Meteotrentino's open web service (`dati.meteotrentino.it`,
+`rilieviNeveStagionaliUnaStazioneJson`, one request per field and season; also
+listed on dati.trentino.it). Provincia Autonoma di Trento, CC BY 4.0. No key.
+
+- **Codes:** HN is read from the raw AINEVA code (`000` and `0` = none, `015` =
+  15 cm, `///` = missing). The service's numeric `HNnum` turns `0` into 1 cm on
+  dry days, so it is not used. A reading after a day without an observer covers
+  several days (`CheckCum` / `HnCum`) and is not scored.
+- **Candidates:** all 55 fields in `listaCampiNeve`. Kept when last winter
+  (Dec–Mar) has ≥ 80 single-day HN values and ≥ 10 days of 2 cm or more: 12
+  of 55. Many fields are only staffed in some seasons.
+- **Day attribution:** HN read on the morning of R matches the field's own
+  depth rise into R (correlation 0.50–0.98 at Tonale, Buffaure, Pejo, Valles,
+  2024–26) and not the rise after R (about 0), so day D is the value dated
+  D+1, as for SLF and DWD.
+- **Featured:** 7 fields within 4 km of a ski area with 10+ lifts (Passo
+  Tonale, Folgarida, Canazei Belvedere, Buffaure, Passo Rolle, San Pellegrino,
+  Passo Valles).
+- **Climatology:** from each field's own record since 2005.
+
+### Austria: Land Tirol snow-depth stations (Tyrol)
+
+The Tyrolean stations (`:AT:LWDT`, `truth_source: lwdtirol`) are the automatic
+snow-depth sensors of Land Tirol's avalanche warning service (LWD Tirol) and
+hydrographic service (HD Tirol), many of them inside ski areas. The data is
+"Wetterstationsdaten Tirol" on data.gv.at (Land Tirol, CC BY 4.0), read from
+the SMET files behind lawinen.report (`wiski.tirol.gv.at/lawine/grafiken/smet`).
+No key. Stations run by third parties (power companies, lift operators,
+universities) appear on the same map but are not under that licence and are
+not used.
+
+- **Truth:** new snow is derived from depth, like SNOTEL: the depth at local
+  midnight (median of the 10-minute readings 22:40–23:20 UTC) on D+1 minus the
+  depth at midnight on D, counted as 0 below 1 cm (sensor jitter). Settling
+  snow reads a little low on long storms, as for every depth-derived network.
+  Midnight is taken at 23:00 UTC all season (CET); in late-season CEST weeks
+  the day starts an hour after local midnight.
+- **History:** the `winter` files hold the last 12 months of 10-minute data.
+  Older days exist only as 24-hour means (`all` files, 1990s on): the
+  climatology uses those, which spread a storm over two days but keep its
+  total (82% of the 10-minute total at Rettenbachferner, same-day correlation
+  0.74, winter 2025/26).
+- **Candidates:** LWD/HD Tirol stations with a snow-depth sensor. Kept when
+  last winter (Dec–Mar) has ≥ 100 days with both midnight depths and ≥ 10
+  days of 2 cm or more: 71 (two co-located HD duplicates of LWD stations
+  dropped).
+- **Featured:** for each ski area with 15+ lifts (OpenSkiData), its nearest
+  kept station within 4 km: 12 (Sölden, Stubai Glacier, Obergurgl, St. Anton,
+  Hintertux, Mayrhofen, Serfaus-Fiss-Ladis, Axamer Lizum, Nordkette, Alpbach,
+  Kals-Matrei, Stubai). One per area, so Sölden's four stations cost one
+  Open-Meteo point.
+- **Licence condition:** Land Tirol's open-data terms ask users to tell
+  opendata@tirol.gv.at about applications built on the data.
+
+### Italy: South Tyrol snow-depth stations (Alto Adige)
+
+The South Tyrol stations (`:IT:PROVBZ`, `truth_source: provbz`) are the
+automatic snow-depth (HS) sensors of the provincial weather service, most on
+high pastures and ski slopes of the Dolomites and the Ötztal, Ortler and
+Zillertal ranges. The data is "Misure meteo e idrografiche" on
+data.civis.bz.it (Provincia autonoma di Bolzano – Alto Adige, CC0 1.0), read
+from `geoservices.buergernetz.bz.it/services/meteo/v1/timeseries` (10-minute
+readings, local time, one request per station per season). No key.
+
+- **Truth:** computed exactly as for Land Tirol (same 22:40–23:20 UTC
+  midnight window, 1 cm deadband and QC), so the two networks agree on what a
+  day is. Checked against Meteotrentino's hand-measured new snow 9–12 km away
+  (Karerpass and Obereggen vs Lusia, Piz La Ila vs Belvedere, Dec 2025–Mar
+  2026): same-day correlation 0.63–0.73, lower at a one-day shift either way,
+  so the days line up; totals are 60–75% of the hand-measured board, the
+  settlement every depth-derived network shows.
+- **History:** 10-minute data from the 2014/15 winter on, so the climatology
+  uses the same 10-minute series as live truth.
+- **Candidates:** all 26 stations with an HS sensor. Kept with the Tirol
+  rule (≥ 100 valid days and ≥ 10 days of 2 cm or more last winter): 24
+  (Ladurns had 98 valid days; Gantkofel reported nothing).
+- **Featured:** for each ski area with 10+ lifts (OpenSkiData, the
+  Trentino threshold), its nearest kept station within 4 km: 7 (Alta Badia,
+  Sulden, Schöneben, 3 Zinnen Dolomites, Latemar/Obereggen, Carezza,
+  Ratschings-Jaufen).
+
+### Italy: ARPA Lombardia snow-depth sensors (Lombardy)
+
+The Lombard stations (`:IT:ARPAL`, `truth_source: arpal`) are ARPA
+Lombardia's automatic snow-depth sensors (nivometri), from Livigno and Bormio
+to the Bergamo and Brescia Prealps. The data is CC0 1.0 on dati.lombardia.it
+(Socrata, no key) in four datasets with one schema: up to 2010 (`5kig-ayub`),
+2011–2020 (`id9e-7wf3`), 2021 on (`uqbu-tt6m`, validated, a few months
+behind) and the recent months (`647i-nhxk`, live). Only the readings near
+midnight are requested.
+
+- **Truth:** depth at local midnight is the median of the valid (`stato` VA)
+  readings from 23:00 to 00:50 local solar time (CET); day D is the rise to
+  the next midnight, with the shared depth QC. The sensors report whole
+  centimetres and jitter by 1–2 cm, so rises under 2 cm count as 0 (1 cm for
+  Tirol and South Tyrol). Last season is re-read daily until a year old,
+  because the validated archive fills in months late (March 2026 is not in
+  either dataset yet).
+- **Day check:** against Swiss manual new snow (SLF) last winter, Livigno La
+  Vallaccia vs Berninapass correlates 0.59 same-day (0.40 and 0.25 shifted)
+  and Alpe Motta vs Innerferrera 0.62 (0.04, 0.27): the pattern expected from
+  a midnight day against an 08:00 board.
+- **Candidates:** the 50 active snow-depth sensors in ARPA's register. Kept
+  when either of the last two winters' Dec–Feb has ≥ 75 valid days and ≥ 8
+  days of 2 cm or more: 32 (two winters, so the sensors installed in autumn
+  2025 at Bormio 2000 and Livigno Mottolino qualify).
+- **Featured:** for each ski area with 10+ lifts, its nearest kept station
+  within 4 km: 8 (Livigno, Bormio, San Colombano, Aprica, Madesimo,
+  Valmalenco, Foppolo-Carona, Piani di Bobbio). Bormio 2000 and Livigno
+  Mottolino started in autumn 2025, after the climatology window (to June
+  2025), so until their climatology can be built they count in MAE but drop
+  out of the Powder Accuracy comparison for every team alike. No older
+  sensor sits within 4 km of either ski area.
+
+### Switzerland: MeteoSwiss manual stations (ski villages and valleys)
+
+The MeteoSwiss stations (`:CH:MCH`, `truth_source: meteoswiss`) are manual
+precipitation stations with a new-snow board in the ski villages and valleys
+below the SLF study plots: Engelberg, Grindelwald, Kandersteg, Lenk,
+Pontresina, Samedan, Sedrun, Crans-Montana, Leukerbad, Grächen, Saas Balen,
+Säntis and more. The data is MeteoSwiss's open data (`ogd-nime`, CC BY 4.0,
+"Source: MeteoSwiss"), one CSV per station on data.geo.admin.ch: the record
+to last year (re-read once a year) and this year (re-read at most once per
+UTC day, as MeteoSwiss asks). No key.
+
+- **Truth:** `hns000d0`, the new snow (cm) read by hand at 06 UTC, the same
+  board measurement as SLF's study plots. MeteoSwiss dates the 06–06 UTC
+  reading by its first day, so day D takes the value dated D (offset 0; SLF
+  dates it by the morning it is read, offset 1). Checked at every kept
+  station last winter: the value dated D tracks the station's own depth rise
+  from D to D+1 (correlation 0.90–1.00) and not the rise from D-1 to D
+  (0.02–0.55).
+- **Candidates:** the active manual stations with `hns000d0` at 800 m or
+  higher and within 10 km of a ski area with 5+ lifts. 16 sit within 1 km of
+  an SLF or IMIS station (Adelboden, Andermatt, Arosa, Davos, Gstaad,
+  Weissfluhjoch…, often the same plot) and are dropped: one site, one truth.
+  Kept when last winter (Nov–Mar) has ≥ 120 readings and ≥ 10 days of 2 cm or
+  more: 58.
+- **Tier:** all network. They score in the league's network board; none is
+  featured, so they add no Open-Meteo points.
+
+## Ground truth: JMA snow-depth sensors (japan league)
+
+The japan league (`:JP:JMA`, `truth_source: jma`) scores against
+**降雪の深さの合計**, JMA's daily snowfall total: the sum of each hour's rise
+of the automatic snow-depth sensor over the JST calendar day. It comes from
+JMA's past-weather archive (気象庁 過去の気象データ検索), one page per
+station-month. Yesterday's preliminary value is there by the next JST morning,
+and there's no key. Terms: the JMA website terms of use (compatible with
+CC BY 4.0). Credit: 出典：気象庁ホームページ (Japan Meteorological Agency).
+
+- **What it measures:** a depth sensor, not a snowboard. On long storms
+  settling eats into the hourly rises, so totals read a little lower than an
+  observer's board would. Every team is scored on the same number.
+- **Value marks:** `)` (quasi-normal, a few hourly values missing) is kept.
+  `]` (insufficient data), `#` (suspect), `×`, `///` and blanks are missing.
+  `--` (no phenomenon) is 0.
+- **Day attribution:** none to fit. The total is for the station's own local
+  (JST) day, so day D is the value dated D.
+- **Candidates:** every AMeDAS station that reports snow depth in JMA's live
+  map, matched to its archive page by name (else the nearest page within
+  3 km). A station is kept when last winter (Dec–Mar) has ≥ 100 days with a
+  value, ≥ 10 snowfall days of 2 cm or more, and ≥ 80% of those snowfall days
+  wet on the station's own rain gauge. That last test catches dead or stuck
+  sensors with no external model call.
+- **Featured:** stations within 8 km of a ski area with 5+ lifts, plus Sukayu (Hakkoda)
+  (OpenSkiData, `data/skiareas/ski_areas_global.csv`).
+- **Climatology:** from each station's own record since 2015-10. Jun–Sep are
+  not fetched; they are snow-free at every kept station and outside the season.
+- **Regional baseline:** `baseline-jma` (JMA MSM 5 km + GSM via Open-Meteo).
+
+## Ground truth: morning snow depth, Sweden, Finland and Norway (nordic league)
+
+The nordic league scores against new snow derived from the daily morning
+snow-depth reading at Swedish, Finnish and Norwegian weather stations: day D is
+max(depth at 06 UTC on D+1 − depth at 06 UTC on D, 0), the rise from one
+morning (07:00 CET / 08:00 EET) to the next. Settling makes long storms read a
+little low and melt days read 0, like SNOTEL depth truth. Every team is scored
+on the same number. At 15 stations the value dated D is read at the end of
+day D, so their day D is the rise D−1 → D (`day_offset` 0; see the NWP gate
+below).
+
+- **Sweden, SMHI** (`:SE:SMHI`, `truth_source: smhi`): parameter 8, snow depth
+  once a day at 06 UTC, mostly read by observers. Corrected archive plus
+  `latest-months` (yesterday's reading is in by the morning). Open data,
+  CC BY 4.0, credit SMHI. 48 stations.
+- **Finland, FMI** (`:FI:FMI`, `truth_source: fmi`): daily `snow` from FMI's
+  WFS (`fmi::observations::weather::daily::simple`; −1 = no snow cover = 0).
+  Open data, CC BY 4.0, credit Finnish Meteorological Institute. 45 stations.
+  FMI's station list has no elevation, so elevations come from the Copernicus
+  DEM via Open-Meteo's elevation API.
+- **Norway, MET Norway** (`:NO:FROST`, `truth_source: frost`): element
+  `surface_snow_thickness`, daily at 06 UTC (time offset PT6H), from the
+  Frost API. Most stations are read by observers. Frost needs a free client
+  id (`FROST_CLIENT_ID`, sent as the basic-auth user; an Actions secret for
+  the resolve and baselines jobs). Licensed CC BY 4.0 / NLOD (each response
+  cites CC BY 3.0 NO), credit MET Norway. 80 stations.
+  - Readings with qualityCode 5 (very uncertain), 6 (model data) or 7
+    (erroneous) are not used. Codes 0–4 are kept; the last few days are
+    always 2 or 4 (not yet controlled).
+  - **Drift check:** a rise of 10 cm or more is voided (`no_swe_support`)
+    when the station's own gauge recorded under 0.5 mm over the same 24 h.
+    The gauge value dated D covers the 24 h ending at 06 UTC D. Over winter
+    2025-26 it correlates 0.39 with the depth rise D−1 → D and 0.03 with
+    D → D+1, across 208 stations. A missing gauge reading voids nothing.
+  - **Candidates:** Norwegian stations (not Svalbard) within 25 km of a ski
+    area or at ≥ 400 m. Kept on the shared gate below. The series must
+    also have started by October 2022 (≥ 3 winters of climatology), and the
+    station must have reported on ≥ 70% of the last 14 days. That keeps 136
+    of 282. The rest: 75 had too few snow days (mostly summits and coast),
+    31 too few valid days, 29 are not reporting this November, and 11
+    series are too new. The NWP gate then keeps 80 of the 136.
+  - **Gate:** Norway is noisier than Sweden and Finland: median r 0.39
+    against 0.55–0.63.
+    - 54 stations fail, mostly in the western fjords and mountains. There
+      ECMWF has about twice the snow the depth record shows: wet snow
+      settles fast and rain falls on snow. Tryvannshøgda (Oslo) is among
+      them.
+    - The dating differs by observer. 85 stations line up on the standard
+      rise D → D+1, and 45 a day earlier. The 21 kept stations where the
+      earlier day wins by 0.1 take `day_offset` 0. Hemsedal Hølto is one:
+      r 0.52 against 0.39.
+    - Meråker and Tågdalen line up a day *later*. A morning reading cannot
+      do that, so they are treated as misdated and dropped.
+- **Candidates:** active stations within 25 km of a ski area, at ≥ 400 m
+  (Sweden) or north of 66° N (Finland). Kept when last winter (Nov–Mar) has
+  ≥ 120 valid days and ≥ 10 days of 2 cm or more.
+- **QC:** missing either reading, negative or > 300 in depth, or a rise of
+  more than 48 in voids the day. Big jumps have no SWE or precipitation
+  cross-check: many SMHI stations have no co-located gauge (Storlien's ends in
+  2023), and the readings are manual.
+- **NWP gate (2026-11-20):** each station's daily truth over winter 2025-26
+  (2025-12-01..2026-03-15) is correlated with the direct ECMWF IFS daily
+  snowfall for the same local day, and with the truth shifted a day either way
+  (`scripts/nwp_gate.py`). The decisions are stored in `data/gates/nordic.csv`
+  and applied by the three generators (`data/gates/README.md`), so a
+  regenerated list keeps them.
+  - **Re-dated:** 15 stations (11 FMI, mostly synoptic and airport sensors,
+    and 4 SMHI: Kindsjön D, Mörsil, Orsa D, Särna D) line up a day earlier by
+    a wide margin. For example, Kindsjön D gives r 0.77 against 0.26 and
+    Rovaniemi airport 0.55 against 0.33. They now take day D as the rise
+    D−1 → D (`day_offset` 0) and their climatology was rebuilt.
+  - **Dropped:** 8 stations whose best shift stays below r 0.4. Four are FMI:
+    Kilpisjärvi, Angeli, Nellim and Tulppio. Four are SMHI: Abisko Aut,
+    Kittelfjäll D, Letafors D and Ljusnedal.
+  - The other 78 pass (median r 0.56).
+  - The 2026-02-01..14 featured hindcast before these changes: AIFS 10.5,
+    consensus 9.9, ECMWF 6.3, GFS 3.6, climatology 0.
+- **Featured:** 14 Swedish and Finnish stations within 12 km of a ski area
+  with 3+ lifts (Sälen, Höglekardalen, Saariselkä, Paljakka, Salla…), plus 3
+  Norwegian ones, which replace Abisko, Kittelfjäll and Ljusnedal
+  (Funäsdalen) after the gate. The Norwegian three are the nearest kept
+  station that passes the gate for each of the three biggest areas: Hemsedal
+  (Hølto, 2 km), Oppdal (Maurhaugen, 9 km) and Skimore Oslo (Brunkollen,
+  7 km). The featured count stays at 17, so the Open-Meteo budget does not
+  rise.
+- **Climatology:** from each station's own record since 2010 (Norway's
+  80: from Frost history, each at its gated `day_offset`).
 
 ## Ground truth: ERA5 analysis (era5 league)
 
@@ -402,8 +726,9 @@ for 24Z.
   `baseline-icon` (DWD), `baseline-gem` (Environment Canada), `baseline-ukmo`
   (Met Office); US leagues add `baseline-nbm` (NOAA National Blend) and
   `baseline-hrrr` (3 km, 48h range — scored on h24/h48 only); Alps leagues add
-  `baseline-arome` (Météo-France). Models that don't run in a region are
-  skipped. JMA/KMA via Open-Meteo returned no usable snowfall (2026-10).
+  `baseline-arome` (Météo-France); Japan adds `baseline-jma` (JMA MSM 5 km +
+  GSM; snowfall confirmed 2026-11-19). Models that don't run in a region are
+  skipped. KMA via Open-Meteo returned no usable snowfall (2026-10).
 - **`baseline-consensus`**: the median of all NWP baselines per
   station-horizon (≥3 models) — the "beat the crowd" target.
 - **Hindcast**: `historical-forecast-api.open-meteo.com` — the archive of what

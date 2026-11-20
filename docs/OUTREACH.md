@@ -29,6 +29,31 @@ entry before anything is enabled.
 Status values: `not sent` → `sent` → `replied` → `granted` / `declined`.
 On `declined`: record it, keep the source disabled, never re-litigate.
 
+## Italian regional agencies (2026-11-19 recon)
+
+The Alps league already uses Trentino (Meteotrentino), South Tyrol and Lombardy.
+The other Italian Alpine regions need a message before anything is built:
+
+| Agency | What it unlocks | Contact | Why a message is needed | Status |
+|---|---|---|---|---|
+| ARPA Piemonte | 79 automatic snow-depth gauges and 25 manual snow fields (Sestriere, Via Lattea, Bardonecchia, Limone, Macugnaga, Alagna), daily archive from 1987 | info.meteo@arpa.piemonte.it | Open data incl. APIs is CC BY 4.0 and documented for "machine to machine" use, but `utility.arpa.piemonte.it/robots.txt` is `Disallow: /`. Ask them to confirm a once-daily API read is welcome. Credit: "Fonte: Arpa Piemonte - www.arpa.piemonte.it" | sent 2026-11-20 |
+| ARPAV Veneto (Centro Valanghe di Arabba) | 42 snow-depth stations (Cortina, Arabba, Marmolada, Falcade, Asiago, Sappada) | via the ARPAV data "dispenser" form | CC BY 4.0, but the public API keeps ~2.7 days; history (hourly from 2010) only through the dispenser form, which asks for the requester's details. Request 2010–2025 HS for the nivo-meteo stations | sent 2026-11-20 |
+| Valle d'Aosta, Centro funzionale | 38 snow-depth gauges (Cervinia, Courmayeur, La Thuile, Pila, Champoluc, Gressoney) | u-idrografico@regione.vda.it, +39 0165 272749 | CC BY 4.0, but downloads go through a personal-details form and the JSON endpoints are internal. Ask for a sanctioned feed (or permission to poll) and a one-off historical export. The manual AINEVA fields (Ufficio neve e valanghe, u-valanghe@regione.vda.it) are not open | sent 2026-11-20 |
+| ARPA FVG – OSMER | 58 automatic gauges and 14 manual fields (Sella Nevea, Piancavallo, Tarvisio, Zoncolan) | meteo@arpa.fvg.it | The site says CC BY-SA 3.0 IT with a 24 h embargo on real-time data, the developer pages say CC BY 3.0 IT and the regional portal IODL 2.0; the snow endpoint returns 401. Ask for access and which licence applies | sent 2026-11-20 |
+
+Land Tirol: the notification its open-data terms ask for (use of "Wetterstationsdaten
+Tirol", CC BY 4.0, as Alps truth) went to opendata@tirol.gv.at on 2026-11-20.
+
+## API keys (2026-11-20)
+
+| Service | Status | Notes |
+|---|---|---|
+| MET Norway Frost | **have** (`FROST_CLIENT_ID`, Actions secret) | client id as the basic-auth user; CC BY 4.0 / NLOD, attribute "MET Norway"; check each observation's `license` field |
+| WeatherNext 2/3 (Google) | requested 2026-11-20, review 5–7 business days | data older than 1 h is CC BY 4.0; live data needs Google's experimental-data notices; only BigQuery/GCS usage costs could apply |
+| AEMET OpenData | needs the user (reCAPTCHA) | key by email → `AEMET_API_KEY`; reuse free with "© AEMET" |
+| MADIS | needs the user (CAPTCHA, address, phone, IP) | redistribution only for "full distribution" providers; NOAA asks to be told before data goes on web pages |
+| KMA API Hub | needs the user (site blocked for the browser agent) | general membership is email-only; republishing terms not yet read → `KMA_API_KEY` |
+
 ## Template — data provider (Synoptic, avalanche centres, labs)
 
 > **Subject:** Permission request: daily snowfall values for an open forecasting benchmark

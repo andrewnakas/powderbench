@@ -196,6 +196,7 @@ jobs up to ~3 h late):
 | `baseline-gfs`, `-ecmwf`, `-aifs`, `-icon`, `-gem`, `-ukmo` | individual global models (AIFS = ECMWF's AI model), featured stations |
 | `baseline-nbm`, `-hrrr` | NOAA National Blend and HRRR (US leagues) |
 | `baseline-arome` | Météo-France AROME (Alps) |
+| `baseline-jma` | Japan Meteorological Agency MSM 5 km + GSM (Japan) |
 | `baseline-wpc` | NOAA WPC official snowfall percentiles + P(≥6″) (US) |
 | `baseline-ndfd` | NWS forecast offices' official snow amount (NDFD), 24/48 h (US) |
 | `baseline-consensus` | median of the NWP baselines (≥ 3 models) |
@@ -283,7 +284,10 @@ floors must not. Results (featured stations, 2026-02-01…14):
 |---|---|---|---|---|
 | Observers | +25.1 (GFS) | — | 0 | −46.8 |
 | Alps | +41.1 (ICON) | +41.6 | 0 | −0.8 |
-| Alps · Austria (GeoSphere) | +44.9 (AROME) | +39.6 | 0 | −33.0 |
+| Alps · Austria (GeoSphere), first 22 sites | +44.9 (AROME) | +39.6 | 0 | −33.0 |
+| Alps · Austria, 14 sites added 2026-11 | +57.1 (UKMO) | +57.3 | 0 | −23.1 |
+| Alps · France (nivo), 31 manual posts | +22.9 (UKMO) | +18.2 | 0 | −122.8 |
+| Alps · France (nivo), 23 automated posts | +27.7 (ECMWF) | +22.3 | 0 | −214.3 |
 
 A network whose truth made the models look worse than climatology would
 indicate broken truth and would not launch. Hindcast NWP uses archived

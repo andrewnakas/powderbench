@@ -36,7 +36,7 @@ leagues:
     season_start_month: 10
     active_months: [11, 12, 1, 2, 3, 4]
   - name: alps
-    label: "Alps · Measured new snow (SLF, GeoSphere Austria)"
+    label: "Alps · New snow (SLF, MeteoSwiss, GeoSphere, Météo-France, DWD, Tirol, Italian Alps)"
     status: trial
     truth_source: slf
     # Swiss local day D starts 23:00 UTC D-1 (CET) / 22:00 UTC (CEST): a
@@ -46,6 +46,30 @@ leagues:
     # same morning, the bulk archive by D+4 — D+4 16:00 rides the resolve cron
     resolve_after: { days: 4, hour_utc: 16 }
     season_start_month: 10 # hydrological year, as SLF
+    active_months: [11, 12, 1, 2, 3, 4, 5]
+  - name: japan
+    label: "Japan · Snow-depth sensors (JMA AMeDAS)"
+    status: trial
+    truth_source: jma
+    # JST day D starts 15:00 UTC D-1: the 11:00 UTC D-1 cutoff (shared with
+    # era5/resorts, so the 11:05 open-round slot serves it) precedes it
+    cutoff: { days_before: 1, hour_utc: 11 }
+    # JMA's archive has day D+2's total by the next JST morning (~D+3 00 UTC);
+    # D+3 16:00 rides the resolve cron with half a day of slack
+    resolve_after: { days: 3, hour_utc: 16 }
+    season_start_month: 10
+    active_months: [11, 12, 1, 2, 3, 4]
+  - name: nordic
+    label: "Nordic · Morning snow depth (SMHI, FMI, MET Norway)"
+    status: trial
+    truth_source: smhi # Finnish stations carry truth_source: fmi, Norwegian ones frost
+    # Swedish day D starts 23:00 UTC D-1, Finnish 22:00 UTC D-1: the 21:00
+    # UTC D-1 cutoff (the alps slot) precedes both
+    cutoff: { days_before: 1, hour_utc: 21 }
+    # day D+2's snow is in the 06 UTC reading of D+3, online the same morning;
+    # D+3 16:00 rides the resolve cron
+    resolve_after: { days: 3, hour_utc: 16 }
+    season_start_month: 10
     active_months: [11, 12, 1, 2, 3, 4, 5]
   - name: era5
     label: "ERA5 · Andes / NZ / AU"

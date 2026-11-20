@@ -4,13 +4,13 @@
 
 Independent leaderboards — one per kind of ground truth; results never mix:
 
-| | Stations | Observers (trial) | Alps (trial) | ERA5 | Resorts |
-|---|---|---|---|---|---|
-| Points | ~1,000 SNOTEL + CDEC + SNOLITE + BC pillows (45 featured) | ~1,150 US COOP + CoCoRaHS mountain and ski-area observers + Canadian ECCC stations (~90 featured) | ~100 SLF study plots + IMIS (Swiss Alps) | 23 ERA5 resort points | 13 resorts (growing) |
-| Truth | Snow-depth telemetry (Δdepth, SWE-checked) | **Measured** new snow on an observer's snowboard | Measured 24h new snow (SLF) | Model analysis | The resort's own published snow report |
-| Cutoff for round D | 00:00 UTC on D | 00:00 UTC on D | **21:00 UTC on D−1** | **11:00 UTC on D−1** | **11:00 UTC on D−1** |
-| Resolves | D+3, 16:00 UTC | D+6, 16:00 UTC (report latency) | D+4, 16:00 UTC | from D+8, 16:00 UTC (ERA5 archive lag) | D+3, 16:00 UTC |
-| Season | Oct 1 – Sep 30 | Oct 1 – Sep 30 | Oct 1 – Sep 30 (rounds Nov–May) | Apr 1 – Mar 31 | Apr 1 – Mar 31 |
+| | Stations | Observers (trial) | Alps (trial) | Japan (trial) | Nordic (trial) | ERA5 | Resorts |
+|---|---|---|---|---|---|---|---|
+| Points | ~1,000 SNOTEL + CDEC + SNOLITE + BC pillows (45 featured) | ~1,150 US COOP + CoCoRaHS mountain and ski-area observers + Canadian ECCC stations (~90 featured) | 95 SLF study plots + 121 IMIS stations (Swiss Alps), 58 MeteoSwiss manual stations (Swiss ski villages), 34 GeoSphere (Austria), 54 Météo-France nivo resort snow posts (French Alps), 52 DWD (Bavarian Alps), 12 Meteotrentino snow fields (Trentino), 71 Land Tirol snow-depth sensors (Tyrol), 24 South Tyrol and 32 ARPA Lombardia snow-depth sensors | 214 JMA AMeDAS snow-depth sensors (21 featured) | 48 SMHI (Sweden) + 45 FMI (Finland) + 80 MET Norway stations (17 featured) | 23 ERA5 resort points | 13 resorts (growing) |
+| Truth | Snow-depth telemetry (Δdepth, SWE-checked) | **Measured** new snow on an observer's snowboard | Measured 24h new snow (SLF, MeteoSwiss, GeoSphere, Météo-France, DWD, Meteotrentino); Δdepth at IMIS, Tirol, South Tyrol and Lombardy sensors | JMA's daily snowfall total (sum of hourly depth rises) | Morning-to-morning Δdepth | Model analysis | The resort's own published snow report |
+| Cutoff for round D | 00:00 UTC on D | 00:00 UTC on D | **21:00 UTC on D−1** | **11:00 UTC on D−1** | **21:00 UTC on D−1** | **11:00 UTC on D−1** | **11:00 UTC on D−1** |
+| Resolves | D+3, 16:00 UTC | D+6, 16:00 UTC (report latency) | D+4, 16:00 UTC | D+3, 16:00 UTC | D+3, 16:00 UTC | from D+8, 16:00 UTC (ERA5 archive lag) | D+3, 16:00 UTC |
+| Season | Oct 1 – Sep 30 | Oct 1 – Sep 30 | Oct 1 – Sep 30 (rounds Nov–May) | Oct 1 – Sep 30 (rounds Nov–Apr) | Oct 1 – Sep 30 (rounds Nov–May) | Apr 1 – Mar 31 | Apr 1 – Mar 31 |
 
 Each league is named for its truth source, because the truth *is* the game:
 telemetry rewards nowcasting real snow, reanalysis rewards matching a model's
