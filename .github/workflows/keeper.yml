@@ -1,0 +1,41 @@
+# The clock. GitHub's scheduler drops most of a busy repo's cron runs (the
+# 2-hourly baselines cron fired 3-4 times a day instead of 12, and 7 of 14
+# alps rounds closed with no baselines at all), but it never drops a
+# workflow_dispatch. So one run of this workflow stays alive for ~5.5 h,
+# starts the time-critical workflows itself, and finally dispatches its own
+# successor. The cron below only restarts the chain if it ever breaks; the
+# concurrency group keeps exactly one keeper alive.
+#
+# - baselines.yml every 30 min with league=due. It submits only for leagues
+#   whose next cutoff is 2.5-9 h away and that have no baselines yet, so the
+#   extra runs are no-ops and every cutoff gets a dozen chances.
+# - scrape-resorts.yml once per slot (13:00 S, 16:30 N, 20:30 all, UTC).
+name: Keeper
+
+on:
+  schedule:
+    - cron: "11 */2 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: keeper
+  cancel-in-progress: false
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  keep:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Keep time
+        run: scripts/keeper.sh
+      - name: Hand over to the next keeper
+        if: ${{ !cancelled() }}
+        run: gh workflow run keeper.yml
