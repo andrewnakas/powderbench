@@ -13,6 +13,7 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 
 import numpy as np
+import requests
 
 from . import grib
 
@@ -22,6 +23,10 @@ log = logging.getLogger(__name__)
 CELL_RADIUS = 1
 G0 = 9.80665  # ECMWF orography is geopotential (m2 s-2)
 ECMWF_BUCKET = "https://ecmwf-forecasts.s3.eu-central-1.amazonaws.com"
+# ECMWF's own server keeps the last ~4 days: the fallback when the AWS bucket
+# throttles (2026-11-20: every GET from one IP answered 503 SlowDown for hours)
+ECMWF_DIRECT = "https://data.ecmwf.int/forecasts"
+ECMWF_BASES = (ECMWF_BUCKET, ECMWF_DIRECT)
 GFS_BUCKET = "https://noaa-gfs-bdp-pds.s3.amazonaws.com"
 
 
@@ -97,34 +102,56 @@ class Source:
         raise NotImplementedError
 
 
+Layout = tuple[str, str, str, str]  # (folder, grid, stream, file suffix)
+
+
 class EcmwfOpenData(Source):
     """ECMWF open data (CC BY 4.0): the `sf` field (snowfall water equivalent,
-    accumulated from the run start) at 0.25 deg. IFS writes it in metres, AIFS
-    in kg m-2 (= mm): the unit is read from each message."""
+    accumulated from the run start). IFS writes it in metres, AIFS in kg m-2
+    (= mm): the unit is read from each message.
+
+    IFS comes at 0.1 deg (~9 km, the model's native resolution) from runs of
+    late October 2026 on, in separate `-sfc` files; earlier runs only at
+    0.25 deg. Each run takes the finest layout it has, so live forecasts use
+    0.1 deg while last winter's hindcasts use 0.25 deg."""
 
     licence = "CC BY 4.0 (ECMWF open data)"
     workers = 3  # the bucket answers 503 Slow Down at 8 parallel requests
 
-    def __init__(self, name: str, label: str, layouts: list[tuple[str, str]], online_h: float):
+    def __init__(self, name: str, label: str, layouts: list[Layout], online_h: float):
         self.name, self.label, self.online_h = name, label, online_h
-        self.layouts = layouts  # (folder, stream) tried in order: the layout changed over time
-        self._layout: dict[datetime, tuple[str, str] | None] = {}
+        self.layouts = layouts  # tried in order: finest first, and the layout changed over time
+        self._layout: dict[datetime, tuple[str, Layout] | None] = {}
 
-    def _url(self, run: datetime, step: int, folder: str, stream: str) -> str:
-        return (f"{ECMWF_BUCKET}/{run:%Y%m%d}/{run:%H}z/{folder}/0p25/{stream}/"
-                f"{run:%Y%m%d%H}0000-{step}h-{stream}-fc")
+    def _url(self, run: datetime, step: int, base: str, folder: str, grid: str, stream: str, suffix: str) -> str:
+        return (f"{base}/{run:%Y%m%d}/{run:%H}z/{folder}/{grid}/{stream}/"
+                f"{run:%Y%m%d%H}0000-{step}h-{stream}-fc{suffix}")
 
-    def layout(self, run: datetime) -> tuple[str, str] | None:
+    def _probe(self, run: datetime) -> tuple[str, Layout] | None:
+        for lay in self.layouts:
+            for base in ECMWF_BASES:
+                try:
+                    if grib.fetch(self._url(run, 0, base, *lay) + ".index") is not None:
+                        return base, lay
+                except (requests.RequestException, OSError) as exc:  # throttled: try the next server
+                    log.warning("%s: %s unreachable (%s)", self.name, base, exc)
+        return None
+
+    def layout(self, run: datetime) -> tuple[str, Layout] | None:
+        """(server, layout) of the run, or None when it is not published."""
         if run not in self._layout:
-            self._layout[run] = next(
-                (fs for fs in self.layouts if grib.fetch(self._url(run, 0, *fs) + ".index") is not None), None)
+            self._layout[run] = self._probe(run)
         return self._layout[run]
 
+    def grid(self, run: datetime) -> str | None:
+        found = self.layout(run)
+        return found[1][1] if found else None
+
     def steps(self, run: datetime) -> list[int] | None:
-        lay = self.layout(run)
-        if lay is None:
+        found = self.layout(run)
+        if found is None:
             return None
-        folder, stream = lay
+        folder, _, stream, _ = found[1]
         if folder.startswith("aifs"):
             return list(range(0, 361, 6))
         if stream == "scda":  # 06/18z until spring 2026
@@ -133,22 +160,51 @@ class EcmwfOpenData(Source):
             return list(range(0, 145, 3)) + list(range(150, 361, 6))
         return list(range(0, 145, 3))  # 06/18z on the oper stream
 
+    def _with_fallback(self, base: str, read):
+        """read(server) on the probed server, then on the others when it is
+        throttled or fails mid-run (the same files, so the same byte offsets)."""
+        order = [base, *(b for b in ECMWF_BASES if b != base)]
+        for i, b in enumerate(order):
+            try:
+                return read(b)
+            except (requests.RequestException, OSError) as exc:
+                if i == len(order) - 1:
+                    raise
+                log.warning("%s: %s failed (%s), trying %s", self.name, b, exc, order[i + 1])
+        return None
+
     def _read_terrain(self, run):
-        lay = self.layout(run)
-        url = self._url(run, 0, *lay)
-        fields = {e["param"]: e for e in grib.ecmwf_index(grib.fetch(url + ".index").decode())
-                  if e.get("levtype") == "sfc"}
-        z, meta = grib.decode(grib.fetch(url + ".grib2", int(fields["z"]["_offset"]), int(fields["z"]["_length"])))
-        lsm, _ = grib.decode(grib.fetch(url + ".grib2", int(fields["lsm"]["_offset"]), int(fields["lsm"]["_length"])))
-        return meta, z / G0, lsm
+        base, lay = self.layout(run)
+
+        def read(b):
+            url = self._url(run, 0, b, *lay)
+            fields = {e["param"]: e for e in grib.ecmwf_index(grib.fetch(url + ".index").decode())
+                      if e.get("levtype") == "sfc"}
+            z, meta = grib.decode(grib.fetch(url + ".grib2", int(fields["z"]["_offset"]),
+                                             int(fields["z"]["_length"])))
+            lsm, _ = grib.decode(grib.fetch(url + ".grib2", int(fields["lsm"]["_offset"]),
+                                            int(fields["lsm"]["_length"])))
+            return meta, z / G0, lsm
+
+        return self._with_fallback(base, read)
 
     def accum(self, run, steps, lats, lons, elev_m):
-        lay = self.layout(run)
-        if lay is None:
+        found = self.layout(run)
+        if found is None:
             return None
+        base, lay = found
         pts = _Points(lats, lons, elev_m, lambda: self.terrain(run))
         want = [s for s in steps if s > 0]
-        urls = [self._url(run, s, *lay) for s in want]
+        msgs = self._with_fallback(base, lambda b: self._messages(run, want, b, lay))
+        if msgs is None:
+            return None
+        out = {0: np.zeros(len(lats))} if 0 in steps else {}
+        for s, m in zip(want, msgs):
+            out[s] = pts.take(m, water_mm=True)
+        return out
+
+    def _messages(self, run, want, base, lay) -> list[bytes] | None:
+        urls = [self._url(run, s, base, *lay) for s in want]
         indexes = _fetch_all([(u + ".index",) for u in urls], self.workers)
         if any(t is None for t in indexes):
             return None
@@ -161,12 +217,7 @@ class EcmwfOpenData(Source):
                 return None
             reqs.append((u + ".grib2", int(entry["_offset"]), int(entry["_length"])))
         msgs = _fetch_all(reqs, self.workers)
-        if any(m is None for m in msgs):
-            return None
-        out = {0: np.zeros(len(lats))} if 0 in steps else {}
-        for s, m in zip(want, msgs):
-            out[s] = pts.take(m, water_mm=True)
-        return out
+        return None if any(m is None for m in msgs) else msgs
 
 
 class Gfs(Source):
@@ -258,8 +309,9 @@ def snow_from_buckets(chain: list[int], buckets: list[int], apcp: list[np.ndarra
 
 
 SOURCES: dict[str, Source] = {
-    "ecmwf_ifs": EcmwfOpenData("ecmwf_ifs", "ECMWF IFS 0.25", [("ifs", "oper"), ("ifs", "scda")], online_h=7.75),
-    "ecmwf_aifs": EcmwfOpenData("ecmwf_aifs", "ECMWF AIFS single", [("aifs-single", "oper"), ("aifs", "oper")],
-                                online_h=6.0),
+    "ecmwf_ifs": EcmwfOpenData("ecmwf_ifs", "ECMWF IFS", [("ifs", "0p1", "oper", "-sfc"), ("ifs", "0p25", "oper", ""),
+                                                        ("ifs", "0p25", "scda", "")], online_h=7.75),
+    "ecmwf_aifs": EcmwfOpenData("ecmwf_aifs", "ECMWF AIFS single", [("aifs-single", "0p25", "oper", ""),
+                                                                    ("aifs", "0p25", "oper", "")], online_h=6.0),
     "gfs": Gfs(),
 }

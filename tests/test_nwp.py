@@ -231,3 +231,28 @@ def test_terrain_index_follows_open_meteo_rules():
     # water cells are never chosen
     land[south] = 0.0
     assert grib.terrain_index(meta, lat, lon, np.array([3000.0]), elev, land, 1)[0] != south
+
+
+def test_ecmwf_layout_prefers_0p1_and_falls_back(monkeypatch):
+    from datetime import datetime
+
+    import requests
+
+    from powderbench.nwp import grib, sources
+
+    calls = []
+
+    def fake_fetch(url, offset=None, length=None):
+        calls.append(url)
+        if url.startswith(sources.ECMWF_BUCKET):
+            raise requests.HTTPError("503 SlowDown")
+        return b"{}" if ("/0p1/" in url and "20261119" in url) or "/0p25/" in url else None
+
+    monkeypatch.setattr(grib, "fetch", fake_fetch)
+    src = sources.EcmwfOpenData("ecmwf_ifs", "t", sources.SOURCES["ecmwf_ifs"].layouts, 7.75)
+    new, old = datetime(2026, 11, 19, 0), datetime(2025, 12, 1, 0)
+    assert src.layout(new) == (sources.ECMWF_DIRECT, ("ifs", "0p1", "oper", "-sfc"))  # AWS throttled -> ECMWF
+    assert src.grid(new) == "0p1"
+    assert src.layout(old)[1] == ("ifs", "0p25", "oper", "")  # no 0.1 deg before late October 2026
+    assert src.steps(new)[:3] == [0, 3, 6] and src.steps(new)[-1] == 360
+    assert any(c.endswith("20261119000000-0h-oper-fc-sfc.index") for c in calls)
