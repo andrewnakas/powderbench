@@ -491,6 +491,12 @@ Checked on 2026-11-20 and not usable yet:
   Odlum…) are live on rivers.alberta.ca with full records. They measure snow
   water equivalent only, with no depth sensor, so they cannot give the
   depth-rise truth the league uses.
+- **Road-weather networks (checked 2026-11-20).** BC's highway weather
+  stations (82 with snow depth near ski areas, history from the 1990s) are
+  "access only" and need written permission (OUTREACH #17). Québec's RSCQ is
+  CC BY live but keeps 30 days open. The US state DOT feeds have no snow
+  depth or no history. The Montana Mesonet's snow-depth sites are in
+  valleys, and the NYS Mesonet forbids redistribution.
 Slovakia's SHMÚ open-data server (opendata.shmu.sk, CC BY 4.0, no
 registration) is the next candidate. It publishes a 1-minute snow-depth
 average for 95 automatic stations every 5 minutes, with about 30 days kept
