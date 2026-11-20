@@ -176,7 +176,8 @@ are not used.
 
 - **Candidates:** active stations at ≥ 600 m in the German Alps (47.2–47.95° N,
   9.8–13.2° E: Allgäu to Berchtesgaden). Kept when last winter (Nov–Mar) has
-  ≥ 100 new-snow values and ≥ 10 days of 2 cm or more: 52 of 105.
+  ≥ 100 new-snow values and ≥ 10 days of 2 cm or more: 52 of 105. The
+  NWP gate drops Schönau am Königssee (below), leaving 51.
 - **Day attribution:** the value dated D is the morning-of-D measurement, so day
   D is the value dated D+1. Not fitted per station. All 85 German stations
   ≥ 700 m with new-snow data correlate best with the precipitation DWD files
@@ -236,7 +237,7 @@ not used.
 - **Candidates:** LWD/HD Tirol stations with a snow-depth sensor. Kept when
   last winter (Dec–Mar) has ≥ 100 days with both midnight depths and ≥ 10
   days of 2 cm or more: 71 (two co-located HD duplicates of LWD stations
-  dropped).
+  dropped). The NWP gate drops Grubigstein and Wandspitze (below), leaving 69.
 - **Featured:** for each ski area with 15+ lifts (OpenSkiData), its nearest
   kept station within 4 km: 12 (Sölden, Stubai Glacier, Obergurgl, St. Anton,
   Hintertux, Mayrhofen, Serfaus-Fiss-Ladis, Axamer Lizum, Nordkette, Alpbach,
@@ -331,6 +332,119 @@ UTC day, as MeteoSwiss asks). No key.
   more: 58.
 - **Tier:** all network. They score in the league's network board; none is
   featured, so they add no Open-Meteo points.
+
+### France: Météo-France climate stations (French Alps)
+
+The French Alps stations (`:FR:MFHN` / `:FR:MF`, `truth_source:
+meteofrance`) use the world league's Météo-France adapter (see the world
+league below for the data, the day conventions and the depth QC). They come
+from the départements of Haute-Savoie, Savoie, Isère and Drôme (region
+"Northern French Alps") and Hautes-Alpes, Alpes-de-Haute-Provence and
+Alpes-Maritimes ("Southern French Alps") (`scripts/networks/meteofrance.py
+--alps`, `meteofrance_alps.csv`).
+
+- **Candidates:** stations at ≥ 600 m with the world league's record tests:
+  last winter ≥ 100 valid days and ≥ 8 days of 2 cm or more, ≥ 3 such
+  winters since 2010, and current reports. That gives 62.
+- **One site, one truth:** a station within 2 km and 200 m of any station
+  already in the league is left out. That drops 67 resort and nivose posts
+  that Météo-France's nivo network covers (Chamonix, Tignes, Val d'Isère, Val
+  Thorens, Les Arcs, Alpe d'Huez, Isola 2000…; the nivo stations are in
+  #578). Of two candidates at one site, the longer record is kept (3 more).
+- **NWP gate:** 52 of 59 pass. Seven fail: the automatic high-pass sensors
+  Restefond, Col Agnel and Galibier, and Montclar, St Jean-St-Nicolas, Peira
+  Cava and Vaujany. Peone is re-dated to `day_offset` 0.
+- **Stations:** 17 new-snow boards and 35 depth stations, from 670 m to
+  3,093 m (median 1,525 m), among them Le Tour, Les Contamines, Megève,
+  Grand-Bornand, Sainte-Foy, St-Martin-de-Belleville, Bonneval, Villard-de-Lans,
+  Chamrousse, Pelvoux and the nivose sensors of Météo-France's avalanche
+  service (Aiguilles Rouges, La Meije, Les Écrins, Bellecôte…).
+- **Tier:** all network. None is featured, so they add no Open-Meteo points.
+- **Climatology:** from each station's own record since 2010.
+
+### Austria: more GeoSphere stations (hand-measured and snow gauge)
+
+GeoSphere's daily climate dataset has many more mountain stations than the
+22 featured-area sites above. `scripts/networks/geosphere_more.py` adds the
+rest (`geosphere_more.csv`), all network tier.
+
+- **Hand-measured new snow** (`:AT:GEO`, `truth_source: geosphere`): as above
+  (`shneu_manu`).
+- **Snow gauge** (`:AT:GEOSH`, `truth_source: geosphere_sh`): stations
+  without a hand measurement of new snow, scored on `sh`, the automatic
+  gauge's depth at the 06 UTC term. Day D is the rise from 07:00 on D to
+  07:00 on D+1. That matches the hand-measured network: at the 61 stations
+  that report both over winter 2025-26, the new snow filed on D+1 tracks the
+  gauge rise D → D+1 (median r 0.95, against 0.17 a day off). A rise of 10 cm
+  or more is voided when the station's precipitation gauge (`rr`, which
+  covers the same 06–06 UTC day) caught under 0.5 mm: that is wind drift or
+  a gauge fault.
+- **Candidates:** active stations at ≥ 600 m that are not already in the
+  league, nor within 2 km and 200 m of a station that is (including #578's
+  added GeoSphere stations). Kept on last winter ≥ 100 valid days and ≥ 8
+  days of 2 cm or more, ≥ 3 such winters since 2010, and ≥ 70% of the last 14
+  days reported. A station with hand-measured new snow is preferred over its
+  gauge. GeoSphere lists many sites under two station numbers; of two
+  candidates at one site, the longer record is kept, **before** the gate, so
+  a site that fails cannot return under its other number. That gives 42.
+- **NWP gate:** 36 pass. Six fail: Lofer, Krimml, Hall bei Admont,
+  Mittersill, Kirchdorf in Tirol and Radstadt-Tandalier. Bad Mitterndorf,
+  Aigen im Ennstal and Irdning-Gumpenstein are re-dated to `day_offset` 0.
+- **Stations:** 17 hand-measured and 19 gauges, from 613 m to 1,916 m
+  (median 850 m): Tyrol 12, Vorarlberg 6, Carinthia 6, Styria 5, Salzburg 3,
+  Upper Austria 3, Lower Austria 1. Among them Kitzbühel and
+  Hahnenkamm-Sonnenrast, Hintertux, Alpbach, Söll, Mayrhofen, Kals, Sillian,
+  Schröcken (Warth), Schoppernau, Mittelberg (Kleinwalsertal), Gaschurn,
+  Katschberg, Kölnbreinsperre and Feuerkogel.
+- **Climatology:** from each station's own record since 2010.
+
+### Alps NWP gate (2026-11-20)
+
+Every station of the league, and every candidate above, was checked the
+world and nordic leagues' way (`scripts/nwp_gate.py`). Its daily truth over
+winter 2025-26 (2025-12-01..2026-03-15) is correlated with the direct ECMWF
+IFS daily snowfall (raw, 0.25°) for the same local day, and with the truth
+shifted a day either way. A station needs r ≥ 0.4 at its best shift, and a
+best shift ahead of the next by 0.10 to move its day. The decisions are in
+`data/gates/alps.csv` (642 stations, median best r 0.78), applied by the
+generators through `scripts/networks/gate.py`. A station may be re-dated to
+its network's default offset or one less, never later; a later best shift is
+a misdated record and drops the station.
+
+- **Dropped from the lists already live (all network tier):**
+  - SLF Bellinzona, Brusio and Poschiavo, low valley stations south of the
+    Alps (best r 0.01, 0.35 and 0.38).
+  - DWD Schönau am Königssee (0.33).
+  - Land Tirol Grubigstein and Wandspitze: their best shift is a day later
+    than a midnight depth sensor allows.
+- **Everything else passes:** all 121 IMIS stations, 58 MeteoSwiss, 32 ARPA
+  Lombardia, 24 South Tyrol, 12 Meteotrentino, 69 of 71 Land Tirol, 51 of 52
+  DWD and 92 of 95 SLF study plots.
+- The gate also covers #578's stations: six nivo posts and six GeoSphere
+  stations move from `day_offset` 0 to 1 (the documented 07:00 reading, which
+  the ERA5 fit had placed a day early), and GeoSphere Saalbach and Tamsweg
+  fail. #578 applies those.
+
+### Not added yet (Italy, Spain)
+
+- **ARPAV (Veneto Dolomites: Arabba, Passo Falzarego, Ra Valles…):** 42
+  snow-depth stations with a CC BY 4.0 live feed (about 2 days), but no snow
+  history through the API; the history comes one station at a time from an
+  emailed web form.
+- **Valle d'Aosta (Courmayeur, Pila, Cervinia, Gressoney, Cogne…):** about 40
+  stations, CC BY 4.0, live only as 24-hour PDFs; the history needs a request
+  form.
+  - Both need archiving forward from now (their live windows are 1–7 days)
+    until a season of history exists.
+- **Meteocat (Catalan Pyrenees, 20 stations: Boí, Espot, Port del Comte,
+  Núria…):** an open feed from 2009, but the legal notice forbids extracting
+  a substantial part of the database without written authorisation. Needs
+  Meteocat's OK first.
+- **ARPA FVG (Friuli):** the data sits behind a session and a POST form, and
+  the licence is share-alike (CC BY-SA 3.0 IT).
+- **Arpae Emilia-Romagna:** 16 Apennine stations at ≥ 600 m (Corno alle
+  Scale, Cimone, Febbio…), CC BY 4.0, no key. Outside the Alps, so it goes to
+  the world league.
 
 ## Ground truth: JMA snow-depth sensors (japan league)
 
