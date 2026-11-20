@@ -327,7 +327,7 @@ register(TruthSource(
 def _smhi_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
     from .networks import smhi
 
-    return smhi.daily(ids, begin, end)
+    return smhi.daily(ids, begin, end, _offsets(league, ids))
 
 
 register(TruthSource(
@@ -347,7 +347,7 @@ register(TruthSource(
 def _fmi_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
     from .networks import fmi
 
-    return fmi.daily(ids, begin, end)
+    return fmi.daily(ids, begin, end, _offsets(league, ids))
 
 
 register(TruthSource(

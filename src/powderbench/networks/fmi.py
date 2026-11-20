@@ -4,9 +4,11 @@ Parameter `snow` of FMI's daily observations (cm; -1 = no snow cover): the
 morning depth read at 06 UTC (08:00 local). Open data via FMI's WFS, no key,
 CC BY 4.0: credit "Finnish Meteorological Institute" (https://en.ilmatieteenlaitos.fi/open-data).
 
-New snow is derived from depth as for SMHI: day D <- max(depth(D+1) -
-depth(D), 0), the morning-to-morning rise. Station ids are
-`<fmisid>:FI:FMI`.
+New snow is derived from depth as for SMHI: day D <- max(depth(D+k) -
+depth(D+k-1), 0) with k = the station's day_offset (default 1: the
+morning-to-morning rise). Some stations' value dated D is read at the end of
+day D (2026-11 gate: their depth rises line up with the model a day earlier),
+so they carry day_offset 0. Station ids are `<fmisid>:FI:FMI`.
 
 Data: one WFS request per station per season (Oct-Sep, WFS caps a daily
 query near a year). Past seasons are cached; the current one is re-fetched at
@@ -109,11 +111,13 @@ def depths(fmisid: str, begin: date, end: date) -> pd.Series:
 def daily(station_ids: list[str], begin: date, end: date, offsets: dict[str, int] | None = None) -> pd.DataFrame:
     """Truth frame for local days [begin, end] from morning depth deltas."""
     rows = []
+    offsets = offsets or {}
     for sid in station_ids:
-        rec = depths(code(sid), begin, end + timedelta(days=1))
+        k = offsets.get(sid, 1)
+        rec = depths(code(sid), begin + timedelta(days=k - 1), end + timedelta(days=k))
         for i in range((end - begin).days + 1):
             d = begin + timedelta(days=i)
-            s0, s1 = rec.get(d), rec.get(d + timedelta(days=1))
+            s0, s1 = rec.get(d + timedelta(days=k - 1)), rec.get(d + timedelta(days=k))
             flag = truth.QC_OK
             if s0 is None or s1 is None or pd.isna(s0) or pd.isna(s1):
                 flag = truth.QC_MISSING
