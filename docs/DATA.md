@@ -464,7 +464,7 @@ a misdated record and drops the station.
   the ERA5 fit had placed a day early), and GeoSphere Saalbach and Tamsweg
   fail. #578 applies those.
 
-### Not added yet (Italy, Spain)
+### Not added yet (Alps and nearby, 2026-11-20)
 
 - **ARPAV (Veneto Dolomites: Arabba, Passo Falzarego, Ra Valles…):** 42
   snow-depth stations with a CC BY 4.0 live feed (about 2 days), but no snow
@@ -474,7 +474,8 @@ a misdated record and drops the station.
   stations, CC BY 4.0, live only as 24-hour PDFs; the history needs a request
   form.
   - Both need archiving forward from now (their live windows are 1–7 days)
-    until a season of history exists.
+    until a season of history exists. A first copy was taken on 2026-11-20
+    (ARPAV's 60-day daily files give 18 stations two months at once).
 - **Meteocat (Catalan Pyrenees, 20 stations: Boí, Espot, Port del Comte,
   Núria…):** an open feed from 2009, but the legal notice forbids extracting
   a substantial part of the database without written authorisation. Needs
@@ -484,6 +485,23 @@ a misdated record and drops the station.
 - **Arpae Emilia-Romagna:** 16 Apennine stations at ≥ 600 m (Corno alle
   Scale, Cimone, Febbio…), CC BY 4.0, no key. Outside the Alps, so it goes to
   the world league.
+- **ARSO (Slovenia):** free reuse with credit ("Vir: ARSO").
+  - Observers' daily new snow and depth at 07:00 go back to 1948 at 48
+    stations at ≥ 600 m (Kredarica, Vogel, Rateče, Kranjska Gora…). But only
+    Kredarica and Lisca are published within 2 days; the rest arrive about
+    three weeks after month end, too late for a round's resolve.
+  - The 33 automatic stations with a snow sensor (Kanin, Krvavec, Vršič,
+    Vogel, Rogla…) are live (10-minute XML, 2-day tables), but their snow
+    depth is not in the archive. They need archiving forward.
+- **SHMÚ (Slovakia):** CC BY 4.0. Live 1-minute snow depth (about the last
+  month) and daily new snow and depth at 07:00 (Lomnický štít, Štrbské Pleso,
+  Chopok…). The daily files start in January 2025, so the record reaches three
+  winters only in spring 2028.
+- **IMGW (Poland):** no snow value in the live API; the daily files (snow
+  depth, new snow) appear a month or more late, and the terms allow any-purpose
+  use only for "high-value" data.
+- **Veðurstofa Íslands (Iceland):** CC BY 4.0, but only two automatic
+  stations at ≥ 600 m report snow depth, with short records.
 
 ## Ground truth: JMA snow-depth sensors (japan league)
 
