@@ -44,3 +44,15 @@ def test_fmi_depth_deltas(monkeypatch):
     assert t.loc[date(2025, 1, 11), "snow24"] == 0.0
     assert not t.loc[date(2025, 1, 12), "valid"]  # NaN next morning
     assert isinstance(t, pd.DataFrame)
+
+
+def test_day_offset_zero_uses_the_rise_into_day_d(monkeypatch):
+    # day_offset 0: the value dated D is read at the end of day D
+    rec = smhi.parse_csv(SMHI_CSV)
+    monkeypatch.setattr(smhi, "depths", lambda code: rec)
+    t = smhi.daily(["132180:SE:SMHI"], date(2025, 1, 11), date(2025, 1, 11), {"132180:SE:SMHI": 0}).set_index("date")
+    assert abs(t.loc[date(2025, 1, 11), "snow24"] - 0.25 * smhi.IN_PER_M) < 1e-2
+    frec = fmi.parse_wfs(FMI_XML)
+    monkeypatch.setattr(fmi, "depths", lambda code, b, e: frec.set_index("date")["depth_cm"])
+    t = fmi.daily(["101987:FI:FMI"], date(2025, 1, 11), date(2025, 1, 11), {"101987:FI:FMI": 0}).set_index("date")
+    assert t.loc[date(2025, 1, 11), "snow24"] == 10.0
