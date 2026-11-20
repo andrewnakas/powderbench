@@ -47,6 +47,7 @@ def _servers(first: str | None = None) -> list[str]:
     return sorted(order, key=_resting)
 GFS_BUCKET = "https://noaa-gfs-bdp-pds.s3.amazonaws.com"
 HRRR_BUCKET = "https://noaa-hrrr-bdp-pds.s3.amazonaws.com"
+NBM_BUCKET = "https://noaa-nbm-grib2-pds.s3.amazonaws.com"
 # Open-Meteo's elevation rule (VariableHourly.swift, GenericReader.swift in
 # open-meteo/open-meteo): where the chosen cell's terrain is more than
 # RULE_MIN_DZ_M above or below the station, the 2 m temperature is moved to the
@@ -482,6 +483,65 @@ class Hrrr(Source):
         return {s: out[s] for s in steps}
 
 
+class Nbm(Source):
+    """NOAA National Blend of Models, 2.5 km over the contiguous US (Lambert
+    grid), on AWS (public domain, archive from 2020). Snow is the blend's own
+    ASNOW: calibrated snowfall depth with its own snow-to-liquid ratio, already
+    on 2.5 km terrain, so no elevation rule. Buckets are 1 h to 36 h and 6 h
+    after. accum() hands back ASNOW divided by Open-Meteo's 0.7 cm per mm, so
+    the daily output (water x 0.7) is ASNOW itself."""
+
+    name = "nbm"
+    label = "NOAA NBM 2.5 km"
+    licence = "public domain (NOAA)"
+    online_h = 2.0
+    workers = 8
+    hourly_to = 36
+
+    def _url(self, run: datetime, step: int) -> str:
+        return f"{NBM_BUCKET}/blend.{run:%Y%m%d}/{run:%H}/core/blend.t{run:%H}z.core.f{step:03d}.co.grib2"
+
+    def steps(self, run):
+        if grib.fetch(self._url(run, 1) + ".idx") is None:
+            return None
+        return list(range(0, self.hourly_to + 1)) + list(range(42, 265, 6))
+
+    def chain(self, step: int) -> list[tuple[int, int]]:
+        """(bucket start, bucket end) pieces that sum to the snow from 0 to step:
+        6 h buckets as far as they go, then 1 h buckets (only up to hourly_to)."""
+        six = step if step > self.hourly_to else step // 6 * 6
+        return [(e - 6, e) for e in range(6, six + 1, 6)] + [(e - 1, e) for e in range(six + 1, step + 1)]
+
+    def accum(self, run, steps, lats, lons, elev_m):
+        from . import CM_PER_MM_WE
+
+        pieces = sorted({p for s in steps for p in self.chain(s)}, key=lambda p: (p[1], p[0]))
+        files = sorted({e for _, e in pieces})
+        texts = _fetch_all([(self._url(run, e) + ".idx",) for e in files], self.workers)
+        if any(t is None for t in texts):
+            return None
+        rows = dict(zip(files, (grib.ncep_index(t.decode()) for t in texts)))
+        reqs = []
+        for a, e in pieces:
+            r = next((r for r in rows[e] if r["var"] == "ASNOW" and r["level"] == "surface" and not r["extra"]
+                      and r.get("stat") == "acc" and r.get("start_h") == a and r.get("end_h") == e), None)
+            if r is None:
+                log.warning("nbm: ASNOW %d-%d h missing in %s", a, e, run)
+                return None
+            reqs.append((self._url(run, e), r["offset"], r["length"]))
+        msgs = _fetch_all(reqs, self.workers)
+        if any(m is None for m in msgs):
+            return None
+        pts = _Points(lats, lons, elev_m)
+        snow = {}
+        for p, m in zip(pieces, msgs):
+            units = grib.decode(m)[1]["units"]
+            if units not in ("m", "unknown"):  # WMO 0-1-29 "total snowfall" is in m; eccodes has no name for it here
+                raise ValueError(f"nbm: ASNOW in {units!r}, expected m")
+            snow[p] = np.clip(pts.take(m), 0, None) * 100.0 / CM_PER_MM_WE
+        return {s: sum((snow[p] for p in self.chain(s)), np.zeros(len(lats))) for s in steps}
+
+
 def snow_from_buckets(chain: list[int], buckets: list[int], apcp: list[np.ndarray],
                       csnow: list[np.ndarray]) -> list[np.ndarray]:
     """Cumulative snow water (mm) at each step of `chain` (3 h apart, from 0).
@@ -513,4 +573,5 @@ SOURCES: dict[str, Source] = {
                                 trule=True),
     "gfs": Gfs(),
     "hrrr": Hrrr(),
+    "nbm": Nbm(),
 }

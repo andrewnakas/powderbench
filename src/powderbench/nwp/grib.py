@@ -132,7 +132,8 @@ def ncep_index(text: str) -> list[dict]:
         parts = line.split(":")
         if len(parts) < 6 or not parts[1].isdigit():
             continue
-        row = {"var": parts[3], "level": parts[4], "time": parts[5], "offset": int(parts[1])}
+        row = {"var": parts[3], "level": parts[4], "time": parts[5], "offset": int(parts[1]),
+               "extra": ":".join(parts[6:]).strip(":")}  # "prob >0.254", "10% level", "ens std dev"…
         m = _NCEP_TIME.match(parts[5])
         if m:
             k = 24 if m.group(3) == "day" else 1

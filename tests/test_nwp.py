@@ -345,3 +345,24 @@ def test_lambert_grid_position():
     assert abs(fi[0] - fi[1]) < 1e-6 and abs((fj[1] - fj[0]) - 1.0) < 1e-3
     idx = grib.point_index(HRRR_META, np.array([21.138123, 40.59, 60.0]), np.array([-122.719528, -111.64, -150.0]))
     assert idx[0] == 0 and 0 < idx[1] < 1799 * 1059 and idx[2] == -1  # Alaska is off the CONUS grid
+
+
+def test_nbm_bucket_chain():
+    from powderbench.nwp.sources import Nbm
+
+    n = Nbm()
+    assert n.chain(0) == []
+    assert n.chain(20) == [(0, 6), (6, 12), (12, 18), (18, 19), (19, 20)]  # 6 h buckets, then hourly
+    assert n.chain(36) == [(0, 6), (6, 12), (12, 18), (18, 24), (24, 30), (30, 36)]
+    assert n.chain(48)[-2:] == [(36, 42), (42, 48)]  # past 36 h only 6 h buckets
+
+
+def test_ncep_index_keeps_probability_and_percentile_tags():
+    from powderbench.nwp import grib
+
+    text = ("1:0:d=2025121512:ASNOW:surface:18-24 hour acc fcst:\n"
+            "2:100:d=2025121512:ASNOW:surface:18-24 hour acc fcst:prob >0.0254:prob fcst 255/255\n"
+            "3:250:d=2025121512:ASNOW:surface:18-24 hour acc fcst:10% level\n")
+    rows = grib.ncep_index(text)
+    assert [r["extra"] for r in rows] == ["", "prob >0.0254:prob fcst 255/255", "10% level"]
+    assert rows[0]["start_h"] == 18 and rows[0]["end_h"] == 24 and rows[0]["length"] == 100
