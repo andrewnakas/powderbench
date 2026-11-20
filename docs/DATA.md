@@ -352,10 +352,21 @@ CC BY 4.0). Credit: 出典：気象庁ホームページ (Japan Meteorological A
   (JST) day, so day D is the value dated D.
 - **Candidates:** every AMeDAS station that reports snow depth in JMA's live
   map, matched to its archive page by name (else the nearest page within
-  3 km). A station is kept when last winter (Dec–Mar) has ≥ 100 days with a
-  value, ≥ 10 snowfall days of 2 cm or more, and ≥ 80% of those snowfall days
-  wet on the station's own rain gauge. That last test catches dead or stuck
-  sensors with no external model call.
+  3 km). A few stations are filed under a neighbouring subprefecture's
+  archive page (Shumarinai and Horokanai under Kamikawa), so the other pages
+  are searched by name last. A station is kept when last winter (Dec–Mar) has
+  ≥ 100 days with a value, ≥ 10 snowfall days of 2 cm or more, and ≥ 80% of
+  its snowfall days of 5 cm or more wet on the station's own rain gauge. That
+  last test catches dead or stuck sensors with no external model call.
+  - Light snowfalls are left out of the gauge test: a 2–3 cm snowfall often
+    logs 0.0 mm. Counting them dropped 51 good stations (2026-11-20), among
+    them Furano, Biei, Kamikawa, Kusatsu and Nayoro, whose gauges were wet on
+    88–100% of their 5 cm days. The stations the test still drops do snow on
+    dry days: Maibara (10% wet), Takamatsu (60%), Koetoi (69%, 149 cm of dry
+    snowfall) and Hachinohe (75%).
+  - That gives 265 of the 336 stations in the live map. Of the other 71,
+    61 had fewer than 10 snowfall days last winter, 6 fewer than 100 days
+    with a value, and 4 fail the gauge test.
 - **Featured:** stations within 8 km of a ski area with 5+ lifts, plus Sukayu (Hakkoda)
   (OpenSkiData, `data/skiareas/ski_areas_global.csv`).
 - **Climatology:** from each station's own record since 2015-10. Jun–Sep are
