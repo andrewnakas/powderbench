@@ -701,6 +701,23 @@ snow the same way, with GFS's 2 m temperature at every 3 h step. With it,
 the plain 0.25° GFS beats Open-Meteo's `gfs_seamless` on featured stations in
 all four leagues, although Open-Meteo blends 3 km HRRR into it over the US.
 
+**HRRR, tested and not used (2026-11-20).** The direct read handles NCEP's
+Lambert grids (`grib.lambert_ij`, cell-for-cell equal to eccodes' own
+coordinates on HRRR), and `nwp.SOURCES["hrrr"]` reads HRRR's accumulated
+snowfall water (WEASD) with the hourly 2 m temperature. But a round is
+issued the evening before its first day, so HRRR's 48 h runs reach only that
+first day, and there it scores below GFS and ECMWF with the rule
+(2026-11-01..14, featured stations, MAE of the 24 h window):
+
+| League | HRRR | GFS + rule | ECMWF + rule | Open-Meteo GFS |
+|---|---|---|---|---|
+| stations | 0.380″ | 0.338″ | **0.330″** | 0.498″ |
+| resorts-na | 0.503″ | 0.433″ | **0.424″** | 0.637″ |
+| observers | 0.214″ | **0.133″** | 0.136″ | 0.246″ |
+
+So `baseline-hrrr` keeps its Open-Meteo-only entry; Open-Meteo's own HRRR
+has the same 48 h limit.
+
 **ECMWF IFS at 0.1° or 0.25° (2026-11-20).** Since the runs of late October
 2026, ECMWF's open data also carries IFS on its native ~9 km grid, as 0.1°
 (`ifs/0p1/oper/…-fc-sfc`).

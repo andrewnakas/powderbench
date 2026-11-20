@@ -113,14 +113,10 @@ def direct_prediction(league: League, target_day: date, source: str, mode: str =
 
 
 # Extra NWP baselines. team -> (direct source, Open-Meteo model, region).
-# Featured stations come from Open-Meteo (its free tier bills per location).
-# A team with a direct source (nwp.SOURCES) covers every other station from
-# the producer's own files, and the featured ones too whenever Open-Meteo is
-# down, out of quota or switched off. Open-Meteo stays first on featured
-# stations because its processing scored better there (stations league,
-# 2026-11-01..16: ECMWF 42 vs 25, AIFS 40 vs 31; its gfs_seamless blends HRRR
-# into GFS over the US). Regions: "conus" covers the lower 48, "alps" the Alps
-# leagues, "japan" Japan.
+# A team with a direct source (nwp.SOURCES) reads the producer's own files at
+# every station; see DIRECT_FIRST for which goes first. Teams without one use
+# Open-Meteo on featured stations only (its free tier bills per location).
+# Regions: "conus" covers the lower 48, "alps" the Alps leagues, "japan" Japan.
 MODEL_BASELINES = {
     "baseline-ecmwf": ("ecmwf_ifs", "ecmwf_ifs025", None),
     "baseline-aifs": ("ecmwf_aifs", "ecmwf_aifs025_single", None),  # ECMWF's AI model
