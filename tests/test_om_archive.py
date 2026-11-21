@@ -69,3 +69,34 @@ def test_station_outside_every_domain_is_missing(archive):
     src = sources.OpenMeteoArchive("t", "t", ["fine"], online_h=1)
     got = src.accum(RUN, [6], [10.0], [100.0], [1000.0])
     assert np.isnan(got[6][0])
+
+
+def test_amounts_stored_per_interval_line_up_with_valid_times(archive):
+    # the archive keeps N - 1 amounts (intervals ending at hours 1..N-1) and N temperatures
+    archive["coarse"]["vars"] = {"snowfall_water_equivalent": [1.0] * 12, "temperature_2m": [-5.0] * 13}
+    src = sources.OpenMeteoArchive("t", "t", ["coarse"], online_h=1)
+    got = src.accum(RUN, [1, 12], [41.0], [1.0], [1000.0])
+    assert got[1][0] == 1.0 and got[12][0] == 12.0
+
+
+def test_open_meteo_rotation_round_trips():
+    # Open-Meteo's inverse (Domains/RotatedLatLon.swift) undoes the ported forward
+    lat_p, lon_p = -36.0885, 245.305  # GEM HRDPS
+    th, ph = np.radians(90 + lat_p), np.radians(lon_p)
+    fwd = omdata.rotated_forward(lat_p, lon_p)
+    lats, lons = np.array([43.59, 50.07, 46.0]), np.array([-110.83, -122.89, -75.0])
+    x, y = fwd(lats, lons)
+    lo, la = np.radians(x), np.radians(y)
+    lat2 = -np.arcsin(np.cos(th) * np.sin(la) - np.cos(lo) * np.sin(th) * np.cos(la))
+    lon2 = -(np.arctan2(np.sin(lo), np.tan(la) * np.sin(th) + np.cos(lo) * np.cos(th)) - ph)
+    assert np.allclose(np.degrees(lat2), lats, atol=1e-6)
+    assert np.allclose((np.degrees(lon2) + 180) % 360 - 180, lons, atol=1e-6)
+
+
+def test_projected_grid_indexes_through_its_own_function():
+    from powderbench.nwp import grib
+
+    g = {"gridType": "projected", "Ni": 10, "Nj": 10, "jScansPositively": 1, "iScansNegatively": 0,
+         "jPointsAreConsecutive": 0, "DxInMetres": 1000.0, "DyInMetres": 1000.0,
+         "ij": lambda lats, lons: (lons * 10.0, lats * 10.0)}
+    assert grib.point_index(g, np.array([0.31, 2.0]), np.array([0.42, 0.0])).tolist() == [3 * 10 + 4, -1]

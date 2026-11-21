@@ -662,14 +662,16 @@ class OpenMeteoArchive(Source):
     snowfall_water_equivalent; else snowfall (cm, / 0.7); else precipitation
     minus rain (UKMO); else precipitation while the 2 m temperature moved to
     the station's height is below 0 C (AROME HD, JMA). Same cell choice and
-    elevation rule as the producer readers above."""
+    elevation rule as the producer readers above. Regular, rotated and
+    Lambert grids (nwp/omdata.grid)."""
 
     licence = "CC BY 4.0 (Open-Meteo open data)"
 
     def __init__(self, name: str, label: str, domains: list[str], online_h: float,
-                 cycles: tuple[int, ...] = (0, 6, 12, 18), trule: bool = True):
+                 cycles: tuple[int, ...] = (0, 6, 12, 18), trule: bool = True, frozen: bool = False):
         self.name, self.label, self.domains, self.online_h = name, label, domains, online_h
         self.cycles, self.trule = cycles, trule
+        self.frozen = frozen  # snow = precipitation below 0 C, whatever the run stores
 
     def steps(self, run):
         from . import omdata
@@ -685,11 +687,24 @@ class OpenMeteoArchive(Source):
         have = omdata.run_variables(dom, run)
         rule = self.trule and os.environ.get("PB_NWP_TRULE", "1") != "0"
 
+        n = len(omdata.run_hours(dom, run))
+
         def read(name):
-            return omdata.run_values(dom, run, name, cells) if name in have else None
+            """(stations, valid times); amounts are stored per interval, one
+            fewer than the valid times (none closes at the run start)."""
+            if name not in have:
+                return None
+            v = omdata.run_values(dom, run, name, cells)
+            if v is not None and v.shape[1] == n - 1:
+                v = np.hstack([np.zeros((len(v), 1)), v])
+            return v
 
         frozen_only = False
-        if (inc := read("snowfall_water_equivalent")) is None:
+        if self.frozen:
+            if (inc := read("precipitation")) is None:
+                return None
+            frozen_only = True
+        elif (inc := read("snowfall_water_equivalent")) is None:
             if (cm := read("snowfall")) is not None:
                 inc = cm / CM_PER_MM_WE_OM
             elif (pr := read("precipitation")) is not None and (rain := read("rain")) is not None:
@@ -767,17 +782,31 @@ SOURCES: dict[str, Source] = {
     "hrrr": Hrrr(),
     "nbm": Nbm(),
     "ecmwf_ens": EcmwfEns(),
-    # Open-Meteo's archive of the models it serves (online_h: hours after the
-    # cycle until the run is in the archive, measured on 2026-11-20/21 runs)
+    # Open-Meteo's archive of the models it serves. online_h: hours after the
+    # cycle until every domain of the run is in the archive (the largest
+    # delay seen over 2026-11-15/18 runs, rounded up)
     "om_icon": OpenMeteoArchive("om_icon", "DWD ICON (D2, EU, global)", ["dwd_icon_d2", "dwd_icon_eu", "dwd_icon"],
-                                online_h=4.5),
-    "om_gem": OpenMeteoArchive("om_gem", "ECCC GEM global", ["cmc_gem_gdps_15km"], online_h=6.0, cycles=(0, 12)),
-    "om_ukmo": OpenMeteoArchive("om_ukmo", "Met Office global", ["ukmo_global_deterministic_10km"], online_h=7.5),
+                                online_h=5.0),
+    "om_gem": OpenMeteoArchive("om_gem", "ECCC GEM (HRDPS, RDPS, GDPS)",
+                               ["cmc_gem_hrdps_west", "cmc_gem_hrdps", "cmc_gem_rdps_10km", "cmc_gem_gdps_15km"],
+                               online_h=7.0, cycles=(0, 12)),
+    "om_ukmo": OpenMeteoArchive("om_ukmo", "Met Office global", ["ukmo_global_deterministic_10km"], online_h=8.0),
     "om_meteofrance": OpenMeteoArchive("om_meteofrance", "Meteo-France AROME/ARPEGE",
-                                       ["meteofrance_arome_france_hd", "meteofrance_arpege_europe",
-                                        "meteofrance_arpege_world025"], online_h=4.5),
+                                       ["meteofrance_arome_france0025", "meteofrance_arpege_europe",
+                                        "meteofrance_arpege_world025"], online_h=6.5),
     "om_jma": OpenMeteoArchive("om_jma", "JMA MSM/GSM", ["jma_msm", "jma_gsm"], online_h=10.0),
-    "om_cma": OpenMeteoArchive("om_cma", "CMA GRAPES global", ["cma_grapes_global"], online_h=6.5),
+    "om_cma": OpenMeteoArchive("om_cma", "CMA GRAPES global", ["cma_grapes_global"], online_h=10.5),
     "om_icon_2i": OpenMeteoArchive("om_icon_2i", "ItaliaMeteo ICON-2I", ["italia_meteo_arpae_icon_2i"],
-                                   online_h=3.0, cycles=(0, 12)),
+                                   online_h=4.5, cycles=(0, 12)),
+    "om_meteoswiss": OpenMeteoArchive("om_meteoswiss", "MeteoSwiss ICON-CH1/CH2",
+                                      ["meteoswiss_icon_ch1", "meteoswiss_icon_ch2"], online_h=3.5),
+    "om_knmi": OpenMeteoArchive("om_knmi", "KNMI HARMONIE Europe", ["knmi_harmonie_arome_europe"], online_h=3.0,
+                                cycles=tuple(range(0, 24, 3))),
+    "om_dmi": OpenMeteoArchive("om_dmi", "DMI HARMONIE Europe", ["dmi_harmonie_arome_europe"], online_h=3.5,
+                               cycles=tuple(range(0, 24, 3))),
+    "om_metno": OpenMeteoArchive("om_metno", "MET Nordic", ["metno_nordic_pp"], online_h=1.0,
+                                 cycles=tuple(range(0, 24, 3))),
+    "om_rrfs": OpenMeteoArchive("om_rrfs", "NOAA RRFS", ["ncep_rrfs_conus"], online_h=9.5),
+    "om_chmi": OpenMeteoArchive("om_chmi", "CHMI ALADIN Central Europe", ["chmi_aladin_central_europe_2km"],
+                                online_h=6.5),
 }

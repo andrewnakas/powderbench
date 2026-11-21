@@ -13,8 +13,9 @@ Values at a stamp cover the hour ending there (precipitation and snowfall
 water equivalent in mm). Reading needs the optional `omfiles` and `s3fs`
 packages (pip install "powderbench[omdata]").
 
-Only regular latitude/longitude domains are handled here (rotated and
-Lambert grids such as GEM RDPS/HRDPS or MET Nordic need their projection).
+Regular latitude/longitude domains need nothing more; rotated ones (GEM
+RDPS/HRDPS, MeteoSwiss ICON-CH, KNMI) use Open-Meteo's own rotation and
+Lambert ones (MET Nordic, DMI, HRRR, NBM) pyproj.
 """
 
 from __future__ import annotations
@@ -62,24 +63,85 @@ def listing(domain: str, variable: str) -> frozenset[str]:
 
 @lru_cache(maxsize=None)
 def grid(domain: str) -> tuple[dict, np.ndarray, np.ndarray]:
-    """(GRIB-style grid metadata for grib.terrain_index, terrain height m
-    (flat), land fraction (flat: 1 where HSURF > -999))."""
+    """(grid metadata for grib.terrain_index, terrain height m (flat), land
+    fraction (flat: 1 where HSURF > -999)). Regular lat/lon domains get GRIB
+    style keys; rotated and Lambert ones a "projected" grid whose station
+    positions come from the domain's WKT through pyproj. The WKT's BBOX holds
+    the first and last grid points (lat, lon), which fix origin and spacing,
+    except for the rotated grids in ROTATED_ORIGINS."""
     hsurf = np.asarray(_reader(f"data/{domain}/static/HSURF.om")[:, :], dtype=float)
     nj, ni = hsurf.shape
-    bbox = re.search(r"BBOX\[([-\d.]+),([-\d.]+),([-\d.]+),([-\d.]+)\]", meta(domain)["crs_wkt"])
-    if not bbox or "GEOGCRS" not in meta(domain)["crs_wkt"].split("[", 1)[0]:
-        raise ValueError(f"{domain}: not a regular lat/lon domain")
+    wkt = meta(domain)["crs_wkt"]
+    bbox = re.search(r"BBOX\[([-\d.]+),([-\d.]+),([-\d.]+),([-\d.]+)\]", wkt)
+    if not bbox:
+        raise ValueError(f"{domain}: no grid corners in its WKT")
     lat0, lon0, lat1, lon1 = (float(v) for v in bbox.groups())
-    g = {
-        "gridType": "regular_ll", "Ni": ni, "Nj": nj,
-        "latitudeOfFirstGridPointInDegrees": lat0, "longitudeOfFirstGridPointInDegrees": lon0,
-        "iDirectionIncrementInDegrees": (lon1 - lon0) / (ni - 1),
-        "jDirectionIncrementInDegrees": (lat1 - lat0) / (nj - 1),
-        "jScansPositively": 1, "iScansNegatively": 0, "jPointsAreConsecutive": 0,
-    }
     land = (hsurf > -999.0).astype(float).ravel()
     height = np.where(hsurf > -999.0, hsurf, np.nan).ravel()
-    return g, height, land
+    common = {"Ni": ni, "Nj": nj, "jScansPositively": 1, "iScansNegatively": 0, "jPointsAreConsecutive": 0}
+    if "METHOD[" not in wkt:  # plain latitude/longitude
+        return {"gridType": "regular_ll", **common,
+                "latitudeOfFirstGridPointInDegrees": lat0, "longitudeOfFirstGridPointInDegrees": lon0,
+                "iDirectionIncrementInDegrees": (lon1 - lon0) / (ni - 1),
+                "jDirectionIncrementInDegrees": (lat1 - lat0) / (nj - 1)}, height, land
+    if "ob_tran" in wkt:  # rotated lat/lon, in Open-Meteo's own convention
+        o_lat_p = float(re.search(r'"o_lat_p",([-\d.]+)', wkt).group(1))
+        lon_0 = float(re.search(r'"lon_0",([-\d.]+)', wkt).group(1))
+        rot = rotated_forward(-o_lat_p, lon_0)
+        if domain in ROTATED_ORIGINS:
+            x0, y0, dx, dy = ROTATED_ORIGINS[domain]
+        else:  # the WKT's BBOX is the first and last grid point
+            (x0, x1), (y0, y1) = rot(np.array([lat0, lat1]), np.array([lon0, lon1]))
+            dx, dy = (x1 - x0) / (ni - 1), (y1 - y0) / (nj - 1)
+
+        def ij(lats: np.ndarray, lons: np.ndarray):
+            x, y = rot(lats, lons)
+            return (x - x0) / dx, (y - y0) / dy
+
+        scale = 111_195.0  # metres per rotated degree
+    else:  # Lambert and other planar projections
+        import pyproj  # optional dependency (pip install "powderbench[omdata]")
+
+        crs = pyproj.CRS.from_wkt(wkt)
+        to_grid = pyproj.Transformer.from_crs(crs.geodetic_crs, crs, always_xy=True)
+        (x0, x1), (y0, y1) = to_grid.transform([lon0, lon1], [lat0, lat1])
+        dx, dy = (x1 - x0) / (ni - 1), (y1 - y0) / (nj - 1)
+
+        def ij(lats: np.ndarray, lons: np.ndarray):
+            x, y = to_grid.transform(lons, lats)
+            return (np.asarray(x, float) - x0) / dx, (np.asarray(y, float) - y0) / dy
+
+        scale = 1.0
+    return {"gridType": "projected", **common, "ij": ij,
+            "DxInMetres": abs(dx) * scale, "DyInMetres": abs(dy) * scale}, height, land
+
+
+# Rotated grids that Open-Meteo defines by origin and spacing rather than by
+# corners (Sources/App/Gem/GemDomain.swift, MeteoSwiss/MeteoSwissDomain.swift):
+# (x0, y0, dx, dy) in rotated degrees.
+ROTATED_ORIGINS = {
+    "cmc_gem_rdps_10km": (306.141 - 360, -48.806, 0.090298, 0.090298),
+    "cmc_gem_hrdps_west": (-22.18489, 5.308595 + 1180 * -0.00899, 0.00899, 0.00899),
+    "meteoswiss_icon_ch1": (-6.46, -4.06, 0.01, 0.01),
+    "meteoswiss_icon_ch2": (-6.46, -4.06, 0.02, 0.02),
+}
+
+
+def rotated_forward(latitude: float, longitude: float):
+    """Open-Meteo's RotatedLatLonProjection.forward (Domains/RotatedLatLon.swift):
+    (lats, lons) -> rotated (x, y) degrees. Its WKT writes o_lat_p = -latitude
+    and lon_0 = longitude, which PROJ reads differently, so it is ported here."""
+    th, ph = np.radians(90.0 + latitude), np.radians(longitude)
+
+    def fwd(lats, lons):
+        lat, lon = np.radians(np.asarray(lats, float)), np.radians(np.asarray(lons, float))
+        x, y, z = np.cos(lon) * np.cos(lat), np.sin(lon) * np.cos(lat), np.sin(lat)
+        x2 = np.cos(th) * np.cos(ph) * x + np.cos(th) * np.sin(ph) * y + np.sin(th) * z
+        y2 = -np.sin(ph) * x + np.cos(ph) * y
+        z2 = -np.sin(th) * np.cos(ph) * x - np.sin(th) * np.sin(ph) * y + np.cos(th) * z
+        return -np.degrees(np.arctan2(y2, x2)), -np.degrees(np.arcsin(z2))
+
+    return fwd
 
 
 def _pieces(domain: str, variable: str, start: datetime, end: datetime):
