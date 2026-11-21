@@ -786,8 +786,11 @@ SOURCES: dict[str, Source] = {
     # delay seen over 2026-11-15/18 runs, rounded up)
     "om_icon": OpenMeteoArchive("om_icon", "DWD ICON (D2, EU, global)", ["dwd_icon_d2", "dwd_icon_eu", "dwd_icon"],
                                 online_h=5.0),
+    # No HRDPS West: its stored snowfall_water_equivalent is not snowfall (it runs
+    # 50-200x the run's precipitation and grows through the season), and the
+    # API's gem_seamless leaves that domain out too
     "om_gem": OpenMeteoArchive("om_gem", "ECCC GEM (HRDPS, RDPS, GDPS)",
-                               ["cmc_gem_hrdps_west", "cmc_gem_hrdps", "cmc_gem_rdps_10km", "cmc_gem_gdps_15km"],
+                               ["cmc_gem_hrdps", "cmc_gem_rdps_10km", "cmc_gem_gdps_15km"],
                                online_h=7.0, cycles=(0, 12)),
     "om_ukmo": OpenMeteoArchive("om_ukmo", "Met Office global", ["ukmo_global_deterministic_10km"], online_h=8.0),
     "om_meteofrance": OpenMeteoArchive("om_meteofrance", "Meteo-France AROME/ARPEGE",
