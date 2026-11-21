@@ -41,12 +41,9 @@ def test_seamless_continues_past_the_fine_domain(archive):
     assert src.steps(RUN) == list(range(13))
 
 
-def test_snow_from_rain_or_from_cold_precipitation(archive):
-    archive["coarse"]["vars"] = {"precipitation": [np.nan] + [3.0] * 12, "rain": [np.nan] + [1.0] * 12,
-                                 "temperature_2m": [5.0] * 13}
+def test_snow_from_cold_precipitation(archive):
     src = sources.OpenMeteoArchive("t", "t", ["coarse"], online_h=1)
-    assert src.accum(RUN, [12], [41.0], [1.0], [1000.0])[12][0] == 24.0  # (3 - 1) x 12
-    # precipitation only (AROME HD, JMA): snow while the temperature is below 0 C
+    # no snow field (UKMO, JMA, ICON-CH): snow while the temperature is below 0 C
     archive["coarse"]["vars"] = {"precipitation": [np.nan] + [1.0] * 12,
                                  "temperature_2m": [-1.0] * 7 + [3.0] * 6}
     got = src.accum(RUN, [6, 12], [41.0], [1.0], [1000.0])

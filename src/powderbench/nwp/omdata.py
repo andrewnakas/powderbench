@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import re
 import threading
 from concurrent.futures import ThreadPoolExecutor
@@ -183,7 +184,7 @@ def series(domain: str, variable: str, cell: int, start: datetime, end: datetime
 # valid times (kept from 2026-08 on). Values at a valid time cover the
 # interval since the previous one (mm for snowfall water equivalent).
 
-READ_WORKERS = 16
+READ_WORKERS = int(os.environ.get("PB_OM_WORKERS") or 32)  # point reads are network-bound
 _local = threading.local()
 
 
