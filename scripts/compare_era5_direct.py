@@ -1,7 +1,9 @@
-"""Direct ERA5 (CDS) vs the era5 league's published truth (Open-Meteo
+"""Direct ERA5 (open-data archive or CDS) vs the era5 league's published truth (Open-Meteo
 era5_seamless), day by day: does the direct read reproduce it?
 
-  PYTHONPATH=src python scripts/compare_era5_direct.py [era5|era5-land] [first] [last]
+  PYTHONPATH=src python scripts/compare_era5_direct.py [s3|era5|era5-land] [first] [last]
+
+s3 = the open-data archive; era5 / era5-land = the Copernicus CDS.
 """
 
 import sys
@@ -27,7 +29,8 @@ for r in rounds:
         rows += [{"station_id": s, "date": d, "om_in": v} for s, v in zip(t["station_id"], t["truth_in"])]
 om = pd.DataFrame(rows)
 stations = [s for s in load_stations("era5") if s.station_id in set(om["station_id"])]
-direct = era5.daily_snowfall(stations, first, last, product).rename(columns={"snowfall_in": "direct_in"})
+direct = (era5.daily_snowfall(stations, first, last, "era5", source="s3") if product == "s3"
+          else era5.daily_snowfall(stations, first, last, product, source="cds")).rename(columns={"snowfall_in": "direct_in"})
 m = om.merge(direct, on=["station_id", "date"], how="inner")
 d = m["direct_in"] - m["om_in"]
 wet = (m["om_in"] > 0.05) | (m["direct_in"] > 0.05)

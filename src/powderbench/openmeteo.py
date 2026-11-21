@@ -176,5 +176,11 @@ def era5_daily_snowfall(stations: list[Station], begin: date, end: date) -> pd.D
     best_match blends in the same high-res operational data the forecast
     archive serves, which would make truth identical to the NWP baseline
     (verified: MAE would be exactly 0)."""
+    if os.environ.get("PB_ERA5_SOURCE") in ("s3", "cds"):
+        # the same ERA5 without API calls (nwp/era5.py): s3 = Open-Meteo's
+        # open-data archive, cds = the Copernicus Climate Data Store
+        from .nwp import era5
+
+        return era5.daily_snowfall(stations, begin, end, source=os.environ["PB_ERA5_SOURCE"])
     cacheable = end <= date.today() - timedelta(days=10)
     return _fetch(ARCHIVE_URL, stations, "era5_seamless", begin, end, cacheable=cacheable)

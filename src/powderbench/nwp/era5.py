@@ -1,34 +1,31 @@
-"""ERA5 daily snowfall read from the Copernicus Climate Data Store (CDS),
-the archive Open-Meteo's `era5_seamless` resamples.
+"""ERA5 daily snowfall without Open-Meteo's API.
 
-Why: Open-Meteo bills about one call per location per 14 days of data, so a
+Why: the API bills about one call per location per 14 days of data, so a
 climatology (11 stations x 35 years ~ 10k calls) is a whole day's free budget
-for one IP, and a request that size is refused outright. The CDS has no
-per-call budget: requests are queued and served whole.
+for one IP. Two sources with no per-call budget (PB_ERA5_SOURCE):
 
-What it reproduces per station (the conventions of the direct NWP readers in
-nwp/__init__.py, so values line up with Open-Meteo's daily snowfall_sum):
-  - hourly `snowfall` (water equivalent) and `2m_temperature` on the model grid;
-  - Open-Meteo's cell choice (grib.terrain_index: a nearby land cell whose
-    model height best matches the station) on the model's own orography and
-    land mask;
-  - Open-Meteo's elevation rule (sources.below_zero_share): where that cell is
-    more than 100 m above or below the station, an hour's snow is kept only for
-    the share of it the temperature moved to the station's height is below 0 C;
-  - 0.7 cm of snow per mm of water, station-local days (IANA zone), the
-    accumulation interpolated to local midnight.
+  s3   Open-Meteo's own open-data archive (nwp/omdata.py): the hourly ERA5
+       the API serves for era5_seamless, read in seconds per station-year.
+  cds  the Copernicus Climate Data Store, ERA5 (0.25 deg) or ERA5-Land
+       (0.1 deg); queued requests, needs ~/.cdsapirc (free account). A
+       fallback should the archive go away.
 
-Two products: "era5" (0.25 deg, `reanalysis-era5-single-levels`, values are
-the hour ending at the stamp) and "era5-land" (0.1 deg, `reanalysis-era5-land`,
-values accumulate from 00 UTC, the 00 UTC value closing the previous day).
+Processing follows the API's daily snowfall_sum for era5_seamless, which a
+check against the era5 league's published truth pinned down (118 rounds,
+2026-06-22..10-31, scripts/compare_era5_direct.py): the model's snowfall
+water equivalent at Open-Meteo's cell (grib.terrain_index on the model's own
+terrain) x 0.7 cm per mm, summed over station-local days. Unlike the forecast
+models (nwp/sources.py), the API applies no elevation rule to ERA5: with it
+the totals came out 15% low (Antillanca 71% low), without it within 3%.
+Days here follow the station zone's DST; the API holds one UTC offset for a
+whole request, which accounts for most of the remaining day-to-day mismatch.
 
-Stations close together share one request (one box per cluster and year).
-Downloads go to the cache (PB_ERA5_CACHE, default data/cache/era5) and are
-reduced to each station's own cell series there, so a long build resumes
-and the multi-MB GRIB files do not pile up.
-
-Credentials: ~/.cdsapirc or CDSAPI_URL / CDSAPI_KEY (a free CDS account;
-each dataset's licence is accepted once on its CDS page).
+CDS products: "era5" (`reanalysis-era5-single-levels`, values are the hour
+ending at the stamp) and "era5-land" (`reanalysis-era5-land`, values
+accumulate from 00 UTC, the 00 UTC value closing the previous day). Stations
+close together share one request per year; downloads go to the cache
+(PB_ERA5_CACHE, default data/cache/era5) and are reduced to each station's
+own series, so a long build resumes and the GRIB files do not pile up.
 """
 
 from __future__ import annotations
@@ -37,6 +34,7 @@ import hashlib
 import json
 import logging
 import os
+import zipfile
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
@@ -47,9 +45,11 @@ import pandas as pd
 from ..stations import Station, data_dir
 from . import CM_PER_INCH, CM_PER_MM_WE, station_zone
 from . import grib
-from .sources import G0, LAPSE_K_PER_M, RULE_MIN_DZ_M, below_zero_share
+from .sources import G0
 
 log = logging.getLogger(__name__)
+
+S3_DOMAIN = "copernicus_era5"
 
 
 @dataclass(frozen=True)
@@ -67,6 +67,12 @@ PRODUCTS = {
 PAD_DEG = 0.5  # around each cluster: the terrain search reaches past the nearest cell
 CLUSTER_SPAN_DEG = 2.0  # stations within this lat/lon span share a request
 STATIC_YEAR = 2000  # orography and land mask do not change with time
+
+
+def default_source() -> str:
+    """PB_ERA5_SOURCE when it names a direct source, else the archive."""
+    src = os.environ.get("PB_ERA5_SOURCE", "")
+    return src if src in ("s3", "cds") else "s3"
 
 
 def cache_dir() -> Path:
@@ -123,17 +129,24 @@ def _key(product: Product, req: dict) -> str:
 
 
 def retrieve(product: Product, req: dict) -> Path:
-    """The request's GRIB file (downloaded once; see _reduce for cleanup)."""
+    """The request's GRIB file (downloaded once; _reduce removes it after use)."""
     out = cache_dir() / f"{product.name}-{_key(product, req)}.grib"
     if out.exists() and out.stat().st_size > 0:
         return out
-    import cdsapi  # optional dependency (pip install cdsapi)
+    import cdsapi  # optional dependency (pip install "powderbench[era5]")
 
     client = cdsapi.Client(quiet=True, progress=False)
     tmp = out.with_suffix(".part")
     log.info("CDS %s %s %s %s", product.dataset, req["variable"], req["year"], req["area"])
     client.retrieve(product.dataset, req, str(tmp))
-    tmp.replace(out)
+    if zipfile.is_zipfile(tmp):  # ERA5-Land answers a mixed request with one GRIB per stream
+        with zipfile.ZipFile(tmp) as z, open(out.with_suffix(".cat"), "wb") as f:
+            for member in sorted(z.namelist()):
+                f.write(z.read(member))
+        tmp.unlink()
+        out.with_suffix(".cat").replace(out)
+    else:
+        tmp.replace(out)
     return out
 
 
@@ -154,78 +167,57 @@ def messages(path: Path):
             yield name, valid, values, meta
 
 
-def cells(group: list[Station], product: Product) -> dict[str, tuple[int, float]]:
-    """station_id -> (cell index in the cluster box, model terrain height m)."""
+def cells(group: list[Station], product: Product) -> dict[str, int]:
+    """station_id -> cell index in the cluster box (Open-Meteo's choice on
+    the product's own orography and land mask)."""
     req = request(product, ["geopotential", "land_sea_mask"], STATIC_YEAR, [1], area(group, product),
                   hours=[0], days=[1])
     static = {name: (values, meta) for name, _, values, meta in messages(retrieve(product, req))}
     (z, meta), (lsm, _) = static["z"], static["lsm"]
-    height = z / G0
-    lats = np.array([s.latitude for s in group])
-    lons = np.array([s.longitude for s in group])
-    elev = np.array([s.elevation_ft * 0.3048 for s in group])
-    idx = grib.terrain_index(meta, lats, lons, elev, height, lsm, radius=1)
-    return {s.station_id: (int(i), float(height[i])) for s, i in zip(group, idx)}
+    idx = grib.terrain_index(meta, np.array([s.latitude for s in group]), np.array([s.longitude for s in group]),
+                             np.array([s.elevation_ft * 0.3048 for s in group]), z / G0, lsm, radius=1)
+    return {s.station_id: int(i) for s, i in zip(group, idx)}
 
 
-def _reduce(product: Product, group: list[Station], at: dict[str, tuple[int, float]],
-            year: int, months: list[int]) -> dict[str, pd.DataFrame]:
-    """Hourly sf (mm water, raw accumulation convention) and t2 (C) at each
+def _reduce(product: Product, group: list[Station], at: dict[str, int], year: int,
+            months: list[int]) -> dict[str, pd.Series]:
+    """Snowfall (mm water, the product's accumulation convention) at each
     station's cell for one year, cached per station; the GRIB is removed once
     every station in the cluster has its series."""
-    req = request(product, ["snowfall", "2m_temperature"], year, months, area(group, product))
+    req = request(product, ["snowfall"], year, months, area(group, product))
     key = _key(product, req)
     paths = {s.station_id: cache_dir() / f"{product.name}-{key}-{s.station_id.replace(':', '_')}.csv.gz"
              for s in group}
     if all(p.exists() for p in paths.values()):
-        return {sid: pd.read_csv(p, index_col=0, parse_dates=[0]) for sid, p in paths.items()}
+        return {sid: pd.read_csv(p, index_col=0, parse_dates=[0])["sf"] for sid, p in paths.items()}
     grib_path = retrieve(product, req)
     sf: dict[str, dict] = {s.station_id: {} for s in group}
-    t2: dict[str, dict] = {s.station_id: {} for s in group}
     for name, valid, values, meta in messages(grib_path):
-        factor = grib.to_mm(meta["units"]) if name == "sf" else None
-        for sid, (cell, _) in at.items():
-            v = float(values[cell])
-            if name == "sf":
-                sf[sid][valid] = v * factor
-            elif name == "2t":
-                t2[sid][valid] = v - 273.15
+        if name == "sf":
+            for sid, cell in at.items():
+                sf[sid][valid] = float(values[cell]) * grib.to_mm(meta["units"])
     out = {}
     for s in group:
-        df = pd.DataFrame({"sf": pd.Series(sf[s.station_id], dtype=float),
-                           "t2": pd.Series(t2[s.station_id], dtype=float)}).sort_index()
-        df.index.name = "time"
-        df.to_csv(paths[s.station_id])
-        out[s.station_id] = df
+        ser = pd.Series(sf[s.station_id], dtype=float, name="sf").sort_index()
+        ser.index.name = "time"
+        ser.to_frame().to_csv(paths[s.station_id])
+        out[s.station_id] = ser
     grib_path.unlink()
     return out
 
 
-def hourly_snow_mm(raw: pd.DataFrame, product: Product) -> pd.Series:
+def hourly_snow_mm(sf: pd.Series, product: Product) -> pd.Series:
     """Water (mm) that fell in the hour ending at each stamp, from the
     product's accumulation convention."""
-    sf = raw["sf"]
     if not product.running_from_00z:
         return sf.clip(lower=0)
     # ERA5-Land: running total since 00 UTC; the 00 UTC value is the previous
     # day's total, so the hour ending 01 UTC is the 01 UTC value itself
-    prev = sf.shift(1)
     first_of_day = sf.index.hour == 1
-    inc = np.where(first_of_day, sf, sf - prev)
+    inc = np.where(first_of_day, sf, sf - sf.shift(1))
     gap = sf.index.to_series().diff() != pd.Timedelta(hours=1)
     inc = np.where(gap & ~first_of_day, np.nan, inc)
     return pd.Series(inc, index=sf.index).clip(lower=0)
-
-
-def apply_rule(snow_mm: pd.Series, t2_c: pd.Series, dz_m: float) -> pd.Series:
-    """Open-Meteo's elevation rule on hourly snow. dz_m: model cell height
-    minus the station's. The hour's start temperature is the previous stamp's."""
-    if abs(dz_m) <= RULE_MIN_DZ_M:
-        return snow_mm
-    shift = dz_m * LAPSE_K_PER_M
-    t_end = t2_c.to_numpy() + shift
-    t_start = np.concatenate([[t_end[0]], t_end[:-1]])
-    return snow_mm * below_zero_share(t_start, t_end)
 
 
 def local_daily(snow: pd.Series, zone, begin: date, end: date) -> pd.Series:
@@ -241,34 +233,59 @@ def local_daily(snow: pd.Series, zone, begin: date, end: date) -> pd.Series:
     d = begin
     while d <= end:
         lo = datetime(d.year, d.month, d.day, tzinfo=zone)
-        hi = lo + timedelta(days=1)
-        lo_s, hi_s = lo.timestamp(), hi.astimezone(timezone.utc).timestamp()
+        lo_s, hi_s = lo.timestamp(), (lo + timedelta(days=1)).astimezone(timezone.utc).timestamp()
         if lo_s >= tc[0] and hi_s <= tc[-1]:
             out[d] = float(np.interp(hi_s, tc, cum) - np.interp(lo_s, tc, cum))
         d += timedelta(days=1)
     return pd.Series(out, dtype=float)
 
 
-def daily_snowfall(stations: list[Station], begin: date, end: date, product: str = "era5") -> pd.DataFrame:
-    """Same contract as openmeteo.era5_daily_snowfall: station_id, date,
-    snowfall_in (station-local days)."""
-    prod = PRODUCTS[product]
-    first, last = begin - timedelta(days=1), end + timedelta(days=1)
-    rows = []
+def _s3_hourly(stations: list[Station], first: date, last: date):
+    """(station, hourly snow water mm) from the open-data archive."""
+    from . import omdata
+
+    g, height, land = omdata.grid(S3_DOMAIN)
+    idx = grib.terrain_index(g, np.array([s.latitude for s in stations]), np.array([s.longitude for s in stations]),
+                             np.array([s.elevation_ft * 0.3048 for s in stations]), height, land, radius=1)
+    t0 = datetime(first.year, first.month, first.day, tzinfo=timezone.utc)
+    t1 = datetime(last.year, last.month, last.day, tzinfo=timezone.utc) + timedelta(days=1)
+    for st, cell in zip(stations, idx):
+        if cell >= 0:
+            yield st, omdata.series(S3_DOMAIN, "snowfall_water_equivalent", cell, t0, t1).clip(lower=0)
+
+
+def _cds_hourly(stations: list[Station], first: date, last: date, product: Product):
+    """(station, hourly snow water mm) from the Climate Data Store."""
     for group in clusters(stations):
-        at = cells(group, prod)
-        series: dict[str, list[pd.DataFrame]] = {s.station_id: [] for s in group}
+        at = cells(group, product)
+        parts: dict[str, list[pd.Series]] = {s.station_id: [] for s in group}
         for year in range(first.year, last.year + 1):
             m0 = first.month if year == first.year else 1
             m1 = last.month if year == last.year else 12
-            for sid, df in _reduce(prod, group, at, year, list(range(m0, m1 + 1))).items():
-                series[sid].append(df)
+            for sid, ser in _reduce(product, group, at, year, list(range(m0, m1 + 1))).items():
+                parts[sid].append(ser)
         for st in group:
-            raw = pd.concat(series[st.station_id]).sort_index()
-            raw = raw[~raw.index.duplicated()]
-            snow = apply_rule(hourly_snow_mm(raw, prod), raw["t2"],
-                              at[st.station_id][1] - st.elevation_ft * 0.3048)
-            daily = local_daily(snow, station_zone(st.latitude, st.longitude), begin, end)
-            rows += [{"station_id": st.station_id, "date": d,
-                      "snowfall_in": mm * CM_PER_MM_WE / CM_PER_INCH} for d, mm in daily.items()]
+            sf = pd.concat(parts[st.station_id]).sort_index()
+            yield st, hourly_snow_mm(sf[~sf.index.duplicated()], product)
+
+
+def daily_snowfall(stations: list[Station], begin: date, end: date, product: str = "era5",
+                   source: str | None = None) -> pd.DataFrame:
+    """Same contract as openmeteo.era5_daily_snowfall: station_id, date,
+    snowfall_in (station-local days)."""
+    src = source or default_source()
+    first, last = begin - timedelta(days=1), end + timedelta(days=1)
+    if src == "s3":
+        if product != "era5":
+            raise ValueError("the open-data archive has ERA5 snowfall only (not ERA5-Land)")
+        hourly = _s3_hourly(stations, first, last)
+    elif src == "cds":
+        hourly = _cds_hourly(stations, first, last, PRODUCTS[product])
+    else:
+        raise ValueError(f"unknown ERA5 source {src!r} (s3 or cds)")
+    rows = []
+    for st, snow in hourly:
+        daily = local_daily(snow, station_zone(st.latitude, st.longitude), begin, end)
+        rows += [{"station_id": st.station_id, "date": d, "snowfall_in": mm * CM_PER_MM_WE / CM_PER_INCH}
+                 for d, mm in daily.items()]
     return pd.DataFrame(rows, columns=["station_id", "date", "snowfall_in"])

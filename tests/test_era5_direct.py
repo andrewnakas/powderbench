@@ -30,20 +30,10 @@ def test_era5_land_running_totals_become_hourly_amounts():
     for ts, v in zip(idx, hourly):
         total = v if ts.hour == 1 else total + v
         running.append(total)
-    raw = pd.DataFrame({"sf": running, "t2": -5.0}, index=idx)
-    got = era5.hourly_snow_mm(raw, era5.PRODUCTS["era5-land"])
+    got = era5.hourly_snow_mm(pd.Series(running, index=idx), era5.PRODUCTS["era5-land"])
     assert np.allclose(got.to_numpy()[1:], hourly[1:])  # the first row has no previous value
-    plain = era5.hourly_snow_mm(pd.DataFrame({"sf": hourly, "t2": 0.0}, index=idx), era5.PRODUCTS["era5"])
+    plain = era5.hourly_snow_mm(pd.Series(hourly, index=idx), era5.PRODUCTS["era5"])
     assert np.allclose(plain.to_numpy(), hourly)
-
-
-def test_elevation_rule_only_where_the_cell_is_far_off_the_station():
-    idx = pd.date_range("2020-01-01 01:00", periods=3, freq="h", tz="UTC")
-    snow, t2 = pd.Series([1.0, 1.0, 1.0], index=idx), pd.Series([-1.0, 1.0, 3.0], index=idx)
-    assert era5.apply_rule(snow, t2, 50.0).tolist() == [1.0, 1.0, 1.0]
-    # cell 400 m below the station: 2.6 C colder there; 1 -> -1.6 C, 3 -> 0.4 C
-    got = era5.apply_rule(snow, t2, -400.0).to_numpy()
-    assert got[0] == 1.0 and got[1] == 1.0 and 0.75 < got[2] < 0.85
 
 
 def test_local_days_follow_the_station_zone():
@@ -63,3 +53,34 @@ def test_requests_are_stable_for_the_cache():
     assert era5._key(prod, r1) == era5._key(prod, r2)
     assert r1["product_type"] == ["reanalysis"] and len(r1["day"]) == 31 and len(r1["time"]) == 24
     assert "product_type" not in era5.request(era5.PRODUCTS["era5-land"], ["snowfall"], 1991, [1], r1["area"])
+
+
+def test_archive_files_cover_a_range_in_order(monkeypatch):
+    from datetime import datetime, timezone
+
+    from powderbench.nwp import omdata
+
+    monkeypatch.setattr(omdata, "meta", lambda d: {"chunk_time_length": 504})
+    monkeypatch.setattr(omdata, "listing", lambda d, v: frozenset({"year_2021.om", "chunk_904.om", "chunk_905.om"}))
+    utc = timezone.utc
+    # the year file runs to its end; chunk 904 (904 x 504 h after 1970-01-01 =
+    # 2021-12-23 00Z) takes over from 2022-01-01, 9 days into it
+    got = list(omdata._pieces("x", "v", datetime(2021, 12, 20, tzinfo=utc), datetime(2022, 1, 20, tzinfo=utc)))
+    assert [p[0] for p in got] == ["year_2021.om", "chunk_904.om", "chunk_905.om"]
+    assert got[0][1] == (datetime(2021, 12, 20, tzinfo=utc) - datetime(2021, 1, 1, tzinfo=utc)).days * 24
+    assert got[0][2] == 12 * 24 and got[1][1] == 9 * 24 and got[1][2] == 504 - 9 * 24
+    assert sum(p[2] for p in got) == 31 * 24
+    with pytest.raises(FileNotFoundError):
+        list(omdata._pieces("x", "v", datetime(1999, 1, 1, tzinfo=utc), datetime(1999, 1, 2, tzinfo=utc)))
+
+
+def test_era5_source_switch(monkeypatch):
+    from powderbench import openmeteo
+
+    calls = []
+    monkeypatch.setattr(era5, "daily_snowfall", lambda st, b, e, source=None: calls.append(source) or "direct")
+    monkeypatch.setattr(openmeteo, "_fetch", lambda *a, **k: "api")
+    monkeypatch.delenv("PB_ERA5_SOURCE", raising=False)
+    assert openmeteo.era5_daily_snowfall([], date(2020, 1, 1), date(2020, 1, 2)) == "api"
+    monkeypatch.setenv("PB_ERA5_SOURCE", "s3")
+    assert openmeteo.era5_daily_snowfall([], date(2020, 1, 1), date(2020, 1, 2)) == "direct" and calls == ["s3"]
