@@ -732,8 +732,51 @@ How the two combine, per team (`baselines.model_prediction`):
   first, at every station (NBM: every station in the contiguous US).
   Open-Meteo is called only for featured stations it missed, so on a normal
   day these four teams cost no Open-Meteo calls.
-- **Every other model** (ICON, GEM, UKMO, HRRR, AROME…) has no direct read in
-  use and stays on Open-Meteo, featured stations only.
+- **ICON, GEM and UKMO:** Open-Meteo first on featured stations, as before.
+  Every other station is read from Open-Meteo's open-data archive (below),
+  which holds the same runs its API serves, so these teams also cover the
+  whole league with no extra calls.
+- **Every other model** (HRRR, AROME, JMA…) stays on Open-Meteo, featured
+  stations only.
+
+**Open-Meteo's open-data archive (2026-11-21).** Open-Meteo publishes the
+files its API reads on AWS Open Data (`s3://openmeteo`, CC BY 4.0, no key):
+ERA5 and every model's history as time series, and from 2026-08 each model
+run as its own files (`data_run/<model>/<date>/<run>/`). `nwp/omdata.py`
+reads single grid points from them (pip extra `omdata`); a station-year of
+hourly ERA5 takes 0.4 s, with no API budget.
+- **ERA5** (`nwp/era5.py`, `PB_ERA5_SOURCE=s3`): matches the published era5
+  truth (23 stations, 2026-06-22..10-31): totals within 3%, correlation
+  0.99. Open-Meteo applies no elevation rule to ERA5, so neither does this.
+  The Copernicus Climate Data Store (`PB_ERA5_SOURCE=cds`) is the fallback.
+  Unset, ERA5 still comes from the API.
+- **Forecast models** (`sources.OpenMeteoArchive`): ICON (D2, EU, global),
+  GEM (HRDPS, RDPS, GDPS), UKMO, Météo-France, JMA, CMA, ICON-2I,
+  MeteoSwiss ICON-CH, KNMI and DMI HARMONIE, MET Nordic, RRFS and CHMI.
+  The same cell choice and elevation rule as the other direct reads.
+  Regular, rotated and Lambert grids are supported. Rotated grids use
+  Open-Meteo's own rotation (its metadata does not follow PROJ's convention).
+  Models with no snow field (UKMO, JMA, ICON-CH, MET Nordic) count
+  precipitation while the 2 m temperature, moved to the station's height,
+  is below 0 °C. Runs are used only once the archive had them: each
+  model's delay is the largest seen over 2026-11-15/18.
+- Against the baselines PowderBench issued from the API, same rounds,
+  featured stations (powder score, archive vs API):
+
+  | League | Model | Archive | API |
+  |---|---|---|---|
+  | stations (26 rounds) | ICON | 29.2 | 29.0 |
+  | stations (26 rounds) | UKMO | 28.9 | 29.0 |
+  | stations (26 rounds) | GEM | 11.7 | 11.9 |
+  | alps (7 rounds) | ICON | 7.0 | 4.5 |
+  | alps (7 rounds) | UKMO | 11.8 | 14.3 |
+  | alps (7 rounds) | GEM | 3.2 | -19.4 |
+- **HRDPS West is not used.** In the archive its "snowfall water equivalent"
+  totals 50 to 200 times the run's precipitation and grows run after run,
+  so it is not snowfall. Open-Meteo's own GEM blend leaves it out too.
+- **Météo-France stays on the API.** Read this way it gives about a third
+  more Alps snow than `meteofrance_seamless`, which mixes six AROME and
+  ARPEGE domains, including 15-minute runs.
 
 **Open-Meteo's elevation rule (2026-11-20).** Read raw, the direct ECMWF
 scored well below Open-Meteo's processing of the same run. On the stations

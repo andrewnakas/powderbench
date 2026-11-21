@@ -219,8 +219,17 @@ def lambert_ij(meta: dict, lats: np.ndarray, lons: np.ndarray) -> tuple[np.ndarr
     return (x - x0) / float(meta["DxInMetres"]), (y - y0) / float(meta["DyInMetres"])
 
 
+def _grid_ij(meta: dict, lats: np.ndarray, lons: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """Fractional (i, j) on a Lambert grid, or on a "projected" one, whose
+    meta carries its own `ij` function (nwp/omdata.py: rotated and Lambert
+    domains from their WKT)."""
+    if meta["gridType"] == "projected":
+        return meta["ij"](np.asarray(lats, float), np.asarray(lons, float))
+    return lambert_ij(meta, lats, lons)
+
+
 def _check_layout(meta: dict) -> None:
-    ok = meta["gridType"] in ("regular_ll", "lambert") and not meta["iScansNegatively"] \
+    ok = meta["gridType"] in ("regular_ll", "lambert", "projected") and not meta["iScansNegatively"] \
         and not meta["jPointsAreConsecutive"] and (meta["gridType"] == "regular_ll" or meta["jScansPositively"])
     if not ok:
         raise ValueError(f"unsupported grid layout: {meta}")
@@ -231,8 +240,8 @@ def point_index(meta: dict, lats: np.ndarray, lons: np.ndarray) -> np.ndarray:
     (flat index into the message's values; -1 when the point is off the grid)."""
     _check_layout(meta)
     ni, nj = int(meta["Ni"]), int(meta["Nj"])
-    if meta["gridType"] == "lambert":
-        fi, fj = lambert_ij(meta, lats, lons)
+    if meta["gridType"] in ("lambert", "projected"):
+        fi, fj = _grid_ij(meta, lats, lons)
         i, j = np.rint(fi).astype(np.int64), np.rint(fj).astype(np.int64)
         ok = (j >= 0) & (j < nj) & (i >= 0) & (i < ni)
         return np.where(ok, j * ni + i, -1)
@@ -265,9 +274,9 @@ def terrain_index(meta: dict, lats: np.ndarray, lons: np.ndarray, elev_m: np.nda
     if radius <= 0:
         return base
     ni, nj = int(meta["Ni"]), int(meta["Nj"])
-    lambert = meta["gridType"] == "lambert"
+    lambert = meta["gridType"] in ("lambert", "projected")
     if lambert:
-        fi, fj = lambert_ij(meta, lats, lons)
+        fi, fj = _grid_ij(meta, lats, lons)
         dx_km, dy_km = float(meta["DxInMetres"]) / 1000, float(meta["DyInMetres"]) / 1000
     else:
         di, dj = float(meta["iDirectionIncrementInDegrees"]), float(meta["jDirectionIncrementInDegrees"])
