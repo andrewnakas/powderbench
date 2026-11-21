@@ -84,3 +84,17 @@ def test_era5_source_switch(monkeypatch):
     assert openmeteo.era5_daily_snowfall([], date(2020, 1, 1), date(2020, 1, 2)) == "api"
     monkeypatch.setenv("PB_ERA5_SOURCE", "s3")
     assert openmeteo.era5_daily_snowfall([], date(2020, 1, 1), date(2020, 1, 2)) == "direct" and calls == ["s3"]
+
+
+def test_cells_are_kept_as_places_and_found_again_in_any_box():
+    from powderbench.nwp import grib
+
+    world = {"gridType": "regular_ll", "Ni": 1440, "Nj": 721, "jScansPositively": 0, "iScansNegatively": 0,
+             "jPointsAreConsecutive": 0, "latitudeOfFirstGridPointInDegrees": 90.0,
+             "longitudeOfFirstGridPointInDegrees": 0.0, "iDirectionIncrementInDegrees": 0.25,
+             "jDirectionIncrementInDegrees": 0.25}
+    idx = int(grib.point_index(world, np.array([-41.0]), np.array([-71.75]))[0])
+    assert era5.cell_latlon(world, idx) == (-41.0, -71.75)
+    box = dict(world, Ni=9, Nj=9, latitudeOfFirstGridPointInDegrees=-40.0, longitudeOfFirstGridPointInDegrees=-72.5)
+    j, i = divmod(int(grib.point_index(box, np.array([-41.0]), np.array([-71.75]))[0]), 9)
+    assert (j, i) == (4, 3)

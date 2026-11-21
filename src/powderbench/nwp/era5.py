@@ -35,8 +35,10 @@ import json
 import logging
 import os
 import zipfile
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta, timezone
+from functools import lru_cache
 from pathlib import Path
 
 import numpy as np
@@ -67,6 +69,10 @@ PRODUCTS = {
 PAD_DEG = 0.5  # around each cluster: the terrain search reaches past the nearest cell
 CLUSTER_SPAN_DEG = 2.0  # stations within this lat/lon span share a request
 STATIC_YEAR = 2000  # orography and land mask do not change with time
+GLOBE = [90.0, -180.0, -90.0, 180.0]
+# Requests sent to the CDS at once: its queue can hold one request for hours
+# (2026-11-21: about 3.5 h each), so clusters go in parallel
+CDS_PARALLEL = int(os.environ.get("PB_CDS_PARALLEL") or 6)
 
 
 def default_source() -> str:
@@ -167,16 +173,33 @@ def messages(path: Path):
             yield name, valid, values, meta
 
 
-def cells(group: list[Station], product: Product) -> dict[str, int]:
-    """station_id -> cell index in the cluster box (Open-Meteo's choice on
-    the product's own orography and land mask)."""
-    req = request(product, ["geopotential", "land_sea_mask"], STATIC_YEAR, [1], area(group, product),
-                  hours=[0], days=[1])
-    static = {name: (values, meta) for name, _, values, meta in messages(retrieve(product, req))}
+@lru_cache(maxsize=2)
+def _static(name: str) -> tuple[np.ndarray, np.ndarray, dict]:
+    """(terrain height m, land fraction, grid) of the whole globe: one
+    request per product, kept in the cache for good."""
+    product = PRODUCTS[name]
+    req = request(product, ["geopotential", "land_sea_mask"], STATIC_YEAR, [1], GLOBE, hours=[0], days=[1])
+    static = {n: (values, meta) for n, _, values, meta in messages(retrieve(product, req))}
     (z, meta), (lsm, _) = static["z"], static["lsm"]
+    return z / G0, lsm, meta
+
+
+def cell_latlon(meta: dict, idx: int) -> tuple[float, float]:
+    """Latitude and longitude of a regular lat/lon grid's cell (flat index)."""
+    j, i = divmod(int(idx), int(meta["Ni"]))
+    dj, di = float(meta["jDirectionIncrementInDegrees"]), float(meta["iDirectionIncrementInDegrees"])
+    lat0, lon0 = float(meta["latitudeOfFirstGridPointInDegrees"]), float(meta["longitudeOfFirstGridPointInDegrees"])
+    lat = lat0 + j * dj if meta["jScansPositively"] else lat0 - j * dj
+    return round(lat, 4), round((lon0 + i * di + 180.0) % 360.0 - 180.0, 4)
+
+
+def cells(group: list[Station], product: Product) -> dict[str, tuple[float, float]]:
+    """station_id -> (lat, lon) of its cell: Open-Meteo's choice on the
+    product's own orography and land mask (stations with no cell left out)."""
+    height, land, meta = _static(product.name)
     idx = grib.terrain_index(meta, np.array([s.latitude for s in group]), np.array([s.longitude for s in group]),
-                             np.array([s.elevation_ft * 0.3048 for s in group]), z / G0, lsm, radius=1)
-    return {s.station_id: int(i) for s, i in zip(group, idx)}
+                             np.array([s.elevation_ft * 0.3048 for s in group]), height, land, radius=1)
+    return {s.station_id: cell_latlon(meta, i) for s, i in zip(group, idx) if i >= 0}
 
 
 def _reduce(product: Product, group: list[Station], at: dict[str, int], year: int,
@@ -192,10 +215,14 @@ def _reduce(product: Product, group: list[Station], at: dict[str, int], year: in
         return {sid: pd.read_csv(p, index_col=0, parse_dates=[0])["sf"] for sid, p in paths.items()}
     grib_path = retrieve(product, req)
     sf: dict[str, dict] = {s.station_id: {} for s in group}
+    sids, box = list(at), None
     for name, valid, values, meta in messages(grib_path):
         if name == "sf":
-            for sid, cell in at.items():
-                sf[sid][valid] = float(values[cell]) * grib.to_mm(meta["units"])
+            if box is None:  # the cells' places in this request's box
+                box = grib.point_index(meta, np.array([at[s][0] for s in sids]), np.array([at[s][1] for s in sids]))
+            for sid, cell in zip(sids, box):
+                if cell >= 0:
+                    sf[sid][valid] = float(values[cell]) * grib.to_mm(meta["units"])
     out = {}
     for s in group:
         ser = pd.Series(sf[s.station_id], dtype=float, name="sf").sort_index()
@@ -255,17 +282,23 @@ def _s3_hourly(stations: list[Station], first: date, last: date):
 
 
 def _cds_hourly(stations: list[Station], first: date, last: date, product: Product):
-    """(station, hourly snow water mm) from the Climate Data Store."""
-    for group in clusters(stations):
-        at = cells(group, product)
-        parts: dict[str, list[pd.Series]] = {s.station_id: [] for s in group}
-        for year in range(first.year, last.year + 1):
-            m0 = first.month if year == first.year else 1
-            m1 = last.month if year == last.year else 12
-            for sid, ser in _reduce(product, group, at, year, list(range(m0, m1 + 1))).items():
-                parts[sid].append(ser)
+    """(station, hourly snow water mm) from the Climate Data Store: one
+    request per cluster and year, CDS_PARALLEL at a time."""
+    groups = clusters(stations)
+    at = {sid: ll for g in groups for sid, ll in cells(g, product).items()}
+    years = [(y, list(range(first.month if y == first.year else 1, (last.month if y == last.year else 12) + 1)))
+             for y in range(first.year, last.year + 1)]
+    with ThreadPoolExecutor(CDS_PARALLEL) as pool:
+        done = {(k, y): pool.submit(_reduce, product, g, {s.station_id: at[s.station_id] for s in g
+                                                         if s.station_id in at}, y, months)
+                for k, g in enumerate(groups) for y, months in years}
+        got = {key: fut.result() for key, fut in done.items()}
+    for k, group in enumerate(groups):
         for st in group:
-            sf = pd.concat(parts[st.station_id]).sort_index()
+            parts = [got[(k, y)][st.station_id] for y, _ in years if len(got[(k, y)].get(st.station_id, ()))]
+            if not parts:
+                continue
+            sf = pd.concat(parts).sort_index()
             yield st, hourly_snow_mm(sf[~sf.index.duplicated()], product)
 
 
