@@ -34,6 +34,7 @@ import hashlib
 import json
 import logging
 import os
+import time
 import zipfile
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
@@ -70,9 +71,12 @@ PAD_DEG = 0.5  # around each cluster: the terrain search reaches past the neares
 CLUSTER_SPAN_DEG = 2.0  # stations within this lat/lon span share a request
 STATIC_YEAR = 2000  # orography and land mask do not change with time
 GLOBE = [90.0, -180.0, -90.0, 180.0]
-# Requests sent to the CDS at once: its queue can hold one request for hours
-# (2026-11-21: about 3.5 h each), so clusters go in parallel
-CDS_PARALLEL = int(os.environ.get("PB_CDS_PARALLEL") or 6)
+# Requests sent to the CDS at once. Its queue can hold one request for hours
+# (2026-11-21: about 3.5 h each), but it rejects a user's requests past a
+# small per-dataset limit ("Maximum number queued requests"); those wait
+# QUEUE_WAIT_S and go again, up to QUEUE_TRIES times.
+CDS_PARALLEL = int(os.environ.get("PB_CDS_PARALLEL") or 2)
+QUEUE_WAIT_S, QUEUE_TRIES = 300, 48
 
 
 def default_source() -> str:
@@ -144,7 +148,15 @@ def retrieve(product: Product, req: dict) -> Path:
     client = cdsapi.Client(quiet=True, progress=False)
     tmp = out.with_suffix(".part")
     log.info("CDS %s %s %s %s", product.dataset, req["variable"], req["year"], req["area"])
-    client.retrieve(product.dataset, req, str(tmp))
+    for attempt in range(QUEUE_TRIES):
+        try:
+            client.retrieve(product.dataset, req, str(tmp))
+            break
+        except Exception as exc:  # noqa: BLE001 - only the queue limit is retried
+            if "queued requests" not in str(exc) or attempt == QUEUE_TRIES - 1:
+                raise
+            log.info("CDS queue full for %s, waiting %d s", product.dataset, QUEUE_WAIT_S)
+            time.sleep(QUEUE_WAIT_S)
     if zipfile.is_zipfile(tmp):  # ERA5-Land answers a mixed request with one GRIB per stream
         with zipfile.ZipFile(tmp) as z, open(out.with_suffix(".cat"), "wb") as f:
             for member in sorted(z.namelist()):

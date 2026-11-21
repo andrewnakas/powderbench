@@ -98,3 +98,27 @@ def test_cells_are_kept_as_places_and_found_again_in_any_box():
     box = dict(world, Ni=9, Nj=9, latitudeOfFirstGridPointInDegrees=-40.0, longitudeOfFirstGridPointInDegrees=-72.5)
     j, i = divmod(int(grib.point_index(box, np.array([-41.0]), np.array([-71.75]))[0]), 9)
     assert (j, i) == (4, 3)
+
+
+def test_a_full_cds_queue_waits_and_tries_again(monkeypatch, tmp_path):
+    import sys
+    import types
+
+    monkeypatch.setenv("PB_ERA5_CACHE", str(tmp_path))
+    monkeypatch.setattr(era5.time, "sleep", lambda s: None)
+    tries = []
+
+    class Client:
+        def __init__(self, **k):
+            pass
+
+        def retrieve(self, dataset, req, target):
+            tries.append(dataset)
+            if len(tries) < 3:
+                raise RuntimeError("The job has been rejected. Maximum number queued requests for this dataset")
+            open(target, "wb").write(b"GRIB")
+
+    monkeypatch.setitem(sys.modules, "cdsapi", types.SimpleNamespace(Client=Client))
+    prod = era5.PRODUCTS["era5"]
+    out = era5.retrieve(prod, era5.request(prod, ["snowfall"], 2020, [1], [1.0, 0.0, 0.0, 1.0]))
+    assert out.read_bytes() == b"GRIB" and len(tries) == 3
