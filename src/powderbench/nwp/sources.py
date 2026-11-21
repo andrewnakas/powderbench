@@ -54,6 +54,7 @@ NBM_BUCKET = "https://noaa-nbm-grib2-pds.s3.amazonaws.com"
 # station's height at LAPSE_K_PER_M, and snowfall is kept only while that
 # temperature is below 0 C. PB_NWP_TRULE=0 turns it off.
 LAPSE_K_PER_M = 0.0065
+CM_PER_MM_WE_OM = 0.7  # Open-Meteo's snowfall (cm) per mm of water
 RULE_MIN_DZ_M = 100.0
 
 
@@ -650,6 +651,110 @@ def snow_from_buckets(chain: list[int], buckets: list[int], apcp: list[np.ndarra
     return out
 
 
+class OpenMeteoArchive(Source):
+    """A model as Open-Meteo stores it (nwp/omdata.py: s3://openmeteo, CC BY
+    4.0, per-run files kept from 2026-08 on), read at every station with no
+    API calls. `domains` go finest first, as in Open-Meteo's *_seamless
+    models: a station takes the first domain whose grid covers it, and hours
+    past that domain's last valid time continue in the next one (same run).
+
+    Snow per domain, from what the run has (as Open-Meteo derives it):
+    snowfall_water_equivalent; else snowfall (cm, / 0.7); else precipitation
+    minus rain (UKMO); else precipitation while the 2 m temperature moved to
+    the station's height is below 0 C (AROME HD, JMA). Same cell choice and
+    elevation rule as the producer readers above."""
+
+    licence = "CC BY 4.0 (Open-Meteo open data)"
+
+    def __init__(self, name: str, label: str, domains: list[str], online_h: float,
+                 cycles: tuple[int, ...] = (0, 6, 12, 18), trule: bool = True):
+        self.name, self.label, self.domains, self.online_h = name, label, domains, online_h
+        self.cycles, self.trule = cycles, trule
+
+    def steps(self, run):
+        from . import omdata
+
+        hours = omdata.run_hours(self.domains[-1], run)
+        return None if hours is None else [int(round(h)) for h in hours if h >= 0]
+
+    def _snow(self, dom: str, run: datetime, cells: np.ndarray, dz: np.ndarray) -> np.ndarray | None:
+        """(stations, valid times) snow water (mm) in each interval; NaN rows
+        where the domain has no data at the station."""
+        from . import omdata
+
+        have = omdata.run_variables(dom, run)
+        rule = self.trule and os.environ.get("PB_NWP_TRULE", "1") != "0"
+
+        def read(name):
+            return omdata.run_values(dom, run, name, cells) if name in have else None
+
+        frozen_only = False
+        if (inc := read("snowfall_water_equivalent")) is None:
+            if (cm := read("snowfall")) is not None:
+                inc = cm / CM_PER_MM_WE_OM
+            elif (pr := read("precipitation")) is not None and (rain := read("rain")) is not None:
+                inc = pr - rain
+            elif pr is not None:
+                inc, frozen_only = pr, True
+            else:
+                return None
+        inc = np.clip(inc, 0.0, None)
+        inc[:, 0] = 0.0  # the run start closes no interval
+        if rule or frozen_only:
+            t2 = read("temperature_2m")
+            if t2 is None:
+                return None
+            t2[:, 0] = np.where(np.isnan(t2[:, 0]), t2[:, 1], t2[:, 0])  # some runs leave the start empty
+            far = np.abs(dz) > RULE_MIN_DZ_M
+            shift = (np.where(far, dz * LAPSE_K_PER_M, 0.0) if rule else np.zeros_like(dz))[:, None]
+            share = np.ones_like(inc)
+            share[:, 1:] = below_zero_share(t2[:, :-1] + shift, t2[:, 1:] + shift)
+            keep = share if frozen_only else np.where(far[:, None] & rule, share, 1.0)
+            inc = inc * keep
+            inc[np.isnan(t2)] = np.nan
+        bad = np.isnan(inc[:, 1:]).any(axis=1)
+        inc[:, 0] = 0.0
+        inc[bad] = np.nan
+        return inc
+
+    def accum(self, run, steps, lats, lons, elev_m):
+        from . import omdata
+
+        lats, lons, elev_m = (np.asarray(a, float) for a in (lats, lons, elev_m))
+        curves: list[tuple[np.ndarray, np.ndarray] | None] = [None] * len(lats)
+        for dom in self.domains:
+            hours = omdata.run_hours(dom, run)
+            if hours is None:
+                continue
+            g, height, land = omdata.grid(dom)
+            idx = grib.terrain_index(g, lats, lons, elev_m, height, land, CELL_RADIUS)
+            todo = [k for k in range(len(lats))
+                    if idx[k] >= 0 and (curves[k] is None or curves[k][0][-1] < hours[-1])]
+            if not todo:
+                continue
+            cells = idx[todo]
+            snow = self._snow(dom, run, cells, height[cells] - elev_m[todo])
+            if snow is None:
+                continue
+            for row, k in enumerate(todo):
+                if np.isnan(snow[row, 1:]).any():
+                    continue  # outside the domain's data (e.g. AROME's missing corners)
+                acc = np.cumsum(snow[row])
+                if curves[k] is None:
+                    curves[k] = (hours, acc)
+                else:
+                    h0, a0 = curves[k]
+                    tail = hours > h0[-1]
+                    base = a0[-1] - np.interp(h0[-1], hours, acc)
+                    curves[k] = (np.concatenate([h0, hours[tail]]), np.concatenate([a0, acc[tail] + base]))
+        x = np.asarray(steps, float)
+        table = np.full((len(steps), len(lats)), np.nan)
+        for k, c in enumerate(curves):
+            if c is not None:
+                table[:, k] = np.interp(x, c[0], c[1], right=np.nan)
+        return {s: table[i] for i, s in enumerate(steps)}
+
+
 SOURCES: dict[str, Source] = {
     # 0.25 deg first: with the elevation rule it scored better than 0.1 deg in
     # three of four leagues over every station (DATA.md), and it is smaller
@@ -662,4 +767,17 @@ SOURCES: dict[str, Source] = {
     "hrrr": Hrrr(),
     "nbm": Nbm(),
     "ecmwf_ens": EcmwfEns(),
+    # Open-Meteo's archive of the models it serves (online_h: hours after the
+    # cycle until the run is in the archive, measured on 2026-11-20/21 runs)
+    "om_icon": OpenMeteoArchive("om_icon", "DWD ICON (D2, EU, global)", ["dwd_icon_d2", "dwd_icon_eu", "dwd_icon"],
+                                online_h=4.5),
+    "om_gem": OpenMeteoArchive("om_gem", "ECCC GEM global", ["cmc_gem_gdps_15km"], online_h=6.0, cycles=(0, 12)),
+    "om_ukmo": OpenMeteoArchive("om_ukmo", "Met Office global", ["ukmo_global_deterministic_10km"], online_h=7.5),
+    "om_meteofrance": OpenMeteoArchive("om_meteofrance", "Meteo-France AROME/ARPEGE",
+                                       ["meteofrance_arome_france_hd", "meteofrance_arpege_europe",
+                                        "meteofrance_arpege_world025"], online_h=4.5),
+    "om_jma": OpenMeteoArchive("om_jma", "JMA MSM/GSM", ["jma_msm", "jma_gsm"], online_h=10.0),
+    "om_cma": OpenMeteoArchive("om_cma", "CMA GRAPES global", ["cma_grapes_global"], online_h=6.5),
+    "om_icon_2i": OpenMeteoArchive("om_icon_2i", "ItaliaMeteo ICON-2I", ["italia_meteo_arpae_icon_2i"],
+                                   online_h=3.0, cycles=(0, 12)),
 }

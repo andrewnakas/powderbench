@@ -13,7 +13,8 @@ Values at a stamp cover the hour ending there (precipitation and snowfall
 water equivalent in mm). Reading needs the optional `omfiles` and `s3fs`
 packages (pip install "powderbench[omdata]").
 
-Only regular latitude/longitude domains are handled here.
+Only regular latitude/longitude domains are handled here (rotated and
+Lambert grids such as GEM RDPS/HRDPS or MET Nordic need their projection).
 """
 
 from __future__ import annotations
@@ -21,6 +22,8 @@ from __future__ import annotations
 import json
 import logging
 import re
+import threading
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
 from functools import lru_cache
 
@@ -111,3 +114,70 @@ def series(domain: str, variable: str, cell: int, start: datetime, end: datetime
         v = np.asarray(r[j, i, h0:h0 + n], dtype=float)
         parts.append(pd.Series(v, index=pd.date_range(t0, periods=len(v), freq="h")))
     return pd.concat(parts) if parts else pd.Series(dtype=float)
+
+
+# --- forecast runs: data_run/<domain>/YYYY/MM/DD/HHMMZ/<variable>.om, each
+# [lat, lon, valid time] on the domain's grid, with meta.json listing the
+# valid times (kept from 2026-08 on). Values at a valid time cover the
+# interval since the previous one (mm for snowfall water equivalent).
+
+READ_WORKERS = 16
+_local = threading.local()
+
+
+def run_dir(domain: str, run: datetime) -> str:
+    return f"data_run/{domain}/{run:%Y/%m/%d/%H%M}Z"
+
+
+@lru_cache(maxsize=4096)
+def run_meta(domain: str, run: datetime) -> dict | None:
+    """The run's meta.json, or None when the run is not in the archive."""
+    try:
+        with _fs().open(f"{BUCKET}/{run_dir(domain, run)}/meta.json") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return None
+
+
+@lru_cache(maxsize=4096)
+def run_variables(domain: str, run: datetime) -> frozenset[str]:
+    try:
+        return frozenset(p.rsplit("/", 1)[-1][:-3] for p in _fs().ls(f"{BUCKET}/{run_dir(domain, run)}", detail=False)
+                         if p.endswith(".om"))
+    except FileNotFoundError:
+        return frozenset()
+
+
+def run_hours(domain: str, run: datetime) -> np.ndarray | None:
+    """Valid times of the run as hours from its start."""
+    m = run_meta(domain, run)
+    if m is None:
+        return None
+    t = pd.to_datetime(m["valid_times"], utc=True)
+    return np.asarray((t - pd.Timestamp(run)).total_seconds() / 3600.0)
+
+
+def _thread_reader(path: str):
+    cache = getattr(_local, "readers", None)
+    if cache is None:
+        cache = _local.readers = {}
+    if path not in cache:
+        if len(cache) > 32:
+            cache.clear()
+        cache[path] = _reader(path)
+    return cache[path]
+
+
+def run_values(domain: str, run: datetime, variable: str, cells: np.ndarray) -> np.ndarray | None:
+    """(cells, valid times) of one variable; None when the file is missing."""
+    g = grid(domain)[0]
+    path = f"{run_dir(domain, run)}/{variable}.om"
+    if not _fs().exists(f"{BUCKET}/{path}"):
+        return None
+
+    def one(cell):
+        j, i = divmod(int(cell), int(g["Ni"]))
+        return np.asarray(_thread_reader(path)[j, i, :], dtype=float)
+
+    with ThreadPoolExecutor(READ_WORKERS) as pool:
+        return np.vstack(list(pool.map(one, cells)))
