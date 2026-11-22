@@ -229,7 +229,7 @@ def _grid_ij(meta: dict, lats: np.ndarray, lons: np.ndarray) -> tuple[np.ndarray
 
 
 def _check_layout(meta: dict) -> None:
-    ok = meta["gridType"] in ("regular_ll", "lambert", "projected") and not meta["iScansNegatively"] \
+    ok = meta["gridType"] in ("regular_ll", "lambert", "projected", "points") and not meta["iScansNegatively"] \
         and not meta["jPointsAreConsecutive"] and (meta["gridType"] == "regular_ll" or meta["jScansPositively"])
     if not ok:
         raise ValueError(f"unsupported grid layout: {meta}")
@@ -237,8 +237,11 @@ def _check_layout(meta: dict) -> None:
 
 def point_index(meta: dict, lats: np.ndarray, lons: np.ndarray) -> np.ndarray:
     """Nearest grid cell of a regular lat/lon or Lambert grid for each point
-    (flat index into the message's values; -1 when the point is off the grid)."""
+    (flat index into the message's values; -1 when the point is off the grid).
+    A "points" grid (a reduced Gaussian one, nwp/omdata.py) brings its own search."""
     _check_layout(meta)
+    if meta["gridType"] == "points":
+        return np.asarray(meta["nearest"](np.asarray(lats, float), np.asarray(lons, float)), np.int64)
     ni, nj = int(meta["Ni"]), int(meta["Nj"])
     if meta["gridType"] in ("lambert", "projected"):
         fi, fj = _grid_ij(meta, lats, lons)
@@ -274,11 +277,12 @@ def terrain_index(meta: dict, lats: np.ndarray, lons: np.ndarray, elev_m: np.nda
     if radius <= 0:
         return base
     ni, nj = int(meta["Ni"]), int(meta["Nj"])
+    points = meta["gridType"] == "points"  # its own 3 x 3 neighbours, whatever the radius
     lambert = meta["gridType"] in ("lambert", "projected")
     if lambert:
         fi, fj = _grid_ij(meta, lats, lons)
         dx_km, dy_km = float(meta["DxInMetres"]) / 1000, float(meta["DyInMetres"]) / 1000
-    else:
+    elif not points:
         di, dj = float(meta["iDirectionIncrementInDegrees"]), float(meta["jDirectionIncrementInDegrees"])
         lat0 = float(meta["latitudeOfFirstGridPointInDegrees"])
         lon0 = float(meta["longitudeOfFirstGridPointInDegrees"])
@@ -292,21 +296,29 @@ def terrain_index(meta: dict, lats: np.ndarray, lons: np.ndarray, elev_m: np.nda
         best_delta = abs(float(grid_elev_m[b]) - float(elev_m[k])) if centre_ok else np.inf
         if best_delta <= KEEP_M:
             continue
+
+        def around():
+            """(cell, km away) of the cells searched around station k."""
+            if points:
+                yield from zip(*meta["around"](float(lats[k]), float(lons[k])))
+                return
+            for j in range(max(j0 - radius, 0), min(j0 + radius + 1, nj)):
+                for i in range(max(i0 - radius, 0), min(i0 + radius + 1, ni)):
+                    if lambert:
+                        km = float(np.hypot((i - fi[k]) * dx_km, (j - fj[k]) * dy_km))
+                    else:
+                        dlat = lat0 + jsign * j * dj - lats[k]
+                        dlon = ((lon0 + i * di - lons[k]) + 180.0) % 360.0 - 180.0
+                        km = float(np.hypot(dlat, dlon)) * 111.0
+                    yield j * ni + i, km
+
         best = None
-        for j in range(max(j0 - radius, 0), min(j0 + radius + 1, nj)):
-            for i in range(max(i0 - radius, 0), min(i0 + radius + 1, ni)):
-                c = j * ni + i
-                if not land[c] >= 0.5 or not np.isfinite(grid_elev_m[c]):
-                    continue
-                if lambert:
-                    km = float(np.hypot((i - fi[k]) * dx_km, (j - fj[k]) * dy_km))
-                else:
-                    dlat = lat0 + jsign * j * dj - lats[k]
-                    dlon = ((lon0 + i * di - lons[k]) + 180.0) % 360.0 - 180.0
-                    km = float(np.hypot(dlat, dlon)) * 111.0
-                delta = abs(float(grid_elev_m[c]) - float(elev_m[k])) + km * PENALTY_M_PER_KM
-                if delta < best_delta and km < MAX_KM:
-                    best_delta, best = delta, c
+        for c, km in around():
+            if not land[c] >= 0.5 or not np.isfinite(grid_elev_m[c]):
+                continue
+            delta = abs(float(grid_elev_m[c]) - float(elev_m[k])) + km * PENALTY_M_PER_KM
+            if delta < best_delta and km < MAX_KM:
+                best_delta, best = delta, int(c)
         if best is not None and best_delta <= GIVE_UP_M:
             out[k] = best
     return out

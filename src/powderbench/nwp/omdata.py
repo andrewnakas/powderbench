@@ -14,8 +14,9 @@ water equivalent in mm). Reading needs the optional `omfiles` and `s3fs`
 packages (pip install "powderbench[omdata]").
 
 Regular latitude/longitude domains need nothing more; rotated ones (GEM
-RDPS/HRDPS, MeteoSwiss ICON-CH, KNMI) use Open-Meteo's own rotation and
-Lambert ones (MET Nordic, DMI, HRRR, NBM) pyproj.
+RDPS/HRDPS, MeteoSwiss ICON-CH, KNMI) use Open-Meteo's own rotation,
+Lambert ones (MET Nordic, DMI, HRRR, NBM) pyproj, and ECMWF IFS at 9 km
+(O1280) Open-Meteo's own reduced Gaussian point search.
 """
 
 from __future__ import annotations
@@ -70,7 +71,7 @@ def grid(domain: str) -> tuple[dict, np.ndarray, np.ndarray]:
     positions come from the domain's WKT through pyproj. The WKT's BBOX holds
     the first and last grid points (lat, lon), which fix origin and spacing,
     except for the rotated grids in ROTATED_ORIGINS."""
-    hsurf = np.asarray(_reader(f"data/{domain}/static/HSURF.om")[:, :], dtype=float)
+    hsurf = np.asarray(_reader(f"data/{TERRAIN_FROM.get(domain, domain)}/static/HSURF.om")[:, :], dtype=float)
     nj, ni = hsurf.shape
     wkt = meta(domain)["crs_wkt"]
     bbox = re.search(r"BBOX\[([-\d.]+),([-\d.]+),([-\d.]+),([-\d.]+)\]", wkt)
@@ -80,6 +81,14 @@ def grid(domain: str) -> tuple[dict, np.ndarray, np.ndarray]:
     land = (hsurf > -999.0).astype(float).ravel()
     height = np.where(hsurf > -999.0, hsurf, np.nan).ravel()
     common = {"Ni": ni, "Nj": nj, "jScansPositively": 1, "iScansNegatively": 0, "jPointsAreConsecutive": 0}
+    if "Reduced Gaussian" in wkt:  # one row of points (ECMWF IFS at 9 km)
+        octa = re.search(r"Reduced Gaussian Grid O(\d+) \(", wkt)
+        if not octa:
+            raise ValueError(f"{domain}: only octahedral reduced Gaussian grids are read")
+        gg = OctahedralGrid(int(octa.group(1)))
+        if gg.count != ni * nj:
+            raise ValueError(f"{domain}: {ni * nj} points, O{gg.lines} has {gg.count}")
+        return {"gridType": "points", **common, "nearest": gg.nearest, "around": gg.around}, height, land
     if "METHOD[" not in wkt:  # plain latitude/longitude
         return {"gridType": "regular_ll", **common,
                 "latitudeOfFirstGridPointInDegrees": lat0, "longitudeOfFirstGridPointInDegrees": lon0,
@@ -117,6 +126,12 @@ def grid(domain: str) -> tuple[dict, np.ndarray, np.ndarray]:
             "DxInMetres": abs(dx) * scale, "DyInMetres": abs(dy) * scale}, height, land
 
 
+# Domains stored without their own terrain, and a domain on the same grid whose
+# terrain stands in (NOAA's AI GFS and hybrid GEFS run on GFS's 0.25 deg grid,
+# initialised from its analysis).
+TERRAIN_FROM = {"ncep_aigfs025": "ncep_gfs025", "ncep_hgefs025_ensemble_mean": "ncep_gfs025"}
+
+
 # Rotated grids that Open-Meteo defines by origin and spacing rather than by
 # corners (Sources/App/Gem/GemDomain.swift, MeteoSwiss/MeteoSwissDomain.swift):
 # (x0, y0, dx, dy) in rotated degrees.
@@ -126,6 +141,68 @@ ROTATED_ORIGINS = {
     "meteoswiss_icon_ch1": (-6.46, -4.06, 0.01, 0.01),
     "meteoswiss_icon_ch2": (-6.46, -4.06, 0.02, 0.02),
 }
+
+
+def _round(v):
+    """Swift's round(): halves go away from zero."""
+    v = np.asarray(v, float)
+    return np.where(v >= 0, np.floor(v + 0.5), np.ceil(v - 0.5)).astype(np.int64)
+
+
+class OctahedralGrid:
+    """ECMWF's octahedral reduced Gaussian grid as Open-Meteo stores it
+    (Domains/GaussianGrid.swift): one row of points, latitude lines from
+    north to south, 20 + 4y points on the y-th line from either pole, each line
+    starting at 0 deg E. Open-Meteo spaces the lines evenly (180 / (2 L + 0.5)
+    deg) and searches the 3 x 3 points around a place, as ported here."""
+
+    def __init__(self, lines: int):
+        self.lines = lines
+        self.count = 4 * lines * (lines + 9)
+        self.dy = 180.0 / (2 * lines + 0.5)
+
+    def nx(self, y):
+        y = np.asarray(y, np.int64)
+        return np.where(y < self.lines, 20 + 4 * y, (2 * self.lines - y - 1) * 4 + 20)
+
+    def first(self, y):
+        """Index of line y's first point."""
+        y = np.asarray(y, np.int64)
+        m = 2 * self.lines - y
+        return np.where(y < self.lines, 2 * y * y + 18 * y, self.count - (2 * m * m + 18 * m))
+
+    def latitude(self, y):
+        return (self.lines - np.asarray(y, float) - 1) * self.dy + self.dy / 2
+
+    def around(self, lat: float, lon: float) -> tuple[np.ndarray, np.ndarray]:
+        """The 3 x 3 points around (lat, lon): flat indices and km away."""
+        cy = int(np.clip(_round(self.lines - 1 - (lat - self.dy / 2) / self.dy), 1, 2 * self.lines - 2))
+        cells, km = [], []
+        for y in (cy - 1, cy, cy + 1):
+            nx = int(self.nx(y))
+            dx = 360.0 / nx
+            xc = int(_round(lon / dx))
+            for x in (xc - 1, xc, xc + 1):
+                cells.append(int(self.first(y)) + (x + 2 * nx) % nx)
+                km.append(float(np.hypot(self.latitude(y) - lat, x * dx - lon)) * 111.0)
+        return np.array(cells, np.int64), np.array(km)
+
+    def nearest(self, lats, lons) -> np.ndarray:
+        out = []
+        for lat, lon in zip(np.atleast_1d(lats), np.atleast_1d(lons)):
+            cells, km = self.around(float(lat), float(lon))
+            out.append(cells[int(np.argmin(km))])
+        return np.array(out, np.int64)
+
+    def coordinates(self, cell: int) -> tuple[float, float]:
+        """(lat, lon) of a flat index."""
+        half = self.count // 2
+        if cell < half:
+            y = int((np.sqrt(2 * cell + 81) - 9) / 2)
+        else:
+            y = 2 * self.lines - 1 - int((np.sqrt(2 * (self.count - cell - 1) + 81) - 9) / 2)
+        lon = (cell - int(self.first(y))) * 360.0 / int(self.nx(y))
+        return float(self.latitude(y)), lon - 360.0 if lon >= 180 else lon
 
 
 def rotated_forward(latitude: float, longitude: float):

@@ -97,3 +97,26 @@ def test_projected_grid_indexes_through_its_own_function():
          "jPointsAreConsecutive": 0, "DxInMetres": 1000.0, "DyInMetres": 1000.0,
          "ij": lambda lats, lons: (lons * 10.0, lats * 10.0)}
     assert grib.point_index(g, np.array([0.31, 2.0]), np.array([0.42, 0.0])).tolist() == [3 * 10 + 4, -1]
+
+
+def test_octahedral_grid_points_find_themselves_and_the_terrain_search_works():
+    from powderbench.nwp import grib, omdata
+
+    gg = omdata.OctahedralGrid(1280)  # ECMWF IFS at 9 km
+    assert gg.count == 6_599_680
+    ys = np.arange(2 * 1280)
+    assert (gg.first(ys[1:]) - gg.first(ys[:-1]) == gg.nx(ys[:-1])).all()
+    assert gg.first(2559) + gg.nx(2559) == gg.count and gg.first(1280) == gg.count // 2
+    for cell in (0, 19, 12_345, 3_299_839, 3_299_840, 4_000_000, 6_599_679):
+        lat, lon = gg.coordinates(cell)
+        assert int(gg.nearest([lat], [lon])[0]) == cell
+    meta = {"gridType": "points", "Ni": gg.count, "Nj": 1, "jScansPositively": 1, "iScansNegatively": 0,
+            "jPointsAreConsecutive": 0, "nearest": gg.nearest, "around": gg.around}
+    lat, lon = 46.5, 8.0
+    cells, km = gg.around(lat, lon)
+    assert km.min() < 8 and km.max() < 30  # Open-Meteo measures degrees of longitude unscaled
+    height, land = np.full(gg.count, 500.0), np.ones(gg.count)
+    up = cells[np.argsort(km)[1]]  # the second-nearest cell carries the station's height
+    height[up] = 2400.0
+    assert grib.point_index(meta, np.array([lat]), np.array([lon]))[0] == cells[np.argmin(km)]
+    assert grib.terrain_index(meta, np.array([lat]), np.array([lon]), np.array([2400.0]), height, land, 1)[0] == up
