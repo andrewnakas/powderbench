@@ -29,7 +29,9 @@
    "n_skill": 30,
    "pinball": null,
    "brier6": null,
-   "late": false
+   "late": false,
+   "mae_skill": 0.35013,
+   "mae_climo": 0.31703
   },
   "baseline-climatology": {
    "n_scorable": 30,
@@ -49,7 +51,9 @@
    "n_pinball": 30,
    "brier6": 0.0,
    "n_brier6": 10,
-   "late": true
+   "late": true,
+   "mae_skill": 0.31703,
+   "mae_climo": 0.31703
   },
   "baseline-consensus": {
    "n_scorable": 30,
@@ -67,7 +71,9 @@
    "n_skill": 30,
    "pinball": null,
    "brier6": null,
-   "late": false
+   "late": false,
+   "mae_skill": 0.3795,
+   "mae_climo": 0.31703
   },
   "baseline-ecmwf": {
    "n_scorable": 30,
@@ -85,7 +91,9 @@
    "n_skill": 30,
    "pinball": null,
    "brier6": null,
-   "late": false
+   "late": false,
+   "mae_skill": 0.44377,
+   "mae_climo": 0.31703
   },
   "baseline-gem": {
    "n_scorable": 30,
@@ -103,7 +111,9 @@
    "n_skill": 30,
    "pinball": null,
    "brier6": null,
-   "late": false
+   "late": false,
+   "mae_skill": 0.3694,
+   "mae_climo": 0.31703
   },
   "baseline-gfs": {
    "n_scorable": 30,
@@ -121,7 +131,9 @@
    "n_skill": 30,
    "pinball": null,
    "brier6": null,
-   "late": false
+   "late": false,
+   "mae_skill": 0.3942,
+   "mae_climo": 0.31703
   },
   "baseline-icon": {
    "n_scorable": 30,
@@ -139,7 +151,9 @@
    "n_skill": 30,
    "pinball": null,
    "brier6": null,
-   "late": false
+   "late": false,
+   "mae_skill": 0.30233,
+   "mae_climo": 0.31703
   },
   "baseline-openmeteo": {
    "n_scorable": 30,
@@ -157,7 +171,9 @@
    "n_skill": 30,
    "pinball": null,
    "brier6": null,
-   "late": false
+   "late": false,
+   "mae_skill": 0.47227,
+   "mae_climo": 0.31703
   },
   "baseline-persistence": {
    "n_scorable": 30,
@@ -175,7 +191,9 @@
    "n_skill": 30,
    "pinball": null,
    "brier6": null,
-   "late": false
+   "late": false,
+   "mae_skill": 0.64367,
+   "mae_climo": 0.31703
   },
   "baseline-ukmo": {
    "n_scorable": 30,
@@ -193,7 +211,9 @@
    "n_skill": 30,
    "pinball": null,
    "brier6": null,
-   "late": false
+   "late": false,
+   "mae_skill": 0.75703,
+   "mae_climo": 0.31703
   },
   "baseline-zeros": {
    "n_scorable": 30,
@@ -213,7 +233,9 @@
    "n_pinball": 30,
    "brier6": 0.0,
    "n_brier6": 10,
-   "late": false
+   "late": false,
+   "mae_skill": 0.30233,
+   "mae_climo": 0.31703
   },
   "house-analog": {
    "n_scorable": 30,
@@ -233,7 +255,9 @@
    "n_pinball": 30,
    "brier6": 0.0253,
    "n_brier6": 10,
-   "late": true
+   "late": true,
+   "mae_skill": 0.28933,
+   "mae_climo": 0.31703
   },
   "house-blend": {
    "n_scorable": 30,
@@ -253,7 +277,9 @@
    "n_pinball": 30,
    "brier6": 0.0098,
    "n_brier6": 10,
-   "late": true
+   "late": true,
+   "mae_skill": 0.563,
+   "mae_climo": 0.31703
   },
   "house-gbm": {
    "n_scorable": 30,
@@ -273,7 +299,9 @@
    "n_pinball": 30,
    "brier6": 0.0011,
    "n_brier6": 10,
-   "late": true
+   "late": true,
+   "mae_skill": 0.64967,
+   "mae_climo": 0.31703
   }
  }
 }

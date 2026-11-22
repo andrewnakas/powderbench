@@ -40,10 +40,15 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 6,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 1.18795,
+   "mae_climo": 1.19518
   },
   "baseline-climatology": {
    "n_scorable": 57,
@@ -74,10 +79,15 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 6,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 1.19518,
+   "mae_climo": 1.19518
   },
   "baseline-consensus": {
    "n_scorable": 57,
@@ -106,10 +116,15 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 6,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 1.20698,
+   "mae_climo": 1.19518
   },
   "baseline-ecmwf": {
    "invalid": true,
@@ -144,10 +159,15 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 6,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 1.25937,
+   "mae_climo": 1.19518
   },
   "baseline-gfs": {
    "n_scorable": 57,
@@ -176,10 +196,15 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 6,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 1.29193,
+   "mae_climo": 1.19518
   },
   "baseline-icon": {
    "n_scorable": 57,
@@ -208,10 +233,15 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 6,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 1.18405,
+   "mae_climo": 1.19518
   },
   "baseline-nbm": {
    "n_scorable": 57,
@@ -240,10 +270,15 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 6,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 1.27386,
+   "mae_climo": 1.19518
   },
   "baseline-ndfd": {
    "n_scorable": 57,
@@ -271,10 +306,15 @@
      "coverage": 0.6667,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 4,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 1.05,
+   "mae_climo": 1.06103
   },
   "baseline-openmeteo": {
    "n_scorable": 57,
@@ -303,10 +343,15 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 6,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 1.29193,
+   "mae_climo": 1.19518
   },
   "baseline-persistence": {
    "n_scorable": 57,
@@ -335,10 +380,15 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 6,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 2.36842,
+   "mae_climo": 1.19518
   },
   "baseline-ukmo": {
    "n_scorable": 57,
@@ -367,10 +417,15 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 6,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 1.38811,
+   "mae_climo": 1.19518
   },
   "baseline-wpc": {
    "n_scorable": 57,
@@ -401,10 +456,15 @@
      "coverage": 1.0,
      "mae": 0.0133,
      "powder_score": null,
-     "bias": 0.0133
+     "bias": 0.0133,
+     "n_skill": 6,
+     "mae_skill": 0.01333,
+     "mae_climo": 0.0
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 1.17175,
+   "mae_climo": 1.19518
   },
   "baseline-zeros": {
    "n_scorable": 57,
@@ -435,10 +495,15 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 6,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 1.10526,
+   "mae_climo": 1.19518
   },
   "house-blend": {
    "n_scorable": 57,
@@ -469,10 +534,15 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 6,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 1.24877,
+   "mae_climo": 1.19518
   },
   "open-powder-ensemble": {
    "n_scorable": 57,
@@ -503,10 +573,15 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 6,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 1.16877,
+   "mae_climo": 1.19518
   },
   "open-powder-ml": {
    "n_scorable": 57,
@@ -537,10 +612,15 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 6,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 1.23211,
+   "mae_climo": 1.19518
   }
  }
 }

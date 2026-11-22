@@ -80,7 +80,10 @@
      "coverage": 1.0,
      "mae": 0.0368,
      "powder_score": 0.0,
-     "bias": 0.0368
+     "bias": 0.0368,
+     "n_skill": 12,
+     "mae_skill": 0.03683,
+     "mae_climo": 0.03683
     },
     "region:Victorian Alps, AU": {
      "n_scorable": 9,
@@ -88,10 +91,15 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 9,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 0.03999,
+   "mae_climo": 0.03999
   },
   "baseline-gfs": {
    "n_scorable": 69,
@@ -116,7 +124,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": 100.0,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 12,
+     "mae_skill": 0.0,
+     "mae_climo": 0.03683
     },
     "region:Victorian Alps, AU": {
      "n_scorable": 9,
@@ -124,10 +135,15 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 9,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 0.12545,
+   "mae_climo": 0.03999
   },
   "baseline-openmeteo": {
    "n_scorable": 69,
@@ -152,7 +168,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": 100.0,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 12,
+     "mae_skill": 0.0,
+     "mae_climo": 0.03683
     },
     "region:Victorian Alps, AU": {
      "n_scorable": 9,
@@ -160,10 +179,15 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 9,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 0.12068,
+   "mae_climo": 0.03999
   },
   "baseline-persistence": {
    "n_scorable": 69,
@@ -188,7 +212,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": 100.0,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 12,
+     "mae_skill": 0.0,
+     "mae_climo": 0.03683
     },
     "region:Victorian Alps, AU": {
      "n_scorable": 9,
@@ -196,10 +223,15 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 9,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 0.21848,
+   "mae_climo": 0.03999
   },
   "baseline-zeros": {
    "n_scorable": 69,
@@ -226,7 +258,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": 100.0,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 12,
+     "mae_skill": 0.0,
+     "mae_climo": 0.03683
     },
     "region:Victorian Alps, AU": {
      "n_scorable": 9,
@@ -234,10 +269,15 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 9,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 0.02996,
+   "mae_climo": 0.03999
   }
  }
 }

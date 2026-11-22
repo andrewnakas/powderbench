@@ -42,10 +42,15 @@
      "coverage": 1.0,
      "mae": 0.0322,
      "powder_score": 0.0,
-     "bias": 0.0322
+     "bias": 0.0322,
+     "n_skill": 6,
+     "mae_skill": 0.03217,
+     "mae_climo": 0.03217
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 3.09238,
+   "mae_climo": 3.09238
   },
   "baseline-ndfd": {
    "n_scorable": 56,
@@ -73,10 +78,15 @@
      "coverage": 0.6667,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 4,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 2.36355,
+   "mae_climo": 2.39932
   },
   "baseline-persistence": {
    "n_scorable": 56,
@@ -105,10 +115,15 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": 100.0,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 6,
+     "mae_skill": 0.0,
+     "mae_climo": 0.03217
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 3.32946,
+   "mae_climo": 3.09238
   },
   "baseline-wpc": {
    "n_scorable": 56,
@@ -139,10 +154,15 @@
      "coverage": 1.0,
      "mae": 0.0067,
      "powder_score": 79.27,
-     "bias": 0.0067
+     "bias": 0.0067,
+     "n_skill": 6,
+     "mae_skill": 0.00667,
+     "mae_climo": 0.03217
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 2.83962,
+   "mae_climo": 3.22794
   },
   "baseline-zeros": {
    "n_scorable": 56,
@@ -173,10 +193,15 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": 100.0,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 6,
+     "mae_skill": 0.0,
+     "mae_climo": 0.03217
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 3.06161,
+   "mae_climo": 3.09238
   },
   "house-blend": {
    "n_scorable": 56,
@@ -207,10 +232,15 @@
      "coverage": 1.0,
      "mae": 0.0067,
      "powder_score": 79.27,
-     "bias": 0.0067
+     "bias": 0.0067,
+     "n_skill": 6,
+     "mae_skill": 0.00667,
+     "mae_climo": 0.03217
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 2.93792,
+   "mae_climo": 3.22794
   },
   "open-powder-ensemble": {
    "n_scorable": 56,
@@ -241,10 +271,15 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": 100.0,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 6,
+     "mae_skill": 0.0,
+     "mae_climo": 0.03217
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 2.88554,
+   "mae_climo": 3.09238
   },
   "open-powder-ml": {
    "n_scorable": 56,
@@ -275,10 +310,15 @@
      "coverage": 1.0,
      "mae": 0.0033,
      "powder_score": 89.64,
-     "bias": 0.0033
+     "bias": 0.0033,
+     "n_skill": 6,
+     "mae_skill": 0.00333,
+     "mae_climo": 0.03217
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 2.81482,
+   "mae_climo": 3.09238
   }
  }
 }

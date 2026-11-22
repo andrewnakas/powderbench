@@ -42,7 +42,10 @@
      "coverage": 1.0,
      "mae": 2.3705,
      "powder_score": 33.96,
-     "bias": -1.7925
+     "bias": -1.7925,
+     "n_skill": 603,
+     "mae_skill": 2.36759,
+     "mae_climo": 3.58535
     },
     "region:Bernese Oberland": {
      "n_scorable": 81,
@@ -50,7 +53,10 @@
      "coverage": 1.0,
      "mae": 1.9846,
      "powder_score": 0.91,
-     "bias": -0.8921
+     "bias": -0.8921,
+     "n_skill": 81,
+     "mae_skill": 1.98456,
+     "mae_climo": 2.00277
     },
     "region:Central Switzerland": {
      "n_scorable": 60,
@@ -58,7 +64,10 @@
      "coverage": 1.0,
      "mae": 1.0524,
      "powder_score": -20.0,
-     "bias": 0.0535
+     "bias": 0.0535,
+     "n_skill": 57,
+     "mae_skill": 1.0211,
+     "mae_climo": 0.85095
     },
     "region:Eastern Switzerland": {
      "n_scorable": 42,
@@ -66,7 +75,10 @@
      "coverage": 1.0,
      "mae": 0.5221,
      "powder_score": -32.3,
-     "bias": -0.0822
+     "bias": -0.0822,
+     "n_skill": 42,
+     "mae_skill": 0.52207,
+     "mae_climo": 0.39462
     },
     "region:Graub\u00fcnden": {
      "n_scorable": 196,
@@ -74,7 +86,10 @@
      "coverage": 1.0,
      "mae": 0.8292,
      "powder_score": 15.55,
-     "bias": -0.1525
+     "bias": -0.1525,
+     "n_skill": 196,
+     "mae_skill": 0.82916,
+     "mae_climo": 0.98186
     },
     "region:K\u00e4rnten": {
      "n_scorable": 3,
@@ -82,7 +97,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 3,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:Salzburg": {
      "n_scorable": 9,
@@ -90,7 +108,10 @@
      "coverage": 1.0,
      "mae": 2.056,
      "powder_score": -104.35,
-     "bias": -2.056
+     "bias": -2.056,
+     "n_skill": 9,
+     "mae_skill": 2.05599,
+     "mae_climo": 1.0061
     },
     "region:Ticino": {
      "n_scorable": 49,
@@ -98,7 +119,10 @@
      "coverage": 1.0,
      "mae": 2.7033,
      "powder_score": 39.74,
-     "bias": -2.6053
+     "bias": -2.6053,
+     "n_skill": 49,
+     "mae_skill": 2.70335,
+     "mae_climo": 4.48618
     },
     "region:Tirol": {
      "n_scorable": 16,
@@ -106,7 +130,10 @@
      "coverage": 1.0,
      "mae": 0.0246,
      "powder_score": 0.0,
-     "bias": -0.0246
+     "bias": -0.0246,
+     "n_skill": 16,
+     "mae_skill": 0.02461,
+     "mae_climo": 0.02461
     },
     "region:Valais": {
      "n_scorable": 136,
@@ -114,7 +141,10 @@
      "coverage": 1.0,
      "mae": 6.1782,
      "powder_score": 42.3,
-     "bias": -5.8746
+     "bias": -5.8746,
+     "n_skill": 136,
+     "mae_skill": 6.17824,
+     "mae_climo": 10.70706
     },
     "region:Vaud & Fribourg Alps": {
      "n_scorable": 15,
@@ -122,10 +152,15 @@
      "coverage": 1.0,
      "mae": 2.9151,
      "powder_score": 42.49,
-     "bias": -2.9151
+     "bias": -2.9151,
+     "n_skill": 12,
+     "mae_skill": 2.72168,
+     "mae_climo": 4.73251
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 1.49408,
+   "mae_climo": 2.41571
   },
   "open-powder-ensemble": {
    "n_scorable": 53,
@@ -156,7 +191,10 @@
      "coverage": 1.0,
      "mae": 2.6016,
      "powder_score": 27.46,
-     "bias": -1.5687
+     "bias": -1.5687,
+     "n_skill": 603,
+     "mae_skill": 2.60081,
+     "mae_climo": 3.58535
     },
     "region:Bernese Oberland": {
      "n_scorable": 81,
@@ -164,7 +202,10 @@
      "coverage": 1.0,
      "mae": 2.3023,
      "powder_score": -14.96,
-     "bias": -0.4339
+     "bias": -0.4339,
+     "n_skill": 81,
+     "mae_skill": 2.3023,
+     "mae_climo": 2.00277
     },
     "region:Central Switzerland": {
      "n_scorable": 60,
@@ -172,7 +213,10 @@
      "coverage": 1.0,
      "mae": 1.4882,
      "powder_score": -74.13,
-     "bias": 0.7345
+     "bias": 0.7345,
+     "n_skill": 57,
+     "mae_skill": 1.48174,
+     "mae_climo": 0.85095
     },
     "region:Eastern Switzerland": {
      "n_scorable": 42,
@@ -180,7 +224,10 @@
      "coverage": 1.0,
      "mae": 0.7637,
      "powder_score": -93.53,
-     "bias": 0.5285
+     "bias": 0.5285,
+     "n_skill": 42,
+     "mae_skill": 0.7637,
+     "mae_climo": 0.39462
     },
     "region:Graub\u00fcnden": {
      "n_scorable": 196,
@@ -188,7 +235,10 @@
      "coverage": 1.0,
      "mae": 0.8836,
      "powder_score": 10.01,
-     "bias": -0.1253
+     "bias": -0.1253,
+     "n_skill": 196,
+     "mae_skill": 0.88362,
+     "mae_climo": 0.98186
     },
     "region:K\u00e4rnten": {
      "n_scorable": 3,
@@ -196,7 +246,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 3,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:Salzburg": {
      "n_scorable": 9,
@@ -204,7 +257,10 @@
      "coverage": 1.0,
      "mae": 1.5804,
      "powder_score": -57.08,
-     "bias": -1.5804
+     "bias": -1.5804,
+     "n_skill": 9,
+     "mae_skill": 1.58044,
+     "mae_climo": 1.0061
     },
     "region:Ticino": {
      "n_scorable": 49,
@@ -212,7 +268,10 @@
      "coverage": 1.0,
      "mae": 2.5855,
      "powder_score": 42.37,
-     "bias": -2.4181
+     "bias": -2.4181,
+     "n_skill": 49,
+     "mae_skill": 2.58547,
+     "mae_climo": 4.48618
     },
     "region:Tirol": {
      "n_scorable": 16,
@@ -220,7 +279,10 @@
      "coverage": 1.0,
      "mae": 0.0371,
      "powder_score": -50.8,
-     "bias": -0.0071
+     "bias": -0.0071,
+     "n_skill": 16,
+     "mae_skill": 0.03711,
+     "mae_climo": 0.02461
     },
     "region:Valais": {
      "n_scorable": 136,
@@ -228,7 +290,10 @@
      "coverage": 1.0,
      "mae": 6.7093,
      "powder_score": 37.34,
-     "bias": -5.7338
+     "bias": -5.7338,
+     "n_skill": 136,
+     "mae_skill": 6.70927,
+     "mae_climo": 10.70706
     },
     "region:Vaud & Fribourg Alps": {
      "n_scorable": 15,
@@ -236,10 +301,15 @@
      "coverage": 1.0,
      "mae": 3.2904,
      "powder_score": 32.89,
-     "bias": -3.2851
+     "bias": -3.2851,
+     "n_skill": 12,
+     "mae_skill": 3.17585,
+     "mae_climo": 4.73251
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 1.63141,
+   "mae_climo": 2.41571
   },
   "open-powder-ml": {
    "n_scorable": 53,
@@ -270,7 +340,10 @@
      "coverage": 1.0,
      "mae": 2.6299,
      "powder_score": 26.71,
-     "bias": -1.9571
+     "bias": -1.9571,
+     "n_skill": 603,
+     "mae_skill": 2.62771,
+     "mae_climo": 3.58535
     },
     "region:Bernese Oberland": {
      "n_scorable": 81,
@@ -278,7 +351,10 @@
      "coverage": 1.0,
      "mae": 1.6931,
      "powder_score": 15.46,
-     "bias": -1.3059
+     "bias": -1.3059,
+     "n_skill": 81,
+     "mae_skill": 1.6931,
+     "mae_climo": 2.00277
     },
     "region:Central Switzerland": {
      "n_scorable": 60,
@@ -286,7 +362,10 @@
      "coverage": 1.0,
      "mae": 1.014,
      "powder_score": -20.48,
-     "bias": 0.3948
+     "bias": 0.3948,
+     "n_skill": 57,
+     "mae_skill": 1.02522,
+     "mae_climo": 0.85095
     },
     "region:Eastern Switzerland": {
      "n_scorable": 42,
@@ -294,7 +373,10 @@
      "coverage": 1.0,
      "mae": 1.0922,
      "powder_score": -176.78,
-     "bias": 0.8878
+     "bias": 0.8878,
+     "n_skill": 42,
+     "mae_skill": 1.09223,
+     "mae_climo": 0.39462
     },
     "region:Graub\u00fcnden": {
      "n_scorable": 196,
@@ -302,7 +384,10 @@
      "coverage": 1.0,
      "mae": 0.8805,
      "powder_score": 10.32,
-     "bias": -0.0314
+     "bias": -0.0314,
+     "n_skill": 196,
+     "mae_skill": 0.88051,
+     "mae_climo": 0.98186
     },
     "region:K\u00e4rnten": {
      "n_scorable": 3,
@@ -310,7 +395,10 @@
      "coverage": 1.0,
      "mae": 0.0,
      "powder_score": null,
-     "bias": 0.0
+     "bias": 0.0,
+     "n_skill": 3,
+     "mae_skill": 0.0,
+     "mae_climo": 0.0
     },
     "region:Salzburg": {
      "n_scorable": 9,
@@ -318,7 +406,10 @@
      "coverage": 1.0,
      "mae": 1.168,
      "powder_score": -16.09,
-     "bias": -0.9593
+     "bias": -0.9593,
+     "n_skill": 9,
+     "mae_skill": 1.16797,
+     "mae_climo": 1.0061
     },
     "region:Ticino": {
      "n_scorable": 49,
@@ -326,7 +417,10 @@
      "coverage": 1.0,
      "mae": 3.4609,
      "powder_score": 22.85,
-     "bias": -3.3096
+     "bias": -3.3096,
+     "n_skill": 49,
+     "mae_skill": 3.46089,
+     "mae_climo": 4.48618
     },
     "region:Tirol": {
      "n_scorable": 16,
@@ -334,7 +428,10 @@
      "coverage": 1.0,
      "mae": 0.0184,
      "powder_score": 25.4,
-     "bias": -0.0146
+     "bias": -0.0146,
+     "n_skill": 16,
+     "mae_skill": 0.01836,
+     "mae_climo": 0.02461
     },
     "region:Valais": {
      "n_scorable": 136,
@@ -342,7 +439,10 @@
      "coverage": 1.0,
      "mae": 7.0722,
      "powder_score": 33.95,
-     "bias": -7.0071
+     "bias": -7.0071,
+     "n_skill": 136,
+     "mae_skill": 7.07217,
+     "mae_climo": 10.70706
     },
     "region:Vaud & Fribourg Alps": {
      "n_scorable": 15,
@@ -350,10 +450,15 @@
      "coverage": 1.0,
      "mae": 2.8629,
      "powder_score": 50.21,
-     "bias": -1.1264
+     "bias": -1.1264,
+     "n_skill": 12,
+     "mae_skill": 2.35644,
+     "mae_climo": 4.73251
     }
    },
-   "late": false
+   "late": false,
+   "mae_skill": 1.6123,
+   "mae_climo": 2.41571
   }
  }
 }
