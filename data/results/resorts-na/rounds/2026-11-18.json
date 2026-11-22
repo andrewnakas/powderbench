@@ -1,0 +1,119 @@
+{
+ "round_id": "2026-11-18",
+ "league": "resorts-na",
+ "resolved_utc": "2026-11-22T23:56:49+00:00",
+ "observations_72h": null,
+ "qc": {
+  "station_horizons_valid": 57,
+  "station_horizons_voided": 54
+ },
+ "biggest_24h": {
+  "station_id": "sugar-bowl:US:RESORT",
+  "resort": "Sugar Bowl",
+  "inches": 34.0
+ },
+ "teams": {
+  "deep-powder": {
+   "n_scorable": 57,
+   "n_scored": 57,
+   "coverage": 1.0,
+   "mae": 3.0721,
+   "rmse": 6.333,
+   "bias": -2.5672,
+   "mae_by_horizon": {
+    "24": 2.3224,
+    "48": 3.5633,
+    "72": 3.4556
+   },
+   "powder_score": 31.86,
+   "n_skill": 57,
+   "pinball": 1.2449,
+   "n_pinball": 57,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": 0.09,
+   "n_brier6": 21,
+   "tracks": {
+    "region:Northern Michigan": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": 100.0,
+     "bias": 0.0
+    }
+   },
+   "late": false
+  },
+  "open-powder-ensemble": {
+   "n_scorable": 57,
+   "n_scored": 57,
+   "coverage": 1.0,
+   "mae": 2.8198,
+   "rmse": 5.6578,
+   "bias": -2.1791,
+   "mae_by_horizon": {
+    "24": 2.2119,
+    "48": 3.2728,
+    "72": 3.0761
+   },
+   "powder_score": 37.46,
+   "n_skill": 57,
+   "pinball": 1.1233,
+   "n_pinball": 57,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": 0.0832,
+   "n_brier6": 21,
+   "tracks": {
+    "region:Northern Michigan": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": 100.0,
+     "bias": 0.0
+    }
+   },
+   "late": false
+  },
+  "open-powder-ml": {
+   "n_scorable": 57,
+   "n_scored": 57,
+   "coverage": 1.0,
+   "mae": 2.9826,
+   "rmse": 5.8993,
+   "bias": -2.2802,
+   "mae_by_horizon": {
+    "24": 2.1905,
+    "48": 3.4522,
+    "72": 3.4372
+   },
+   "powder_score": 33.85,
+   "n_skill": 57,
+   "pinball": 1.0742,
+   "n_pinball": 57,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": 0.0646,
+   "n_brier6": 21,
+   "tracks": {
+    "region:Northern Michigan": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.0,
+     "powder_score": 100.0,
+     "bias": 0.0
+    }
+   },
+   "late": false
+  }
+ }
+}
