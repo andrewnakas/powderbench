@@ -126,7 +126,7 @@ MODEL_BASELINES = {
     "baseline-ukmo": ("om_ukmo", "ukmo_seamless", None),
     "baseline-nbm": ("nbm", "ncep_nbm_conus", "conus"),  # NOAA's calibrated National Blend
     "baseline-hrrr": (None, "ncep_hrrr_conus", "conus"),  # 3 km, 48h range
-    "baseline-arome": (None, "meteofrance_seamless", "alps"),
+    "baseline-arome": ("om_meteofrance", "meteofrance_seamless", "alps"),
     "baseline-jma": (None, "jma_seamless", "japan"),  # JMA MSM 5 km + GSM
 }
 CONSENSUS_TEAM = "baseline-consensus"

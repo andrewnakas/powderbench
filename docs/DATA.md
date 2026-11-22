@@ -732,11 +732,12 @@ How the two combine, per team (`baselines.model_prediction`):
   first, at every station (NBM: every station in the contiguous US).
   Open-Meteo is called only for featured stations it missed, so on a normal
   day these four teams cost no Open-Meteo calls.
-- **ICON, GEM and UKMO:** Open-Meteo first on featured stations, as before.
+- **ICON, GEM, UKMO and Météo-France (AROME):** Open-Meteo first on featured
+  stations, as before.
   Every other station is read from Open-Meteo's open-data archive (below),
   which holds the same runs its API serves, so these teams also cover the
   whole league with no extra calls.
-- **Every other model** (HRRR, AROME, JMA…) stays on Open-Meteo, featured
+- **Every other model** (HRRR, JMA…) stays on Open-Meteo, featured
   stations only.
 
 **Open-Meteo's open-data archive (2026-11-21).** Open-Meteo publishes the
@@ -774,9 +775,12 @@ hourly ERA5 takes 0.4 s, with no API budget.
 - **HRDPS West is not used.** In the archive its "snowfall water equivalent"
   totals 50 to 200 times the run's precipitation and grows run after run,
   so it is not snowfall. Open-Meteo's own GEM blend leaves it out too.
-- **Météo-France stays on the API.** Read this way it gives about a third
-  more Alps snow than `meteofrance_seamless`, which mixes six AROME and
-  ARPEGE domains, including 15-minute runs.
+- **Météo-France matches the API on featured stations** (the same 7 Alps
+  rounds: 0.8 / MAE 0.363 read directly, 0.6 / 0.368 from the API), with
+  22% less snow in total. The API's `meteofrance_seamless` puts AROME HD
+  (1.3 km) over AROME 2.5 km; the archive keeps no snowfall field for AROME
+  HD, so the API counts its precipitation below 0 C. Read that way it scored
+  -7.2, so the direct read keeps AROME 2.5 km, then ARPEGE.
 
 **Open-Meteo's elevation rule (2026-11-20).** Read raw, the direct ECMWF
 scored well below Open-Meteo's processing of the same run. On the stations
