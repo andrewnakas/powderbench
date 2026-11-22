@@ -4,8 +4,8 @@
  "resolved_utc": "2026-11-17T23:24:35+00:00",
  "observations_72h": null,
  "qc": {
-  "station_horizons_valid": 58,
-  "station_horizons_voided": 53
+  "station_horizons_valid": 57,
+  "station_horizons_voided": 54
  },
  "biggest_24h": {
   "station_id": "sugar-bowl:US:RESORT",
@@ -14,19 +14,21 @@
  },
  "teams": {
   "baseline-aifs": {
-   "n_scorable": 58,
-   "n_scored": 58,
+   "n_scorable": 57,
+   "n_scored": 57,
    "coverage": 1.0,
-   "mae": 2.4189,
-   "rmse": 6.4477,
-   "bias": -1.8034,
+   "mae": 2.2617,
+   "rmse": 6.3269,
+   "bias": -1.6354,
    "mae_by_horizon": {
     "24": 1.1268,
     "48": 2.2592,
-    "72": 3.9388
+    "72": 3.5253
    },
-   "powder_score": 11.92,
-   "n_skill": 58,
+   "powder_score": 11.32,
+   "n_skill": 57,
+   "mae_skill": 2.2617,
+   "mae_climo": 2.55035,
    "pinball": null,
    "swe_accuracy": null,
    "swe_mae": null,
@@ -46,26 +48,26 @@
      "mae_climo": 0.0185
     }
    },
-   "late": false,
-   "mae_skill": 2.41895,
-   "mae_climo": 2.74633
+   "late": false
   },
   "baseline-climatology": {
-   "n_scorable": 58,
-   "n_scored": 58,
+   "n_scorable": 57,
+   "n_scored": 57,
    "coverage": 1.0,
-   "mae": 2.7463,
-   "rmse": 7.7865,
-   "bias": -2.3816,
+   "mae": 2.5504,
+   "rmse": 7.6351,
+   "bias": -2.1793,
    "mae_by_horizon": {
     "24": 1.3893,
     "48": 2.6761,
-    "72": 4.245
+    "72": 3.7077
    },
    "powder_score": 0.0,
-   "n_skill": 58,
-   "pinball": 1.2233,
-   "n_pinball": 58,
+   "n_skill": 57,
+   "mae_skill": 2.55035,
+   "mae_climo": 2.55035,
+   "pinball": 1.1399,
+   "n_pinball": 57,
    "swe_accuracy": null,
    "swe_mae": null,
    "density_accuracy": null,
@@ -85,24 +87,24 @@
      "mae_climo": 0.0185
     }
    },
-   "late": false,
-   "mae_skill": 2.74633,
-   "mae_climo": 2.74633
+   "late": false
   },
   "baseline-consensus": {
-   "n_scorable": 58,
-   "n_scored": 58,
+   "n_scorable": 57,
+   "n_scored": 57,
    "coverage": 1.0,
-   "mae": 2.3579,
-   "rmse": 6.1176,
-   "bias": -1.3209,
+   "mae": 2.1996,
+   "rmse": 5.9841,
+   "bias": -1.1444,
    "mae_by_horizon": {
     "24": 1.0726,
     "48": 2.1829,
-    "72": 3.8858
+    "72": 3.4693
    },
-   "powder_score": 14.14,
-   "n_skill": 58,
+   "powder_score": 13.75,
+   "n_skill": 57,
+   "mae_skill": 2.19958,
+   "mae_climo": 2.55035,
    "pinball": null,
    "swe_accuracy": null,
    "swe_mae": null,
@@ -122,24 +124,24 @@
      "mae_climo": 0.0185
     }
    },
-   "late": false,
-   "mae_skill": 2.3579,
-   "mae_climo": 2.74633
+   "late": false
   },
   "baseline-ecmwf": {
-   "n_scorable": 58,
-   "n_scored": 58,
+   "n_scorable": 57,
+   "n_scored": 57,
    "coverage": 1.0,
-   "mae": 2.3945,
-   "rmse": 6.3709,
-   "bias": -1.83,
+   "mae": 2.218,
+   "rmse": 6.2111,
+   "bias": -1.6436,
    "mae_by_horizon": {
     "24": 1.0675,
     "48": 2.2548,
-    "72": 3.931
+    "72": 3.4573
    },
-   "powder_score": 12.81,
-   "n_skill": 58,
+   "powder_score": 13.03,
+   "n_skill": 57,
+   "mae_skill": 2.21798,
+   "mae_climo": 2.55035,
    "pinball": null,
    "swe_accuracy": null,
    "swe_mae": null,
@@ -159,24 +161,24 @@
      "mae_climo": 0.0185
     }
    },
-   "late": false,
-   "mae_skill": 2.39452,
-   "mae_climo": 2.74633
+   "late": false
   },
   "baseline-gem": {
-   "n_scorable": 58,
-   "n_scored": 58,
+   "n_scorable": 57,
+   "n_scored": 57,
    "coverage": 1.0,
-   "mae": 2.7444,
-   "rmse": 6.3232,
-   "bias": -0.9893,
+   "mae": 2.5779,
+   "rmse": 6.1691,
+   "bias": -0.792,
    "mae_by_horizon": {
     "24": 1.2536,
     "48": 2.729,
-    "72": 4.3291
+    "72": 3.8898
    },
-   "powder_score": 0.07,
-   "n_skill": 58,
+   "powder_score": -1.08,
+   "n_skill": 57,
+   "mae_skill": 2.57788,
+   "mae_climo": 2.55035,
    "pinball": null,
    "swe_accuracy": null,
    "swe_mae": null,
@@ -196,24 +198,24 @@
      "mae_climo": 0.0185
     }
    },
-   "late": false,
-   "mae_skill": 2.7444,
-   "mae_climo": 2.74633
+   "late": false
   },
   "baseline-gfs": {
-   "n_scorable": 58,
-   "n_scored": 58,
+   "n_scorable": 57,
+   "n_scored": 57,
    "coverage": 1.0,
-   "mae": 2.7076,
-   "rmse": 4.6539,
-   "bias": 0.5674,
+   "mae": 2.6025,
+   "rmse": 4.5509,
+   "bias": 0.73,
    "mae_by_horizon": {
     "24": 1.2397,
     "48": 2.5713,
-    "72": 4.3891
+    "72": 4.1495
    },
-   "powder_score": 1.41,
-   "n_skill": 58,
+   "powder_score": -2.04,
+   "n_skill": 57,
+   "mae_skill": 2.60246,
+   "mae_climo": 2.55035,
    "pinball": null,
    "swe_accuracy": null,
    "swe_mae": null,
@@ -233,24 +235,24 @@
      "mae_climo": 0.0185
     }
    },
-   "late": false,
-   "mae_skill": 2.7076,
-   "mae_climo": 2.74633
+   "late": false
   },
   "baseline-icon": {
-   "n_scorable": 58,
-   "n_scored": 58,
+   "n_scorable": 57,
+   "n_scored": 57,
    "coverage": 1.0,
-   "mae": 2.0691,
-   "rmse": 5.5606,
-   "bias": -1.6176,
+   "mae": 1.9047,
+   "rmse": 5.4008,
+   "bias": -1.4453,
    "mae_by_horizon": {
     "24": 0.9945,
     "48": 1.9575,
-    "72": 3.3117
+    "72": 2.8603
    },
-   "powder_score": 24.66,
-   "n_skill": 58,
+   "powder_score": 25.32,
+   "n_skill": 57,
+   "mae_skill": 1.9047,
+   "mae_climo": 2.55035,
    "pinball": null,
    "swe_accuracy": null,
    "swe_mae": null,
@@ -270,24 +272,24 @@
      "mae_climo": 0.0185
     }
    },
-   "late": false,
-   "mae_skill": 2.06905,
-   "mae_climo": 2.74633
+   "late": false
   },
   "baseline-nbm": {
-   "n_scorable": 58,
-   "n_scored": 58,
+   "n_scorable": 57,
+   "n_scored": 57,
    "coverage": 1.0,
-   "mae": 2.2376,
-   "rmse": 4.8632,
-   "bias": -0.1244,
+   "mae": 2.2341,
+   "rmse": 4.8951,
+   "bias": -0.0839,
    "mae_by_horizon": {
     "24": 0.914,
     "48": 2.207,
-    "72": 3.6614
+    "72": 3.7296
    },
-   "powder_score": 18.53,
-   "n_skill": 58,
+   "powder_score": 12.4,
+   "n_skill": 57,
+   "mae_skill": 2.23414,
+   "mae_climo": 2.55035,
    "pinball": null,
    "swe_accuracy": null,
    "swe_mae": null,
@@ -307,14 +309,12 @@
      "mae_climo": 0.0185
     }
    },
-   "late": false,
-   "mae_skill": 2.23757,
-   "mae_climo": 2.74633
+   "late": false
   },
   "baseline-ndfd": {
-   "n_scorable": 58,
+   "n_scorable": 57,
    "n_scored": 32,
-   "coverage": 0.5517,
+   "coverage": 0.5614,
    "mae": 2.3,
    "rmse": 5.2373,
    "bias": -1.8125,
@@ -324,6 +324,8 @@
    },
    "powder_score": 1.21,
    "n_skill": 32,
+   "mae_skill": 2.3,
+   "mae_climo": 2.32825,
    "pinball": null,
    "swe_accuracy": null,
    "swe_mae": null,
@@ -343,24 +345,24 @@
      "mae_climo": 0.0
     }
    },
-   "late": false,
-   "mae_skill": 2.3,
-   "mae_climo": 2.32825
+   "late": false
   },
   "baseline-openmeteo": {
-   "n_scorable": 58,
-   "n_scored": 58,
+   "n_scorable": 57,
+   "n_scored": 57,
    "coverage": 1.0,
-   "mae": 2.7076,
-   "rmse": 4.6539,
-   "bias": 0.5674,
+   "mae": 2.6025,
+   "rmse": 4.5509,
+   "bias": 0.73,
    "mae_by_horizon": {
     "24": 1.2397,
     "48": 2.5713,
-    "72": 4.3891
+    "72": 4.1495
    },
-   "powder_score": 1.41,
-   "n_skill": 58,
+   "powder_score": -2.04,
+   "n_skill": 57,
+   "mae_skill": 2.60246,
+   "mae_climo": 2.55035,
    "pinball": null,
    "swe_accuracy": null,
    "swe_mae": null,
@@ -380,24 +382,24 @@
      "mae_climo": 0.0185
     }
    },
-   "late": false,
-   "mae_skill": 2.7076,
-   "mae_climo": 2.74633
+   "late": false
   },
   "baseline-persistence": {
-   "n_scorable": 58,
-   "n_scored": 58,
+   "n_scorable": 57,
+   "n_scored": 57,
    "coverage": 1.0,
-   "mae": 2.7834,
-   "rmse": 8.0176,
-   "bias": -1.5421,
+   "mae": 2.5253,
+   "rmse": 7.7484,
+   "bias": -1.8761,
    "mae_by_horizon": {
     "24": 1.475,
     "48": 2.6505,
-    "72": 4.2937
+    "72": 3.56
    },
-   "powder_score": -1.35,
-   "n_skill": 58,
+   "powder_score": 0.98,
+   "n_skill": 57,
+   "mae_skill": 2.52526,
+   "mae_climo": 2.55035,
    "pinball": null,
    "swe_accuracy": null,
    "swe_mae": null,
@@ -417,24 +419,24 @@
      "mae_climo": 0.0185
     }
    },
-   "late": false,
-   "mae_skill": 2.78345,
-   "mae_climo": 2.74633
+   "late": false
   },
   "baseline-ukmo": {
-   "n_scorable": 58,
-   "n_scored": 58,
+   "n_scorable": 57,
+   "n_scored": 57,
    "coverage": 1.0,
-   "mae": 2.5907,
-   "rmse": 6.2921,
-   "bias": -1.4128,
+   "mae": 2.4026,
+   "rmse": 6.0973,
+   "bias": -1.2041,
    "mae_by_horizon": {
     "24": 1.0965,
     "48": 2.4662,
-    "72": 4.288
+    "72": 3.7867
    },
-   "powder_score": 5.67,
-   "n_skill": 58,
+   "powder_score": 5.79,
+   "n_skill": 57,
+   "mae_skill": 2.40261,
+   "mae_climo": 2.55035,
    "pinball": null,
    "swe_accuracy": null,
    "swe_mae": null,
@@ -454,26 +456,26 @@
      "mae_climo": 0.0185
     }
    },
-   "late": false,
-   "mae_skill": 2.59069,
-   "mae_climo": 2.74633
+   "late": false
   },
   "baseline-wpc": {
-   "n_scorable": 58,
-   "n_scored": 58,
+   "n_scorable": 57,
+   "n_scored": 57,
    "coverage": 1.0,
-   "mae": 2.3828,
-   "rmse": 6.2552,
-   "bias": -1.0886,
+   "mae": 2.3096,
+   "rmse": 6.2499,
+   "bias": -0.9928,
    "mae_by_horizon": {
     "24": 1.038,
     "48": 2.0584,
-    "72": 4.1226
+    "72": 3.9878
    },
-   "powder_score": 13.24,
-   "n_skill": 58,
-   "pinball": 1.0072,
-   "n_pinball": 58,
+   "powder_score": 9.44,
+   "n_skill": 57,
+   "mae_skill": 2.30965,
+   "mae_climo": 2.55035,
+   "pinball": 0.9813,
+   "n_pinball": 57,
    "swe_accuracy": null,
    "swe_mae": null,
    "density_accuracy": null,
@@ -493,26 +495,26 @@
      "mae_climo": 0.0185
     }
    },
-   "late": false,
-   "mae_skill": 2.38276,
-   "mae_climo": 2.74633
+   "late": false
   },
   "baseline-zeros": {
-   "n_scorable": 58,
-   "n_scored": 58,
+   "n_scorable": 57,
+   "n_scored": 57,
    "coverage": 1.0,
-   "mae": 2.6283,
-   "rmse": 7.8002,
-   "bias": -2.6283,
+   "mae": 2.4288,
+   "rmse": 7.6467,
+   "bias": -2.4288,
    "mae_by_horizon": {
     "24": 1.35,
     "48": 2.4926,
-    "72": 4.1095
+    "72": 3.56
    },
-   "powder_score": 4.3,
-   "n_skill": 58,
-   "pinball": 1.3141,
-   "n_pinball": 58,
+   "powder_score": 4.77,
+   "n_skill": 57,
+   "mae_skill": 2.42877,
+   "mae_climo": 2.55035,
+   "pinball": 1.2144,
+   "n_pinball": 57,
    "swe_accuracy": null,
    "swe_mae": null,
    "density_accuracy": null,
@@ -532,26 +534,26 @@
      "mae_climo": 0.0185
     }
    },
-   "late": false,
-   "mae_skill": 2.62828,
-   "mae_climo": 2.74633
+   "late": false
   },
   "house-blend": {
-   "n_scorable": 58,
-   "n_scored": 58,
+   "n_scorable": 57,
+   "n_scored": 57,
    "coverage": 1.0,
-   "mae": 2.2897,
-   "rmse": 5.8924,
-   "bias": -1.1631,
+   "mae": 2.1947,
+   "rmse": 5.8557,
+   "bias": -1.0484,
    "mae_by_horizon": {
     "24": 1.1675,
     "48": 2.0568,
-    "72": 3.7037
+    "72": 3.4817
    },
-   "powder_score": 16.63,
-   "n_skill": 58,
-   "pinball": 1.0554,
-   "n_pinball": 58,
+   "powder_score": 13.94,
+   "n_skill": 57,
+   "mae_skill": 2.19474,
+   "mae_climo": 2.55035,
+   "pinball": 1.009,
+   "n_pinball": 57,
    "swe_accuracy": null,
    "swe_mae": null,
    "density_accuracy": null,
@@ -571,26 +573,26 @@
      "mae_climo": 0.0185
     }
    },
-   "late": false,
-   "mae_skill": 2.28966,
-   "mae_climo": 2.74633
+   "late": false
   },
   "open-powder-ensemble": {
-   "n_scorable": 58,
-   "n_scored": 58,
+   "n_scorable": 57,
+   "n_scored": 57,
    "coverage": 1.0,
-   "mae": 2.1759,
-   "rmse": 3.8419,
-   "bias": 0.8793,
+   "mae": 2.207,
+   "rmse": 3.8751,
+   "bias": 0.9018,
    "mae_by_horizon": {
     "24": 1.388,
     "48": 1.8263,
-    "72": 3.3547
+    "72": 3.5189
    },
-   "powder_score": 20.77,
-   "n_skill": 58,
-   "pinball": 0.8252,
-   "n_pinball": 58,
+   "powder_score": 13.46,
+   "n_skill": 57,
+   "mae_skill": 2.20702,
+   "mae_climo": 2.55035,
+   "pinball": 0.8169,
+   "n_pinball": 57,
    "swe_accuracy": null,
    "swe_mae": null,
    "density_accuracy": null,
@@ -610,26 +612,26 @@
      "mae_climo": 0.0185
     }
    },
-   "late": false,
-   "mae_skill": 2.17586,
-   "mae_climo": 2.74633
+   "late": false
   },
   "open-powder-ml": {
-   "n_scorable": 58,
-   "n_scored": 58,
+   "n_scorable": 57,
+   "n_scored": 57,
    "coverage": 1.0,
-   "mae": 2.6524,
-   "rmse": 4.3074,
-   "bias": 1.0914,
+   "mae": 2.5981,
+   "rmse": 4.2777,
+   "bias": 1.2114,
    "mae_by_horizon": {
     "24": 1.5865,
     "48": 1.9716,
-    "72": 4.4553
+    "72": 4.3833
    },
-   "powder_score": 3.42,
-   "n_skill": 58,
-   "pinball": 0.9022,
-   "n_pinball": 58,
+   "powder_score": -1.87,
+   "n_skill": 57,
+   "mae_skill": 2.59807,
+   "mae_climo": 2.55035,
+   "pinball": 0.8878,
+   "n_pinball": 57,
    "swe_accuracy": null,
    "swe_mae": null,
    "density_accuracy": null,
@@ -649,9 +651,9 @@
      "mae_climo": 0.0185
     }
    },
-   "late": false,
-   "mae_skill": 2.65241,
-   "mae_climo": 2.74633
+   "late": false
   }
- }
+ },
+ "rescored_utc": "2026-11-20T23:50:51+00:00",
+ "rescored_reason": "stuck-report QC: 1 station-horizons voided (repeated resort figures)"
 }
