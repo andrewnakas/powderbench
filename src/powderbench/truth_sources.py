@@ -299,6 +299,217 @@ register(TruthSource(
 ))
 
 
+def _jma_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
+    from .networks import jma
+
+    wanted = set(ids)
+    ext = {s.station_id: s.external_id for s in load_stations(league.name)
+           if s.station_id in wanted and s.external_id}
+    return jma.daily({sid: ext[sid] for sid in ids if sid in ext}, begin, end, _offsets(league, ids))
+
+
+register(TruthSource(
+    name="jma",
+    fetch=_jma_daily,
+    history_begin=date(2015, 10, 1),
+    # one archive page per station-month: ten winters keep the build to ~10k pages
+    climatology=(date(2015, 10, 1), _CLIM_END),
+    measured=False,
+    note=(
+        "Truth is the daily snowfall total (降雪の深さの合計) from the Japan Meteorological "
+        "Agency's automatic snow-depth sensors at AMeDAS stations (Sukayu/Hakkoda, Kutchan/Niseko, "
+        "Hakuba, Nozawa, Myoko…): the sum of each hour's rise in snow depth over the JST day. "
+        "Source: 気象庁ホームページ (Japan Meteorological Agency)."
+    ),
+))
+
+
+def _smhi_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
+    from .networks import smhi
+
+    return smhi.daily(ids, begin, end, _offsets(league, ids))
+
+
+register(TruthSource(
+    name="smhi",
+    fetch=_smhi_daily,
+    history_begin=date(2010, 10, 1),
+    climatology=(date(2010, 10, 1), _CLIM_END),
+    measured=False,
+    note=(
+        # the nordic league's note on the site, so it credits all three networks
+        "Truth is new snow from the daily morning snow-depth reading at Swedish (SMHI), Finnish (FMI) "
+        "and Norwegian (MET Norway) weather stations (Sälen, Storlien, Saariselkä, Salla, Hemsedal, "
+        "Oppdal…): the rise in depth between two morning readings. Data © SMHI, © Finnish "
+        "Meteorological Institute and MET Norway (frost.met.no), CC BY 4.0."
+    ),
+))
+
+
+def _fmi_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
+    from .networks import fmi
+
+    return fmi.daily(ids, begin, end, _offsets(league, ids))
+
+
+register(TruthSource(
+    name="fmi",
+    fetch=_fmi_daily,
+    history_begin=date(2010, 10, 1),
+    climatology=(date(2010, 10, 1), _CLIM_END),
+    measured=False,
+    note=(
+        "Truth is new snow from the morning snow-depth reading at the Finnish Meteorological "
+        "Institute's weather stations (Saariselkä, Paljakka, Salla, Kittilä Kenttärova by Levi…): the rise in "
+        "depth to the next morning's reading. Data © Finnish Meteorological Institute, CC BY 4.0."
+    ),
+))
+
+
+def _frost_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
+    from .networks import frost
+
+    return frost.daily(ids, begin, end, _offsets(league, ids))
+
+
+register(TruthSource(
+    name="frost",
+    fetch=_frost_daily,
+    history_begin=date(2010, 10, 1),
+    climatology=(date(2010, 10, 1), _CLIM_END),
+    measured=False,
+    note=(
+        "Truth is new snow from the daily 07:00 snow-depth reading at MET Norway's weather "
+        "stations (Hemsedal, Trysil, Geilo, Oppdal…): the rise in depth to the next morning's reading, "
+        "voided when the station's own rain gauge stayed dry (wind drift). Data © MET Norway (Frost), "
+        "CC BY 4.0."
+    ),
+))
+
+
+def _dwd_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
+    from .networks import dwd
+
+    return dwd.daily(ids, begin, end, _offsets(league, ids))
+
+
+register(TruthSource(
+    name="dwd",
+    fetch=_dwd_daily,
+    history_begin=date(2010, 10, 1),
+    climatology=(date(2000, 10, 1), _CLIM_END),
+    measured=True,
+    note=(
+        "Truth is the new snow measured by hand at the morning reading of Deutscher Wetterdienst "
+        "stations in the Bavarian Alps (Garmisch/Eibsee, Oberstdorf, Balderschwang, Berchtesgaden, "
+        "Reit im Winkl…). Data © Deutscher Wetterdienst, CC BY 4.0."
+    ),
+))
+
+
+def _meteotn_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
+    from .networks import meteotn
+
+    wanted = set(ids)
+    ext = {s.station_id: s.external_id for s in load_stations(league.name) if s.station_id in wanted and s.external_id}
+    return meteotn.daily({sid: ext[sid] for sid in ids if sid in ext}, begin, end, _offsets(league, ids))
+
+
+register(TruthSource(
+    name="meteotn",
+    fetch=_meteotn_daily,
+    history_begin=date(2010, 10, 1),
+    climatology=(date(2005, 10, 1), _CLIM_END),
+    measured=True,
+    note=(
+        "Truth is the new snow measured on a snow board at the 08:00 reading of Meteotrentino's "
+        "snow fields in the Italian Dolomites and Brenta (Passo Tonale, Presena, Grostè by Madonna di "
+        "Campiglio, Folgarida, Canazei, Passo San Pellegrino…). Data © Provincia Autonoma di Trento "
+        "— Meteotrentino, CC BY 4.0."
+    ),
+))
+
+
+def _lwdtirol_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
+    from .networks import lwdtirol
+
+    return lwdtirol.daily(ids, begin, end)
+
+
+register(TruthSource(
+    name="lwdtirol",
+    fetch=_lwdtirol_daily,
+    history_begin=date(2010, 10, 1),
+    climatology=(date(2000, 10, 1), _CLIM_END),
+    measured=False,
+    note=(
+        "Truth is new snow from the automatic snow-depth sensors of Land Tirol's avalanche warning and "
+        "hydrographic services, many of them on ski areas (Sölden, Pitztal glacier, Ischgl, Obergurgl, "
+        "Kühtai…): the rise in depth from one local midnight to the next. Data © Land Tirol "
+        "(data.tirol.gv.at), CC BY 4.0."
+    ),
+))
+
+
+def _provbz_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
+    from .networks import provbz
+
+    return provbz.daily(ids, begin, end)
+
+
+register(TruthSource(
+    name="provbz",
+    fetch=_provbz_daily,
+    history_begin=date(2015, 10, 1),
+    climatology=(date(2014, 9, 1), _CLIM_END),
+    measured=False,
+    note=(
+        "Truth is new snow from the automatic snow-depth sensors of the South Tyrol provincial weather "
+        "service, many on Dolomites ski areas (Alta Badia, Obereggen, Sulden, Karerpass, Sexten…): the "
+        "rise in depth from one local midnight to the next. Data: Provincia autonoma di Bolzano – "
+        "Alto Adige (data.civis.bz.it), CC0 1.0."
+    ),
+))
+
+def _arpal_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
+    from .networks import arpal
+
+    return arpal.daily(ids, begin, end)
+
+
+register(TruthSource(
+    name="arpal",
+    fetch=_arpal_daily,
+    history_begin=date(2010, 10, 1),
+    climatology=(date(2000, 10, 1), _CLIM_END),
+    measured=False,
+    note=(
+        "Truth is new snow from ARPA Lombardia's automatic snow-depth sensors, several on ski areas "
+        "(Livigno, Bormio, Aprica, Madesimo, Valmalenco…): the rise in depth from one local midnight "
+        "to the next, counted from 2 cm. Data: ARPA Lombardia (dati.lombardia.it), CC0 1.0."
+    ),
+))
+
+def _meteoswiss_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
+    from .networks import meteoswiss
+
+    return meteoswiss.daily(ids, begin, end, _offsets(league, ids))
+
+
+register(TruthSource(
+    name="meteoswiss",
+    fetch=_meteoswiss_daily,
+    history_begin=date(2010, 10, 1),
+    climatology=(date(2000, 10, 1), _CLIM_END),
+    measured=True,
+    note=(
+        "Truth is the new snow measured by hand at 06 UTC at MeteoSwiss's manual stations in the ski "
+        "villages and valleys below the SLF study plots (Engelberg, Grindelwald, Pontresina, Sedrun, "
+        "Crans-Montana, Säntis…). Source: MeteoSwiss (opendata.meteoswiss.ch), CC BY 4.0."
+    ),
+))
+
+
 def _bcasws_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
     from .networks import bcasws
 

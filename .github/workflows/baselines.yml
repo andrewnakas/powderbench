@@ -28,6 +28,9 @@ concurrency:
 jobs:
   submit:
     runs-on: ubuntu-latest
+    env:
+      # Norwegian truth (MET Norway Frost): a free client id, sent as the basic-auth user
+      FROST_CLIENT_ID: ${{ secrets.FROST_CLIENT_ID }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

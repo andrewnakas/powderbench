@@ -11,8 +11,9 @@ from __future__ import annotations
 import hashlib
 import json
 import logging
+import os
 import time
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 import pandas as pd
@@ -34,6 +35,32 @@ MIN_INTERVAL_S = BATCH_SIZE * 60 / 600 + 0.1
 _last_request = [0.0]
 
 NWP_MODELS = ("best_match", "gfs_seamless")
+# One-off jobs from a single IP (hindcast gates, climatology builds on a home
+# box) can outrun the free tier's hourly (5,000) or daily (10,000) call limit.
+# With PB_OPENMETEO_PATIENT=1 a 429 that names those windows waits for the
+# window to reset instead of failing after the per-minute retries. Scheduled
+# runs keep the default: a baseline that cannot be fetched in time is skipped.
+# The daily count does not reset at 00:00 UTC for us: on 2026-11-20 the home
+# IP was refused "Daily ... try again tomorrow" at 02:48 UTC, so the daily case
+# probes again hourly (one call) rather than sleeping until midnight.
+PATIENT = os.environ.get("PB_OPENMETEO_PATIENT") == "1"
+MAX_PATIENT_WAITS = 48
+DAILY_PROBE_S = 3600.0
+
+
+def _window_wait(resp: requests.Response | None, now: datetime | None = None) -> float | None:
+    """Seconds until the hourly / daily window named by a 429 resets, else None."""
+    try:
+        reason = str(resp.json().get("reason", "")) if resp is not None else ""
+    except ValueError:
+        return None
+    now = now or datetime.now(timezone.utc)
+    if "Hourly" in reason:
+        return float((59 - now.minute) * 60 + (60 - now.second) + 30)
+    if "Daily" in reason:
+        midnight = datetime(now.year, now.month, now.day, tzinfo=timezone.utc) + timedelta(days=1)
+        return min((midnight - now).total_seconds() + 60, DAILY_PROBE_S)
+    return None
 
 
 def _cache_path(key: str) -> Path:
@@ -46,7 +73,8 @@ def _get(url: str, params: dict, cacheable: bool) -> list | dict:
     cache = _cache_path(key)
     if cacheable and cache.exists():
         return json.loads(cache.read_text())
-    for attempt in range(5):
+    attempt = patient_waits = 0
+    while True:
         wait_for = _last_request[0] + MIN_INTERVAL_S - time.monotonic()
         if wait_for > 0:
             time.sleep(wait_for)
@@ -58,12 +86,21 @@ def _get(url: str, params: dict, cacheable: bool) -> list | dict:
             resp.raise_for_status()
             break
         except requests.RequestException as exc:  # incl. dropped/truncated responses
+            r = getattr(exc, "response", None)
+            limited = getattr(r, "status_code", None) == 429
+            window = _window_wait(r) if limited and PATIENT else None
+            if window is not None and patient_waits < MAX_PATIENT_WAITS:
+                patient_waits += 1
+                log.warning("Open-Meteo %s; waiting %.0f s for the window to reset",
+                            r.json().get("reason"), window)
+                time.sleep(window)
+                continue
             if attempt == 4:
                 raise
-            limited = getattr(getattr(exc, "response", None), "status_code", None) == 429
             wait = 60 if limited else 10 * 2**attempt  # 429 = the per-minute window
             log.warning("Open-Meteo request failed (%s), retrying in %ss", exc, wait)
             time.sleep(wait)
+            attempt += 1
     payload = resp.json()
     if cacheable:
         cache.parent.mkdir(parents=True, exist_ok=True)
