@@ -6,7 +6,7 @@ day (`r_0`), and with the truth shifted a day either way (`r_minus1`,
 `r_plus1`). `suggested_offset` and `verdict` are the decision relative to the
 station's default `day_offset`.
 
-## nordic.csv, japan.csv — direct ECMWF IFS gates
+## nordic.csv, japan.csv, world.csv — direct ECMWF IFS gates
 
 These files are `scripts/nwp_gate.py` reports: every station's daily truth over
 winter 2025-26 (2025-12-01..2026-03-15) correlated with the direct ECMWF IFS
