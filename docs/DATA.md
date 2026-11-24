@@ -53,8 +53,12 @@ Network station names carry the nearest ski area (OpenSkiData, ODbL —
 
 British Columbia's automated snow pillows reach the league two ways:
 
-- **41 via NRCS AWDB** (network MSNT, `data/stations/bc_asws.csv`, ids
-  `<id>:BC:MSNT`): AWDB's daily values with the regular SNOTEL QC. Unchanged.
+- **41 listed through NRCS AWDB** (network MSNT, `data/stations/bc_asws.csv`,
+  ids `<id>:BC:MSNT`). Since 2026-11-24, 40 of them take their truth from BC's
+  own feed as below (`truth_source: bcasws`), because AWDB's daily value is not
+  a local-midnight reading (see *Checked against AWDB*). 3B17P Wolf River Upper
+  has no depth in BC's feed and keeps AWDB's values with the regular SNOTEL QC.
+  Rounds resolved before the switch keep the AWDB truth they were scored on.
 - **47 more straight from BC** (`data/stations/bc_asws_direct.csv`, ids
   `<id>:BC:ASWS`, `src/powderbench/networks/bcasws.py`): 44 pillows
   (`truth_source: bcasws`) and 3 depth-only stations (`bcasws_depth`, below),
@@ -112,8 +116,7 @@ Upper is not in BC's feed), Oct 2023 – May 2026, ~33,000 station-days:
   r 0.70 and AWDB's daily value at r 0.47 (0.42 a day earlier). Midnight is
   better in all 76 station-seasons.
 - So the direct feed keeps the league's rule (local midnight, like SNOTEL and
-  CDEC). The 41 MSNT stations keep AWDB's values; their published truth is
-  unchanged.
+  CDEC), and since 2026-11-24 the MSNT stations read it too (all but 3B17P).
 
 **Stations** (`scripts/networks/bc_asws_direct.py`): of BC's 141 feed
 stations, 40 are MSNT already. Of the other 101, the generator keeps those

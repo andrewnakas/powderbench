@@ -105,7 +105,7 @@ def test_station_list():
     for r in rows:
         bc = r["external_id"]
         assert r["station_id"] == bcasws.station_id(bc) == f"{bc}:BC:ASWS"
-        assert bc not in msnt  # those keep their AWDB (MSNT) truth
+        assert bc not in msnt  # listed once, under their MSNT id
         assert r["truth_source"] in ("bcasws", "bcasws_depth") and r["league"] == "stations"
     assert bcasws.station_id("4A30P") != "4A30P:BC:MSNT"
     lone = [r["station_id"] for r in rows if r["truth_source"] == "bcasws_depth"]
@@ -139,3 +139,23 @@ def test_depth_only_jump_needs_a_neighbour_swe_rise(monkeypatch):
     far = SimpleNamespace(station_id="f:BC:MSNT", latitude=50.45, longitude=-120.0, truth_source=None)  # 50 km
     assert [sid for _, sid in bcasws.ranked_neighbors(50.0, -120.0, [far, near])] == ["n:BC:ASWS"]
     assert bcasws.ranked_neighbors(50.0, -120.0, [far]) == []  # nearest pillow beyond 40 km: no neighbour
+
+
+def test_msnt_stations_read_bc_midnight_unless_depth_is_missing():
+    """AWDB's MSNT day is BC's 08:00 PST reading of the next day, so the MSNT
+    pillows take their truth from BC's feed; 3B17P has no depth there."""
+    rows = list(csv.DictReader((ROOT / "data/stations/bc_asws.csv").open()))
+    assert len(rows) == 41
+    for r in rows:
+        bc = bcasws.bc_id(r["station_id"])
+        assert r["station_id"].endswith(":BC:MSNT")
+        assert r["truth_source"] == ("" if bc == "3B17P" else "bcasws"), bc
+    assert bcasws.utc_offset("2C10P") == bcasws.MOUNTAIN  # Moyie Mountain, East Kootenay
+
+
+def test_msnt_local_day_follows_the_zone():
+    tzfpy = pytest.importorskip("tzfpy")
+    for r in csv.DictReader((ROOT / "data/stations/bc_asws.csv").open()):
+        bc = bcasws.bc_id(r["station_id"])
+        mountain = tzfpy.get_tz(float(r["longitude"]), float(r["latitude"])) in bcasws.MOUNTAIN_ZONES
+        assert (bcasws.utc_offset(bc) == bcasws.MOUNTAIN) == mountain, bc
