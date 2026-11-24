@@ -123,6 +123,24 @@ def open_round(
     typer.echo(f"opened {lg.name} round {d} -> {path}")
 
 
+@app.command()
+def open_missing():
+    """Open every round whose cutoff is under 24 h away but which was never
+    opened (its scheduled run was dropped or cancelled). Never re-opens a round."""
+    from .leagues import load_leagues
+    from .rounds import missing_rounds
+    from .rounds import open_round as do_open
+
+    n = 0
+    for lg in load_leagues():
+        for d in missing_rounds(lg):
+            path = do_open(lg, d)
+            typer.echo(f"opened missed {lg.name} round {d} -> {path}")
+            n += 1
+    if not n:
+        typer.echo("no missed rounds")
+
+
 # GitHub cron starts anywhere from minutes to ~5 h late, and a stations run
 # takes up to ~1.5 h. Baselines must only use information from before the
 # cutoff, so a run fetches only while the cutoff is BASELINE_WINDOW_H away;

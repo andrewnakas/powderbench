@@ -10,6 +10,9 @@
 #   whose next cutoff is 2.5-9 h away and that have no baselines yet, so the
 #   extra runs are no-ops and every cutoff gets a dozen chances.
 # - scrape-resorts.yml once per slot (13:00 S, 16:30 N, 20:30 all, UTC).
+# - open-round.yml every hour with league=missing. It opens only a round whose
+#   cutoff is under 24 h away and that was never opened (its scheduled run
+#   was dropped or cancelled, as alps 2026-11-25 was), so it is a no-op otherwise.
 name: Keeper
 
 on:

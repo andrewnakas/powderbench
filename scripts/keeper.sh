@@ -4,8 +4,10 @@ set -uo pipefail
 LOOP_MIN="${LOOP_MINUTES:-325}"
 SLEEP_S="${SLEEP_SECONDS:-300}"
 BASELINE_EVERY_S="${BASELINE_EVERY_SECONDS:-1800}"
+OPEN_EVERY_S="${OPEN_EVERY_SECONDS:-3600}"
 end=$(( $(date +%s) + LOOP_MIN * 60 ))
 last_baselines=0
+last_open=0
 
 # UTC slot start (HHMM) and the hemisphere scraped then; a slot can still be
 # started up to 3 h late (the morning reports it reads are still the newest)
@@ -21,6 +23,10 @@ while :; do
   now=$(date +%s)
   if [ $(( now - last_baselines )) -ge "$BASELINE_EVERY_S" ]; then
     gh workflow run baselines.yml -f league=due && last_baselines=$now && echo "$(date -u +%H:%MZ) baselines dispatched"
+  fi
+  if [ $(( now - last_open )) -ge "$OPEN_EVERY_S" ]; then
+    # a round whose scheduled open was dropped or cancelled gets opened here
+    gh workflow run open-round.yml -f league=missing && last_open=$now && echo "$(date -u +%H:%MZ) open-round [missing] dispatched"
   fi
   today=$(date -u +%Y-%m-%d)
   for slot in $SLOTS; do
