@@ -141,7 +141,9 @@ archive, never the live sites.
   they prove stable); resorts — each resort's own published snow report,
   scraped from the resort's site with per-resort robots/ToS review
   ([docs/RESORTS.md](docs/RESORTS.md)). Details: [docs/DATA.md](docs/DATA.md).
-- **Baselines:** [Open-Meteo](https://open-meteo.com/) (CC BY 4.0), plus
+- **Baselines:** [Open-Meteo](https://open-meteo.com/) (CC BY 4.0); ECMWF open
+  data (CC BY 4.0) and NOAA GFS read straight from the producers' buckets for
+  every station; NOAA WPC and NDFD; plus
   per-league climatology (10 SNOTEL seasons / 34 ERA5 years; the resorts
   league reference is ERA5 climatology at the resort coordinates until enough
   report history accumulates).

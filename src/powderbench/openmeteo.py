@@ -35,6 +35,15 @@ MIN_INTERVAL_S = BATCH_SIZE * 60 / 600 + 0.1
 _last_request = [0.0]
 
 NWP_MODELS = ("best_match", "gfs_seamless")
+
+
+class OpenMeteoDisabled(RuntimeError):
+    """PB_OPENMETEO=0: run without Open-Meteo (cached responses still serve)."""
+
+
+def enabled() -> bool:
+    return os.environ.get("PB_OPENMETEO", "1") != "0"
+
 # One-off jobs from a single IP (hindcast gates, climatology builds on a home
 # box) can outrun the free tier's hourly (5,000) or daily (10,000) call limit.
 # With PB_OPENMETEO_PATIENT=1 a 429 that names those windows waits for the
@@ -73,6 +82,8 @@ def _get(url: str, params: dict, cacheable: bool) -> list | dict:
     cache = _cache_path(key)
     if cacheable and cache.exists():
         return json.loads(cache.read_text())
+    if not enabled():
+        raise OpenMeteoDisabled(f"Open-Meteo disabled (PB_OPENMETEO=0): {url}")
     attempt = patient_waits = 0
     while True:
         wait_for = _last_request[0] + MIN_INTERVAL_S - time.monotonic()

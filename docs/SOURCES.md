@@ -39,6 +39,8 @@ Every source below permits the use PowderBench makes of it. Please keep these at
 | Source | Provider | Licence | Attribution |
 |---|---|---|---|
 | [Weather-model forecasts (GFS, ECMWF IFS & AIFS, ICON, GEM, UKMO, NBM, HRRR, AROME)](https://open-meteo.com/) | Open-Meteo (from NOAA, ECMWF, DWD, ECCC, Met Office, Météo-France) | CC BY 4.0 | Weather forecasts by Open-Meteo.com (CC BY 4.0), from the respective national weather services. |
+| [ECMWF open data](https://www.ecmwf.int/en/forecasts/datasets/open-data) (IFS 0.25°, AIFS), read directly | ECMWF (via the AWS Open Data bucket `ecmwf-forecasts`) | CC BY 4.0 | Forecasts: ECMWF open data, CC BY 4.0; daily station totals derived by PowderBench. |
+| [NOAA GFS 0.25°](https://registry.opendata.aws/noaa-gfs-bdp-pds/), read directly | NOAA NCEP (via NOAA Open Data Dissemination) | US public domain | Forecasts: NOAA/NCEP Global Forecast System. |
 | [WPC Probabilistic Winter Precipitation Forecast](https://www.wpc.ncep.noaa.gov/pwpf/) | NOAA Weather Prediction Center | US public domain | Snowfall percentiles: NOAA/NWS Weather Prediction Center. |
 | [National Digital Forecast Database (NDFD) snow amount](https://registry.opendata.aws/noaa-ndfd/) | NOAA National Weather Service (via NOAA Open Data Dissemination) | US public domain | Snow amount forecasts: NOAA/NWS National Digital Forecast Database. |
 

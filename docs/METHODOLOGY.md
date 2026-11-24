@@ -201,7 +201,8 @@ jobs up to ~3 h late):
 | `baseline-climatology` | defines 0 |
 | `baseline-zeros`, `baseline-persistence` | trivial floors |
 | `baseline-openmeteo` | Open-Meteo best-match blend, every station |
-| `baseline-gfs`, `-ecmwf`, `-aifs`, `-icon`, `-gem`, `-ukmo` | individual global models (AIFS = ECMWF's AI model), featured stations |
+| `baseline-gfs`, `-ecmwf`, `-aifs` | GFS, ECMWF IFS, ECMWF AIFS (ECMWF's AI model): Open-Meteo on featured stations, the producers' own files on every other station |
+| `baseline-icon`, `-gem`, `-ukmo` | DWD ICON, Environment Canada GEM, Met Office, featured stations |
 | `baseline-nbm`, `-hrrr` | NOAA National Blend and HRRR (US leagues) |
 | `baseline-arome` | Météo-France AROME (Alps) |
 | `baseline-jma` | Japan Meteorological Agency MSM 5 km + GSM (Japan) |
