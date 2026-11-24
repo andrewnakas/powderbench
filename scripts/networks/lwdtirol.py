@@ -30,6 +30,7 @@ import requests
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import gate  # noqa: E402
 import skiareas  # noqa: E402
 
 OUT = ROOT / "data" / "stations" / "lwdtirol.csv"
@@ -76,6 +77,10 @@ def main() -> int:
         ok_days = int(t["valid"].sum())
         snow_days = int((t["snow24"] >= 2 / 2.54).sum())
         keep = ok_days >= MIN_DAYS and snow_days >= MIN_SNOW_DAYS and s["alt"] is not None
+        # the per-station NWP gate (data/gates/alps.csv): a fail, or a best day
+        # later than the station's own, drops it
+        offset, _ = gate.decide("alps", sid, 0) if keep else (None, "")
+        keep = keep and offset is not None
         big, bd = skiareas.nearest(s["lat"], s["lon"], FEATURED_LIFTS)
         print(f"{sid:>14} {s['name']:<34} {s['alt'] or 0:6.0f} m {s['operator']:<12} days={ok_days} "
               f"snow_days={snow_days} -> {'keep' if keep else 'drop'}")
@@ -86,7 +91,7 @@ def main() -> int:
                          "region": "Tirol", "state": "AT", "elevation_ft": round(s["alt"] * 3.28084),
                          "latitude": round(s["lat"], 5), "longitude": round(s["lon"], 5), "league": "alps",
                          "tier": "network", "truth_source": "lwdtirol",
-                         "network": s["operator"], "external_id": s["id"], "day_offset": 0, "_days": ok_days,
+                         "network": s["operator"], "external_id": s["id"], "day_offset": offset, "_days": ok_days,
                          "_area": big["name"] if big is not None and bd <= FEATURED_KM else None, "_km": bd})
     # one sensor per site: where LWD and HD both run a station (< DUP_KM apart),
     # keep the LWD one, else the one with more valid days
