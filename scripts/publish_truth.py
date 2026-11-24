@@ -29,6 +29,14 @@ LEAGUES = {  # league -> (history start, source/licence line)
                                      "and Environment and Climate Change Canada (Open Government Licence – Canada)"),
     "alps": (date(2000, 10, 1), "WSL Institute for Snow and Avalanche Research SLF — CC BY 4.0, www.slf.ch; "
                                  "GeoSphere Austria — CC BY 4.0, data.hub.geosphere.at"),
+    # the three newest leagues start where dynamical.org's ensemble archive does
+    "japan": (date(2020, 10, 1), "Japan Meteorological Agency AMeDAS — JMA website terms of use (compatible with "
+                                  "CC BY 4.0), 出典：気象庁ホームページ"),
+    "nordic": (date(2020, 10, 1), "SMHI — CC BY 4.0; MET Norway (Frost) — CC BY 4.0 / NLOD; Finnish Meteorological "
+                                   "Institute — CC BY 4.0"),
+    "world": (date(2020, 10, 1), "Deutscher Wetterdienst — CC BY 4.0; Météo-France — Licence Ouverte 2.0; ČHMÚ — "
+                                  "CC BY 4.0; Environment and Climate Change Canada — Open Government Licence – "
+                                  "Canada; NOAA GHCNh (WMO core data) — CC0 1.0"),
 }
 
 
@@ -111,6 +119,12 @@ How the truth is built (all code in the [repo](https://github.com/andrewnakas/po
   stations are excluded (docs/DATA.md).
 - **alps** — SLF's measured 24h new snow (HN) at manual study plots and IMIS
   stations, same per-station attribution.
+- **japan** — JMA's daily total of new snowfall (降雪の深さの合計): the sum of
+  the hourly rises of each AMeDAS snow-depth sensor over the JST day.
+- **nordic** — the 06 UTC morning snow depth of SMHI, MET Norway and FMI
+  stations; new snow is the morning-to-morning rise (per-station day offset).
+- **world** — measured new snow from DWD, Météo-France and ČHMÚ observers, and
+  morning depth rises from ECCC and WMO synoptic reports (GHCNh) elsewhere.
 
 Every source keeps its licence: cite the original providers listed above when
 you use the data. Suggested splits are by season (never random — neighbouring
