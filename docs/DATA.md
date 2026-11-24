@@ -792,12 +792,13 @@ below).
 ## Ground truth: mountain weather stations outside the Alps (world league)
 
 The world league is for snowy mountains that the national networks above do
-not reach. It has 109 stations whose truth is online within days:
+not reach. It has 115 stations whose truth is online within days:
 - Germany's mid-mountains (DWD observers);
 - France outside the Alps (Météo-France: the Pyrenees, Massif Central,
   Vosges, Jura and Corsica);
 - the Czech mountains (ČHMÚ);
-- the Low Tatras (Telgárt) and Palandöken (Erzurum), via WMO reports.
+- the Low Tatras (Telgárt) and Palandöken (Erzurum), via WMO reports;
+- the Canadian Rockies, Golden (Kicking Horse) and the Yukon (ECCC).
 
 Every source here is free, needs no key and allows reuse. It grows as
 national feeds are added. Norway is in the nordic league via MET Norway's
@@ -824,6 +825,17 @@ Checked on 2026-11-20 and not usable yet:
     derived values need NIMH's permission first.
 - **Romania (ANM).** The open portal has no snow. Snow depth is only in the
   website's current-conditions feed, whose terms forbid archiving.
+- **Alberta snow pillows (Alberta Environment and Protected Areas).** 17
+  Rockies pillows (Sunshine Village, Skoki Lodge, Little Elbow Summit, Mount
+  Odlum…) are live on rivers.alberta.ca with full records. They measure snow
+  water equivalent only, with no depth sensor, so they cannot give the
+  depth-rise truth the league uses.
+- **Road-weather networks (checked 2026-11-20).** BC's highway weather
+  stations (82 with snow depth near ski areas, history from the 1990s) are
+  "access only" and need written permission (OUTREACH #17). Québec's RSCQ is
+  CC BY live but keeps 30 days open. The US state DOT feeds have no snow
+  depth or no history. The Montana Mesonet's snow-depth sites are in
+  valleys, and the NYS Mesonet forbids redistribution.
 Slovakia's SHMÚ open-data server (opendata.shmu.sk, CC BY 4.0, no
 registration) is the next candidate. It publishes a 1-minute snow-depth
 average for 95 automatic stations every 5 minutes, with about 30 days kept
@@ -973,8 +985,36 @@ too short for a climatology so far.
     - 13 are re-dated by a day. That includes the two Ardèche boards
       Issanlas and Loubaresse (r 0.73 and 0.86 a day earlier, against 0.18
       and 0.31), where the depth station Mazan shows the same shift.
+- **Canada, ECCC snow on the ground** (`:ECCCSD`, `truth_source: eccc_depth`):
+  the daily `SNOW_ON_GROUND` (cm) of Environment and Climate Change Canada's
+  climate stations, from the same keyless climate-daily API as the observers
+  league's measured new snow (Open Government Licence – Canada).
+  - **Reading time:** the value dated D is read in the morning of D; a storm
+    shows in the next day's value (Golden, 2025-12-24: 26.8 mm of
+    precipitation, depth 17 → 39 cm on the 25th). So day D is the rise
+    D → D+1 (`day_offset` 1), counted from 2 cm: the automatic sensors jitter
+    by a centimetre on dry days. A rise of 10 cm or more is voided when the
+    station's own gauge caught under 0.5 mm that day; trace reads 0, and
+    values flagged M or E are missing.
+  - **Candidates:** stations with daily data since 2022 or earlier and a
+    report since March. They must meet either the GHCNh ski-area rule above,
+    or stand at ≥ 1,200 m in British Columbia, Yukon or the Northwest
+    Territories. In Alberta they must also be west of 114.3° W, since
+    Alberta's plains reach 1,300 m.
+    The 8 already in the observers league (measured new snow) are left
+    out. That gives 41. A station needs last winter ≥ 100 valid days and
+    ≥ 8 days of 2 cm or more, ≥ 3 such winters since 2010, and a reading on
+    ≥ 70% of the last 14 days. That keeps 8, which are 7 sites: Golden A and
+    Golden Airport are one site, and the more complete record wins.
+    Staffed volunteer stations (Fernie, Whistler Nesters, Kimberley) post
+    monthly, so they fail the live test.
+  - **NWP gate:** 6 pass, all at `day_offset` 1 (r 0.44–0.66): Banff
+    (3 km from Mt Norquay), Golden Airport (6 km from Kicking Horse),
+    Nordegg, Hendrickson Creek, Roma (Peace River) and Macmillan Pass
+    (Yukon). Edmonton International fails (r 0.35 against the model's
+    snow), and is dropped.
 - **NWP gate rule:** the decisions are stored in `data/gates/world.csv` and
-  applied by the DWD and Météo-France generators (`data/gates/README.md`).
+  applied by the DWD, Météo-France and ECCC generators (`data/gates/README.md`).
   A station may be re-dated to its network's default offset or one less (a
   reading dated by its own day or by the day before), never later.
 - **Featured:** for each ski area with 10+ lifts, its nearest kept station
@@ -985,7 +1025,7 @@ too short for a climatology so far.
     so the league's featured count returns to the 5 it had before the
     Tatras' summits left.
 - **Climatology:** from each station's own record since 2000 (DWD, ČHMÚ,
-  GHCNh) or 2010 (Météo-France).
+  GHCNh) or 2010 (Météo-France, ECCC).
 
 ## Ground truth: ERA5 analysis (era5 league)
 

@@ -205,6 +205,26 @@ register(TruthSource(
 ))
 
 
+def _eccc_depth_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
+    from .networks import eccc_depth
+
+    return eccc_depth.daily(ids, begin, end, _offsets(league, ids))
+
+
+register(TruthSource(
+    name="eccc_depth",
+    fetch=_eccc_depth_daily,
+    history_begin=date(2010, 10, 1),
+    climatology=(date(2010, 10, 1), _CLIM_END),
+    measured=False,
+    note=(
+        "Truth is the rise in snow on the ground from one morning reading to the next at Environment and "
+        "Climate Change Canada climate stations in the Canadian mountains (Banff, Golden, Nordegg, "
+        "Macmillan Pass…). Data: ECCC, Open Government Licence – Canada."
+    ),
+))
+
+
 def _slf_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
     from .networks import slf
 
@@ -610,8 +630,9 @@ register(TruthSource(
         "and Harz; ČHMÚ in the Krkonoše, Jizera and Krušné hory; Météo-France ski-resort posts in the "
         "Pyrenees), otherwise the rise in snow depth to the next morning's reading (WMO stations via NOAA "
         "GHCNh in the Low Tatras and Palandöken; Météo-France stations in the Pyrenees, Massif Central, "
-        "Vosges, Jura and Corsica). Data: NOAA NCEI GHCNh (CC0 1.0), Deutscher Wetterdienst (CC BY 4.0), "
-        "© ČHMÚ (CC BY 4.0), Météo-France (Licence Ouverte 2.0)."
+        "Vosges, Jura and Corsica; ECCC climate stations in the Canadian Rockies and Columbia Mountains). "
+        "Data: NOAA NCEI GHCNh (CC0 1.0), Deutscher Wetterdienst (CC BY 4.0), © ČHMÚ (CC BY 4.0), "
+        "Météo-France (Licence Ouverte 2.0), Environment and Climate Change Canada (OGL – Canada)."
     ),
 ))
 
