@@ -105,7 +105,7 @@ How the truth is built (all code in the [repo](https://github.com/andrewnakas/po
 - **stations** — snow-depth deltas at SNOTEL, SNOLITE, CDEC and BC snow
   pillows, voided on missing/absurd depths, >48" jumps, big jumps without an
   SWE increase (or a neighbour's, for SNOLITE), implausible density, stuck
-  sensors and spikes (CDEC uses the hourly reading at local midnight).
+  sensors and spikes (CDEC and BC's direct feed use the hourly readings at local midnight).
 - **observers** — *measured* new snow from observers' snowboards; each
   station's observation-day offset is fitted against ERA5 and ambiguous
   stations are excluded (docs/DATA.md).
