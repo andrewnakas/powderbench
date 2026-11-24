@@ -69,6 +69,27 @@ def open_round(league: League, d: date) -> Path:
     return path
 
 
+# a scheduled open runs in the cutoff hour and opens the round ~24 h ahead
+OPEN_AHEAD_H = 24
+
+
+def missing_rounds(league: League, now: datetime | None = None) -> list[date]:
+    """Rounds that should be open by now but never were: in season, cutoff
+    still ahead and at most OPEN_AHEAD_H away, no round.json. GitHub drops
+    scheduled runs and the shared queue cancels pending ones, so any later run
+    can open them while there is still time to submit."""
+    now = now or datetime.now(timezone.utc)
+    out = []
+    for k in range(-1, league.cutoff_days_before + 3):
+        d = now.date() + timedelta(days=k)
+        left_h = (league.cutoff_utc(d) - now).total_seconds() / 3600
+        if not league.in_season(d) or not 0 < left_h <= OPEN_AHEAD_H:
+            continue
+        if not (round_dir(league, d) / "round.json").exists():
+            out.append(d)
+    return out
+
+
 def submit_baselines(league: League, d: date, mode: str = "live") -> dict[str, Path]:
     """Write baseline submissions for round d (run shortly before the cutoff).
     mode="hindcast" pulls archived forecasts instead — used for dry runs."""

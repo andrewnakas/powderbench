@@ -75,3 +75,15 @@ def test_house_blend_learns_bias_without_lookahead(tmp_path, monkeypatch):
     finally:
         monkeypatch.delenv("POWDERBENCH_DATA_DIR")
         stations_mod.clear_cache()
+
+
+def test_negative_model_snowfall_is_read_as_zero():
+    # Open-Meteo's ecmwf_ifs025 returned snowfall_sum -0.07 cm at Wells Creek (Mt Baker) on
+    # 2026-11-17, and the -0.028 in. row made the whole ECMWF baseline invalid
+    st = [type("S", (), {"station_id": "a"})(), type("S", (), {"station_id": "b"})()]
+    payload = [{"daily": {"time": ["2026-11-17", "2026-11-18"], "snowfall_sum": [-0.07, 5.08]}},
+               {"daily": {"time": ["2026-11-17", "2026-11-18"], "snowfall_sum": [None, -0.0]}}]
+    out = baselines.openmeteo._daily_frame(st, payload)
+    assert out["snowfall_in"].tolist()[:2] == [0.0, 2.0]
+    assert pd.isna(out["snowfall_in"].iloc[2]) and out["snowfall_in"].iloc[3] == 0.0
+    assert (out["snowfall_in"].dropna() >= 0).all()

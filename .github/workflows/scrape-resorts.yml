@@ -1,16 +1,25 @@
 name: Scrape resort snow reports
+run-name: "Scrape resort snow reports [${{ inputs.hemisphere }}]"
+# Every site is fetched at most twice a day: south at 13:00 + 20:30 UTC, north
+# at 16:30 + 20:30. The keeper (keeper.yml) starts each slot exactly once;
+# there is no cron here, because GitHub's scheduler dropped slots (one scrape
+# on 11-09 instead of three) and a late cron run next to a keeper run would
+# fetch a site a third time.
 on:
-  schedule:
-    # every site is fetched at most twice a day: south at 13:00 + 20:30, north at 16:30 + 20:30
-    - cron: "30 20 * * *" # all: Oceania morning (08:30 NZST / 06:30 AEST); North America re-check
-    - cron: "0 13 * * *" # south: South America morning (09:00 CLT / 10:00 ART); re-catches Oceania
-    - cron: "30 16 * * *" # north: after the 05:00-09:00 local morning reports (09:30 MT / 08:30 PT)
   workflow_dispatch:
+    inputs:
+      hemisphere:
+        description: "S (13:00 UTC slot), N (16:30 UTC slot) or all (20:30 UTC slot)"
+        type: choice
+        options: [all, S, N]
+        default: all
 
 permissions:
   contents: write
 
-concurrency: benchmark-data
+concurrency:
+  group: scrape-resorts
+  cancel-in-progress: false
 
 jobs:
   scrape:
@@ -23,9 +32,9 @@ jobs:
       - run: pip install -e .
       - name: Scrape
         run: |
-          case "$(echo "${{ github.event.schedule }}" | awk '{print $2}')" in
-            13) powderbench scrape-resorts --hemisphere S ;;
-            16) powderbench scrape-resorts --hemisphere N ;;
+          case "${{ inputs.hemisphere }}" in
+            S) powderbench scrape-resorts --hemisphere S ;;
+            N) powderbench scrape-resorts --hemisphere N ;;
             *) powderbench scrape-resorts ;;
           esac
       - name: Commit snapshots
@@ -34,5 +43,9 @@ jobs:
           git config user.email "bot@users.noreply.github.com"
           git add data/resortreports
           git diff --cached --quiet || git commit -m "Archive resort snow reports"
-          git pull --rebase origin main
-          git push
+          # main moves all day and GitHub sometimes answers a push with a 500
+          for attempt in 1 2 3 4 5; do
+            git pull --rebase origin main && git push && exit 0
+            sleep $((attempt * 20))
+          done
+          exit 1
