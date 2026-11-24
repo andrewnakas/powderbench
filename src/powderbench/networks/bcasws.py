@@ -2,9 +2,10 @@
 province's own feed (Government of British Columbia, Environmental Monitoring
 and Analysis Branch; Open Government Licence – British Columbia).
 
-41 BC pillows already reach the stations league through NRCS AWDB (network
-MSNT, ids '<id>:BC:MSNT', regular SNOTEL truth). This adapter reads the rest
-straight from BC: hourly snow depth (SD, cm) and SWE (SW, mm), one column per
+41 BC pillows were in the stations league first, listed through NRCS AWDB
+(network MSNT, ids '<id>:BC:MSNT'); 40 of them now take their truth from this
+feed too (truth_source bcasws; 3B17P has no depth here and keeps AWDB). This
+adapter also reads the rest straight from BC: hourly snow depth (SD, cm) and SWE (SW, mm), one column per
 station ('1A01P Yellowhead Lake'), timestamps in UTC:
 
   SD.csv / SW.csv                    the current water year (from Oct 1)
@@ -19,7 +20,8 @@ and spike.
 
 AWDB's MSNT daily value for day d is not a midnight reading: it is this
 feed's 16:00 UTC (08:00 PST) reading on d+1, at all 40 stations in both feeds
-(docs/DATA.md). The direct feed keeps the league's local-midnight day.
+(docs/DATA.md). The direct feed keeps the league's local-midnight day, which is
+why the MSNT stations read it as well.
 
 Depth-only stations (no pillow; truth_source bcasws_depth) get the SNOLITE
 rule instead of their own SWE: `daily_depth_only`.
@@ -74,6 +76,7 @@ def bc_id(sid: str) -> str:
 # as standard time. scripts/networks/bc_asws_direct.py re-checks this list.
 MOUNTAIN_IDS = frozenset({
     "2A21P", "2A30P", "2A33P", "2A36P", "2C09Q", "2C14P", "2C17AP", "2C21P", "2C23P", "2C24P",  # Edmonton
+    "2C10P",  # Edmonton: Moyie Mountain (MSNT, read from this feed since 2026-11-24)
     "2D05P", "2D10P",  # Creston
     "4A31P", "4A33P", "4A37P", "4A38P", "4A39P", "4A46P", "4A48P", "4C01P",  # Dawson_Creek
 })
@@ -149,6 +152,12 @@ def _read_cache(path: Path) -> pd.DataFrame:
 def _current(element: str) -> pd.DataFrame:
     """The current water year — always re-read (once per process)."""
     return _fetch_reduced(FILES[element])
+
+
+def feed_ids(element: str) -> set[str]:
+    """BC ids with at least one reading of element (SNWD or WTEQ) this water year."""
+    cur = _current(element)
+    return {c for c in cur.columns if cur[c].notna().any()}
 
 
 @lru_cache(maxsize=None)

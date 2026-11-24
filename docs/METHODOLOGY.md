@@ -63,8 +63,9 @@ New snow on local day *d* is the positive depth change between the end of
   (13 pairs, Jan–Feb 2026). Pillows within 1.5 km of a SNOTEL are the same
   site and are excluded.
 - **SNOLITE** (NRCS, depth only): see the neighbour rule in §3.
-- **BC automated snow pillows**: 41 served by AWDB as network MSNT (AWDB's
-  daily values), and the rest read hourly from BC's own feed like CDEC —
+- **BC automated snow pillows**: read hourly from BC's own feed like CDEC
+  (since 2026-11-24 also 40 of the 41 that AWDB lists as network MSNT; 3B17P, with
+  no depth in BC's feed, keeps AWDB's daily values) —
   the median of the 23:00/00:00/01:00 readings at local midnight, in local
   standard time (UTC−8; UTC−7 in the Mountain-time East Kootenay, Golden,
   Kootenay Lake east shore and Peace). Stations with depth but no pillow
