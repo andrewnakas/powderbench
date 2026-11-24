@@ -14,7 +14,7 @@ from typing import Callable
 
 Parser = Callable[[str], "float | None"]
 
-_NUMBER = r"-?\d+(?:[.,]\d+)?"
+_NUMBER = r"-?(?:\d+(?:[.,]\d+)?|\.\d+)"  # ".5" (typed without the 0) is 0.5, not 5
 
 
 def _dig(obj, keys):

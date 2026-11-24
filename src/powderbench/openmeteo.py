@@ -83,7 +83,9 @@ def _daily_frame(stations: list[Station], payload: list | dict) -> pd.DataFrame:
                 {
                     "station_id": station.station_id,
                     "date": date.fromisoformat(day),
-                    "snowfall_in": None if cm is None else cm / CM_PER_INCH,
+                    # ECMWF's de-accumulated snowfall can come back a hair below
+                    # zero (-0.07 cm); a negative row voids the whole submission
+                    "snowfall_in": None if cm is None else max(cm, 0.0) / CM_PER_INCH,
                 }
             )
     return pd.DataFrame(rows)

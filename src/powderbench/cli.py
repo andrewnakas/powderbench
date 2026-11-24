@@ -108,10 +108,12 @@ def hindcast(
 def open_round(
     league: str = LeagueOpt,
     round_date: Optional[str] = typer.Option(None, help="Default: next round with a ~24h window"),
+    force: bool = typer.Option(False, help="Rewrite the manifest of a round that is already open"),
 ):
     """Create the round manifest for a submission day."""
     from .leagues import get_league
     from .rounds import open_round as do_open
+    from .rounds import round_dir
 
     lg = get_league(league)
     # default: the round whose cutoff is ~24h away (cutoff sits days_before ahead of D)
@@ -119,8 +121,30 @@ def open_round(
     if not lg.in_season(d):
         typer.echo(f"{lg.name} is off-season for {d} — not opening a round")
         return
+    if (round_dir(lg, d) / "round.json").exists() and not force:
+        # a late scheduled run must not refreeze the station set under entries that already submitted
+        typer.echo(f"{lg.name} round {d} is already open — left as it is (--force rewrites it)")
+        return
     path = do_open(lg, d)
     typer.echo(f"opened {lg.name} round {d} -> {path}")
+
+
+@app.command()
+def open_missing():
+    """Open every round whose cutoff is under 24 h away but which was never
+    opened (its scheduled run was dropped or cancelled). Never re-opens a round."""
+    from .leagues import load_leagues
+    from .rounds import missing_rounds
+    from .rounds import open_round as do_open
+
+    n = 0
+    for lg in load_leagues():
+        for d in missing_rounds(lg):
+            path = do_open(lg, d)
+            typer.echo(f"opened missed {lg.name} round {d} -> {path}")
+            n += 1
+    if not n:
+        typer.echo("no missed rounds")
 
 
 # GitHub cron starts anywhere from minutes to ~5 h late, and a stations run
