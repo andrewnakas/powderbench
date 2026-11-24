@@ -108,16 +108,22 @@ def hindcast(
 def open_round(
     league: str = LeagueOpt,
     round_date: Optional[str] = typer.Option(None, help="Default: next round with a ~24h window"),
+    force: bool = typer.Option(False, help="Rewrite the manifest of a round that is already open"),
 ):
     """Create the round manifest for a submission day."""
     from .leagues import get_league
     from .rounds import open_round as do_open
+    from .rounds import round_dir
 
     lg = get_league(league)
     # default: the round whose cutoff is ~24h away (cutoff sits days_before ahead of D)
     d = _parse_date(round_date) if round_date else date.today() + timedelta(days=1 + lg.cutoff_days_before)
     if not lg.in_season(d):
         typer.echo(f"{lg.name} is off-season for {d} — not opening a round")
+        return
+    if (round_dir(lg, d) / "round.json").exists() and not force:
+        # a late scheduled run must not refreeze the station set under entries that already submitted
+        typer.echo(f"{lg.name} round {d} is already open — left as it is (--force rewrites it)")
         return
     path = do_open(lg, d)
     typer.echo(f"opened {lg.name} round {d} -> {path}")

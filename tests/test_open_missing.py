@@ -33,3 +33,25 @@ def test_off_season_leagues_open_nothing(tmp_path, monkeypatch):
     era5 = get_league("era5")  # austral winter only
     monkeypatch.setenv("POWDERBENCH_DATA_DIR", str(tmp_path))
     assert missing_rounds(era5, _now(2026, 11, 24, 9)) == []
+
+
+def test_open_round_leaves_an_open_round_alone(tmp_path, monkeypatch):
+    import json
+    import shutil
+    from pathlib import Path
+
+    from typer.testing import CliRunner
+
+    from powderbench.cli import app
+
+    # a data dir with the league config but a round already open (as by a catch-up run)
+    src = Path(__file__).resolve().parents[1] / "data"
+    shutil.copy(src / "leagues.yaml", tmp_path / "leagues.yaml")
+    monkeypatch.setenv("POWDERBENCH_DATA_DIR", str(tmp_path))
+    rdir = round_dir(get_league("stations"), date(2026, 11, 25))
+    rdir.mkdir(parents=True)
+    (rdir / "round.json").write_text(json.dumps({"stations": ["frozen"]}))
+    out = CliRunner().invoke(app, ["open-round", "-l", "stations", "--round-date", "2026-11-25"])
+    assert out.exit_code == 0, out.output
+    assert "already open" in out.output
+    assert json.loads((rdir / "round.json").read_text()) == {"stations": ["frozen"]}
