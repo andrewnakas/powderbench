@@ -23,8 +23,9 @@ forecast for it (Lesko's depth reports before 2023 come only from the unusable
 IMGW feed).
 NWP_GATE_FAILED lists stations whose truth failed the per-station NWP gate
 (scripts/nwp_gate.py on the direct-NWP branch: daily truth vs ECMWF IFS over
-winter 2025-26, best day shift below r 0.4). Summit stations fail it: wind,
-not snowfall, moves their depth.
+winter 2025-26, best day shift below r 0.4). Chopok and Lomnický štít, which
+failed that run, pass the second look (ECMWF IFS 9 km from Open-Meteo's S3
+archive with the fixed cell search, data/gates/README.md) and are back.
 Featured: for each ski area with >= FEATURED_LIFTS lifts, its nearest kept
 station within FEATURED_KM and no more than BELOW_BASE_M below the area's
 lowest lift (a valley-floor station says little about the slopes).
@@ -68,8 +69,6 @@ MIN_LIVE_SHARE = 0.7
 FEATURED_KM = 6.0
 # r vs ECMWF IFS, 2025-12-01..2026-03-15, shifts -1/0/+1 (n ~90-105 days)
 NWP_GATE_FAILED = {
-    "LOM00011916": "Chopok summit: r 0.28/0.27/0.07, truth 25 in vs model 19",
-    "LOM00011930": "Lomnicky stit summit: r 0.30/0.30/-0.02, truth 48 in vs model 20",
     "HRM00014235": "Puntijarka: r -0.01/0.01/0.37, truth 71 in vs model 17",
 }
 FEATURED_LIFTS = 10

@@ -287,12 +287,16 @@ there's no key.
   - Six of the nine "same day" stations fit the documented +1 better and move
     to it: St. Anton (r 0.56 against 0.44), Achenkirch, Hochfilzen, Loibl
     Tunnel, Rinn and Umhausen.
-  - Saalbach (best r 0.36) and Tamsweg (0.20) track no shift of the model and
-    are dropped. Saalbach was featured.
-  - 33 sites use +1 and Semmering 0. 34 of 44 sites are in.
+  - Saalbach (best r 0.36) and Tamsweg (0.20) tracked no shift of the model
+    and were dropped. The gate's second look (2026-11-24, ECMWF IFS 9 km with
+    a fixed cell search, `data/gates/README.md`) passes both at the
+    documented +1 (r 0.81 and 0.43), and they are back. Saalbach is a network
+    station now (it was featured), so the featured count and the Open-Meteo
+    budget stay where they are.
+  - 35 sites use +1 and Semmering 0. 36 of 44 sites are in.
 - **Featured:** St. Anton (village and Galzig), Lech / Zürs (Langen),
-  Warth-Schröcken, Galtür / Ischgl, Obergurgl, Obertauern, Seefeld, Nauders,
-  Pitztal Glacier.
+  Warth-Schröcken, Galtür / Ischgl, Obergurgl, Obertauern, Saalbach
+  Hinterglemm, Seefeld, Nauders, Pitztal Glacier.
 - **Climatology:** from each station's own record since 2000.
 - **Hindcast gate:** 2026-02-01…14, run separately for the 22 original sites
   and the 14 added ones (see METHODOLOGY §6).
@@ -344,7 +348,8 @@ are not used.
 - **Candidates:** active stations at ≥ 600 m in the German Alps (47.2–47.95° N,
   9.8–13.2° E: Allgäu to Berchtesgaden). Kept when last winter (Nov–Mar) has
   ≥ 100 new-snow values and ≥ 10 days of 2 cm or more: 52 of 105. The
-  NWP gate drops Schönau am Königssee (below), leaving 51.
+  NWP gate dropped Schönau am Königssee (below); its second look passes it
+  (r 0.69), so all 52 are in.
 - **Day attribution:** the value dated D is the morning-of-D measurement, so day
   D is the value dated D+1. Not fitted per station. All 85 German stations
   ≥ 700 m with new-snow data correlate best with the precipitation DWD files
@@ -518,11 +523,14 @@ Alpes-Maritimes ("Southern French Alps") (`scripts/networks/meteofrance.py
   that Météo-France's nivo network covers (Chamonix, Tignes, Val d'Isère, Val
   Thorens, Les Arcs, Alpe d'Huez, Isola 2000…; the nivo stations are in
   #578). Of two candidates at one site, the longer record is kept (3 more).
-- **NWP gate:** 52 of 59 pass. Seven fail: the automatic high-pass sensors
-  Restefond, Col Agnel and Galibier, and Montclar, St Jean-St-Nicolas, Peira
-  Cava and Vaujany. Peone is re-dated to `day_offset` 0.
-- **Stations:** 17 new-snow boards and 35 depth stations, from 670 m to
-  3,093 m (median 1,525 m), among them Le Tour, Les Contamines, Megève,
+- **NWP gate:** 52 of 59 passed. Seven failed: the automatic high-pass
+  sensors Restefond, Col Agnel and Galibier, and Montclar, St Jean-St-Nicolas,
+  Peira Cava and Vaujany. Peone is re-dated to `day_offset` 0. The second
+  look (2026-11-24) passes all but Galibier. Five are back (Vaujany at
+  `day_offset` 0); Col Agnel stays out as the same site as ARPA Piemonte's
+  Colle dell'Agnello, which was added after the first gate.
+- **Stations:** 17 new-snow boards and 40 depth stations, from 670 m to
+  3,093 m (median 1,500 m), among them Le Tour, Les Contamines, Megève,
   Grand-Bornand, Sainte-Foy, St-Martin-de-Belleville, Bonneval, Villard-de-Lans,
   Chamrousse, Pelvoux and the nivose sensors of Météo-France's avalanche
   service (Aiguilles Rouges, La Meije, Les Écrins, Bellecôte…).
@@ -554,11 +562,13 @@ rest (`geosphere_more.csv`), all network tier.
   gauge. GeoSphere lists many sites under two station numbers; of two
   candidates at one site, the longer record is kept, **before** the gate, so
   a site that fails cannot return under its other number. That gives 42.
-- **NWP gate:** 36 pass. Six fail: Lofer, Krimml, Hall bei Admont,
+- **NWP gate:** 36 passed. Six failed: Lofer, Krimml, Hall bei Admont,
   Mittersill, Kirchdorf in Tirol and Radstadt-Tandalier. Bad Mitterndorf,
   Aigen im Ennstal and Irdning-Gumpenstein are re-dated to `day_offset` 0.
-- **Stations:** 17 hand-measured and 19 gauges, from 613 m to 1,916 m
-  (median 850 m): Tyrol 12, Vorarlberg 6, Carinthia 6, Styria 5, Salzburg 3,
+  The gate's second look (2026-11-24) passes all six (r 0.48–0.72), with
+  Radstadt-Tandalier at `day_offset` 0, so all 42 are in.
+- **Stations:** 20 hand-measured and 22 gauges, from 613 m to 1,916 m
+  (median 825 m): Tyrol 13, Salzburg 7, Styria 6, Vorarlberg 6, Carinthia 6,
   Upper Austria 3, Lower Austria 1. Among them Kitzbühel and
   Hahnenkamm-Sonnenrast, Hintertux, Alpbach, Söll, Mayrhofen, Kals, Sillian,
   Schröcken (Warth), Schoppernau, Mittelberg (Kleinwalsertal), Gaschurn,
@@ -588,14 +598,16 @@ Arpa Piemonte – www.arpa.piemonte.it". No key.
   since 2010, and a reading on ≥ 70% of the live feed's 7 days: 63. None sits
   within 2 km and 200 m of a station already in the league. Alagna (live
   4 of 7 days) and three stations with no history are among those left out.
-- **NWP gate:** 61 pass; Colleretto and Graglia fail. 20 are re-dated to
+- **NWP gate:** 61 passed; Colleretto and Graglia failed. The second look
+  (2026-11-24) passes Colleretto (r 0.59) and it is back; Graglia still
+  fails. 20 are re-dated to
   `day_offset` 0, most by a wide margin (Paesana r 0.85 against 0.40,
   Capanne Marcarolo 0.70 against 0.22, Piani di Carrega 0.47 against 0.03):
   their validated value dated D is the depth on the morning after. The gate
   ran on the validated history; the live feed of those stations can only be
   checked against it once the history reaches this winter (July 2027), so the
   gate is re-run then.
-- **Stations:** 61, from 610 m to 2,977 m (median 1,770 m), 37 within 10 km
+- **Stations:** 62, from 610 m to 2,977 m (median 1,765 m), 37 within 10 km
   of a ski area, among them Sestriere, Bardonecchia (Pian del Sole,
   Pranudin), Sauze Cesana, Prali, Limone, Bielmonte, Macugnaga (Pecetto,
   Rifugio Zamboni) and Alpe Veglia (San Domenico).
@@ -617,7 +629,8 @@ a misdated record and drops the station.
 
 - **Dropped from the lists already live (all network tier):**
   - SLF Bellinzona, Brusio and Poschiavo, low valley stations south of the
-    Alps (best r 0.01, 0.35 and 0.38).
+    Alps (best r 0.01, 0.35 and 0.38; Brusio and Poschiavo pass the second
+    look below).
   - DWD Schönau am Königssee (0.33).
   - Land Tirol Grubigstein and Wandspitze: their best shift is a day later
     than a midnight depth sensor allows.
@@ -630,6 +643,24 @@ a misdated record and drops the station.
   stations move from `day_offset` 0 to 1 (the documented 07:00 reading, which
   the ERA5 fit had placed a day early), and GeoSphere Saalbach and Tamsweg
   fail. #578 applies those.
+- **Second look (2026-11-24):** the 21 failures were run again on the same
+  rule against ECMWF IFS 9 km from Open-Meteo's S3 archive, with a fixed cell
+  search (`data/gates/README.md`). The first gate's cell was often high,
+  snowy terrain above a valley station: its season total ran a median 2.2×
+  the truth, against 0.65× now. 18 pass (median r 0.60), and 17 are back:
+  - SLF Brusio and Poschiavo (r 0.71 and 0.86), DWD Schönau am Königssee;
+  - GeoSphere Saalbach and Tamsweg at `day_offset` 1, and
+    the six `geosphere_more.py` stations (Radstadt-Tandalier at 0);
+  - Météo-France Restefond, Montclar, St Jean-St-Nicolas, Peira Cava and
+    Vaujany (Vaujany at 0);
+  - ARPA Piemonte Colleretto.
+
+  Météo-France Col Agnel passes too but stays out: ARPA Piemonte's Colle
+  dell'Agnello, listed since the first gate dropped it, is the same site
+  (within 2 km and 200 m), and the generator keeps one station per site.
+  Galibier, Graglia and Bellinzona still fail. The second look's model is
+  the short-lead forecast, not the day-ahead run, so part of the gain is lead
+  time (see `data/gates/README.md`). 713 sites are in (89 featured).
 
 ### Not added yet (Alps and nearby, 2026-11-20)
 
@@ -729,10 +760,10 @@ below).
 - **Sweden, SMHI** (`:SE:SMHI`, `truth_source: smhi`): parameter 8, snow depth
   once a day at 06 UTC, mostly read by observers. Corrected archive plus
   `latest-months` (yesterday's reading is in by the morning). Open data,
-  CC BY 4.0, credit SMHI. 48 stations.
+  CC BY 4.0, credit SMHI. 50 stations.
 - **Finland, FMI** (`:FI:FMI`, `truth_source: fmi`): daily `snow` from FMI's
   WFS (`fmi::observations::weather::daily::simple`; −1 = no snow cover = 0).
-  Open data, CC BY 4.0, credit Finnish Meteorological Institute. 45 stations.
+  Open data, CC BY 4.0, credit Finnish Meteorological Institute. 49 stations.
   FMI's station list has no elevation, so elevations come from the Copernicus
   DEM via Open-Meteo's elevation API.
 - **Norway, MET Norway** (`:NO:FROST`, `truth_source: frost`): element
@@ -740,7 +771,7 @@ below).
   Frost API. Most stations are read by observers. Frost needs a free client
   id (`FROST_CLIENT_ID`, sent as the basic-auth user; an Actions secret for
   the resolve and baselines jobs). Licensed CC BY 4.0 / NLOD (each response
-  cites CC BY 3.0 NO), credit MET Norway. 80 stations.
+  cites CC BY 3.0 NO), credit MET Norway. 112 stations.
   - Readings with qualityCode 5 (very uncertain), 6 (model data) or 7
     (erroneous) are not used. Codes 0–4 are kept; the last few days are
     always 2 or 4 (not yet controlled).
@@ -755,7 +786,8 @@ below).
     station must have reported on ≥ 70% of the last 14 days. That keeps 136
     of 282. The rest: 75 had too few snow days (mostly summits and coast),
     31 too few valid days, 29 are not reporting this November, and 11
-    series are too new. The NWP gate then keeps 80 of the 136.
+    series are too new. The NWP gate then kept 80 of the 136, and its
+    second look (2026-11-24, below) adds 32.
   - **Gate:** Norway is noisier than Sweden and Finland: median r 0.39
     against 0.55–0.63.
     - 54 stations fail, mostly in the western fjords and mountains. There
@@ -768,6 +800,12 @@ below).
       r 0.52 against 0.39.
     - Meråker and Tågdalen line up a day *later*. A morning reading cannot
       do that, so they are treated as misdated and dropped.
+    - **Second look (2026-11-24):** the 54 that failed were run again on
+      the same rule against ECMWF IFS 9 km with a fixed cell search
+      (`data/gates/README.md`). 33 pass (Haukeliseter, Beito and Grov at
+      `day_offset` 0), Veitastrond's best shift is a day later than
+      allowed, and 20 still fail. 32 of the 33 are added; Losistua is not,
+      because it reported on only 9 of the last 14 days (2026-11-24).
 - **Candidates:** active stations within 25 km of a ski area, at ≥ 400 m
   (Sweden) or north of 66° N (Finland). Kept when last winter (Nov–Mar) has
   ≥ 120 valid days and ≥ 10 days of 2 cm or more.
@@ -788,30 +826,34 @@ below).
     D−1 → D (`day_offset` 0) and their climatology was rebuilt.
   - **Dropped:** 8 stations whose best shift stays below r 0.4. Four are FMI:
     Kilpisjärvi, Angeli, Nellim and Tulppio. Four are SMHI: Abisko Aut,
-    Kittelfjäll D, Letafors D and Ljusnedal.
+    Kittelfjäll D, Letafors D and Ljusnedal. The second look
+    (2026-11-24) passes all four FMI stations, Abisko Aut and Kittelfjäll D
+    (median r 0.51, at `day_offset` 1), and they are back.
   - The other 78 pass (median r 0.56).
   - The 2026-02-01..14 featured hindcast before these changes: AIFS 10.5,
     consensus 9.9, ECMWF 6.3, GFS 3.6, climatology 0.
-- **Featured:** 14 Swedish and Finnish stations within 12 km of a ski area
-  with 3+ lifts (Sälen, Höglekardalen, Saariselkä, Paljakka, Salla…), plus 3
-  Norwegian ones, which replace Abisko, Kittelfjäll and Ljusnedal
-  (Funäsdalen) after the gate. The Norwegian three are the nearest kept
-  station that passes the gate for each of the three biggest areas: Hemsedal
-  (Hølto, 2 km), Oppdal (Maurhaugen, 9 km) and Skimore Oslo (Brunkollen,
-  7 km). The featured count stays at 17, so the Open-Meteo budget does not
-  rise.
+- **Featured:** 16 Swedish and Finnish stations within 12 km of a ski area
+  with 3+ lifts (Sälen, Höglekardalen, Saariselkä, Paljakka, Salla, Abisko,
+  Kittelfjäll…), plus 3 Norwegian ones, which replaced Abisko, Kittelfjäll
+  and Ljusnedal (Funäsdalen) after the first gate. The Norwegian three are
+  the nearest kept station that passes the gate for each of the three
+  biggest areas: Hemsedal (Hølto, 2 km), Oppdal (Maurhaugen, 9 km) and
+  Skimore Oslo (Brunkollen, 7 km). Abisko and Kittelfjäll pass the second
+  look and are back as network stations (the SMHI generator's rule would
+  feature them; they are listed as network stations so the Open-Meteo budget does not rise), so the count stays 17.
 - **Climatology:** from each station's own record since 2010 (Norway's
-  80: from Frost history, each at its gated `day_offset`).
+  112: from Frost history, each at its gated `day_offset`).
 
 ## Ground truth: mountain weather stations outside the Alps (world league)
 
 The world league is for snowy mountains that the national networks above do
-not reach. It has 115 stations whose truth is online within days:
+not reach. It has 123 stations whose truth is online within days:
 - Germany's mid-mountains (DWD observers);
 - France outside the Alps (Météo-France: the Pyrenees, Massif Central,
   Vosges, Jura and Corsica);
 - the Czech mountains (ČHMÚ);
-- the Low Tatras (Telgárt) and Palandöken (Erzurum), via WMO reports;
+- the Tatras (Chopok, Lomnický štít, Telgárt) and Palandöken (Erzurum), via
+  WMO reports;
 - the Canadian Rockies, Golden (Kicking Horse) and the Yukon (ECCC).
 
 Every source here is free, needs no key and allows reuse. It grows as
@@ -912,7 +954,9 @@ too short for a climatology so far.
     - ≥ 3 such winters inside the climatology window;
     - the per-station NWP gate (below).
 
-    That keeps 3: Telgárt (Slovakia), and Erzurum and Erzurum Bölge (Turkey).
+    That keeps 5: Chopok, Lomnický štít and Telgárt (Slovakia), and Erzurum
+    and Erzurum Bölge (Turkey). Chopok and Lomnický štít are back since the
+    gate's second look (below).
     The 12 Norwegian
     stations and Navacerrada pass everything but the real-time test. Central
     Asia and Korea report too sparsely (Shymbulak had 2 snow days on record
@@ -953,9 +997,14 @@ too short for a climatology so far.
   - **Kept:** the ČHMÚ observers at r 0.65–0.76 (all best at shift 0),
     Erzurum Bölge 0.73, Telgárt 0.59, Erzurum 0.56.
   - **Dropped:** the summit stations Chopok (r 0.27) and Lomnický štít
-    (0.30): wind, not snowfall, moves their depth. Their "new snow" ran 1.3×
-    and 2.4× the model's. Also Puntijarka (0.01 same day, 0.37 a day later;
-    4× the model's total).
+    (0.30), whose "new snow" ran 1.3× and 2.4× the model's, and Puntijarka
+    (0.01 same day, 0.37 a day later; 4× the model's total).
+  - **Second look (2026-11-24):** the ten failures were run again on the
+    same rule against ECMWF IFS 9 km with a fixed cell search
+    (`data/gates/README.md`). Eight pass and are back: Chopok (r 0.70),
+    Lomnický štít (0.45), five Météo-France stations and Edmonton
+    International (below). Puntijarka (0.396 a day later, just under 0.40)
+    and Puigmal still fail.
   - The 2026-02-01..14 hindcast gate before the drop: ECMWF 1.2 against
     climatology 0, consensus −17. The summit truth was the reason.
 - **Germany outside the Alps, DWD** (`:DE:DWD`, `truth_source: dwd`, the
@@ -996,6 +1045,9 @@ too short for a climatology so far.
       d'Oueil are Pyrenean stations where the model has about twice the
       station's snow or half of it. Le Buisson and Vernines are in the
       Massif Central.
+    - The second look (2026-11-24) passes five of the six at their default
+      offset (r 0.44–0.65): Formiguères, Targasonne, St Paul d'Oueil, Le
+      Buisson and Vernines. Puigmal still fails. 40 are in.
     - 13 are re-dated by a day. That includes the two Ardèche boards
       Issanlas and Loubaresse (r 0.73 and 0.86 a day earlier, against 0.18
       and 0.31), where the depth station Mazan shows the same shift.
@@ -1025,8 +1077,9 @@ too short for a climatology so far.
   - **NWP gate:** 6 pass, all at `day_offset` 1 (r 0.44–0.66): Banff
     (3 km from Mt Norquay), Golden Airport (6 km from Kicking Horse),
     Nordegg, Hendrickson Creek, Roma (Peace River) and Macmillan Pass
-    (Yukon). Edmonton International fails (r 0.35 against the model's
-    snow), and is dropped.
+    (Yukon). Edmonton International failed (r 0.35 against the model's
+    snow) and was dropped; it passes the second look (r 0.43) and is back,
+    so 7 are in.
 - **NWP gate rule:** the decisions are stored in `data/gates/world.csv` and
   applied by the DWD, Météo-France and ECCC generators (`data/gates/README.md`).
   A station may be re-dated to its network's default offset or one less (a
@@ -1038,6 +1091,9 @@ too short for a climatology so far.
   - Grand Tourmalet and Saint-Lary in the Pyrenees. These are capped at two,
     so the league's featured count returns to the 5 it had before the
     Tatras' summits left.
+  - Chopok (Jasná) and Lomnický štít (Tatranská Lomnica), back after the
+    second look, are back as network stations (the GHCNh rule would feature
+    them; they are listed as network stations so the Open-Meteo budget does not rise), so the count stays 5.
 - **Climatology:** from each station's own record since 2000 (DWD, ČHMÚ,
   GHCNh) or 2010 (Météo-France, ECCC).
 

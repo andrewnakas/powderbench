@@ -43,10 +43,14 @@ FIELDS = ["station_id", "slug", "name", "resort", "region", "state", "elevation_
 # with the ERA5 fit, it wins: an offset it found clearly better, or None
 # (dropped) where no shift reaches r 0.4. ERA5 is a reanalysis at 31 km and
 # the gate a 9-25 km forecast on a whole winter, with no near-ties allowed.
+# Saalbach and Tamsweg failed that run (r 0.24 / 0.27 / 0.36 and 0.00 / 0.18 /
+# 0.20 at offset 0). The second look (same rule, ECMWF IFS 9 km from
+# Open-Meteo's S3 archive with the fixed cell search; data/gates/README.md)
+# passes both a day later, at the 07:00 protocol's offset 1.
 NWP_GATE = {
     "119:AT:GEO": 1, "8807:AT:GEO": 1, "12352:AT:GEO": 1, "206:AT:GEO": 1, "127:AT:GEO": 1, "136:AT:GEO": 1,
-    "83:AT:GEO": None,  # Saalbach: r 0.24 / 0.27 / 0.36
-    "98:AT:GEO": None,  # Tamsweg: r 0.00 / 0.18 / 0.20
+    "83:AT:GEO": 1,  # Saalbach: second look r 0.42 / 0.66 / 0.81 at offset 0
+    "98:AT:GEO": 1,  # Tamsweg: second look r -0.01 / 0.28 / 0.43 at offset 0
 }
 
 
