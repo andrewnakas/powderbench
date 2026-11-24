@@ -510,6 +510,46 @@ register(TruthSource(
 ))
 
 
+def _bcasws_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
+    from .networks import bcasws
+
+    return bcasws.daily(ids, begin, end)
+
+
+register(TruthSource(
+    name="bcasws",
+    fetch=_bcasws_daily,
+    history_begin=date(2015, 10, 1),
+    climatology=(date(2015, 10, 1), _CLIM_END),
+    measured=False,
+    note=(
+        "British Columbia automated snow pillows from the province's own feed: hourly depth at "
+        "local midnight, SNOTEL-style QC. Contains information licensed under the Open Government "
+        "Licence – British Columbia."
+    ),
+))
+
+
+def _bcasws_depth_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
+    from .networks import bcasws
+
+    return bcasws.daily_depth_only(ids, begin, end)
+
+
+register(TruthSource(
+    name="bcasws_depth",
+    fetch=_bcasws_depth_daily,
+    history_begin=date(2015, 10, 1),
+    climatology=(date(2015, 10, 1), _CLIM_END),
+    measured=False,
+    note=(
+        "British Columbia depth-only snow stations (no pillow) from the province's own feed: hourly "
+        "depth at local midnight; big jumps confirmed by an SWE rise at a pillow within 40 km, as for "
+        "SNOLITE. Contains information licensed under the Open Government Licence – British Columbia."
+    ),
+))
+
+
 def daily_truth(league: League, station_ids: list[str], begin: date, end: date) -> pd.DataFrame:
     """QC'd daily snowfall for [begin, end], dispatched by truth source.
     Stations with a per-station override are fetched from their own source."""

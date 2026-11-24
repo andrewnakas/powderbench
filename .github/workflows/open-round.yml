@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       league:
-        description: "League name (see data/leagues.yaml)"
+        description: "League name(s) (see data/leagues.yaml), or missing: every round under 24 h from its cutoff that was never opened"
         required: true
         default: "stations"
       round_date:
@@ -17,7 +17,9 @@ on:
 permissions:
   contents: write
 
-concurrency: benchmark-data
+concurrency:
+  group: open-round
+  cancel-in-progress: false
 
 jobs:
   open:
@@ -31,6 +33,11 @@ jobs:
       - name: Open round
         run: |
           LEAGUES="${{ github.event.inputs.league }}"
+          if [ "$LEAGUES" = "missing" ]; then
+            # the keeper's hourly catch-up; never re-opens an existing round
+            powderbench open-missing
+            exit $?
+          fi
           if [ -z "$LEAGUES" ]; then
             # each cron slot opens the leagues whose cutoff hour it is (leagues.yaml)
             # the *scheduled* slot, not the clock: runs often start 30-60 min late
@@ -46,6 +53,11 @@ jobs:
               powderbench open-round --league "$LEAGUE" || FAILED=1
             fi
           done
+          if [ -z "${{ github.event.inputs.league }}" ]; then
+            # an earlier slot that GitHub dropped or cancelled left its round unopened
+            # (alps 2026-11-25): open it now if its cutoff is still ahead
+            powderbench open-missing || FAILED=1
+          fi
           exit $FAILED
       - name: Commit
         run: |
@@ -53,5 +65,9 @@ jobs:
           git config user.email "bot@users.noreply.github.com"
           git add data/rounds data/submissions
           git diff --cached --quiet || git commit -m "Open round"
-          git pull --rebase origin main
-          git push
+          # main moves all day and GitHub sometimes answers a push with a 500
+          for attempt in 1 2 3 4 5; do
+            git pull --rebase origin main && git push && exit 0
+            sleep $((attempt * 20))
+          done
+          exit 1
