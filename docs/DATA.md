@@ -111,8 +111,8 @@ that
   Cook Creek, 0.9 km from MSNT Mount Cook, and Silver Star Mountain, 1.4 km
   from ECCC's Silver Star);
 - have midnight depth + SWE on ≥ 50 of Jan–Feb 2026's 59 days (drops 27
-  stations with no record before this season, 14 depth-only stations with no
-  SWE sensor and 4 with gaps);
+  stations with no record before this season, 14 with no SWE record
+  (depth-only) and 4 with gaps);
 - pass the hindcast gate (`data/gates/stations.csv`, below): 44 of the
   remaining 51.
 
