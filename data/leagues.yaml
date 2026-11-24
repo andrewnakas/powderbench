@@ -71,6 +71,20 @@ leagues:
     resolve_after: { days: 3, hour_utc: 16 }
     season_start_month: 10
     active_months: [11, 12, 1, 2, 3, 4, 5]
+  - name: world
+    label: "World · Morning snow (DWD, Météo-France, ČHMÚ, WMO stations)"
+    status: trial
+    truth_source: ghcnh # Czech stations carry truth_source: chmi, French meteofrance, German dwd
+    # Korea's day D starts 15:00 UTC D-1, China's 16:00, Central Asia's
+    # 18:00-19:00, Europe's 22:00-23:00: the 11:00 UTC D-1 cutoff (the
+    # japan/era5 slot) precedes them all
+    cutoff: { days_before: 1, hour_utc: 11 }
+    # day D+2's snow is in the morning report of D+3; GHCNh's year files run
+    # two days behind (rewritten ~06:45 UTC), so it lands ~D+5 07:00 UTC:
+    # D+6 16:00 leaves a day of slack
+    resolve_after: { days: 6, hour_utc: 16 }
+    season_start_month: 10
+    active_months: [11, 12, 1, 2, 3, 4]
   - name: era5
     label: "ERA5 · Andes / NZ / AU"
     status: live

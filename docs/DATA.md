@@ -614,6 +614,204 @@ below).
 - **Climatology:** from each station's own record since 2010 (Norway's
   80: from Frost history, each at its gated `day_offset`).
 
+## Ground truth: mountain weather stations outside the Alps (world league)
+
+The world league is for snowy mountains that the national networks above do
+not reach. It has 109 stations whose truth is online within days:
+- Germany's mid-mountains (DWD observers);
+- France outside the Alps (Météo-France: the Pyrenees, Massif Central,
+  Vosges, Jura and Corsica);
+- the Czech mountains (ČHMÚ);
+- the Low Tatras (Telgárt) and Palandöken (Erzurum), via WMO reports.
+
+Every source here is free, needs no key and allows reuse. It grows as
+national feeds are added. Norway is in the nordic league via MET Norway's
+Frost. Spain needs AEMET (a free key behind a reCAPTCHA sign-up).
+
+Checked on 2026-11-20 and not usable yet:
+- **Slovenia (ARSO).**
+  - The daily archive (`meteo.arso.gov.si/webmet/archive`) has new snow and
+    depth since 1948 for 48 stations at ≥ 600 m. Data is free with credit
+    ("Vir: ARSO").
+  - Only Kredarica and Lisca are current. The other stations arrive as a
+    monthly batch, too late for a D+6 resolve.
+  - The automatic stations (Kanin, Vršič, Krvavec, Vogel, Rogla) publish
+    depth live, but only a 48 h history with no public archive. They would
+    have to be archived forward.
+- **Poland (IMGW-PIB).** Daily snow depth and fresh snow since 1950
+  (`danepubliczne.imgw.pl`, reuse with credit), but posted 6–10 weeks late.
+  The real-time APIs carry no snow.
+- **Bulgaria (NIMH).** `info.meteo.bg/openData` has a daily-updated monthly
+  file of snow depth at 166 stations since January 2022, including Musala,
+  Rozhen, Chepelare (Pamporovo), Bansko and Samokov (Borovets).
+  - It has no new snow, coordinates or documented reading time.
+  - The terms allow use with credit but forbid modifying the content, so
+    derived values need NIMH's permission first.
+- **Romania (ANM).** The open portal has no snow. Snow depth is only in the
+  website's current-conditions feed, whose terms forbid archiving.
+Slovakia's SHMÚ open-data server (opendata.shmu.sk, CC BY 4.0, no
+registration) is the next candidate. It publishes a 1-minute snow-depth
+average for 95 automatic stations every 5 minutes, with about 30 days kept
+online. Its daily climate files carry measured new snow (`sneh_novy`, 07–07
+local time), but they arrive months late and go back only to January 2025,
+too short for a climatology so far.
+
+- **WMO weather stations, via NOAA GHCNh** (`:GHCNH`, `truth_source: ghcnh`):
+  the morning snow-depth group of the stations' SYNOP reports (06 UTC in
+  Europe), decoded by NOAA NCEI into GHCNh, the successor of ISD, on AWS Open
+  Data (`noaa-ghcnh-pds`, one Parquet per station per year, no key). NODD
+  data is CC0 1.0, and WMO's Unified Data Policy (Resolution 1, 2021) makes
+  these reports core data, free to reuse. Day D is max(morning depth on D+1 −
+  morning depth on D, 0), counted from 1 cm, with the shared depth QC: the
+  nordic league's rule.
+  - **Morning hour:** fitted per station, the earliest synoptic hour 05–11
+    local solar time with at least 80% of the reports of the best one (06
+    UTC everywhere kept).
+  - **Junk:** the live feed carries off-hour spikes (Lomnický štít read
+    2,340 mm at 07 UTC between 220 and 210 mm) and morning ones (10 mm on a
+    1,000 mm pack). A reading counts only when a neighbouring synoptic
+    reading agrees within max(25 cm, 25%).
+  - **Bare ground:** many countries leave the depth group out when there is
+    no snow. A morning report without it reads 0 cm only if one of these
+    holds: the last confirmed morning depth, within 20 days, was ≤ 5 cm; or
+    the station sent no depth for 20 days but did last winter (within 300
+    days) or does within 45 days. It never reads 0 right before a morning
+    above 60 cm. Under a pack it stays missing, and so does a stretch of
+    years with no depth group at all (several Norwegian stations before
+    2014–2017).
+  - **Dropouts:** some stations file 0 when the depth cannot be read
+    (Kasprowy Wierch filed 0 on 32 mornings of Dec 2025–Feb 2026 under 70+
+    cm; Kredarica 14). A 0 between mornings of ≥ 20 cm on both sides within
+    5 days is dropped, and a station with more than 3 last winter is left
+    out: its zeros cannot be told from bare ground. That leaves out most
+    Romanian, Serbian, Slovenian and Polish mountain stations.
+  - **Units by source:** GHCNh merges feeds.
+    - The WMO SYNOP feed (source 220) is in mm. Its special values are
+      scaled too: 9970 (< 0.5 cm) and 9980 (patchy cover) read 0, and 9990
+      is missing.
+    - MET Norway's own hourly feed (398) is in cm, with −1 for no snow.
+      Before about 2023 it is the only depth source for most Norwegian
+      stations; read as mm, their history came out ten times too dry.
+    - Poland's IMGW feed (395) files 0 at every hour it did not observe, so
+      it is not used.
+  - **Latency:** the year files run two days behind, so the league resolves
+    at D+6. They are not complete in real time, though: NOAA backfills some
+    feeds months later. On 2026-11-19 the Norwegian and Spanish stations had
+    a morning report on only 3–8 of the past 13 days, and every station was
+    missing 10–12 November.
+  - **Candidates:** GHCNh stations outside the countries with a national
+    network here, at ≥ 400 m (or north of 60° N) and within 12 km of a ski
+    area with 3+ lifts. The OpenSkiData global extract now covers 41 more
+    countries. A candidate is kept when it passes all of these:
+    - last winter (Nov–Mar) has ≥ 100 valid days and ≥ 8 days of 2 cm or
+      more;
+    - at ≥ 1,200 m, snow lies on ≥ 50% of Dec–Feb mornings;
+    - ≤ 3 dropouts;
+    - a morning report on ≥ 70% of the last 14 days, as read in real time;
+    - ≥ 3 such winters inside the climatology window;
+    - the per-station NWP gate (below).
+
+    That keeps 3: Telgárt (Slovakia), and Erzurum and Erzurum Bölge (Turkey).
+    The 12 Norwegian
+    stations and Navacerrada pass everything but the real-time test. Central
+    Asia and Korea report too sparsely (Shymbulak had 2 snow days on record
+    last winter).
+- **Czech observers, ČHMÚ** (`:CZ:CHMI`, `truth_source: chmi`): element
+  `SNO`, the new snow an observer measures at 07:00 CET, from ČHMÚ's open
+  climate data (opendata.chmi.cz, CC BY 4.0, credit ČHMÚ, no key): one
+  historical CSV per station and element, then one JSON per month. Readings
+  flagged `A` (affected by snowmaking) or with quality ≥ 3 are not used.
+  - **Dating:** the reading is filed under the day the snow fell. The offset
+    is fitted per station against its own morning depth (`SCE`): 0 where the
+    value dated D tracks the depth rise D → D+1, 1 where it tracks D−1 → D,
+    and the station is left out when neither wins by 0.1. Every kept station
+    fits 0: the rise D → D+1 correlates 0.94–0.98 with the reading, D−1 → D
+    only 0.14–0.78.
+  - **Latency:** the professional stations' readings are online the next
+    morning. The volunteer climate observers' readings arrive with the
+    monthly report, six to eight weeks late (on 2026-11-19 October was still
+    blank), so a kept station's latest reading must be at most 7 days old.
+    Before a month closes, some stations file SNO only on mornings with new
+    snow. A blank SNO reads 0 when the next morning's depth is 0 cm; under a
+    pack it stays missing.
+  - **Kept** when last winter has ≥ 120 readings and ≥ 10 days of 2 cm or
+    more, the readings are current, and the station has ≥ 3 winters of
+    record in the climatology window. That gives 5: Pec pod Sněžkou,
+    Churáňov, Klínovec, Hojsova Stráž and Desná–Souš.
+    - 17 more volunteer stations would qualify except for the reporting
+      delay, among them Benecko, Kvilda and Špičák.
+    - Stations that now report only automatic depth, with no observer new
+      snow, are left out: Luční bouda and Labská bouda (since November
+      2023), Harrachov (2021), Šerák (2025), Jizerka (2000) and eight more.
+    - Praděd's observer record stops in 1998 and resumes in 2025.
+- **NWP gate (2026-11-20):** each station's daily truth over winter 2025-26
+  (2025-12-01..2026-03-15, ~100 days) is correlated with the direct ECMWF IFS
+  daily snowfall for the same local day, and with the truth shifted a day
+  either way (`scripts/nwp_gate.py`). A station needs r ≥ 0.4 at its best
+  shift.
+  - **Kept:** the ČHMÚ observers at r 0.65–0.76 (all best at shift 0),
+    Erzurum Bölge 0.73, Telgárt 0.59, Erzurum 0.56.
+  - **Dropped:** the summit stations Chopok (r 0.27) and Lomnický štít
+    (0.30): wind, not snowfall, moves their depth. Their "new snow" ran 1.3×
+    and 2.4× the model's. Also Puntijarka (0.01 same day, 0.37 a day later;
+    4× the model's total).
+  - The 2026-02-01..14 hindcast gate before the drop: ECMWF 1.2 against
+    climatology 0, consensus −17. The summit truth was the reason.
+- **Germany outside the Alps, DWD** (`:DE:DWD`, `truth_source: dwd`, the
+  alps league's adapter): `NSH_TAG`, the new snow an observer measures at the
+  morning reading. Stations are taken at ≥ 600 m outside the Bavarian Alps
+  box, on the alps league's winter test (≥ 100 values, ≥ 10 days of 2 cm or
+  more). That keeps 66 of 162 (`dwd_world.csv`, `scripts/networks/dwd.py
+  --world`). They are in the Black Forest, Bavarian Forest, Fichtelgebirge,
+  Erzgebirge, Thuringian Forest, Rhön, Harz, Sauerland and Eifel. All are
+  network tier.
+  - All 66 pass the NWP gate (median r 0.67).
+  - Nine stations take `day_offset` 0. Their value dated D is day D's snow,
+    not the next morning's measurement. Fichtelberg-Hüttstadl, for example,
+    scores r 0.81 against 0.62. The nine are mostly in the Fichtelgebirge
+    and Franconian Forest, plus Schmücke, Loßburg and Grafenhausen.
+- **France outside the Alps, Météo-France** (`:FR:MFHN` / `:FR:MF`,
+  `truth_source: meteofrance`): the daily climatological data on
+  meteo.data.gouv.fr (Licence Ouverte 2.0, no key). There is one file pair
+  per département. The current one is refreshed daily around 07:00 UTC with
+  data through two days back, which fits the D+6 resolve.
+  - `:FR:MFHN`, the new-snow board (`HNEIGEF`): ski-resort posts and a few
+    climate stations. The value dated D is the 24 h from 06 UTC on D. At the
+    69 stations that report both, it tracks the station's own depth rise
+    D → D+1 (median r 0.94), not D−1 → D (0.27). So `day_offset` 0.
+  - `:FR:MF`, depth only (`NEIGETOT06`, read at 06 UTC): day D is the rise
+    to the next morning (`day_offset` 1). A rise of 10 cm or more is voided
+    when the station's gauge caught under 0.5 mm over the same 24 h. The
+    gauge (RR) dated D covers 06 UTC D → D+1: it correlates 0.83 with the
+    depth rise D → D+1, against 0.29 and 0.38 a day either side.
+  - Values flagged doubtful (quality code 2) are not used.
+  - **Candidates:** stations at ≥ 600 m in the Pyrenees, Massif Central,
+    Vosges, Jura and Corsica départements. A station needs last winter
+    ≥ 100 valid days and ≥ 8 days of 2 cm or more, ≥ 3 such winters since
+    2010, and current reports. A seasonal resort post needs a reading in
+    last season's March or later. That keeps 41.
+  - **NWP gate:** 35 pass.
+    - Six fail and are dropped. Formiguères, Targasonne, Puigmal and St Paul
+      d'Oueil are Pyrenean stations where the model has about twice the
+      station's snow or half of it. Le Buisson and Vernines are in the
+      Massif Central.
+    - 13 are re-dated by a day. That includes the two Ardèche boards
+      Issanlas and Loubaresse (r 0.73 and 0.86 a day earlier, against 0.18
+      and 0.31), where the depth station Mazan shows the same shift.
+- **NWP gate rule:** the decisions are stored in `data/gates/world.csv` and
+  applied by the DWD and Météo-France generators (`data/gates/README.md`).
+  A station may be re-dated to its network's default offset or one less (a
+  reading dated by its own day or by the day before), never later.
+- **Featured:** for each ski area with 10+ lifts, its nearest kept station
+  within 6 km (GHCNh and Météo-France, also no more than 150 m below the
+  area's lowest lift) or 5 km (ČHMÚ). That gives 5:
+  - Pec pod Sněžkou, Skiarena Jizerky (Desná) and Skiareál Klínovec;
+  - Grand Tourmalet and Saint-Lary in the Pyrenees. These are capped at two,
+    so the league's featured count returns to the 5 it had before the
+    Tatras' summits left.
+- **Climatology:** from each station's own record since 2000 (DWD, ČHMÚ,
+  GHCNh) or 2010 (Météo-France).
+
 ## Ground truth: ERA5 analysis (era5 league)
 
 There is no southern-hemisphere SNOTEL equivalent with a stable public API

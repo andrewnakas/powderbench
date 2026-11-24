@@ -510,6 +510,73 @@ register(TruthSource(
 ))
 
 
+def _chmi_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
+    from .networks import chmi
+
+    return chmi.daily(ids, begin, end, _offsets(league, ids))
+
+
+register(TruthSource(
+    name="chmi",
+    fetch=_chmi_daily,
+    history_begin=date(2010, 10, 1),
+    climatology=(date(2000, 10, 1), _CLIM_END),
+    measured=True,
+    note=(
+        "Truth is the new snow measured by hand at the morning reading of Czech Hydrometeorological "
+        "Institute stations in the Krkonoše, Jeseníky, Šumava and Krušné hory (Luční bouda, Labská bouda, "
+        "Pec pod Sněžkou, Praděd, Churáňov, Klínovec…). Data © ČHMÚ (opendata.chmi.cz), CC BY 4.0."
+    ),
+))
+
+
+def _meteofrance_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
+    from .networks import meteofrance
+
+    return meteofrance.daily(ids, begin, end, _offsets(league, ids))
+
+
+register(TruthSource(
+    name="meteofrance",
+    fetch=_meteofrance_daily,
+    history_begin=date(2010, 10, 1),
+    climatology=(date(2010, 10, 1), _CLIM_END),
+    measured=False,  # most stations are depth-derived; the resort posts' boards are measured
+    note=(
+        "Truth is the 24 h new snow on Météo-France ski-resort snow boards (HNEIGEF), or the rise in the "
+        "06 UTC snow depth (NEIGETOT06) at Météo-France weather stations in the Pyrenees, Massif Central, "
+        "Vosges, Jura and Corsica. Data: Météo-France, Licence Ouverte 2.0."
+    ),
+))
+
+
+def _ghcnh_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
+    from .networks import ghcnh
+
+    wanted = set(ids)
+    lons = {s.station_id: s.longitude for s in load_stations(league.name) if s.station_id in wanted}
+    return ghcnh.daily(ids, begin, end, lons)
+
+
+register(TruthSource(
+    name="ghcnh",
+    fetch=_ghcnh_daily,
+    history_begin=date(2010, 10, 1),
+    climatology=(date(2000, 10, 1), _CLIM_END),
+    measured=False,
+    note=(
+        # the world league's note on the site, so it credits every network in the league
+        "Truth is the morning snow reading at mountain weather stations: new snow measured on a board where "
+        "the station has one (DWD observers in the Black Forest, Bavarian Forest, Fichtelgebirge, Erzgebirge "
+        "and Harz; ČHMÚ in the Krkonoše, Jizera and Krušné hory; Météo-France ski-resort posts in the "
+        "Pyrenees), otherwise the rise in snow depth to the next morning's reading (WMO stations via NOAA "
+        "GHCNh in the Low Tatras and Palandöken; Météo-France stations in the Pyrenees, Massif Central, "
+        "Vosges, Jura and Corsica). Data: NOAA NCEI GHCNh (CC0 1.0), Deutscher Wetterdienst (CC BY 4.0), "
+        "© ČHMÚ (CC BY 4.0), Météo-France (Licence Ouverte 2.0)."
+    ),
+))
+
+
 def _bcasws_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
     from .networks import bcasws
 
