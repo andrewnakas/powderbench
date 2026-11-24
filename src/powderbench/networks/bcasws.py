@@ -21,6 +21,9 @@ AWDB's MSNT daily value for day d is not a midnight reading: it is this
 feed's 16:00 UTC (08:00 PST) reading on d+1, at all 40 stations in both feeds
 (docs/DATA.md). The direct feed keeps the league's local-midnight day.
 
+Depth-only stations (no pillow; truth_source bcasws_depth) get the SNOLITE
+rule instead of their own SWE: `daily_depth_only`.
+
 Station ids: '<BC id>:BC:ASWS'.
 """
 
@@ -240,6 +243,91 @@ def fetch_daily(station_ids: list[str], begin: date, end: date,
     for _, idx in out.groupby("station_id").groups.items():
         out.loc[idx, "SNWD"] = _sensor_qc(out.loc[idx, ["SNWD", "WTEQ"]].reset_index(drop=True)).to_numpy()
     return out[cols]
+
+
+def swe_pool(stations) -> list:
+    """Stations-league pillows whose SWE is already truth: SNOTEL and MSNT
+    (AWDB) and the BC pillows read here (truth_source bcasws)."""
+    return [s for s in stations if s.station_id.endswith((":SNTL", ":MSNT")) or s.truth_source == "bcasws"]
+
+
+def ranked_neighbors(lat: float, lon: float, pool) -> list[tuple[float, str]]:
+    """(km, station_id) of the pool's pillows within NEIGHBOR_KM, nearest first."""
+    from .snolite import MAX_NEIGHBORS, NEIGHBOR_KM, _km
+
+    near = sorted((_km(lat, lon, s.latitude, s.longitude), s.station_id) for s in pool)
+    return [(d, sid) for d, sid in near[:MAX_NEIGHBORS] if d <= NEIGHBOR_KM]
+
+
+def neighbors(station_ids: list[str]) -> dict[str, list[str]]:
+    from ..stations import load_stations
+
+    sts = load_stations("stations")
+    pool = swe_pool(sts)
+    return {s.station_id: [sid for _, sid in ranked_neighbors(s.latitude, s.longitude, pool)]
+            for s in sts if s.station_id in set(station_ids)}
+
+
+def swe_gains(ids: list[str], begin: date, end: date) -> set[tuple[str, date]]:
+    """(pillow, day) where the pillow gained >= 0.1" SWE over the day. BC
+    pillows (ours and MSNT) are read from this feed at local midnight, the
+    depth-only stations' own day; SNOTEL, and any MSNT pillow missing from
+    the feed, from AWDB."""
+    from .. import snotel
+
+    feed = {station_id(bc_id(i)): i for i in ids if i.endswith((":ASWS", ":MSNT"))}
+    frames = []
+    if feed:
+        obs = fetch_daily(list(feed), begin, end)
+        obs["station_id"] = obs["station_id"].map(feed)
+        frames.append(obs.loc[obs["WTEQ"].notna(), ["station_id", "date", "WTEQ"]])
+    have = set(frames[0]["station_id"]) if frames else set()
+    awdb = [i for i in ids if i.endswith((":SNTL", ":MSNT")) and i not in have]
+    if awdb:
+        frames.append(snotel.fetch_daily(awdb, begin, end, elements=("WTEQ",)))
+    gained = set()
+    for sid, g in (pd.concat(frames, ignore_index=True) if frames else pd.DataFrame(
+            columns=["station_id", "date", "WTEQ"])).groupby("station_id"):
+        w = g.set_index("date")["WTEQ"].astype(float).sort_index()
+        w = w.reindex([w.index.min() + timedelta(days=i) for i in range((w.index.max() - w.index.min()).days + 1)])
+        for d, inc in w.diff().items():
+            if pd.notna(inc) and inc >= truth.SWE_SUPPORT_MIN_IN:
+                gained.add((sid, d))
+    return gained
+
+
+def daily_depth_only(station_ids: list[str], begin: date, end: date) -> pd.DataFrame:
+    """BC stations with a depth sensor and no pillow. As for NRCS SNOLITE, a
+    >= 6" jump must be confirmed by an SWE rise >= 0.1" that day at one of
+    the 3 nearest pillows within 40 km (station data, never a model);
+    otherwise the day is voided. Same day ends, range and spike checks."""
+    from .snolite import QC_NO_NEIGHBOR_SUPPORT
+
+    nb = neighbors(station_ids)
+    obs = fetch_daily(station_ids, begin - timedelta(days=1), end)
+    support = sorted({t for ts in nb.values() for t in ts})
+    gained = swe_gains(support, begin - timedelta(days=1), end) if support else set()
+    rows = []
+    for sid in station_ids:
+        g = obs[obs["station_id"] == sid].set_index("date")["SNWD"] if len(obs) else pd.Series(dtype=float)
+        for i in range((end - begin).days + 1):
+            d = begin + timedelta(days=i)
+            s0, s1 = g.get(d - timedelta(days=1)), g.get(d)
+            flag = truth.QC_OK
+            if s0 is None or s1 is None or pd.isna(s0) or pd.isna(s1):
+                flag = truth.QC_MISSING
+            elif s0 < 0 or s1 < 0 or s0 > truth.MAX_DEPTH_IN or s1 > truth.MAX_DEPTH_IN:
+                flag = truth.QC_BAD_DEPTH
+            else:
+                delta = s1 - s0
+                if delta > truth.MAX_PLAUSIBLE_SNOW24_IN:
+                    flag = truth.QC_IMPLAUSIBLE
+                elif delta >= truth.SWE_SUPPORT_SNOW_IN and not any((t, d) in gained for t in nb.get(sid, [])):
+                    flag = QC_NO_NEIGHBOR_SUPPORT
+            valid = flag == truth.QC_OK
+            rows.append({"station_id": sid, "date": d, "snow24": max(s1 - s0, 0.0) if valid else float("nan"),
+                         "swe24": float("nan"), "valid": valid, "qc_flag": flag})
+    return pd.DataFrame(rows, columns=["station_id", "date", "snow24", "swe24", "valid", "qc_flag"])
 
 
 def daily(station_ids: list[str], begin: date, end: date) -> pd.DataFrame:

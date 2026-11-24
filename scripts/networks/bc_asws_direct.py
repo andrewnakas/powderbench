@@ -6,19 +6,23 @@ for the stations the league doesn't already have through NRCS AWDB
 A station is kept when it
   - is in BC's hourly feed and reported depth in the last 7 days;
   - is not an AWDB MSNT station (same BC id) and is more than 1.5 km from
-    every other registry station (any league), and from a longer-record
-    candidate;
-  - has midnight depth + SWE on >= 50 of the 59 days of Jan-Feb last winter
-    (so a record before this season, and an SWE sensor);
+    every stations/observers-league station, and from a kept candidate
+    (pillows first, then the longer record);
+  - has midnight depth (+ SWE, for a pillow) on >= 50 of the 59 days of
+    Jan-Feb last winter (so a record before this season);
+  - depth-only stations (no SWE in the last three winters; truth_source
+    bcasws_depth, the SNOLITE rule): has an SWE pillow that is already truth
+    (SNOTEL, MSNT or a kept BC pillow) within 40 km;
   - passes the hindcast gate in data/gates/stations.csv
-    (scripts/hindcast_gate.py, see data/gates/README.md). A station that
-    isn't in the gate file yet is held back.
+    (scripts/hindcast_gate.py, see data/gates/README.md). A gate failure is
+    always dropped; a station not in the gate file yet is held back unless
+    --ungated.
 
 Locations and elevations: DataBC layer WHSE_WATER_MANAGEMENT.SSL_SNOW_ASWS_STNS_SP.
 Open Government Licence – British Columbia.
 
     python scripts/networks/bc_asws_direct.py              # gate applied
-    python scripts/networks/bc_asws_direct.py --ungated    # every candidate (input to the gate)
+    python scripts/networks/bc_asws_direct.py --ungated    # + candidates not gated yet (input to the gate)
 """
 
 from __future__ import annotations
@@ -28,6 +32,7 @@ import csv
 import sys
 import time
 from datetime import date, timedelta
+from types import SimpleNamespace
 from pathlib import Path
 
 import pandas as pd
@@ -49,7 +54,7 @@ MSS = WFS.replace("SSL_SNOW_ASWS_STNS_SP", "SSL_SNOW_MSS_LOCS_SP")
 TZ_URL = "https://api.open-meteo.com/v1/forecast"
 FIELDS = ["station_id", "slug", "name", "resort", "region", "state", "elevation_ft", "latitude", "longitude",
           "league", "truth_source", "network", "external_id"]
-MIN_DAYS = 50  # midnight depth+SWE readings in Jan-Feb (59 days) of last winter
+MIN_DAYS = 50  # midnight depth (+ SWE, for a pillow) readings in Jan-Feb (59 days) of last winter
 LIVE_DAYS = 7
 DUPLICATE_KM = 1.5  # this close to another station = the same site listed twice
 REGION_KM = 60
@@ -118,7 +123,7 @@ def main() -> int:
     registry.clear_cache()
     # ground stations of the North American station leagues (not resort report points or ERA5 cells)
     others = [s for s in registry.by_id().values()
-              if s.league in ("stations", "observers") and s.truth_source != "bcasws"]
+              if s.league in ("stations", "observers") and s.truth_source not in ("bcasws", "bcasws_depth")]
     curated = [s for s in yaml.safe_load((ROOT / "data/stations.yaml").read_text())["stations"]
                if s.get("league", "stations") == "stations"]
     gate = gate_decisions()
@@ -146,6 +151,7 @@ def main() -> int:
     sids = [bcasws.station_id(c) for c in cands]
     obs = bcasws.fetch_daily(sids, date(last, 1, 1), date(last, 2, 28))
     both = obs[obs["SNWD"].notna() & obs["WTEQ"].notna()].groupby("station_id").size()
+    depth_days = obs[obs["SNWD"].notna()].groupby("station_id").size()
     hist = bcasws.fetch_daily(sids, date(last - 3, 10, 1), date(last, 5, 31))
     nhist = hist[hist["SNWD"].notna()].groupby("station_id").size()
     nswe = hist[hist["WTEQ"].notna()].groupby("station_id").size()
@@ -158,33 +164,46 @@ def main() -> int:
     if unknown:
         raise SystemExit(f"unexpected time zones {unknown}")
 
+    # pillows first (they are the depth-only stations' SWE neighbours), longest record first
+    depth_only = {c for c in cands if nhist.get(bcasws.station_id(c)) and not nswe.get(bcasws.station_id(c))}
+    order = sorted(cands, key=lambda c: (c in depth_only, -int(nhist.get(bcasws.station_id(c), 0))))
+    awdb_pillows = bcasws.swe_pool(others)  # SNOTEL + MSNT
     kept, taken = [], []
-    for c in sorted(cands, key=lambda c: -int(nhist.get(bcasws.station_id(c), 0))):
+    for c in order:
         m, st = meta[c], bcasws.station_id(c)
         la, lo = float(m["LATITUDE"]), float(m["LONGITUDE"])
         name = str(m["LOCATION_NAME"]).strip()
-        n = int(both.get(st, 0))
-        line = f"{c:7} {name[:28]:<28} {float(m['ELEVATION'] or 0):>6.0f} m  {tz[c][8:]:<12} Jan-Feb depth+SWE days={n:<3}"
+        lone = c in depth_only
+        n = int(depth_days.get(st, 0) if lone else both.get(st, 0))
+        what = "depth" if lone else "depth+SWE"
+        line = f"{c:7} {name[:28]:<28} {float(m['ELEVATION'] or 0):>6.0f} m  {tz[c][8:]:<12} Jan-Feb {what} days={n:<3}"
         twin = next((t for t in taken if skiareas.km(la, lo, t[0], t[1]) <= DUPLICATE_KM), None)
         if twin:
             print(f"{line} {DUPLICATE_KM} km from {twin[2]} (longer record) -> skip")
             continue
         if n < MIN_DAYS:
-            why = ("no depth record before this season" if not nhist.get(st) else
-                   "no SWE" if not nswe.get(st) else "too few")
+            why = "no depth record before this season" if not nhist.get(st) else "too few"
             print(f"{line} {why} -> skip")
             continue
         if not m.get("ELEVATION"):
             print(f"{line} no elevation in DataBC -> skip")
             continue
+        if lone:
+            pool = awdb_pillows + [SimpleNamespace(station_id=r["station_id"], latitude=r["latitude"],
+                                                   longitude=r["longitude"], truth_source=r["truth_source"])
+                                   for r in kept if r["truth_source"] == "bcasws"]
+            near = bcasws.ranked_neighbors(la, lo, pool)
+            if not near:
+                print(f"{line} no SWE pillow within 40 km -> drop")
+                continue
+            line += f" pillows {', '.join(f'{sid} {d:.0f} km' for d, sid in near)}"
         g = gate.get(st)
-        if not a.ungated:
-            if g is None:
-                print(f"{line} not gated yet -> hold")
-                continue
-            if g["verdict"] != "pass":
-                print(f"{line} gate {g['verdict']} (r {g['r_minus1']}/{g['r_0']}/{g['r_plus1']}) -> drop")
-                continue
+        if g is not None and g["verdict"] != "pass":
+            print(f"{line} gate {g['verdict']} (r {g['r_minus1']}/{g['r_0']}/{g['r_plus1']}) -> drop")
+            continue
+        if g is None and not a.ungated:
+            print(f"{line} not gated yet -> hold")
+            continue
         print(f"{line} ok" + (f" (gate r_0 {g['r_0']})" if g else ""))
         taken.append((la, lo, st))
         near = min(curated, key=lambda s: skiareas.km(la, lo, s["latitude"], s["longitude"]))
@@ -192,7 +211,8 @@ def main() -> int:
         kept.append({"station_id": st, "slug": f"bcasws-{c.lower()}", "name": name,
                      "resort": skiareas.label(name, la, lo), "region": region, "state": "BC",
                      "elevation_ft": round(float(m["ELEVATION"]) / 0.3048), "latitude": round(la, 5),
-                     "longitude": round(lo, 5), "league": "stations", "truth_source": "bcasws",
+                     "longitude": round(lo, 5), "league": "stations",
+                     "truth_source": "bcasws_depth" if lone else "bcasws",
                      "network": "BC ASWS", "external_id": c})
     with OUT.open("w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=FIELDS)

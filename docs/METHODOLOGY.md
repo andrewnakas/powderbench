@@ -67,8 +67,10 @@ New snow on local day *d* is the positive depth change between the end of
   daily values), and the rest read hourly from BC's own feed like CDEC —
   the median of the 23:00/00:00/01:00 readings at local midnight, in local
   standard time (UTC−8; UTC−7 in the Mountain-time East Kootenay, Golden,
-  Kootenay Lake east shore and Peace). Gated against archived ECMWF IFS
-  runs over three winters (see [DATA.md](DATA.md)).
+  Kootenay Lake east shore and Peace). Stations with depth but no pillow
+  get SNOLITE's neighbour rule, with BC's pillows (MSNT and direct) as well
+  as SNOTEL as neighbours. Gated against archived ECMWF IFS runs over three
+  winters (see [DATA.md](DATA.md)).
 
 ### 2.2 Measured new snow (Observers and Alps leagues)
 
@@ -141,7 +143,7 @@ day is. QC is deterministic and public (`powderbench/truth.py`,
 | Range | depth networks | depth < 0 or > 300″ |
 | Implausible | all | > 48″ in a day |
 | SWE support | SNOTEL, CDEC, BC | a ≥ 6″ depth jump without an SWE rise ≥ 0.1″ |
-| Neighbour support | SNOLITE (no SWE) | a ≥ 6″ jump without an SWE rise at a SNOTEL within 40 km |
+| Neighbour support | SNOLITE, BC depth-only (no SWE) | a ≥ 6″ jump without an SWE rise ≥ 0.1″ that day at one of the 3 nearest pillows within 40 km (SNOTEL; for BC also MSNT and BC's direct pillows) |
 | Density | CDEC, BC direct | depth < SWE (physically impossible) |
 | Stuck sensor | CDEC, BC direct | depth unchanged ≥ 3 days while SWE rises ≥ 0.5″ |
 | Spike | CDEC, BC direct | depth > 10″ above both neighbouring days |

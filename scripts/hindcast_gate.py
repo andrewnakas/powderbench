@@ -32,6 +32,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import json
 import logging
 import sys
 from datetime import date, timedelta
@@ -49,6 +50,7 @@ from powderbench.stations import load_stations  # noqa: E402
 from powderbench.truth_sources import daily_truth  # noqa: E402
 
 SHIFTS = (-1, 0, 1)
+USAGE = {"requests": 0, "units": 0.0}  # uncached Open-Meteo requests, weighted call-units
 
 
 def season_window(season: int) -> tuple[date, date]:
@@ -67,6 +69,10 @@ def model_daily(stations, begin: date, end: date, model: str) -> tuple[pd.DataFr
             "daily": "snowfall_sum", "timezone": "auto", "models": model,
             "start_date": begin.isoformat(), "end_date": end.isoformat(),
         }
+        key = openmeteo.HISTORICAL_URL + "?" + json.dumps(params, sort_keys=True)
+        if not openmeteo._cache_path(key).exists():
+            USAGE["requests"] += 1
+            USAGE["units"] += len(batch) * max(1.0, ((end - begin).days + 1) / 14)
         payload = openmeteo._get(openmeteo.HISTORICAL_URL, params, cacheable=True)
         for s, res in zip(batch, payload if isinstance(payload, list) else [payload]):
             zones[s.station_id] = res.get("timezone", "")
@@ -93,6 +99,9 @@ def main() -> None:
     ap.add_argument("--season", type=int, action="append", required=True,
                     help="season by its end year (2025 = Oct 2024 .. May 2025); repeat")
     ap.add_argument("--stations", help="a station CSV: gate only the league's stations listed in it")
+    ap.add_argument("--truth-source", help="gate only the stations with this truth_source")
+    ap.add_argument("--merge", action="store_true",
+                    help="keep the --out file's rows for stations not gated in this run")
     ap.add_argument("--model", default="ecmwf_ifs")
     ap.add_argument("--margin", type=float, default=0.10)
     ap.add_argument("--min-r", type=float, default=0.40)
@@ -110,6 +119,8 @@ def main() -> None:
         with open(a.stations, encoding="utf-8") as f:
             only = {r["station_id"] for r in csv.DictReader(f)}
         stations = [s for s in stations if s.station_id in only]
+    if a.truth_source:
+        stations = [s for s in stations if s.truth_source == a.truth_source]
     ids = [s.station_id for s in stations]
     seasons = sorted(set(a.season))
 
@@ -160,8 +171,13 @@ def main() -> None:
                     "model_in": round(float(f_all.reindex(idx).sum()), 1), "verdict": verdict})
         rows.append(row)
     rep = pd.DataFrame(rows)
+    print(f"Open-Meteo: {USAGE['requests']} uncached requests, ~{USAGE['units']:.0f} call-units")
     if a.out:
-        rep.to_csv(a.out, index=False)
+        out = rep
+        if a.merge and Path(a.out).exists():
+            old = pd.read_csv(a.out)
+            out = pd.concat([old[~old["station_id"].isin(rep["station_id"])], rep], ignore_index=True)
+        out.to_csv(a.out, index=False)
     print(f"{league.name} seasons {seasons} vs {a.model}: {len(rep)} stations, "
           f"pass {int((rep.verdict == 'pass').sum())}, fail {int((rep.verdict == 'fail').sum())}, "
           f"misdated {int((rep.verdict == 'misdated').sum())}, median r_0 {rep['r_0'].median():.2f}")

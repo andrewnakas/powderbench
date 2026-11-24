@@ -55,9 +55,10 @@ British Columbia's automated snow pillows reach the league two ways:
 
 - **41 via NRCS AWDB** (network MSNT, `data/stations/bc_asws.csv`, ids
   `<id>:BC:MSNT`): AWDB's daily values with the regular SNOTEL QC. Unchanged.
-- **44 more straight from BC** (`data/stations/bc_asws_direct.csv`, ids
-  `<id>:BC:ASWS`, `truth_source: bcasws`, `src/powderbench/networks/bcasws.py`):
-  the province's hourly snow depth (cm) and SWE (mm) —
+- **47 more straight from BC** (`data/stations/bc_asws_direct.csv`, ids
+  `<id>:BC:ASWS`, `src/powderbench/networks/bcasws.py`): 44 pillows
+  (`truth_source: bcasws`) and 3 depth-only stations (`bcasws_depth`, below),
+  from the province's hourly snow depth (cm) and SWE (mm) —
   `SD.csv`/`SW.csv` for the current water year and
   `SD_Archive.csv`/`SW_Archive.csv` back to 2003-10
   (`env.gov.bc.ca/wsd/data_searches/snow/asws/data/`, UTC timestamps; DataBC
@@ -70,7 +71,7 @@ British Columbia's automated snow pillows reach the league two ways:
 00:00 and 01:00 readings around local midnight, in local standard time all
 year (as SNOTEL's daily values are): UTC−8, or UTC−7 for stations whose zone
 is America/Edmonton (East Kootenay, Golden, Kootenay NP), America/Creston
-(Kootenay Lake's east shore) or America/Dawson_Creek (Peace) — 10 of the 44
+(Kootenay Lake's east shore) or America/Dawson_Creek (Peace) — 11 of the 47
 (`bcasws.MOUNTAIN_IDS`; the generator re-checks it). That is the zone
 Open-Meteo's `timezone=auto` gives them, so the truth uses the same local day
 the NWP baselines forecast. Units: cm ÷ 2.54, mm ÷ 25.4. Then CDEC's QC: SNOTEL's
@@ -78,6 +79,18 @@ the NWP baselines forecast. Units: cm ÷ 2.54, mm ÷ 25.4. Then CDEC's QC: SNOTE
 sensor and spike; SWE above 4,000 mm is a sensor glitch (the feed has
 99,981 mm readings). The archive is cached reduced to the four UTC hours
 around midnight; the current-season files are re-read each run.
+
+**Depth-only stations** (`truth_source: bcasws_depth`,
+`bcasws.daily_depth_only`): no SWE of their own, so they get NRCS SNOLITE's
+rule (`networks/snolite.py`). Same local-midnight depth, range and spike
+checks; a ≥ 6" jump stands only if one of the 3 nearest pillows within 40 km
+gained ≥ 0.1" SWE that day, otherwise the day is voided. Station data, never a
+model, decides. The pillows can be any station whose SWE is already truth:
+SNOTEL, the 41 MSNT and the 44 direct pillows. BC pillows (MSNT included) are
+read from this feed at the same local midnight; SNOTEL comes from AWDB.
+`swe24` is empty for these stations. Over Oct 2023 – May 2026 the rule
+voided 1 of 47 jumps of 6" or more at the three kept stations (Loch Lomand,
+2024-01-05).
 
 **Checked against AWDB** at the 40 stations in both feeds (3B17P Wolf River
 Upper is not in BC's feed), Oct 2023 – May 2026, ~33,000 station-days:
@@ -110,11 +123,19 @@ that
 - are more than 1.5 km from every stations/observers-league station (drops
   Cook Creek, 0.9 km from MSNT Mount Cook, and Silver Star Mountain, 1.4 km
   from ECCC's Silver Star);
-- have midnight depth + SWE on ≥ 50 of Jan–Feb 2026's 59 days (drops 27
-  stations with no record before this season, 14 with no SWE record
-  (depth-only) and 4 with gaps);
-- pass the hindcast gate (`data/gates/stations.csv`, below): 44 of the
-  remaining 51.
+- have midnight depth (+ SWE, for a pillow) on ≥ 50 of Jan–Feb 2026's 59
+  days (drops 27 stations with no record before this season and 4 pillows
+  with gaps);
+- depth-only (14 have depth but no SWE in the last three winters): have an
+  SWE pillow within 40 km. Two have too few Jan–Feb days (New Denver East,
+  Wade Lake); 8 have no pillow within 40 km (Conrad Glacier, Fernie,
+  Germansen Landing, Deadwood River, Chris Creek, Martins Gulch, North Basin,
+  Fauquier); 4 go to the gate. Pillows are placed first, so a kept direct
+  pillow can be a neighbour. Gray Creek Lower is 1.54 km from, and 280 m
+  below, the Gray Creek Upper pillow: just outside the duplicate rule, and
+  Upper is its nearest neighbour;
+- pass the hindcast gate (`data/gates/stations.csv`, below): 44 of 51
+  pillows and 3 of 4 depth-only stations.
 
 **Gate** (`scripts/hindcast_gate.py`): each candidate's daily truth against
 ECMWF IFS 9 km — the runs ECMWF actually made, from Open-Meteo's
@@ -125,12 +146,14 @@ season, and no other shift better by 0.10. 44 pass (median r 0.72, range 0.48–
 all best at shift 0, so no station is misdated. Seven fail: Cobble Hill (85 m,
 no snow), Fred Laing Lower (577 m, r 0.18 in 2024-25), and five with no
 2023-24 or 2024-25 record (Hamilton Hill, McCulloch, Farron, Ellis Creek,
-Downie Slide Lower).
+Downie Slide Lower). Depth-only, through the neighbour rule: Loch Lomand
+(r 0.79), Crocker Creek (0.72) and Gray Creek Lower (0.63) pass; Kaslo
+Airport (717 m) fails (pooled r 0.31; 0.08 and 0.10 in 2024-25 and 2025-26).
 
 Climatology: `powderbench build-climatology --league stations --only-missing`
 from each station's own record, Oct 2015 – Jun 2025. Stations whose record
-starts late (Paradise Lake, Muskwa-Kechika, Crying Girl Prairie, Fredrickson
-Lake, Dickson Lake, Molson Creek) have it on only 41–65% of Oct–May days until they build
+starts late (Crocker Creek, Paradise Lake, Muskwa-Kechika, Crying Girl Prairie,
+Fredrickson Lake, Dickson Lake, Molson Creek) have it on only 37–65% of Oct–May days until they build
 more history. Until then they drop out of the Powder Accuracy comparison, as
 CDEC stations with short records already do.
 
@@ -191,7 +214,7 @@ Data Service. COOP data is US public domain; CoCoRaHS data is CC BY 3.0
 | CDEC snow pillows (CA DWR) | **live** (stations, 57) | CDEC's *daily* depth is a daily mean, so we read **hourly** depth/SWE and take the median of the 23:00/00:00/01:00 readings at local midnight; SNOTEL QC plus density (depth < SWE → void), stuck-sensor (flat depth while SWE rises ≥0.5") and spike (>10" above both neighbours) checks. Gate: median r = 0.96 vs the nearest SNOTEL (13 pairs, Jan–Feb 2026). Pillows within 1.5 km of a SNOTEL are the same site and are dropped (FDC, HOR). History from 2021-10. |
 | NRCS SNOLITE | **live** (stations, 33) | depth-only; a ≥6" jump must be confirmed by an SWE rise at a SNOTEL within 40 km (station data, not a model) |
 | BC automated snow pillows (AWDB network MSNT) | **live** (stations, 41) | BC government pillows served by NRCS AWDB; depth + SWE, regular SNOTEL QC |
-| BC ASWS, direct feed (OGL-BC) | **live** (stations, 44) | BC's own hourly depth/SWE, read at local midnight like CDEC (AWDB's MSNT day is the 08:00 PST reading, see above); gated against archived ECMWF IFS over three winters; 41 more stay on AWDB |
+| BC ASWS, direct feed (OGL-BC) | **live** (stations, 47) | BC's own hourly depth/SWE, read at local midnight like CDEC (AWDB's MSNT day is the 08:00 PST reading, see above); 3 depth-only stations use SNOLITE's neighbour-pillow rule; gated against archived ECMWF IFS over three winters; 41 more stay on AWDB |
 | ECCC climate-daily `TOTAL_SNOW` (OGL-Canada) | **live, trial** (observers) | 8 mountain stations still measure snowfall daily (Whistler, Silver Star, Grouse, Kananaskis, Barkerville featured) |
 | IEM real-time COOP/CoCoRaHS | next | same-day provisional observers truth |
 | NWS Local Storm Reports (IEM) | planned | storm-total "Storm Mode" events |

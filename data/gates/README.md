@@ -6,10 +6,12 @@ day (`r_0`), and with the truth shifted a day either way (`r_minus1`,
 `r_plus1`). `suggested_offset` and `verdict` are the decision relative to the
 station's default `day_offset`.
 
-- `stations.csv` (BC automated snow pillows read from BC's own feed,
-  `truth_source: bcasws`) is written by `scripts/hindcast_gate.py` and
-  **applied** by `scripts/networks/bc_asws_direct.py`, which keeps only
-  `pass` rows (a station not in the file yet is held back).
+- `stations.csv` (BC snow stations read from BC's own feed: pillows,
+  `truth_source: bcasws`, and depth-only stations, `bcasws_depth`) is written
+  by `scripts/hindcast_gate.py` and **applied** by
+  `scripts/networks/bc_asws_direct.py`, which keeps only `pass` rows (a
+  station not in the file yet is held back). `--truth-source` and `--merge`
+  gate a subset and keep the other rows.
   - Model: ECMWF IFS 9 km, the runs ECMWF actually made (short lead), from
     Open-Meteo's historical-forecast archive at the station's elevation.
   - Seasons 2024, 2025 and 2026 (Oct 1 – May 31 each), with per-season
@@ -20,3 +22,7 @@ station's default `day_offset`.
   - Run 2026-11-23 on 51 candidates: 44 pass (median r_0 0.72), 7 fail (no
     snow at 85 m, one broken winter, five without a 2023-24 or 2024-25
     record); none misdated.
+  - Run 2026-11-23 on the 4 depth-only candidates with an SWE pillow within
+    40 km (truth through SNOLITE's neighbour rule): 3 pass (Loch Lomand 0.79,
+    Crocker Creek 0.72, Gray Creek Lower 0.63), Kaslo Airport fails (0.31).
+    55 rows in all.

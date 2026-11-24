@@ -7,6 +7,7 @@ import csv
 import math
 from datetime import date
 from pathlib import Path
+from types import SimpleNamespace
 
 import pandas as pd
 import pytest
@@ -105,5 +106,36 @@ def test_station_list():
         bc = r["external_id"]
         assert r["station_id"] == bcasws.station_id(bc) == f"{bc}:BC:ASWS"
         assert bc not in msnt  # those keep their AWDB (MSNT) truth
-        assert r["truth_source"] == "bcasws" and r["league"] == "stations"
+        assert r["truth_source"] in ("bcasws", "bcasws_depth") and r["league"] == "stations"
     assert bcasws.station_id("4A30P") != "4A30P:BC:MSNT"
+    lone = [r["station_id"] for r in rows if r["truth_source"] == "bcasws_depth"]
+    assert lone and all(bcasws.neighbors(lone).values())  # each has a pillow within 40 km
+
+
+def test_depth_only_jump_needs_a_neighbour_swe_rise(monkeypatch):
+    """SNOLITE's rule for BC stations without a pillow: a >= 6" jump stands
+    only if a pillow within 40 km gained >= 0.1" SWE that day."""
+    from powderbench.networks import snolite
+
+    days = pd.date_range("2025-01-01", periods=4, freq="D")
+    stamps = [d + pd.Timedelta(hours=h) for d in days for h in (31, 32, 33)]
+
+    def wide(cols):
+        return pd.DataFrame({c: [v for v in vals for _ in range(3)] for c, vals in cols.items()},
+                            index=pd.DatetimeIndex(stamps), dtype="float32")
+
+    sd = wide({"9A01P": [50, 50, 80, 85], "9A02P": [50, 50, 80, 85]})  # cm: +30 cm on the 3rd, +5 on the 4th
+    sw = wide({"9N01P": [200, 200, 220, 221], "9N02P": [300, 300, 300, 300]})  # mm: only 9N01P gains on the 3rd
+    monkeypatch.setattr(bcasws, "hourly", lambda el, b, e: sd if el == "SNWD" else sw)
+    a, b = bcasws.station_id("9A01P"), bcasws.station_id("9A02P")
+    monkeypatch.setattr(bcasws, "neighbors", lambda ids: {a: ["9N01P:BC:ASWS"], b: ["9N02P:BC:MSNT"]})
+    d = bcasws.daily_depth_only([a, b], date(2025, 1, 2), date(2025, 1, 4)).set_index(["station_id", "date"])
+    assert d.loc[(a, date(2025, 1, 3)), "snow24"] == pytest.approx(30 / 2.54)  # the neighbour pillow gained 20 mm
+    assert d.loc[(b, date(2025, 1, 3)), "qc_flag"] == snolite.QC_NO_NEIGHBOR_SUPPORT  # its pillow stayed flat
+    assert d.loc[(b, date(2025, 1, 4)), "snow24"] == pytest.approx(5 / 2.54)  # small days need no support
+    assert d.loc[(a, date(2025, 1, 2)), "valid"] and math.isnan(d.loc[(a, date(2025, 1, 2)), "swe24"])
+
+    near = SimpleNamespace(station_id="n:BC:ASWS", latitude=50.27, longitude=-120.0, truth_source="bcasws")  # 30 km
+    far = SimpleNamespace(station_id="f:BC:MSNT", latitude=50.45, longitude=-120.0, truth_source=None)  # 50 km
+    assert [sid for _, sid in bcasws.ranked_neighbors(50.0, -120.0, [far, near])] == ["n:BC:ASWS"]
+    assert bcasws.ranked_neighbors(50.0, -120.0, [far]) == []  # nearest pillow beyond 40 km: no neighbour
