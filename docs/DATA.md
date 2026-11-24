@@ -290,8 +290,9 @@ there's no key.
   - Saalbach (best r 0.36) and Tamsweg (0.20) tracked no shift of the model
     and were dropped. The gate's second look (2026-11-24, ECMWF IFS 9 km with
     a fixed cell search, `data/gates/README.md`) passes both at the
-    documented +1 (r 0.81 and 0.43), and they are back; Saalbach is featured
-    again.
+    documented +1 (r 0.81 and 0.43), and they are back. Saalbach is a network
+    station now (it was featured), so the featured count and the Open-Meteo
+    budget stay where they are.
   - 35 sites use +1 and Semmering 0. 36 of 44 sites are in.
 - **Featured:** St. Anton (village and Galzig), Lech / Zürs (Langen),
   Warth-Schröcken, Galtür / Ischgl, Obergurgl, Obertauern, Saalbach
@@ -648,7 +649,7 @@ a misdated record and drops the station.
   snowy terrain above a valley station: its season total ran a median 2.2×
   the truth, against 0.65× now. 18 pass (median r 0.60), and 17 are back:
   - SLF Brusio and Poschiavo (r 0.71 and 0.86), DWD Schönau am Königssee;
-  - GeoSphere Saalbach (featured again) and Tamsweg at `day_offset` 1, and
+  - GeoSphere Saalbach and Tamsweg at `day_offset` 1, and
     the six `geosphere_more.py` stations (Radstadt-Tandalier at 0);
   - Météo-France Restefond, Montclar, St Jean-St-Nicolas, Peira Cava and
     Vaujany (Vaujany at 0);
@@ -659,7 +660,7 @@ a misdated record and drops the station.
   (within 2 km and 200 m), and the generator keeps one station per site.
   Galibier, Graglia and Bellinzona still fail. The second look's model is
   the short-lead forecast, not the day-ahead run, so part of the gain is lead
-  time (see `data/gates/README.md`). 713 sites are in (90 featured).
+  time (see `data/gates/README.md`). 713 sites are in (89 featured).
 
 ### Not added yet (Alps and nearby, 2026-11-20)
 
@@ -838,8 +839,8 @@ below).
   the nearest kept station that passes the gate for each of the three
   biggest areas: Hemsedal (Hølto, 2 km), Oppdal (Maurhaugen, 9 km) and
   Skimore Oslo (Brunkollen, 7 km). Abisko and Kittelfjäll pass the second
-  look and are featured again by the SMHI generator's rule, so the count is
-  19, two above the 17 the Open-Meteo budget was held at.
+  look and are back as network stations (the SMHI generator's rule would
+  feature them; they are listed as network stations so the Open-Meteo budget does not rise), so the count stays 17.
 - **Climatology:** from each station's own record since 2010 (Norway's
   112: from Frost history, each at its gated `day_offset`).
 
@@ -1091,8 +1092,8 @@ too short for a climatology so far.
     so the league's featured count returns to the 5 it had before the
     Tatras' summits left.
   - Chopok (Jasná) and Lomnický štít (Tatranská Lomnica), back after the
-    second look, are featured again by the GHCNh rule, so the count is 7,
-    two above that budget.
+    second look, are back as network stations (the GHCNh rule would feature
+    them; they are listed as network stations so the Open-Meteo budget does not rise), so the count stays 5.
 - **Climatology:** from each station's own record since 2000 (DWD, ČHMÚ,
   GHCNh) or 2010 (Météo-France, ECCC).
 

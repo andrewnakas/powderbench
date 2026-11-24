@@ -105,10 +105,12 @@ coordinates were checked against Frost first: 53 of 54 within 2 km and 50 m.
   station per site). MET Norway's Losistua reported on 9 of the last 14 days
   on 2026-11-24, under `frost.py`'s 70% live rule; a later run adds it once
   it reports again.
-- Featured again, as before the first gate, by their generators' rules:
-  Saalbach (alps), Abisko Aut and Kittelfjäll D (nordic, now 19 featured),
-  Chopok and Lomnický štít (world, now 7). The nordic and world counts are
-  two above the 17 and 5 their Open-Meteo budgets were held at.
+- Saalbach (alps), Abisko Aut and Kittelfjäll D (nordic) and Chopok and
+  Lomnický štít (world) were featured before the first gate, and their
+  generators' rules would feature them again. They are back as network
+  stations instead, so the featured counts (89, 17, 5) and the Open-Meteo
+  budget do not rise. A generator re-run features them again: set them back
+  to `network` or lower the cap if that happens.
 
 ## stations.csv — BC snow stations (stations league)
 

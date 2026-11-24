@@ -239,7 +239,7 @@ def station_daily(domain: str, lat: float, lon: float, elev_m: float, begin: dat
     t0 = datetime(begin.year, begin.month, begin.day, tzinfo=timezone.utc) - off
     t1 = datetime(end.year, end.month, end.day, tzinfo=timezone.utc) - off + timedelta(days=1)
     swe = series(domain, "snowfall_water_equivalent", cell, t0 + timedelta(hours=1), t1 + timedelta(hours=1)).clip(lower=0)
-    applied = rule and abs(dz) > RULE_MIN_DZ_M
+    applied = rule and bool(np.isfinite(dz)) and abs(dz) > RULE_MIN_DZ_M  # sea cell: no terrain height, no rule
     if applied:
         t2 = series(domain, "temperature_2m", cell, t0, t1 + timedelta(hours=1)) + dz * LAPSE_K_PER_M
         share = below_zero_share(t2.to_numpy()[:-1], t2.to_numpy()[1:])
@@ -248,7 +248,7 @@ def station_daily(domain: str, lat: float, lon: float, elev_m: float, begin: dat
     days = pd.Series(swe.to_numpy() * CM_PER_MM_WE / CM_PER_INCH, index=local.date)
     daily = days.groupby(level=0).sum(min_count=24)
     daily = daily[(daily.index >= begin) & (daily.index <= end)]
-    return daily, {"cell": cell, "dz_m": round(dz), "rule": applied, "zone": zone_name(lat, lon),
+    return daily, {"cell": cell, "dz_m": round(dz) if np.isfinite(dz) else None, "rule": applied, "zone": zone_name(lat, lon),
                    "utc_offset_h": off.total_seconds() / 3600}
 
 
