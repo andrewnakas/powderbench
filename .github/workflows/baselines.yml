@@ -33,6 +33,10 @@ jobs:
       FROST_CLIENT_ID: ${{ secrets.FROST_CLIENT_ID }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          # a queued run starts long after its dispatch: read main as it is now, so a round
+          # the previous run just served is no longer due (2026-11-24 16:22 regenerated stations)
+          ref: main
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -67,7 +71,10 @@ jobs:
           git diff --cached --quiet || git commit -m "Baseline submissions"
           # main moves all day and GitHub sometimes answers a push with a 500
           for attempt in 1 2 3 4 5; do
-            git pull --rebase origin main && git push && exit 0
+            # a file main already has landed first and is the on-time one: keep it
+            # (-X ours is upstream's side in a rebase)
+            git pull --rebase -X ours origin main && git push && exit 0
+            git rebase --abort 2>/dev/null || true
             sleep $((attempt * 20))
           done
           exit 1
