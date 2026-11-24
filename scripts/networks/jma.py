@@ -4,13 +4,16 @@ snow-depth sensor, for the japan league.
 Candidates: every station reporting snow depth in JMA's live AMeDAS map
 (amedastable + a map snapshot). Each is matched to its page in the
 past-weather archive (prefecture page -> kind a/s + block_no, matched by
-Japanese name, else nearest within 3 km). Stations near a ski area (OpenSkiData,
+Japanese name, else nearest within 3 km; a few stations are filed under a
+neighbouring subprefecture, so the other pages are searched by name last). Stations near a ski area (OpenSkiData,
 >= FEATURED_LIFTS lifts within FEATURED_KM) are featured.
 
 Kept only when last winter's record passes the gate in `gate()`: enough
-days with a value, and snowfall days that line up with the station's own
-precipitation (catches dead or seasonal-only sensors without any external
-model call).
+days with a value, and snowfall days of 5 cm or more that line up with the
+station's own precipitation (catches dead or seasonal-only sensors without any
+external model call). Light snowfalls are left out of that test: a 2-3 cm
+snowfall often logs 0.0 mm on the gauge, which dropped Furano, Biei and
+Kusatsu.
 
     python scripts/networks/jma.py
 """
@@ -42,7 +45,8 @@ FEATURED_LIFTS = 5
 FEATURED = {"Sukayu": "Hakkoda (Sukayu)"}  # big-snow site the lift rule misses (Hakkoda has a ropeway, few lifts)
 MIN_DAYS = 100  # Dec-Mar days with a value last winter
 MIN_SNOW_DAYS = 10
-MIN_WET_SHARE = 0.8  # share of snowfall days with precipitation on the same day
+MIN_WET_SHARE = 0.8  # share of snowfall days (>= WET_TEST_CM) with precipitation on the same day
+WET_TEST_CM = 5
 FIELDS = ["station_id", "slug", "name", "resort", "region", "state", "elevation_ft", "latitude", "longitude",
           "league", "tier", "truth_source", "network", "external_id", "day_offset"]
 HOKKAIDO = {"11": "Soya", "12": "Kamikawa", "13": "Rumoi", "14": "Ishikari", "15": "Sorachi", "16": "Shiribeshi",
@@ -87,7 +91,7 @@ def prefecture_points(prec: str) -> list[dict]:
             continue
         seen.add(f[1])
         out.append({"kind": f[0], "block": f[1], "kj": f[2], "lat": _deg(f[4], f[5]), "lon": _deg(f[6], f[7]),
-                    "alt": float(f[8] or 0)})
+                    "alt": float(f[8] or 0), "prec": prec})
     return out
 
 
@@ -118,7 +122,8 @@ def gate(sid: str, ext: str, last: int) -> tuple[bool, str]:
     s = pd.Series(snow, dtype=float).dropna()
     days = len(s)
     snow_days = [d for d, v in s.items() if v >= 2]
-    wet_share = (sum((wet.get(d) or 0) > 0 for d in snow_days) / len(snow_days)) if snow_days else 0
+    big_days = [d for d, v in s.items() if v >= WET_TEST_CM]
+    wet_share = (sum((wet.get(d) or 0) > 0 for d in big_days) / len(big_days)) if big_days else 0
     ok = days >= MIN_DAYS and len(snow_days) >= MIN_SNOW_DAYS and wet_share >= MIN_WET_SHARE
     return ok, f"days={days} snow_days={len(snow_days)} wet={wet_share:.2f} total_cm={s.sum():.0f}"
 
@@ -129,8 +134,15 @@ def main() -> int:
     for code in stations:
         by_prec.setdefault(code[:2], []).append(code)
     rows = []
+    pages: dict[str, list[dict]] = {}
+
+    def points_of(prec: str) -> list[dict]:
+        if prec not in pages:
+            pages[prec] = prefecture_points(prec)
+        return pages[prec]
+
     for prec, codes in sorted(by_prec.items()):
-        points = prefecture_points(prec)
+        points = points_of(prec)
         for code in codes:
             t = stations[code]
             lat, lon = _deg(*t["lat"]), _deg(*t["lon"])
@@ -138,6 +150,9 @@ def main() -> int:
             if not match:
                 near = sorted(points, key=lambda p: skiareas.km(lat, lon, p["lat"], p["lon"]))
                 match = [p for p in near[:1] if skiareas.km(lat, lon, p["lat"], p["lon"]) <= 3]
+            if not match:  # filed under a neighbouring subprefecture (Shumarinai, Horokanai)
+                match = [p for other in sorted({*HOKKAIDO, *PREFECTURES} - {prec}) for p in points_of(other)
+                         if p["kj"] == t["kjName"] and skiareas.km(lat, lon, p["lat"], p["lon"]) <= 3][:1]
             if not match:
                 print(f"  no archive page for {code} {t['enName']}")
                 continue
@@ -150,7 +165,7 @@ def main() -> int:
                          "region": region(prec), "state": "JP", "elevation_ft": round(t["alt"] * 3.28084),
                          "latitude": round(lat, 5), "longitude": round(lon, 5), "league": "japan",
                          "tier": "featured" if featured else "network", "truth_source": "jma",
-                         "network": "JMA AMeDAS", "external_id": f"{p['kind']}:{prec}:{p['block']}",
+                         "network": "JMA AMeDAS", "external_id": f"{p['kind']}:{p['prec']}:{p['block']}",
                          "day_offset": 0})
     today = date.today()
     last = today.year if today.month >= 4 else today.year - 1

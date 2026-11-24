@@ -30,7 +30,9 @@ station at its network's default `day_offset` (the generator's), so
 - `japan.csv` (JMA; snowfall measured as the JST-day sum of hourly depth
   rises) is a **record only**. Its dating is fixed by the measurement. Its
   weak stations are sea-effect coasts where the 25 km model is poor, and
-  those are worth keeping.
+  those are worth keeping. The 51 stations added on 2026-11-20 were gated the
+  same way: 44 pass, and the 7 that fail (Kumaishi, Hamaoni-Shibetsu,
+  Muroran, Shizunai, Nakakineusu, Kuzumaki, Asahi) are mostly coastal too.
 - The world league's GHCNh drops are in `scripts/networks/ghcnh.py`
   (`NWP_GATE_FAILED`).
 - `world.csv` (DWD outside the Alps, Météo-France, ČHMÚ, GHCNh, ECCC) is
