@@ -280,10 +280,10 @@ def terrain_index(meta: dict, lats: np.ndarray, lons: np.ndarray, elev_m: np.nda
             continue
         j0, i0 = divmod(int(b), ni)
         centre_ok = land[b] >= 0.5 and np.isfinite(grid_elev_m[b])
-        best_delta = abs(float(grid_elev_m[b]) - float(elev_m[k])) if centre_ok else np.inf
-        if best_delta <= KEEP_M:
+        if centre_ok and abs(float(grid_elev_m[b]) - float(elev_m[k])) <= KEEP_M:
             continue
-        best = None
+        # every candidate pays its distance, the nearest cell too (it is among them)
+        best, best_delta = None, np.inf
         for j in range(max(j0 - radius, 0), min(j0 + radius + 1, nj)):
             for i in range(max(i0 - radius, 0), min(i0 + radius + 1, ni)):
                 c = j * ni + i

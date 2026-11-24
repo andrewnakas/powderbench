@@ -269,6 +269,20 @@ def test_terrain_index_follows_open_meteo_rules():
     assert grib.terrain_index(meta, lat, lon, np.array([3000.0]), elev, land, 1)[0] != south
 
 
+def test_terrain_index_charges_the_nearest_cell_its_distance_too():
+    """Open-Meteo scores every candidate, the nearest cell included, as
+    |height difference| + 30 m per km. BC pillow 1A05P (1,740 m) sits 784 m
+    above its nearest IFS cell; the API's answer is a cell 597 m off but
+    farther away, which only comes out when the nearest one pays its distance."""
+    meta = _meta(50, -125, 40, 40)
+    elev, land = np.full(1600, 0.0), np.ones(1600)
+    centre, east = 4 * 40 + 16, 4 * 40 + 17  # (49.0, -121.0) and (49.0, -120.75)
+    lat, lon = np.array([49.0]), np.array([-120.9])  # 11.1 km from centre, 16.7 km from east
+    elev[centre], elev[east] = 1740.0 - 784.0, 1740.0 - 597.0
+    # centre 784 + 11.1 x 30 = 1117 > east 597 + 16.7 x 30 = 1097 (but 784 alone < 1097)
+    assert grib.terrain_index(meta, lat, lon, np.array([1740.0]), elev, land, 1)[0] == east
+
+
 def test_ecmwf_layout_order_and_fallback(monkeypatch):
     from datetime import datetime
 
