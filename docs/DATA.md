@@ -69,6 +69,21 @@ Data Service. COOP data is US public domain; CoCoRaHS data is CC BY 3.0
   climatology on ≥60 of the ~90 Dec–Feb days) and a clear day-attribution fit (below). ~1,150 stations.
   **Featured**: the three highest per curated ski zone and per eastern
   ski-country region.
+- **More observers, gated** (`data/stations/ghcnd_wide.csv`, 2026-11):
+  `scripts/networks/ghcnd_wide.py` adds ~480 network-tier observers that
+  `ghcnd.py` leaves out, each judged by a **hindcast gate against archived
+  ECMWF IFS 9 km** over three winters (2023-24 to 2025-26) instead of the ERA5
+  fit (`scripts/observers_gate.py` → `data/gates/observers.csv`; method and
+  counts in `data/gates/README.md`). Two routes: *wide* — looser admission that
+  stays in snow country (records back to ≤2023; 1,200–1,500 m near a SNOTEL;
+  Alaska near a SNOTEL at any elevation; within 25 km of a ski area, east of
+  93°W or near a SNOTEL in the west), kept only where the station's own
+  climatology averages ≥40" of new snow per Oct–May season; *rejudge* —
+  mountain stations `ghcnd.py` admits but its 2-winter ERA5 fit (~31 km cells)
+  dropped on 2026-10-20. Pass rule as for the stations gate: pooled r ≥ 0.40,
+  every season ≥ 60 days and r ≥ 0.30; then the same climatology pass. None
+  featured. `ghcnd.csv`, its ids, offsets and featured set are unchanged;
+  `ghcnd.py` skips stations listed in `ghcnd_wide.csv`.
 - **Day alignment — fitted per station.** Observers file a reading under the
   date they took it, but read the board at different times (morning observers:
   the snow fell the day before; evening observers: same day). A one-day error
@@ -78,7 +93,9 @@ Data Service. COOP data is US public domain; CoCoRaHS data is CC BY 3.0
   shifts −1/0/+1 (`powderbench/networks/attribution.py`). A station is kept
   only if the best shift correlates ≥0.4 **and** beats the runner-up by ≥0.1 —
   stations that don't track storms, or are ambiguous, are dropped. Most US
-  observers fit +1 (morning); most ECCC stations fit 0.
+  observers fit +1 (morning); most ECCC stations fit 0. Stations in
+  `ghcnd_wide.csv` get theirs from the 9 km gate instead: the same 0.1 margin,
+  over three winters and shifts −1/0/+1/+2, and only 0 or +1 is accepted.
 - **Canada (ECCC)**: measured `TOTAL_SNOW` (cm) from ECCC's climate-daily OGC
   API (Open Government Licence – Canada), `scripts/networks/eccc.py` →
   `data/stations/eccc.csv` (`truth_source: eccc`). Only 8 mountain stations
@@ -100,7 +117,7 @@ Data Service. COOP data is US public domain; CoCoRaHS data is CC BY 3.0
 | Source | Status | Why |
 |---|---|---|
 | NRCS SNOTEL, full network | **live** (stations) | ~865 stations with depth + SWE |
-| NOAA GHCN-Daily SNOW (COOP + CoCoRaHS) | **live, trial** (observers) | measured new snow, ~1,150 timing-verified mountain and ski-area sites. Hindcast gate (featured, 2026-02-01..14): GFS/Open-Meteo +25.1, zeros +12.8, climatology 0, persistence −51 |
+| NOAA GHCN-Daily SNOW (COOP + CoCoRaHS) | **live, trial** (observers) | measured new snow, ~1,630 timing-verified mountain and ski-area sites (~480 of them gated against archived ECMWF IFS 9 km, `ghcnd_wide.csv`). Hindcast gate (featured, 2026-02-01..14): GFS/Open-Meteo +25.1, zeros +12.8, climatology 0, persistence −51 |
 | NOAA WPC PWPF | **live** (`baseline-wpc`) | official NWS snowfall percentiles |
 | NWS NDFD snow amount | **live** (`baseline-ndfd`) | the forecast offices' own snowfall grids, 24/48 h |
 | CDEC snow pillows (CA DWR) | **live** (stations, 57) | CDEC's *daily* depth is a daily mean, so we read **hourly** depth/SWE and take the median of the 23:00/00:00/01:00 readings at local midnight; SNOTEL QC plus density (depth < SWE → void), stuck-sensor (flat depth while SWE rises ≥0.5") and spike (>10" above both neighbours) checks. Gate: median r = 0.96 vs the nearest SNOTEL (13 pairs, Jan–Feb 2026). Pillows within 1.5 km of a SNOTEL are the same site and are dropped (FDC, HOR). History from 2021-10. |
