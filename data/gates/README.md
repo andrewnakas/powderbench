@@ -33,13 +33,82 @@ station at its network's default `day_offset` (the generator's), so
   those are worth keeping. The 51 stations added on 2026-11-20 were gated the
   same way: 44 pass, and the 7 that fail (Kumaishi, Hamaoni-Shibetsu,
   Muroran, Shizunai, Nakakineusu, Kuzumaki, Asahi) are mostly coastal too.
+  The second look (below) passes 24 of the league's 34 failures, all but
+  Muroran and Nakakineusu of those seven among them. Nothing is added: every
+  JMA station was listed all along.
 - The world league's GHCNh drops are in `scripts/networks/ghcnh.py`
   (`NWP_GATE_FAILED`).
 - `world.csv` (DWD outside the Alps, Météo-France, ČHMÚ, GHCNh, ECCC) is
   **applied** by `scripts/networks/{dwd,meteofrance,eccc_depth}.py`
   (`dwd.py --world`).
-  GHCNh's three drops (Chopok, Lomnický štít, Puntijarka, from the first
-  world gate run) are also in `scripts/networks/ghcnh.py`'s `NWP_GATE_FAILED`.
+  GHCNh's drops from the first world gate run (Chopok, Lomnický štít,
+  Puntijarka) were kept in `scripts/networks/ghcnh.py`'s `NWP_GATE_FAILED`;
+  after the second look (below) only Puntijarka is left there.
+- `alps.csv` is described in docs/DATA.md ("Alps NWP gate"); it is applied
+  the same way (`gate.py`), and GeoSphere's `geosphere.py` keeps its decisions
+  in `NWP_GATE`.
+
+## Second look at the failures (2026-11-24): ECMWF IFS 9 km
+
+The first gate read the direct ECMWF IFS at 0.25° (about 25 km), and its cell
+search could put a valley station on a cell of high, snowy terrain. Every
+station that failed it in `alps.csv`, `japan.csv`, `nordic.csv` and
+`world.csv` was run again on the same rule: the same window
+(2025-12-01..2026-03-15), the truth shifted −1, 0 and +1 days, a shift taken
+only when it beats shift 0 by 0.10, a pass at r ≥ 0.40 at the shift taken,
+and the league's own dating rule (the network's default offset or one less;
+0 or 1 in the nordic league; JMA's dating is fixed). Only the model changed:
+ECMWF IFS 9 km, read from Open-Meteo's open-data archive on S3
+(`s3://openmeteo`, the files behind the historical-forecast API, so no API
+calls) with the fixed cell search of `scripts/om_archive.py`. MET Norway's
+coordinates were checked against Frost first: 53 of 54 within 2 km and 50 m.
+
+- `gate_model` says which model a row was judged on:
+  `ecmwf_ifs025_direct` (the first gate) or `ecmwf_ifs_9km_s3_archive` (the
+  second look).
+- A second-look pass is updated in place: `verdict`, `suggested_offset`,
+  `r_minus1` / `r_0` / `r_plus1`, `n`, `truth_in` and `model_in` come from the
+  second look. `day_offset` stays the offset the station was gated at, so the
+  r values stay relative to it. A station that still fails keeps its
+  first-gate row.
+
+| League | Failed the first gate | Pass the second look | Still out |
+|---|---|---|---|
+| alps | 21 | 18 | Galibier (best r 0.25), Graglia (0.28), Bellinzona (no snow at the model cell, 0.4″ in the truth) |
+| japan | 34 | 24 | 10 fail (a record only: every JMA station stays listed) |
+| nordic | 62 | 39 | 22 fail; Veitastrond is misdated (its best shift needs offset 2) |
+| world | 10 | 8 | Puigmal (best r 0.24), Puntijarka (0.396) |
+
+- Median r at the decision, over the passes: alps 0.35 → 0.60, japan 0.32 →
+  0.61, nordic 0.32 → 0.58, world 0.27 → 0.52. The model's season total
+  against the truth (median ratio) fell from 2.17 to 0.65 in the alps and
+  from 1.41 to 0.83 in the nordic league: the old cells were snowier than the
+  stations.
+- Seven passes take a different offset: Vaujany (Météo-France) and
+  Radstadt-Tandalier (GeoSphere snow gauge) move to 0, a day before their
+  network's default of 1; MET Norway Grov, Beito and Haukeliseter move to 0;
+  GeoSphere Saalbach and Tamsweg, gated at 0, pass at the 07:00 protocol's 1
+  (`NWP_GATE` in `scripts/networks/geosphere.py`).
+- **Caveat:** the S3 series is Open-Meteo's stitched short-lead forecast
+  (the first hours of each successive run), not the day-ahead run the first
+  gate used. Part of the gain is the shorter lead time, not only the cell
+  fix, so a second-look pass is a looser test than a first-gate pass at the
+  same r.
+- Added to the station lists by their generators, 63 in all:
+  - alps 17: SLF 2, GeoSphere 8 (`geosphere.py` 2, `geosphere_more.py` 6),
+    DWD 1, ARPA Piemonte 1, Météo-France 5;
+  - nordic 38: MET Norway 32, FMI 4, SMHI 2;
+  - world 8: Météo-France 5, GHCNh 2, ECCC 1;
+  - japan none: its 24 were listed all along.
+- Two passes are not added. Météo-France Col Agnel is the same site as ARPA
+  Piemonte's Colle dell'Agnello, listed since the first gate dropped it (one
+  station per site). MET Norway's Losistua reported on 9 of the last 14 days
+  on 2026-11-24, under `frost.py`'s 70% live rule; a later run adds it once
+  it reports again.
+- Featured again, as before the first gate, by their generators' rules:
+  Saalbach (alps), Abisko Aut and Kittelfjäll D (nordic, now 19 featured),
+  Chopok and Lomnický štít (world, now 7). The nordic and world counts are
+  two above the 17 and 5 their Open-Meteo budgets were held at.
 
 ## stations.csv — BC snow stations (stations league)
 
