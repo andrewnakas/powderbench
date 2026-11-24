@@ -121,12 +121,12 @@ MODEL_BASELINES = {
     "baseline-ecmwf": ("ecmwf_ifs", "ecmwf_ifs025", None),
     "baseline-aifs": ("ecmwf_aifs", "ecmwf_aifs025_single", None),  # ECMWF's AI model
     "baseline-gfs": ("gfs", "gfs_seamless", None),
-    "baseline-icon": (None, "icon_seamless", None),
-    "baseline-gem": (None, "gem_seamless", None),
-    "baseline-ukmo": (None, "ukmo_seamless", None),
+    "baseline-icon": ("om_icon", "icon_seamless", None),  # direct = Open-Meteo's open-data archive
+    "baseline-gem": ("om_gem", "gem_seamless", None),
+    "baseline-ukmo": ("om_ukmo", "ukmo_seamless", None),
     "baseline-nbm": ("nbm", "ncep_nbm_conus", "conus"),  # NOAA's calibrated National Blend
     "baseline-hrrr": (None, "ncep_hrrr_conus", "conus"),  # 3 km, 48h range
-    "baseline-arome": (None, "meteofrance_seamless", "alps"),
+    "baseline-arome": ("om_meteofrance", "meteofrance_seamless", "alps"),
     "baseline-jma": (None, "jma_seamless", "japan"),  # JMA MSM 5 km + GSM
 }
 CONSENSUS_TEAM = "baseline-consensus"

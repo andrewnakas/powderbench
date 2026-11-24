@@ -219,8 +219,17 @@ def lambert_ij(meta: dict, lats: np.ndarray, lons: np.ndarray) -> tuple[np.ndarr
     return (x - x0) / float(meta["DxInMetres"]), (y - y0) / float(meta["DyInMetres"])
 
 
+def _grid_ij(meta: dict, lats: np.ndarray, lons: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """Fractional (i, j) on a Lambert grid, or on a "projected" one, whose
+    meta carries its own `ij` function (nwp/omdata.py: rotated and Lambert
+    domains from their WKT)."""
+    if meta["gridType"] == "projected":
+        return meta["ij"](np.asarray(lats, float), np.asarray(lons, float))
+    return lambert_ij(meta, lats, lons)
+
+
 def _check_layout(meta: dict) -> None:
-    ok = meta["gridType"] in ("regular_ll", "lambert") and not meta["iScansNegatively"] \
+    ok = meta["gridType"] in ("regular_ll", "lambert", "projected", "points") and not meta["iScansNegatively"] \
         and not meta["jPointsAreConsecutive"] and (meta["gridType"] == "regular_ll" or meta["jScansPositively"])
     if not ok:
         raise ValueError(f"unsupported grid layout: {meta}")
@@ -228,11 +237,14 @@ def _check_layout(meta: dict) -> None:
 
 def point_index(meta: dict, lats: np.ndarray, lons: np.ndarray) -> np.ndarray:
     """Nearest grid cell of a regular lat/lon or Lambert grid for each point
-    (flat index into the message's values; -1 when the point is off the grid)."""
+    (flat index into the message's values; -1 when the point is off the grid).
+    A "points" grid (a reduced Gaussian one, nwp/omdata.py) brings its own search."""
     _check_layout(meta)
+    if meta["gridType"] == "points":
+        return np.asarray(meta["nearest"](np.asarray(lats, float), np.asarray(lons, float)), np.int64)
     ni, nj = int(meta["Ni"]), int(meta["Nj"])
-    if meta["gridType"] == "lambert":
-        fi, fj = lambert_ij(meta, lats, lons)
+    if meta["gridType"] in ("lambert", "projected"):
+        fi, fj = _grid_ij(meta, lats, lons)
         i, j = np.rint(fi).astype(np.int64), np.rint(fj).astype(np.int64)
         ok = (j >= 0) & (j < nj) & (i >= 0) & (i < ni)
         return np.where(ok, j * ni + i, -1)
@@ -265,11 +277,12 @@ def terrain_index(meta: dict, lats: np.ndarray, lons: np.ndarray, elev_m: np.nda
     if radius <= 0:
         return base
     ni, nj = int(meta["Ni"]), int(meta["Nj"])
-    lambert = meta["gridType"] == "lambert"
+    points = meta["gridType"] == "points"  # its own 3 x 3 neighbours, whatever the radius
+    lambert = meta["gridType"] in ("lambert", "projected")
     if lambert:
-        fi, fj = lambert_ij(meta, lats, lons)
+        fi, fj = _grid_ij(meta, lats, lons)
         dx_km, dy_km = float(meta["DxInMetres"]) / 1000, float(meta["DyInMetres"]) / 1000
-    else:
+    elif not points:
         di, dj = float(meta["iDirectionIncrementInDegrees"]), float(meta["jDirectionIncrementInDegrees"])
         lat0 = float(meta["latitudeOfFirstGridPointInDegrees"])
         lon0 = float(meta["longitudeOfFirstGridPointInDegrees"])
@@ -282,22 +295,30 @@ def terrain_index(meta: dict, lats: np.ndarray, lons: np.ndarray, elev_m: np.nda
         centre_ok = land[b] >= 0.5 and np.isfinite(grid_elev_m[b])
         if centre_ok and abs(float(grid_elev_m[b]) - float(elev_m[k])) <= KEEP_M:
             continue
+
+        def around():
+            """(cell, km away) of the cells searched around station k."""
+            if points:
+                yield from zip(*meta["around"](float(lats[k]), float(lons[k])))
+                return
+            for j in range(max(j0 - radius, 0), min(j0 + radius + 1, nj)):
+                for i in range(max(i0 - radius, 0), min(i0 + radius + 1, ni)):
+                    if lambert:
+                        km = float(np.hypot((i - fi[k]) * dx_km, (j - fj[k]) * dy_km))
+                    else:
+                        dlat = lat0 + jsign * j * dj - lats[k]
+                        dlon = ((lon0 + i * di - lons[k]) + 180.0) % 360.0 - 180.0
+                        km = float(np.hypot(dlat, dlon)) * 111.0
+                    yield j * ni + i, km
+
         # every candidate pays its distance, the nearest cell too (it is among them)
         best, best_delta = None, np.inf
-        for j in range(max(j0 - radius, 0), min(j0 + radius + 1, nj)):
-            for i in range(max(i0 - radius, 0), min(i0 + radius + 1, ni)):
-                c = j * ni + i
-                if not land[c] >= 0.5 or not np.isfinite(grid_elev_m[c]):
-                    continue
-                if lambert:
-                    km = float(np.hypot((i - fi[k]) * dx_km, (j - fj[k]) * dy_km))
-                else:
-                    dlat = lat0 + jsign * j * dj - lats[k]
-                    dlon = ((lon0 + i * di - lons[k]) + 180.0) % 360.0 - 180.0
-                    km = float(np.hypot(dlat, dlon)) * 111.0
-                delta = abs(float(grid_elev_m[c]) - float(elev_m[k])) + km * PENALTY_M_PER_KM
-                if delta < best_delta and km < MAX_KM:
-                    best_delta, best = delta, c
+        for c, km in around():
+            if not land[c] >= 0.5 or not np.isfinite(grid_elev_m[c]):
+                continue
+            delta = abs(float(grid_elev_m[c]) - float(elev_m[k])) + km * PENALTY_M_PER_KM
+            if delta < best_delta and km < MAX_KM:
+                best_delta, best = delta, int(c)
         if best is not None and best_delta <= GIVE_UP_M:
             out[k] = best
     return out

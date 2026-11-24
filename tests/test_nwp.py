@@ -196,9 +196,19 @@ def test_model_prediction_open_meteo_first_direct_for_the_rest(monkeypatch):
     out = baselines.model_prediction(league, date(2026, 2, 1), "baseline-gfs")
     assert got["direct"] == ["feat", "net"] and len(out) == 2
 
+    # ICON, GEM, UKMO and AROME fall back to Open-Meteo's open-data archive
+    calls = []
+    monkeypatch.setattr(baselines, "direct_prediction",
+                        lambda lg, day, source, mode="live", featured_only=False, stations=None:
+                        calls.append(source) or direct(lg, day, source, mode, featured_only, stations))
+    for team in ("baseline-icon", "baseline-gem", "baseline-ukmo", "baseline-arome"):
+        assert len(baselines.model_prediction(league, date(2026, 2, 1), team)) == 2
+    assert calls == ["om_icon", "om_gem", "om_ukmo", "om_meteofrance"]
+    assert all(src in nwp.SOURCES for src, _, _ in baselines.MODEL_BASELINES.values() if src)
+
     # an Open-Meteo-only model keeps raising, so model_baselines skips it
     with pytest.raises(RuntimeError):
-        baselines.model_prediction(league, date(2026, 2, 1), "baseline-icon")
+        baselines.model_prediction(league, date(2026, 2, 1), "baseline-hrrr")
 
     # PB_NWP_DIRECT=0: Open-Meteo only, as before
     monkeypatch.setenv("PB_NWP_DIRECT", "0")
