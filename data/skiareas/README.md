@@ -12,5 +12,12 @@ This extract is itself made available under the ODbL. Refresh:
 Italy, Germany and Liechtenstein (same source, licence and terms). Alps
 station labels use ski areas with at least 4 lifts.
 
+`ski_areas_global.csv`: the same filters for Japan, Norway, Sweden, Finland,
+Korea, New Zealand, Australia, Chile and Argentina, and (for the world league,
+2026-11-19) 41 more countries: Czechia, Russia, Poland, China, Slovakia,
+Romania, Ukraine, the UK, Spain, Slovenia, Turkey, Bulgaria and the rest with
+downhill lifts, countries coded ISO 3166 alpha-2 (same source, licence and
+terms).
+
 Used to (a) admit observer stations near ski areas at any elevation and (b)
 label network stations with their nearest ski area.

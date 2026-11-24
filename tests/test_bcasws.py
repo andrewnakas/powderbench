@@ -1,0 +1,161 @@
+"""BC ASWS adapter (BC's own snow-pillow feed): parsing, local-midnight day
+ends at UTC-8 / UTC-7, units, QC, ids — on a recorded slice of the real feed
+(tests/fixtures/bcasws: Yellowhead Lake and Floe Lake, 2024-12-05..10, every
+hour, with AWDB's daily values for Yellowhead Lake's MSNT twin)."""
+
+import csv
+import math
+from datetime import date
+from pathlib import Path
+from types import SimpleNamespace
+
+import pandas as pd
+import pytest
+
+from powderbench import truth
+from powderbench.networks import bcasws
+
+FIX = Path(__file__).parent / "fixtures" / "bcasws"
+ROOT = Path(__file__).resolve().parents[1]
+YH, FLOE = "1A01P:BC:ASWS", "2C14P:BC:ASWS"
+
+
+@pytest.fixture
+def feed(tmp_path, monkeypatch):
+    """The adapter reading the recorded archive slice (no current-season file)."""
+    monkeypatch.setattr(bcasws, "data_dir", lambda: tmp_path)
+    monkeypatch.setattr(bcasws, "_fetch_reduced", lambda name: bcasws.reduce_csv(FIX / f"{name}.csv")
+                        if name.endswith("_Archive") else pd.DataFrame(dtype="float32"))
+    bcasws._current.cache_clear()
+    bcasws._archive.cache_clear()
+    yield
+    bcasws._current.cache_clear()
+    bcasws._archive.cache_clear()
+
+
+def test_reduce_keeps_midnight_hours_and_ids():
+    w = bcasws.reduce_csv(FIX / "SD_Archive.csv")
+    assert list(w.columns) == ["1A01P", "2C14P"]
+    assert sorted(set(w.index.hour)) == [6, 7, 8, 9]
+    assert w.loc["2024-12-08 08:00", "1A01P"] == 80
+
+
+def test_end_of_day_pacific_and_mountain(feed):
+    obs = bcasws.fetch_daily([YH, FLOE], date(2024, 12, 5), date(2024, 12, 9)).set_index(["station_id", "date"])
+    # Yellowhead Lake, UTC-8: median of 07/08/09 UTC on the next day (79, 80, 79 cm)
+    assert obs.loc[(YH, date(2024, 12, 7)), "SNWD"] == pytest.approx(79 / 2.54)
+    assert obs.loc[(YH, date(2024, 12, 6)), "WTEQ"] == pytest.approx(142 / 25.4)  # 141, 142, 142 mm
+    # Floe Lake, UTC-7: 06/07/08 UTC (61, 60, 64 cm) — at UTC-8 it would be 64
+    assert bcasws.utc_offset("2C14P") == -7 and bcasws.utc_offset("1A01P") == -8
+    assert obs.loc[(FLOE, date(2024, 12, 6)), "SNWD"] == pytest.approx(61 / 2.54)
+    assert obs.loc[(FLOE, date(2024, 12, 7)), "WTEQ"] == pytest.approx(200 / 25.4)
+
+
+def test_daily_storm(feed):
+    d = bcasws.daily([YH, FLOE], date(2024, 12, 6), date(2024, 12, 10)).set_index(["station_id", "date"])
+    assert d.loc[(YH, date(2024, 12, 6)), "snow24"] == pytest.approx(7 / 2.54)  # 61 -> 68 cm
+    assert d.loc[(YH, date(2024, 12, 7)), "snow24"] == pytest.approx(11 / 2.54)
+    assert d.loc[(YH, date(2024, 12, 8)), "snow24"] == 0.0  # settling
+    big = d.loc[(FLOE, date(2024, 12, 7))]  # +21 cm (8.3"): a big jump, backed by +30 mm SWE
+    assert big["valid"] and big["snow24"] == pytest.approx(21 / 2.54)
+    assert big["swe24"] == pytest.approx(30 / 25.4)
+    assert d.loc[(YH, date(2024, 12, 9)), "valid"]
+    assert d.loc[(YH, date(2024, 12, 10)), "qc_flag"] == truth.QC_MISSING  # the slice ends on the 10th
+
+
+def test_awdb_msnt_day_is_the_next_morning_reading():
+    """AWDB's daily MSNT value dated d is BC's 16:00 UTC (08:00 PST) reading on
+    d+1 (all 40 overlap stations, 99.99% of station-days) — not local midnight,
+    which is why the direct feed doesn't copy AWDB's day."""
+    sd = pd.read_csv(FIX / "SD_Archive.csv", index_col=0, parse_dates=[0])["1A01P Yellowhead Lake"]
+    for r in csv.DictReader((FIX / "awdb_1A01P.csv").open()):
+        morning = sd[pd.Timestamp(r["date"]) + pd.Timedelta(hours=40)]
+        assert round(morning / 2.54) == float(r["SNWD"])
+
+
+def test_qc_density_spikes_and_glitches(tmp_path, monkeypatch):
+    days = pd.date_range("2025-01-01", periods=5, freq="D")
+    stamps = [d + pd.Timedelta(hours=h) for d in days for h in (31, 32, 33)]  # 07/08/09 UTC next day
+
+    def wide(vals):
+        return pd.DataFrame({"9Z99P": [v for v in vals for _ in range(3)]}, index=pd.DatetimeIndex(stamps),
+                            dtype="float32")
+
+    sd = wide([100, 100, 130, 131, 132])  # cm: +30 cm (11.8") on the 3rd
+    sw = wide([300, 300, 301, 99981, 302])  # mm: SWE barely moves; a 99,981 mm glitch on the 4th
+    monkeypatch.setattr(bcasws, "hourly", lambda el, b, e: sd if el == "SNWD" else sw)
+    sid = bcasws.station_id("9Z99P")
+    d = bcasws.daily([sid], date(2025, 1, 2), date(2025, 1, 6)).set_index("date")
+    assert d.loc[date(2025, 1, 2), "snow24"] == 0.0
+    assert d.loc[date(2025, 1, 3), "qc_flag"] == truth.QC_NO_SWE_SUPPORT
+    assert d.loc[date(2025, 1, 4), "valid"]  # the glitch voids SWE, not the 1 cm depth rise
+    assert math.isnan(d.loc[date(2025, 1, 4), "swe24"])
+    assert d.loc[date(2025, 1, 6), "qc_flag"] == truth.QC_MISSING  # no reading ends day 6
+
+    thin = wide([2, 2, 2, 2, 2])  # 2 cm of snow holding 30 mm of water: impossible
+    monkeypatch.setattr(bcasws, "hourly", lambda el, b, e: thin if el == "SNWD" else wide([30] * 5))
+    obs = bcasws.fetch_daily([sid], date(2025, 1, 1), date(2025, 1, 4))
+    assert obs["SNWD"].isna().all()
+
+
+def test_station_list():
+    msnt = {r["station_id"].split(":")[0] for r in csv.DictReader((ROOT / "data/stations/bc_asws.csv").open())}
+    rows = list(csv.DictReader((ROOT / "data/stations/bc_asws_direct.csv").open()))
+    assert rows
+    for r in rows:
+        bc = r["external_id"]
+        assert r["station_id"] == bcasws.station_id(bc) == f"{bc}:BC:ASWS"
+        assert bc not in msnt  # listed once, under their MSNT id
+        assert r["truth_source"] in ("bcasws", "bcasws_depth") and r["league"] == "stations"
+    assert bcasws.station_id("4A30P") != "4A30P:BC:MSNT"
+    lone = [r["station_id"] for r in rows if r["truth_source"] == "bcasws_depth"]
+    assert lone and all(bcasws.neighbors(lone).values())  # each has a pillow within 40 km
+
+
+def test_depth_only_jump_needs_a_neighbour_swe_rise(monkeypatch):
+    """SNOLITE's rule for BC stations without a pillow: a >= 6" jump stands
+    only if a pillow within 40 km gained >= 0.1" SWE that day."""
+    from powderbench.networks import snolite
+
+    days = pd.date_range("2025-01-01", periods=4, freq="D")
+    stamps = [d + pd.Timedelta(hours=h) for d in days for h in (31, 32, 33)]
+
+    def wide(cols):
+        return pd.DataFrame({c: [v for v in vals for _ in range(3)] for c, vals in cols.items()},
+                            index=pd.DatetimeIndex(stamps), dtype="float32")
+
+    sd = wide({"9A01P": [50, 50, 80, 85], "9A02P": [50, 50, 80, 85]})  # cm: +30 cm on the 3rd, +5 on the 4th
+    sw = wide({"9N01P": [200, 200, 220, 221], "9N02P": [300, 300, 300, 300]})  # mm: only 9N01P gains on the 3rd
+    monkeypatch.setattr(bcasws, "hourly", lambda el, b, e: sd if el == "SNWD" else sw)
+    a, b = bcasws.station_id("9A01P"), bcasws.station_id("9A02P")
+    monkeypatch.setattr(bcasws, "neighbors", lambda ids: {a: ["9N01P:BC:ASWS"], b: ["9N02P:BC:MSNT"]})
+    d = bcasws.daily_depth_only([a, b], date(2025, 1, 2), date(2025, 1, 4)).set_index(["station_id", "date"])
+    assert d.loc[(a, date(2025, 1, 3)), "snow24"] == pytest.approx(30 / 2.54)  # the neighbour pillow gained 20 mm
+    assert d.loc[(b, date(2025, 1, 3)), "qc_flag"] == snolite.QC_NO_NEIGHBOR_SUPPORT  # its pillow stayed flat
+    assert d.loc[(b, date(2025, 1, 4)), "snow24"] == pytest.approx(5 / 2.54)  # small days need no support
+    assert d.loc[(a, date(2025, 1, 2)), "valid"] and math.isnan(d.loc[(a, date(2025, 1, 2)), "swe24"])
+
+    near = SimpleNamespace(station_id="n:BC:ASWS", latitude=50.27, longitude=-120.0, truth_source="bcasws")  # 30 km
+    far = SimpleNamespace(station_id="f:BC:MSNT", latitude=50.45, longitude=-120.0, truth_source=None)  # 50 km
+    assert [sid for _, sid in bcasws.ranked_neighbors(50.0, -120.0, [far, near])] == ["n:BC:ASWS"]
+    assert bcasws.ranked_neighbors(50.0, -120.0, [far]) == []  # nearest pillow beyond 40 km: no neighbour
+
+
+def test_msnt_stations_read_bc_midnight_unless_depth_is_missing():
+    """AWDB's MSNT day is BC's 08:00 PST reading of the next day, so the MSNT
+    pillows take their truth from BC's feed; 3B17P has no depth there."""
+    rows = list(csv.DictReader((ROOT / "data/stations/bc_asws.csv").open()))
+    assert len(rows) == 41
+    for r in rows:
+        bc = bcasws.bc_id(r["station_id"])
+        assert r["station_id"].endswith(":BC:MSNT")
+        assert r["truth_source"] == ("" if bc == "3B17P" else "bcasws"), bc
+    assert bcasws.utc_offset("2C10P") == bcasws.MOUNTAIN  # Moyie Mountain, East Kootenay
+
+
+def test_msnt_local_day_follows_the_zone():
+    tzfpy = pytest.importorskip("tzfpy")
+    for r in csv.DictReader((ROOT / "data/stations/bc_asws.csv").open()):
+        bc = bcasws.bc_id(r["station_id"])
+        mountain = tzfpy.get_tz(float(r["longitude"]), float(r["latitude"])) in bcasws.MOUNTAIN_ZONES
+        assert (bcasws.utc_offset(bc) == bcasws.MOUNTAIN) == mountain, bc
