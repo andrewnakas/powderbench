@@ -660,5 +660,108 @@
    "open-powder-ensemble": 66.52,
    "open-powder-ml": 18.51
   }
+ },
+ {
+  "round_id": "2026-11-14",
+  "biggest_24h": {
+   "station_id": "USW00014755:NH:GHCND",
+   "resort": "Wildcat Mountain (6 km)",
+   "inches": 0.2
+  },
+  "qc": {
+   "station_horizons_valid": 22,
+   "station_horizons_voided": 3452
+  },
+  "teams": {
+   "baseline-aifs": 91.24,
+   "baseline-climatology": 0.0,
+   "baseline-consensus": 84.92,
+   "baseline-gem": 46.86,
+   "baseline-gfs": 10.59,
+   "baseline-icon": 87.34,
+   "baseline-ndfd": -210.0,
+   "baseline-openmeteo": 10.59,
+   "baseline-persistence": 53.53,
+   "baseline-ukmo": 88.32,
+   "baseline-zeros": 86.04,
+   "house-blend": 63.95,
+   "open-powder-ensemble": 77.35,
+   "open-powder-ml": 55.25
+  }
+ },
+ {
+  "round_id": "2026-11-15",
+  "biggest_24h": {
+   "station_id": "1128584:BC:ECCC",
+   "resort": "SilverStar",
+   "inches": 0.8
+  },
+  "qc": {
+   "station_horizons_valid": 15,
+   "station_horizons_voided": 3459
+  },
+  "teams": {
+   "baseline-climatology": 0.0,
+   "baseline-persistence": 55.81,
+   "baseline-wpc": -99.79,
+   "baseline-zeros": 12.74,
+   "house-blend": -98.17,
+   "open-powder-ensemble": 21.6,
+   "open-powder-ml": 79.32
+  }
+ },
+ {
+  "round_id": "2026-11-16",
+  "biggest_24h": {
+   "station_id": "1128584:BC:ECCC",
+   "resort": "SilverStar",
+   "inches": 0.8
+  },
+  "qc": {
+   "station_horizons_valid": 15,
+   "station_horizons_voided": 3459
+  },
+  "teams": {
+   "baseline-climatology": 0.0,
+   "baseline-consensus": 50.48,
+   "baseline-gem": 50.28,
+   "baseline-gfs": 50.28,
+   "baseline-icon": 50.28,
+   "baseline-openmeteo": 64.86,
+   "baseline-persistence": 50.28,
+   "baseline-ukmo": 57.24,
+   "baseline-wpc": 31.55,
+   "baseline-zeros": 50.28,
+   "house-blend": 62.49,
+   "open-powder-ensemble": 50.84,
+   "open-powder-ml": 58.56
+  }
+ },
+ {
+  "round_id": "2026-11-17",
+  "biggest_24h": null,
+  "qc": {
+   "station_horizons_valid": 16,
+   "station_horizons_voided": 3458
+  },
+  "teams": {
+   "baseline-aifs": 98.17,
+   "baseline-climatology": 0.0,
+   "baseline-consensus": 98.44,
+   "baseline-gem": 88.26,
+   "baseline-gfs": 100.0,
+   "baseline-icon": 100.0,
+   "baseline-openmeteo": 98.44,
+   "baseline-persistence": 100.0,
+   "baseline-ukmo": 100.0,
+   "baseline-wpc": 100.0,
+   "baseline-zeros": 100.0,
+   "deep-powder": 100.0,
+   "house-analog": 100.0,
+   "house-blend": 95.92,
+   "house-gbm": 98.86,
+   "open-powder-ensemble": 100.0,
+   "open-powder-ml": 98.77
+  }
  }
 ]

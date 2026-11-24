@@ -49,6 +49,114 @@ midwinter void rates are a few percent.
 Network station names carry the nearest ski area (OpenSkiData, ODbL —
 `data/skiareas/`), e.g. SNOTEL "Atwater" → "Alta Ski Area (2 km)".
 
+## Ground truth: BC snow pillows, direct (stations league)
+
+British Columbia's automated snow pillows reach the league two ways:
+
+- **41 via NRCS AWDB** (network MSNT, `data/stations/bc_asws.csv`, ids
+  `<id>:BC:MSNT`): AWDB's daily values with the regular SNOTEL QC. Unchanged.
+- **47 more straight from BC** (`data/stations/bc_asws_direct.csv`, ids
+  `<id>:BC:ASWS`, `src/powderbench/networks/bcasws.py`): 44 pillows
+  (`truth_source: bcasws`) and 3 depth-only stations (`bcasws_depth`, below),
+  from the province's hourly snow depth (cm) and SWE (mm) —
+  `SD.csv`/`SW.csv` for the current water year and
+  `SD_Archive.csv`/`SW_Archive.csv` back to 2003-10
+  (`env.gov.bc.ca/wsd/data_searches/snow/asws/data/`, UTC timestamps; DataBC
+  catalogue entries `current-season-automated-snow-weather-station-data` and
+  `archive-automated-snow-weather-station-data`). Locations and elevations
+  come from DataBC's `WHSE_WATER_MANAGEMENT.SSL_SNOW_ASWS_STNS_SP` layer.
+  Open Government Licence – British Columbia.
+
+**Truth.** As for CDEC, a local day's end value is the median of the 23:00,
+00:00 and 01:00 readings around local midnight, in local standard time all
+year (as SNOTEL's daily values are): UTC−8, or UTC−7 for stations whose zone
+is America/Edmonton (East Kootenay, Golden, Kootenay NP), America/Creston
+(Kootenay Lake's east shore) or America/Dawson_Creek (Peace) — 11 of the 47
+(`bcasws.MOUNTAIN_IDS`; the generator re-checks it). That is the zone
+Open-Meteo's `timezone=auto` gives them, so the truth uses the same local day
+the NWP baselines forecast. Units: cm ÷ 2.54, mm ÷ 25.4. Then CDEC's QC: SNOTEL's
+(a ≥ 6" jump needs an SWE rise ≥ 0.1"), density (depth < SWE → void), stuck
+sensor and spike; SWE above 4,000 mm is a sensor glitch (the feed has
+99,981 mm readings). The archive is cached reduced to the four UTC hours
+around midnight; the current-season files are re-read each run.
+
+**Depth-only stations** (`truth_source: bcasws_depth`,
+`bcasws.daily_depth_only`): no SWE of their own, so they get NRCS SNOLITE's
+rule (`networks/snolite.py`). Same local-midnight depth, range and spike
+checks; a ≥ 6" jump stands only if one of the 3 nearest pillows within 40 km
+gained ≥ 0.1" SWE that day, otherwise the day is voided. Station data, never a
+model, decides. The pillows can be any station whose SWE is already truth:
+SNOTEL, the 41 MSNT and the 44 direct pillows. BC pillows (MSNT included) are
+read from this feed at the same local midnight; SNOTEL comes from AWDB.
+`swe24` is empty for these stations. Over Oct 2023 – May 2026 the rule
+voided 1 of 47 jumps of 6" or more at the three kept stations (Loch Lomand,
+2024-01-05).
+
+**Checked against AWDB** at the 40 stations in both feeds (3B17P Wolf River
+Upper is not in BC's feed), Oct 2023 – May 2026, ~33,000 station-days:
+
+- AWDB's daily MSNT value for day *d* is the BC feed's **16:00 UTC (08:00
+  PST) reading on *d*+1**: it reproduces AWDB's SWE within 0.05" on 99.99%
+  of station-days and depth within 0.5" on 100%, at every station including
+  Moyie Mountain in the East Kootenay. It is not a local-midnight reading,
+  unlike AWDB's SNOTEL dailies (00:00 of *d*+1, checked against AWDB hourly).
+  The feed's timestamps are UTC: the mean air-temperature cycle peaks at
+  22 UTC (mid-afternoon Pacific) and bottoms out at 14–15 UTC (dawn).
+- Read at local midnight, the direct feed matches AWDB's depth at r 0.988
+  (MAE 0.72") and SWE at r 0.9998 (MAE 0.08"); daily new snow at r 0.71
+  (MAE 0.36"), best on the same date — a day earlier r 0.40, a day later
+  r 0.14 — so there is no ±1-day offset. The rest of the gap is the 8 hours
+  between midnight and AWDB's 08:00 reading.
+- Against ECMWF IFS local-day snowfall at the same 40 stations (2024-25 and
+  2025-26, the gate's method below), the midnight reading correlates at median
+  r 0.70 and AWDB's daily value at r 0.47 (0.42 a day earlier). Midnight is
+  better in all 76 station-seasons.
+- So the direct feed keeps the league's rule (local midnight, like SNOTEL and
+  CDEC). The 41 MSNT stations keep AWDB's values; their published truth is
+  unchanged.
+
+**Stations** (`scripts/networks/bc_asws_direct.py`): of BC's 141 feed
+stations, 40 are MSNT already. Of the other 101, the generator keeps those
+that
+- reported depth in the last 7 days (drops 3: Saltspring 2, Woss Camp,
+  Anahim Lake);
+- are more than 1.5 km from every stations/observers-league station (drops
+  Cook Creek, 0.9 km from MSNT Mount Cook, and Silver Star Mountain, 1.4 km
+  from ECCC's Silver Star);
+- have midnight depth (+ SWE, for a pillow) on ≥ 50 of Jan–Feb 2026's 59
+  days (drops 27 stations with no record before this season and 4 pillows
+  with gaps);
+- depth-only (14 have depth but no SWE in the last three winters): have an
+  SWE pillow within 40 km. Two have too few Jan–Feb days (New Denver East,
+  Wade Lake); 8 have no pillow within 40 km (Conrad Glacier, Fernie,
+  Germansen Landing, Deadwood River, Chris Creek, Martins Gulch, North Basin,
+  Fauquier); 4 go to the gate. Pillows are placed first, so a kept direct
+  pillow can be a neighbour. Gray Creek Lower is 1.54 km from, and 280 m
+  below, the Gray Creek Upper pillow: just outside the duplicate rule, and
+  Upper is its nearest neighbour;
+- pass the hindcast gate (`data/gates/stations.csv`, below): 44 of 51
+  pillows and 3 of 4 depth-only stations.
+
+**Gate** (`scripts/hindcast_gate.py`): each candidate's daily truth against
+ECMWF IFS 9 km — the runs ECMWF actually made, from Open-Meteo's
+historical-forecast archive at the station's elevation — over three whole
+seasons (Oct–May 2023-24, 2024-25 and 2025-26), at shifts −1/0/+1. A station
+passes with pooled r ≥ 0.40 at shift 0, ≥ 60 valid days and r ≥ 0.30 in every
+season, and no other shift better by 0.10. 44 pass (median r 0.72, range 0.48–0.83),
+all best at shift 0, so no station is misdated. Seven fail: Cobble Hill (85 m,
+no snow), Fred Laing Lower (577 m, r 0.18 in 2024-25), and five with no
+2023-24 or 2024-25 record (Hamilton Hill, McCulloch, Farron, Ellis Creek,
+Downie Slide Lower). Depth-only, through the neighbour rule: Loch Lomand
+(r 0.79), Crocker Creek (0.72) and Gray Creek Lower (0.63) pass; Kaslo
+Airport (717 m) fails (pooled r 0.31; 0.08 and 0.10 in 2024-25 and 2025-26).
+
+Climatology: `powderbench build-climatology --league stations --only-missing`
+from each station's own record, Oct 2015 – Jun 2025. Stations whose record
+starts late (Crocker Creek, Paradise Lake, Muskwa-Kechika, Crying Girl Prairie,
+Fredrickson Lake, Dickson Lake, Molson Creek) have it on only 37–65% of Oct–May days until they build
+more history. Until then they drop out of the Powder Accuracy comparison, as
+CDEC stations with short records already do.
+
 ## Ground truth: measured new snow (observers league)
 
 The observers league scores against **measured** new snowfall — the snowboard
@@ -69,6 +177,21 @@ Data Service. COOP data is US public domain; CoCoRaHS data is CC BY 3.0
   climatology on ≥60 of the ~90 Dec–Feb days) and a clear day-attribution fit (below). ~1,150 stations.
   **Featured**: the three highest per curated ski zone and per eastern
   ski-country region.
+- **More observers, gated** (`data/stations/ghcnd_wide.csv`, 2026-11):
+  `scripts/networks/ghcnd_wide.py` adds ~480 network-tier observers that
+  `ghcnd.py` leaves out, each judged by a **hindcast gate against archived
+  ECMWF IFS 9 km** over three winters (2023-24 to 2025-26) instead of the ERA5
+  fit (`scripts/observers_gate.py` → `data/gates/observers.csv`; method and
+  counts in `data/gates/README.md`). Two routes: *wide* — looser admission that
+  stays in snow country (records back to ≤2023; 1,200–1,500 m near a SNOTEL;
+  Alaska near a SNOTEL at any elevation; within 25 km of a ski area, east of
+  93°W or near a SNOTEL in the west), kept only where the station's own
+  climatology averages ≥40" of new snow per Oct–May season; *rejudge* —
+  mountain stations `ghcnd.py` admits but its 2-winter ERA5 fit (~31 km cells)
+  dropped on 2026-10-20. Pass rule as for the stations gate: pooled r ≥ 0.40,
+  every season ≥ 60 days and r ≥ 0.30; then the same climatology pass. None
+  featured. `ghcnd.csv`, its ids, offsets and featured set are unchanged;
+  `ghcnd.py` skips stations listed in `ghcnd_wide.csv`.
 - **Day alignment — fitted per station.** Observers file a reading under the
   date they took it, but read the board at different times (morning observers:
   the snow fell the day before; evening observers: same day). A one-day error
@@ -78,7 +201,9 @@ Data Service. COOP data is US public domain; CoCoRaHS data is CC BY 3.0
   shifts −1/0/+1 (`powderbench/networks/attribution.py`). A station is kept
   only if the best shift correlates ≥0.4 **and** beats the runner-up by ≥0.1 —
   stations that don't track storms, or are ambiguous, are dropped. Most US
-  observers fit +1 (morning); most ECCC stations fit 0.
+  observers fit +1 (morning); most ECCC stations fit 0. Stations in
+  `ghcnd_wide.csv` get theirs from the 9 km gate instead: the same 0.1 margin,
+  over three winters and shifts −1/0/+1/+2, and only 0 or +1 is accepted.
 - **Canada (ECCC)**: measured `TOTAL_SNOW` (cm) from ECCC's climate-daily OGC
   API (Open Government Licence – Canada), `scripts/networks/eccc.py` →
   `data/stations/eccc.csv` (`truth_source: eccc`). Only 8 mountain stations
@@ -100,13 +225,13 @@ Data Service. COOP data is US public domain; CoCoRaHS data is CC BY 3.0
 | Source | Status | Why |
 |---|---|---|
 | NRCS SNOTEL, full network | **live** (stations) | ~865 stations with depth + SWE |
-| NOAA GHCN-Daily SNOW (COOP + CoCoRaHS) | **live, trial** (observers) | measured new snow, ~1,150 timing-verified mountain and ski-area sites. Hindcast gate (featured, 2026-02-01..14): GFS/Open-Meteo +25.1, zeros +12.8, climatology 0, persistence −51 |
+| NOAA GHCN-Daily SNOW (COOP + CoCoRaHS) | **live, trial** (observers) | measured new snow, ~1,630 timing-verified mountain and ski-area sites (~480 of them gated against archived ECMWF IFS 9 km, `ghcnd_wide.csv`). Hindcast gate (featured, 2026-02-01..14): GFS/Open-Meteo +25.1, zeros +12.8, climatology 0, persistence −51 |
 | NOAA WPC PWPF | **live** (`baseline-wpc`) | official NWS snowfall percentiles |
 | NWS NDFD snow amount | **live** (`baseline-ndfd`) | the forecast offices' own snowfall grids, 24/48 h |
 | CDEC snow pillows (CA DWR) | **live** (stations, 57) | CDEC's *daily* depth is a daily mean, so we read **hourly** depth/SWE and take the median of the 23:00/00:00/01:00 readings at local midnight; SNOTEL QC plus density (depth < SWE → void), stuck-sensor (flat depth while SWE rises ≥0.5") and spike (>10" above both neighbours) checks. Gate: median r = 0.96 vs the nearest SNOTEL (13 pairs, Jan–Feb 2026). Pillows within 1.5 km of a SNOTEL are the same site and are dropped (FDC, HOR). History from 2021-10. |
 | NRCS SNOLITE | **live** (stations, 33) | depth-only; a ≥6" jump must be confirmed by an SWE rise at a SNOTEL within 40 km (station data, not a model) |
 | BC automated snow pillows (AWDB network MSNT) | **live** (stations, 41) | BC government pillows served by NRCS AWDB; depth + SWE, regular SNOTEL QC |
-| BC ASWS (OGL-BC) | via AWDB (above) | |
+| BC ASWS, direct feed (OGL-BC) | **live** (stations, 47) | BC's own hourly depth/SWE, read at local midnight like CDEC (AWDB's MSNT day is the 08:00 PST reading, see above); 3 depth-only stations use SNOLITE's neighbour-pillow rule; gated against archived ECMWF IFS over three winters; 41 more stay on AWDB |
 | ECCC climate-daily `TOTAL_SNOW` (OGL-Canada) | **live, trial** (observers) | 8 mountain stations still measure snowfall daily (Whistler, Silver Star, Grouse, Kananaskis, Barkerville featured) |
 | IEM real-time COOP/CoCoRaHS | next | same-day provisional observers truth |
 | NWS Local Storm Reports (IEM) | planned | storm-total "Storm Mode" events |
@@ -215,7 +340,8 @@ are not used.
 
 - **Candidates:** active stations at ≥ 600 m in the German Alps (47.2–47.95° N,
   9.8–13.2° E: Allgäu to Berchtesgaden). Kept when last winter (Nov–Mar) has
-  ≥ 100 new-snow values and ≥ 10 days of 2 cm or more: 52 of 105.
+  ≥ 100 new-snow values and ≥ 10 days of 2 cm or more: 52 of 105. The
+  NWP gate drops Schönau am Königssee (below), leaving 51.
 - **Day attribution:** the value dated D is the morning-of-D measurement, so day
   D is the value dated D+1. Not fitted per station. All 85 German stations
   ≥ 700 m with new-snow data correlate best with the precipitation DWD files
@@ -275,7 +401,7 @@ not used.
 - **Candidates:** LWD/HD Tirol stations with a snow-depth sensor. Kept when
   last winter (Dec–Mar) has ≥ 100 days with both midnight depths and ≥ 10
   days of 2 cm or more: 71 (two co-located HD duplicates of LWD stations
-  dropped).
+  dropped). The NWP gate drops Grubigstein and Wandspitze (below), leaving 69.
 - **Featured:** for each ski area with 15+ lifts (OpenSkiData), its nearest
   kept station within 4 km: 12 (Sölden, Stubai Glacier, Obergurgl, St. Anton,
   Hintertux, Mayrhofen, Serfaus-Fiss-Ladis, Axamer Lizum, Nordkette, Alpbach,
@@ -370,6 +496,180 @@ UTC day, as MeteoSwiss asks). No key.
   more: 58.
 - **Tier:** all network. They score in the league's network board; none is
   featured, so they add no Open-Meteo points.
+
+### France: Météo-France climate stations (French Alps)
+
+The French Alps stations (`:FR:MFHN` / `:FR:MF`, `truth_source:
+meteofrance`) use the world league's Météo-France adapter (see the world
+league below for the data, the day conventions and the depth QC). They come
+from the départements of Haute-Savoie, Savoie, Isère and Drôme (region
+"Northern French Alps") and Hautes-Alpes, Alpes-de-Haute-Provence and
+Alpes-Maritimes ("Southern French Alps") (`scripts/networks/meteofrance.py
+--alps`, `meteofrance_alps.csv`).
+
+- **Candidates:** stations at ≥ 600 m with the world league's record tests:
+  last winter ≥ 100 valid days and ≥ 8 days of 2 cm or more, ≥ 3 such
+  winters since 2010, and current reports. That gives 62.
+- **One site, one truth:** a station within 2 km and 200 m of any station
+  already in the league is left out. That drops 67 resort and nivose posts
+  that Météo-France's nivo network covers (Chamonix, Tignes, Val d'Isère, Val
+  Thorens, Les Arcs, Alpe d'Huez, Isola 2000…; the nivo stations are in
+  #578). Of two candidates at one site, the longer record is kept (3 more).
+- **NWP gate:** 52 of 59 pass. Seven fail: the automatic high-pass sensors
+  Restefond, Col Agnel and Galibier, and Montclar, St Jean-St-Nicolas, Peira
+  Cava and Vaujany. Peone is re-dated to `day_offset` 0.
+- **Stations:** 17 new-snow boards and 35 depth stations, from 670 m to
+  3,093 m (median 1,525 m), among them Le Tour, Les Contamines, Megève,
+  Grand-Bornand, Sainte-Foy, St-Martin-de-Belleville, Bonneval, Villard-de-Lans,
+  Chamrousse, Pelvoux and the nivose sensors of Météo-France's avalanche
+  service (Aiguilles Rouges, La Meije, Les Écrins, Bellecôte…).
+- **Tier:** all network. None is featured, so they add no Open-Meteo points.
+- **Climatology:** from each station's own record since 2010.
+
+### Austria: more GeoSphere stations (hand-measured and snow gauge)
+
+GeoSphere's daily climate dataset has many more mountain stations than the
+36 sites above. `scripts/networks/geosphere_more.py` adds the
+rest (`geosphere_more.csv`), all network tier.
+
+- **Hand-measured new snow** (`:AT:GEO`, `truth_source: geosphere`): as above
+  (`shneu_manu`).
+- **Snow gauge** (`:AT:GEOSH`, `truth_source: geosphere_sh`): stations
+  without a hand measurement of new snow, scored on `sh`, the automatic
+  gauge's depth at the 06 UTC term. Day D is the rise from 07:00 on D to
+  07:00 on D+1. That matches the hand-measured network: at the 61 stations
+  that report both over winter 2025-26, the new snow filed on D+1 tracks the
+  gauge rise D → D+1 (median r 0.95, against 0.17 a day off). A rise of 10 cm
+  or more is voided when the station's precipitation gauge (`rr`, which
+  covers the same 06–06 UTC day) caught under 0.5 mm: that is wind drift or
+  a gauge fault.
+- **Candidates:** active stations at ≥ 600 m that are not already in the
+  league, nor within 2 km and 200 m of a station that is (including #578's
+  added GeoSphere stations). Kept on last winter ≥ 100 valid days and ≥ 8
+  days of 2 cm or more, ≥ 3 such winters since 2010, and ≥ 70% of the last 14
+  days reported. A station with hand-measured new snow is preferred over its
+  gauge. GeoSphere lists many sites under two station numbers; of two
+  candidates at one site, the longer record is kept, **before** the gate, so
+  a site that fails cannot return under its other number. That gives 42.
+- **NWP gate:** 36 pass. Six fail: Lofer, Krimml, Hall bei Admont,
+  Mittersill, Kirchdorf in Tirol and Radstadt-Tandalier. Bad Mitterndorf,
+  Aigen im Ennstal and Irdning-Gumpenstein are re-dated to `day_offset` 0.
+- **Stations:** 17 hand-measured and 19 gauges, from 613 m to 1,916 m
+  (median 850 m): Tyrol 12, Vorarlberg 6, Carinthia 6, Styria 5, Salzburg 3,
+  Upper Austria 3, Lower Austria 1. Among them Kitzbühel and
+  Hahnenkamm-Sonnenrast, Hintertux, Alpbach, Söll, Mayrhofen, Kals, Sillian,
+  Schröcken (Warth), Schoppernau, Mittelberg (Kleinwalsertal), Gaschurn,
+  Katschberg, Kölnbreinsperre and Feuerkogel.
+- **Climatology:** from each station's own record since 2010.
+
+### Italy: ARPA Piemonte snow stations (Piedmont)
+
+The Piedmont stations (`:IT:PIE`, `truth_source: arpapie`) are ARPA
+Piemonte's automatic snow stations, from the Ossola and Monte Rosa
+(Macugnaga, Formazza, Alpe Veglia) through the Graians and Cottians
+(Sestriere, Bardonecchia, Pragelato, Prali, Pontechianale) to the Maritime and
+Ligurian Alps (Limone, Argentera, Colle Lombarda, Ormea). CC BY 4.0, "Fonte:
+Arpa Piemonte – www.arpa.piemonte.it". No key.
+
+- **Truth:** the validated snow depth read at 08:00 local time. Day D is the
+  rise from 08:00 on D to 08:00 on D+1 (`day_offset` 1), with the shared
+  depth QC; there is no precipitation value beside it.
+- **Data:** the live feed (`api_realtime/pie_neve`) gives every station's
+  last 7 days in one request, and each day's response is kept, so days that
+  leave the window stay available. The history (`meteoidro/
+  dati_giornalieri_nivo`, from 1990) is validated about once a year, through
+  30 June of the last season; it is re-read monthly. The registry
+  (`api_realtime/pie_anag`) maps station codes to history keys.
+- **Candidates:** the stations in the live feed at ≥ 600 m: 71. Kept on last
+  winter ≥ 100 valid days and ≥ 8 days of 2 cm or more, ≥ 3 such winters
+  since 2010, and a reading on ≥ 70% of the live feed's 7 days: 63. None sits
+  within 2 km and 200 m of a station already in the league. Alagna (live
+  4 of 7 days) and three stations with no history are among those left out.
+- **NWP gate:** 61 pass; Colleretto and Graglia fail. 20 are re-dated to
+  `day_offset` 0, most by a wide margin (Paesana r 0.85 against 0.40,
+  Capanne Marcarolo 0.70 against 0.22, Piani di Carrega 0.47 against 0.03):
+  their validated value dated D is the depth on the morning after. The gate
+  ran on the validated history; the live feed of those stations can only be
+  checked against it once the history reaches this winter (July 2027), so the
+  gate is re-run then.
+- **Stations:** 61, from 610 m to 2,977 m (median 1,770 m), 37 within 10 km
+  of a ski area, among them Sestriere, Bardonecchia (Pian del Sole,
+  Pranudin), Sauze Cesana, Prali, Limone, Bielmonte, Macugnaga (Pecetto,
+  Rifugio Zamboni) and Alpe Veglia (San Domenico).
+- **Tier:** all network. None is featured, so they add no Open-Meteo points.
+- **Climatology:** from each station's own record since 2010.
+
+### Alps NWP gate (2026-11-20)
+
+Every station of the league, and every candidate above, was checked the
+world and nordic leagues' way (`scripts/nwp_gate.py`). Its daily truth over
+winter 2025-26 (2025-12-01..2026-03-15) is correlated with the direct ECMWF
+IFS daily snowfall (raw, 0.25°) for the same local day, and with the truth
+shifted a day either way. A station needs r ≥ 0.4 at its best shift, and a
+best shift ahead of the next by 0.10 to move its day. The decisions are in
+`data/gates/alps.csv` (719 stations, median best r 0.77), applied by the
+generators through `scripts/networks/gate.py`. A station may be re-dated to
+its network's default offset or one less, never later; a later best shift is
+a misdated record and drops the station.
+
+- **Dropped from the lists already live (all network tier):**
+  - SLF Bellinzona, Brusio and Poschiavo, low valley stations south of the
+    Alps (best r 0.01, 0.35 and 0.38).
+  - DWD Schönau am Königssee (0.33).
+  - Land Tirol Grubigstein and Wandspitze: their best shift is a day later
+    than a midnight depth sensor allows.
+- **New networks:** Météo-France 52 of 59, GeoSphere 36 of 42 and ARPA
+  Piemonte 61 of 63 (above).
+- **Everything else passes:** all 121 IMIS stations, 58 MeteoSwiss, 32 ARPA
+  Lombardia, 24 South Tyrol, 12 Meteotrentino, 69 of 71 Land Tirol, 51 of 52
+  DWD and 92 of 95 SLF study plots.
+- The gate also covers #578's stations: six nivo posts and six GeoSphere
+  stations move from `day_offset` 0 to 1 (the documented 07:00 reading, which
+  the ERA5 fit had placed a day early), and GeoSphere Saalbach and Tamsweg
+  fail. #578 applies those.
+
+### Not added yet (Alps and nearby, 2026-11-20)
+
+- **ARPAV (Veneto Dolomites: Arabba, Passo Falzarego, Ra Valles…):** 42
+  snow-depth stations with a CC BY 4.0 live feed (about 2 days), but no snow
+  history through the API; the history comes one station at a time from an
+  emailed web form.
+- **Valle d'Aosta (Courmayeur, Pila, Cervinia, Gressoney, Cogne…):** about 40
+  stations, CC BY 4.0, live only as 24-hour PDFs; the history needs a request
+  form.
+  - Both need archiving forward from now (their live windows are 1–7 days)
+    until a season of history exists. A first copy was taken on 2026-11-20
+    (ARPAV's 60-day daily files give 18 stations two months at once).
+- **Meteocat (Catalan Pyrenees, 20 stations: Boí, Espot, Port del Comte,
+  Núria…):** an open feed from 2009, but the legal notice forbids extracting
+  a substantial part of the database without written authorisation. Needs
+  Meteocat's OK first.
+- **ARPA FVG (Friuli):** the data sits behind a session and a POST form, and
+  the licence is share-alike (CC BY-SA 3.0 IT).
+- **Arpae Emilia-Romagna (northern Apennines), tested and not added:** 16
+  snow-depth sensors at ≥ 600 m (Corno alle Scale, Cimone, Febbio…), CC BY
+  4.0, no key (adapter on the `world-arpae` branch). Six pass the record
+  tests. But the NWP gate fails four, and the two that pass are doubtful: the
+  sensors jitter by several centimetres on bare ground, so depth rises add up
+  to far more than the model's snow (Doccia di Fiumalbo 204″ against 29″
+  over the winter, r 0.17; Monteacuto delle Alpi 43″ against 5″).
+- **ARSO (Slovenia):** free reuse with credit ("Vir: ARSO").
+  - Observers' daily new snow and depth at 07:00 go back to 1948 at 48
+    stations at ≥ 600 m (Kredarica, Vogel, Rateče, Kranjska Gora…). But only
+    Kredarica and Lisca are published within 2 days; the rest arrive about
+    three weeks after month end, too late for a round's resolve.
+  - The 33 automatic stations with a snow sensor (Kanin, Krvavec, Vršič,
+    Vogel, Rogla…) are live (10-minute XML, 2-day tables), but their snow
+    depth is not in the archive. They need archiving forward.
+- **SHMÚ (Slovakia):** CC BY 4.0. Live 1-minute snow depth (about the last
+  month) and daily new snow and depth at 07:00 (Lomnický štít, Štrbské Pleso,
+  Chopok…). The daily files start in January 2025, so the record reaches three
+  winters only in spring 2028.
+- **IMGW (Poland):** no snow value in the live API; the daily files (snow
+  depth, new snow) appear a month or more late, and the terms allow any-purpose
+  use only for "high-value" data.
+- **Veðurstofa Íslands (Iceland):** CC BY 4.0, but only two automatic
+  stations at ≥ 600 m report snow depth, with short records.
 
 ## Ground truth: JMA snow-depth sensors (japan league)
 

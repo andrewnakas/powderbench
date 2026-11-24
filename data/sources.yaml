@@ -18,6 +18,13 @@ sources:
     attribution: "California snow pillows: CA Department of Water Resources, CDEC."
     role: truth
     leagues: [stations]
+  - name: BC automated snow weather stations (hourly feed and archive)
+    provider: Government of British Columbia (Environmental Monitoring and Analysis Branch)
+    url: https://catalogue.data.gov.bc.ca/dataset/current-season-automated-snow-weather-station-data
+    licence: Open Government Licence – British Columbia
+    attribution: "Contains information licensed under the Open Government Licence – British Columbia (automated snow weather station data and station locations, DataBC)."
+    role: truth
+    leagues: [stations]
   - name: GHCN-Daily (NWS COOP + CoCoRaHS)
     provider: NOAA National Centers for Environmental Information
     url: https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-daily
@@ -46,11 +53,18 @@ sources:
     attribution: "Swiss snow data © WSL Institute for Snow and Avalanche Research SLF (www.slf.ch), CC BY 4.0."
     role: truth
     leagues: [alps]
-  - name: Measured new snow (shneu_manu) — climate stations
+  - name: Measured new snow (shneu_manu) and snow-gauge depth (sh) — climate stations
     provider: GeoSphere Austria
     url: https://data.hub.geosphere.at/
     licence: CC BY 4.0
     attribution: "Austrian snow data © GeoSphere Austria (data.hub.geosphere.at), CC BY 4.0."
+    role: truth
+    leagues: [alps]
+  - name: Neve — dati giornalieri e tempo reale
+    provider: ARPA Piemonte
+    url: https://www.arpa.piemonte.it/dati-ambientali
+    licence: CC BY 4.0
+    attribution: "Fonte: Arpa Piemonte – www.arpa.piemonte.it (CC BY 4.0)."
     role: truth
     leagues: [alps]
   - name: Fresh snow on the morning board — nivo-meteorological network
