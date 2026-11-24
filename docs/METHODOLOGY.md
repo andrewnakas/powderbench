@@ -63,7 +63,15 @@ New snow on local day *d* is the positive depth change between the end of
   (13 pairs, Jan–Feb 2026). Pillows within 1.5 km of a SNOTEL are the same
   site and are excluded.
 - **SNOLITE** (NRCS, depth only): see the neighbour rule in §3.
-- **BC automated snow pillows** (served by AWDB as network MSNT).
+- **BC automated snow pillows**: read hourly from BC's own feed like CDEC
+  (since 2026-11-24 also 40 of the 41 that AWDB lists as network MSNT; 3B17P, with
+  no depth in BC's feed, keeps AWDB's daily values) —
+  the median of the 23:00/00:00/01:00 readings at local midnight, in local
+  standard time (UTC−8; UTC−7 in the Mountain-time East Kootenay, Golden,
+  Kootenay Lake east shore and Peace). Stations with depth but no pillow
+  get SNOLITE's neighbour rule, with BC's pillows (MSNT and direct) as well
+  as SNOTEL as neighbours. Gated against archived ECMWF IFS runs over three
+  winters (see [DATA.md](DATA.md)).
 
 ### 2.2 Measured new snow (Observers and Alps leagues)
 
@@ -136,10 +144,10 @@ day is. QC is deterministic and public (`powderbench/truth.py`,
 | Range | depth networks | depth < 0 or > 300″ |
 | Implausible | all | > 48″ in a day |
 | SWE support | SNOTEL, CDEC, BC | a ≥ 6″ depth jump without an SWE rise ≥ 0.1″ |
-| Neighbour support | SNOLITE (no SWE) | a ≥ 6″ jump without an SWE rise at a SNOTEL within 40 km |
-| Density | CDEC | depth < SWE (physically impossible) |
-| Stuck sensor | CDEC | depth unchanged ≥ 3 days while SWE rises ≥ 0.5″ |
-| Spike | CDEC | depth > 10″ above both neighbouring days |
+| Neighbour support | SNOLITE, BC depth-only (no SWE) | a ≥ 6″ jump without an SWE rise ≥ 0.1″ that day at one of the 3 nearest pillows within 40 km (SNOTEL; for BC also MSNT and BC's direct pillows) |
+| Density | CDEC, BC direct | depth < SWE (physically impossible) |
+| Stuck sensor | CDEC, BC direct | depth unchanged ≥ 3 days while SWE rises ≥ 0.5″ |
+| Spike | CDEC, BC direct | depth > 10″ above both neighbouring days |
 | Source QC | GHCN, ECCC | the provider's own quality flag, accumulated (multi-day) or estimated values |
 | Stale | resorts | the report's own timestamp is > 30 h old |
 | Stuck | resorts | the same non-zero 24 h figure on ≥ 3 consecutive days: repeats after the first are voided |

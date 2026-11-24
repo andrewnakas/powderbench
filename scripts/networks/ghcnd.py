@@ -152,6 +152,8 @@ def main() -> int:
 
     with (ROOT / "data" / "stations" / "snotel.csv").open() as f:
         snotel_sites = [(float(r["latitude"]), float(r["longitude"])) for r in csv.DictReader(f)]
+    wide = ROOT / "data" / "stations" / "ghcnd_wide.csv"  # gate-judged observers (ghcnd_wide.py) stay there
+    in_wide = {r["station_id"] for r in csv.DictReader(wide.open())} if wide.exists() else set()
     curated = [s for s in yaml.safe_load((ROOT / "data" / "stations.yaml").read_text())["stations"]
                if s.get("league", "stations") == "stations"]
     picked = []
@@ -172,6 +174,8 @@ def main() -> int:
         if not (mountain or near_ski):
             continue
         sid = f"{gid}:{state}:GHCND"
+        if sid in in_wide:
+            continue
         # climatology pass: stations with a record must be solid; brand-new
         # admissions stay until their climatology exists (then re-run)
         if solid is not None and sid in climo_ids and sid not in solid:

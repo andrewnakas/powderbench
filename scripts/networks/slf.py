@@ -3,8 +3,10 @@ plots (observer-measured HN) and automatic IMIS snow stations (HN_1D derived
 by SLF from snow depth). CC BY 4.0 — WSL Institute for Snow and Avalanche
 Research SLF, www.slf.ch.
 
-Selection: active, >= MIN_REPORTS HN_1D readings last winter, and a clear
-observation-day fit against ERA5 (powderbench/networks/attribution.py).
+Selection: active, >= MIN_REPORTS HN_1D readings last winter, a clear
+observation-day fit against ERA5 (powderbench/networks/attribution.py), and
+the per-station NWP gate (data/gates/alps.csv): a station that fails it is
+dropped, and its suggested offset (the fitted one or a day earlier) is used.
 Featured: the study plots at the famous resorts (FEATURED).
 
     python scripts/networks/slf.py
@@ -23,6 +25,7 @@ import requests
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import gate  # noqa: E402
 import skiareas  # noqa: E402
 
 OUT = ROOT / "data" / "stations" / "slf.csv"
@@ -98,6 +101,9 @@ def main() -> int:
         off = fits.get(r["station_id"], {}).get("offset")
         n = int(n_last.get(r["station_id"], 0))
         ok = n >= MIN_REPORTS and off is not None
+        if ok:
+            off, _ = gate.decide("alps", r["station_id"], off)
+            ok = off is not None
         counts[(r["network"], off if ok else None)] = counts.get((r["network"], off if ok else None), 0) + 1
         if r["tier"] == "featured":
             print(f"{r['station_id']:>14} {r['resort']:<18} n={n:<4} corr={fits.get(r['station_id'], {}).get('corr')} -> {'ok' if ok else 'DROPPED'}")

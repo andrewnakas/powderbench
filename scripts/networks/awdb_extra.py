@@ -3,8 +3,11 @@
   data/stations/snolite.csv  NRCS SNOLITE (depth only; truth_source snolite —
                              big jumps confirmed by neighbouring SNOTEL SWE).
                              Needs a SNOTEL within 40 km and >= 3 years of depth.
-  data/stations/bc_asws.csv  British Columbia automated snow pillows served by
-                             AWDB as network MSNT (depth + SWE: regular SNOTEL QC).
+  data/stations/bc_asws.csv  British Columbia automated snow pillows listed by
+                             AWDB as network MSNT. Their truth is read from BC's
+                             own feed at local midnight (truth_source bcasws):
+                             AWDB's MSNT day is BC's 08:00 PST reading of the next
+                             day. A station with no depth in BC's feed keeps AWDB.
 
     python scripts/networks/awdb_extra.py
 """
@@ -83,10 +86,13 @@ def main() -> int:
         if s0 and s0 <= cutoff and DUPLICATE_KM < near <= NEIGHBOR_KM:
             lite.append(row(st, "SNTLT", "snolite"))
     bc = []
+    from powderbench.networks import bcasws
+
+    in_feed = bcasws.feed_ids("SNWD")
     for st in stations("MSNT", "SNWD,WTEQ"):
         a, b = since(st, "SNWD"), since(st, "WTEQ")
         if a and b and max(a, b) <= cutoff:
-            bc.append(row(st, "MSNT", ""))
+            bc.append(row(st, "MSNT", "bcasws" if st["stationTriplet"].split(":")[0] in in_feed else ""))
     for name, rows in (("snolite", lite), ("bc_asws", bc)):
         with (ROOT / f"data/stations/{name}.csv").open("w", newline="") as f:
             w = csv.DictWriter(f, fieldnames=FIELDS)

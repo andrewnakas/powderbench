@@ -205,6 +205,26 @@ register(TruthSource(
 ))
 
 
+def _eccc_depth_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
+    from .networks import eccc_depth
+
+    return eccc_depth.daily(ids, begin, end, _offsets(league, ids))
+
+
+register(TruthSource(
+    name="eccc_depth",
+    fetch=_eccc_depth_daily,
+    history_begin=date(2010, 10, 1),
+    climatology=(date(2010, 10, 1), _CLIM_END),
+    measured=False,
+    note=(
+        "Truth is the rise in snow on the ground from one morning reading to the next at Environment and "
+        "Climate Change Canada climate stations in the Canadian mountains (Banff, Golden, Nordegg, "
+        "Macmillan Pass…). Data: ECCC, Open Government Licence – Canada."
+    ),
+))
+
+
 def _slf_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
     from .networks import slf
 
@@ -243,6 +263,45 @@ register(TruthSource(
         "Truth is the 24h new snow measured by hand at GeoSphere Austria's climate stations "
         "(St. Anton, Obergurgl, Obertauern, Saalbach…), read at the 07:00 morning observation. "
         "Data © GeoSphere Austria, CC BY 4.0."
+    ),
+))
+
+
+def _geosphere_sh_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
+    from .networks import geosphere_sh
+
+    return geosphere_sh.daily(ids, begin, end, _offsets(league, ids))
+
+
+register(TruthSource(
+    name="geosphere_sh",
+    fetch=_geosphere_sh_daily,
+    history_begin=date(2010, 10, 1),
+    climatology=(date(2010, 10, 1), _CLIM_END),
+    measured=False,
+    note=(
+        "Truth is the rise in snow depth from one 07:00 reading to the next at GeoSphere Austria's "
+        "automated snow gauges, checked against the station's rain gauge. Data © GeoSphere Austria, CC BY 4.0."
+    ),
+))
+
+
+def _arpapie_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
+    from .networks import arpapie
+
+    return arpapie.daily(ids, begin, end, _offsets(league, ids))
+
+
+register(TruthSource(
+    name="arpapie",
+    fetch=_arpapie_daily,
+    history_begin=date(2010, 10, 1),
+    climatology=(date(2010, 10, 1), _CLIM_END),
+    measured=False,
+    note=(
+        "Truth is the rise in validated snow depth from one 08:00 reading to the next at ARPA Piemonte's "
+        "automatic snow stations (Sestriere, Bardonecchia, Alagna, Macugnaga…). "
+        "Fonte: Arpa Piemonte – www.arpa.piemonte.it, CC BY 4.0."
     ),
 ))
 
@@ -506,6 +565,114 @@ register(TruthSource(
         "Truth is the new snow measured by hand at 06 UTC at MeteoSwiss's manual stations in the ski "
         "villages and valleys below the SLF study plots (Engelberg, Grindelwald, Pontresina, Sedrun, "
         "Crans-Montana, Säntis…). Source: MeteoSwiss (opendata.meteoswiss.ch), CC BY 4.0."
+    ),
+))
+
+
+def _chmi_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
+    from .networks import chmi
+
+    return chmi.daily(ids, begin, end, _offsets(league, ids))
+
+
+register(TruthSource(
+    name="chmi",
+    fetch=_chmi_daily,
+    history_begin=date(2010, 10, 1),
+    climatology=(date(2000, 10, 1), _CLIM_END),
+    measured=True,
+    note=(
+        "Truth is the new snow measured by hand at the morning reading of Czech Hydrometeorological "
+        "Institute stations in the Krkonoše, Jeseníky, Šumava and Krušné hory (Luční bouda, Labská bouda, "
+        "Pec pod Sněžkou, Praděd, Churáňov, Klínovec…). Data © ČHMÚ (opendata.chmi.cz), CC BY 4.0."
+    ),
+))
+
+
+def _meteofrance_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
+    from .networks import meteofrance
+
+    return meteofrance.daily(ids, begin, end, _offsets(league, ids))
+
+
+register(TruthSource(
+    name="meteofrance",
+    fetch=_meteofrance_daily,
+    history_begin=date(2010, 10, 1),
+    climatology=(date(2010, 10, 1), _CLIM_END),
+    measured=False,  # most stations are depth-derived; the resort posts' boards are measured
+    note=(
+        "Truth is the 24 h new snow on Météo-France ski-resort snow boards (HNEIGEF), or the rise in the "
+        "06 UTC snow depth (NEIGETOT06) at Météo-France weather stations in the Pyrenees, Massif Central, "
+        "Vosges, Jura and Corsica. Data: Météo-France, Licence Ouverte 2.0."
+    ),
+))
+
+
+def _ghcnh_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
+    from .networks import ghcnh
+
+    wanted = set(ids)
+    lons = {s.station_id: s.longitude for s in load_stations(league.name) if s.station_id in wanted}
+    return ghcnh.daily(ids, begin, end, lons)
+
+
+register(TruthSource(
+    name="ghcnh",
+    fetch=_ghcnh_daily,
+    history_begin=date(2010, 10, 1),
+    climatology=(date(2000, 10, 1), _CLIM_END),
+    measured=False,
+    note=(
+        # the world league's note on the site, so it credits every network in the league
+        "Truth is the morning snow reading at mountain weather stations: new snow measured on a board where "
+        "the station has one (DWD observers in the Black Forest, Bavarian Forest, Fichtelgebirge, Erzgebirge "
+        "and Harz; ČHMÚ in the Krkonoše, Jizera and Krušné hory; Météo-France ski-resort posts in the "
+        "Pyrenees), otherwise the rise in snow depth to the next morning's reading (WMO stations via NOAA "
+        "GHCNh in the Low Tatras and Palandöken; Météo-France stations in the Pyrenees, Massif Central, "
+        "Vosges, Jura and Corsica; ECCC climate stations in the Canadian Rockies and Columbia Mountains). "
+        "Data: NOAA NCEI GHCNh (CC0 1.0), Deutscher Wetterdienst (CC BY 4.0), © ČHMÚ (CC BY 4.0), "
+        "Météo-France (Licence Ouverte 2.0), Environment and Climate Change Canada (OGL – Canada)."
+    ),
+))
+
+
+def _bcasws_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
+    from .networks import bcasws
+
+    return bcasws.daily(ids, begin, end)
+
+
+register(TruthSource(
+    name="bcasws",
+    fetch=_bcasws_daily,
+    history_begin=date(2015, 10, 1),
+    climatology=(date(2015, 10, 1), _CLIM_END),
+    measured=False,
+    note=(
+        "British Columbia automated snow pillows from the province's own feed: hourly depth at "
+        "local midnight, SNOTEL-style QC. Contains information licensed under the Open Government "
+        "Licence – British Columbia."
+    ),
+))
+
+
+def _bcasws_depth_daily(ids: list[str], league: League, begin: date, end: date) -> pd.DataFrame:
+    from .networks import bcasws
+
+    return bcasws.daily_depth_only(ids, begin, end)
+
+
+register(TruthSource(
+    name="bcasws_depth",
+    fetch=_bcasws_depth_daily,
+    history_begin=date(2015, 10, 1),
+    climatology=(date(2015, 10, 1), _CLIM_END),
+    measured=False,
+    note=(
+        "British Columbia depth-only snow stations (no pillow) from the province's own feed: hourly "
+        "depth at local midnight; big jumps confirmed by an SWE rise at a pillow within 40 km, as for "
+        "SNOLITE. Contains information licensed under the Open Government Licence – British Columbia."
     ),
 ))
 
