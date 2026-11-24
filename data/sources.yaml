@@ -18,6 +18,13 @@ sources:
     attribution: "California snow pillows: CA Department of Water Resources, CDEC."
     role: truth
     leagues: [stations]
+  - name: BC automated snow weather stations (hourly feed and archive)
+    provider: Government of British Columbia (Environmental Monitoring and Analysis Branch)
+    url: https://catalogue.data.gov.bc.ca/dataset/current-season-automated-snow-weather-station-data
+    licence: Open Government Licence – British Columbia
+    attribution: "Contains information licensed under the Open Government Licence – British Columbia (automated snow weather station data and station locations, DataBC)."
+    role: truth
+    leagues: [stations]
   - name: GHCN-Daily (NWS COOP + CoCoRaHS)
     provider: NOAA National Centers for Environmental Information
     url: https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-daily
