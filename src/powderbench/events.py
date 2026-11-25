@@ -17,6 +17,7 @@ given. Baselines: each NWP model's storm total and their median.
 
 from __future__ import annotations
 
+import io
 import json
 import logging
 import re
@@ -171,12 +172,13 @@ def resolve_event(ev: Event, now: datetime | None = None) -> dict | None:
         return None
     truth = _as_round(storm_truth(ev))
     climo = _as_round(climatology_total(ev))
-    from .rounds import GRACE_MINUTES, _first_commit_utc
+    from .rounds import GRACE_MINUTES, counted_version
 
     deadline = ev.cutoff_utc + timedelta(minutes=GRACE_MINUTES)
     teams = {}
     for path in sorted((data_dir() / "submissions" / "events" / ev.event_id).glob("*.csv")):
-        pred = pd.read_csv(path)
+        text, late = (None, False) if path.stem.startswith("baseline-") else counted_version(path, deadline)
+        pred = pd.read_csv(io.StringIO(text) if text is not None else path)
         if not {"station_id", "snowfall_in"} <= set(pred.columns):
             teams[path.stem] = {"invalid": True, "errors": ["need station_id, snowfall_in"]}
             continue
@@ -185,8 +187,7 @@ def resolve_event(ev: Event, now: datetime | None = None) -> dict | None:
         m.pop("mae_by_horizon", None)
         m.pop("brier6", None)
         if not path.stem.startswith("baseline-"):
-            landed = _first_commit_utc(path)  # merge time on main, same rule as rounds
-            m["late"] = landed is None or landed > deadline
+            m["late"] = late  # the version on main by the deadline, same rule as rounds
         teams[path.stem] = m
     valid = truth[truth["valid"]]
     top = valid.sort_values("truth_in").tail(1)

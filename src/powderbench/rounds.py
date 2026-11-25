@@ -15,6 +15,7 @@ agents too (they're generated 2.5-9 h before the cutoff).
 
 from __future__ import annotations
 
+import io
 import json
 import logging
 import subprocess
@@ -122,16 +123,38 @@ def _biggest_24h(truth_d: pd.DataFrame, league: League) -> dict | None:
     }
 
 
-def _first_commit_utc(path: Path) -> datetime | None:
-    """When the file first landed on the current branch (committer time)."""
+def counted_version(path: Path, deadline: datetime) -> tuple[str | None, bool]:
+    """The version of a submission that is scored, and whether it is late.
+
+    A team may update its file any time before the cutoff (docs/RULES.md), so
+    the newest version that landed on the branch by the deadline counts and a
+    later update is ignored; scoring the file as it stands would let an update
+    merged after the cutoff count as on time, since the file itself first
+    landed before it. Returns (that version's text, False). When no version
+    landed by the deadline: (None, True), and the file is scored as it stands,
+    flagged late, as before. Outside git there is no landing time: late too."""
     try:
-        out = subprocess.run(
-            ["git", "log", "--follow", "--diff-filter=A", "--format=%cI", "--", str(path)],
+        log_out = subprocess.run(
+            ["git", "log", "--format=%H %cI", "--", path.name],
             capture_output=True, text=True, cwd=path.parent, check=True,
-        ).stdout.strip().splitlines()
-        return datetime.fromisoformat(out[-1]) if out else None
+        ).stdout.split("\n")
     except Exception:
-        return None
+        return None, True
+    for line in log_out:  # newest first
+        if not line.strip():
+            continue
+        sha, when = line.split()
+        if datetime.fromisoformat(when) > deadline:
+            continue
+        try:
+            text = subprocess.run(
+                ["git", "show", f"{sha}:./{path.name}"],
+                capture_output=True, text=True, cwd=path.parent, check=True,
+            ).stdout
+        except Exception:  # deleted by that commit: nothing counted then
+            return None, True
+        return text, False
+    return None, True
 
 
 def round_station_ids(league: League, d: date) -> list[str]:
@@ -165,16 +188,19 @@ def resolve_round(league: League, d: date, enforce_deadline: bool = True) -> dic
     teams: dict[str, dict] = {}
     for sub_path in sorted(submissions_dir(league, d).glob("*.csv")):
         team = sub_path.stem
-        res = validate_submission(sub_path, league=league, round_stations=ids)
+        text, late = None, False
+        if enforce_deadline:  # everyone, baselines and house agents included
+            text, late = counted_version(sub_path, deadline)
+
+        def source(text=text, sub_path=sub_path):
+            return io.StringIO(text) if text is not None else sub_path
+
+        res = validate_submission(source(), league=league, round_stations=ids)
         if not res.ok:
             teams[team] = {"invalid": True, "errors": res.errors}
             continue
-        metrics = scoring.score_tracks(pd.read_csv(sub_path), truth_d, climo_pred, stations)
-        if enforce_deadline:  # everyone, baselines and house agents included
-            landed = _first_commit_utc(sub_path)
-            metrics["late"] = landed is None or landed > deadline
-        else:
-            metrics["late"] = False
+        metrics = scoring.score_tracks(pd.read_csv(source()), truth_d, climo_pred, stations)
+        metrics["late"] = late
         teams[team] = metrics
 
     obs_ref = None

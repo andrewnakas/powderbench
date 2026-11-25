@@ -44,7 +44,9 @@ numbers never leak into the other leagues' truth (see [DATA.md](DATA.md)).
   (`data/teams.yaml`); submissions for someone else's team are never auto-merged.
 - Late or invalid submissions are scored in the round results for your own reference
   but are excluded from all leaderboard aggregation.
-- You may update your submission with another PR any time before the cutoff.
+- You may update your submission with another PR any time before the cutoff. The
+  version on `main` at the cutoff is the one scored: an update merged later is
+  ignored, even when the PR was opened in time.
 
 ## Ground truth and QC
 
@@ -110,7 +112,8 @@ cutoff for the first storm day). Predict the **window total** at each station:
 window — a station counts only if *every* day is valid. Scored with MAE and the
 Powder Accuracy against a climatology storm (the sum of each day's climatological
 mean), alongside each weather model's storm total and their consensus. The same
-on-time rule applies (first landed on `main` before the cutoff). Event PRs are
+on-time rule applies (first landed on `main` before the cutoff; the version there
+at the cutoff is scored). Event PRs are
 merged by a maintainer rather than the auto-merge bot.
 
 ## Ranking eligibility
