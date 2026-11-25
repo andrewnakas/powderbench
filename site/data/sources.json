@@ -22,6 +22,17 @@
   ]
  },
  {
+  "name": "BC automated snow weather stations (hourly feed and archive)",
+  "provider": "Government of British Columbia (Environmental Monitoring and Analysis Branch)",
+  "url": "https://catalogue.data.gov.bc.ca/dataset/current-season-automated-snow-weather-station-data",
+  "licence": "Open Government Licence \u2013 British Columbia",
+  "attribution": "Contains information licensed under the Open Government Licence \u2013 British Columbia (automated snow weather station data and station locations, DataBC).",
+  "role": "truth",
+  "leagues": [
+   "stations"
+  ]
+ },
+ {
   "name": "GHCN-Daily (NWS COOP + CoCoRaHS)",
   "provider": "NOAA National Centers for Environmental Information",
   "url": "https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-daily",
@@ -44,6 +55,17 @@
   ]
  },
  {
+  "name": "Climate daily (SNOW_ON_GROUND)",
+  "provider": "Environment and Climate Change Canada",
+  "url": "https://api.weather.gc.ca/",
+  "licence": "Open Government Licence \u2013 Canada",
+  "attribution": "Contains information licensed under the Open Government Licence \u2013 Canada (ECCC climate data).",
+  "role": "truth",
+  "leagues": [
+   "world"
+  ]
+ },
+ {
   "name": "Measured new snow (HN) \u2014 study plots and IMIS",
   "provider": "WSL Institute for Snow and Avalanche Research SLF",
   "url": "https://www.slf.ch/",
@@ -55,11 +77,33 @@
   ]
  },
  {
-  "name": "Measured new snow (shneu_manu) \u2014 climate stations",
+  "name": "Measured new snow (shneu_manu) and snow-gauge depth (sh) \u2014 climate stations",
   "provider": "GeoSphere Austria",
   "url": "https://data.hub.geosphere.at/",
   "licence": "CC BY 4.0",
   "attribution": "Austrian snow data \u00a9 GeoSphere Austria (data.hub.geosphere.at), CC BY 4.0.",
+  "role": "truth",
+  "leagues": [
+   "alps"
+  ]
+ },
+ {
+  "name": "Neve \u2014 dati giornalieri e tempo reale",
+  "provider": "ARPA Piemonte",
+  "url": "https://www.arpa.piemonte.it/dati-ambientali",
+  "licence": "CC BY 4.0",
+  "attribution": "Fonte: Arpa Piemonte \u2013 www.arpa.piemonte.it (CC BY 4.0).",
+  "role": "truth",
+  "leagues": [
+   "alps"
+  ]
+ },
+ {
+  "name": "Fresh snow on the morning board \u2014 nivo-meteorological network",
+  "provider": "M\u00e9t\u00e9o-France",
+  "url": "https://meteo.data.gouv.fr/",
+  "licence": "Licence Ouverte 2.0 (Etalab)",
+  "attribution": "French snow data \u00a9 M\u00e9t\u00e9o-France (r\u00e9seau nivo-m\u00e9t\u00e9orologique), Licence Ouverte 2.0.",
   "role": "truth",
   "leagues": [
    "alps"

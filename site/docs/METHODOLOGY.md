@@ -63,7 +63,15 @@ New snow on local day *d* is the positive depth change between the end of
   (13 pairs, Jan–Feb 2026). Pillows within 1.5 km of a SNOTEL are the same
   site and are excluded.
 - **SNOLITE** (NRCS, depth only): see the neighbour rule in §3.
-- **BC automated snow pillows** (served by AWDB as network MSNT).
+- **BC automated snow pillows**: read hourly from BC's own feed like CDEC
+  (since 2026-11-24 also 40 of the 41 that AWDB lists as network MSNT; 3B17P, with
+  no depth in BC's feed, keeps AWDB's daily values) —
+  the median of the 23:00/00:00/01:00 readings at local midnight, in local
+  standard time (UTC−8; UTC−7 in the Mountain-time East Kootenay, Golden,
+  Kootenay Lake east shore and Peace). Stations with depth but no pillow
+  get SNOLITE's neighbour rule, with BC's pillows (MSNT and direct) as well
+  as SNOTEL as neighbours. Gated against archived ECMWF IFS runs over three
+  winters (see [DATA.md](DATA.md)).
 
 ### 2.2 Measured new snow (Observers and Alps leagues)
 
@@ -136,10 +144,10 @@ day is. QC is deterministic and public (`powderbench/truth.py`,
 | Range | depth networks | depth < 0 or > 300″ |
 | Implausible | all | > 48″ in a day |
 | SWE support | SNOTEL, CDEC, BC | a ≥ 6″ depth jump without an SWE rise ≥ 0.1″ |
-| Neighbour support | SNOLITE (no SWE) | a ≥ 6″ jump without an SWE rise at a SNOTEL within 40 km |
-| Density | CDEC | depth < SWE (physically impossible) |
-| Stuck sensor | CDEC | depth unchanged ≥ 3 days while SWE rises ≥ 0.5″ |
-| Spike | CDEC | depth > 10″ above both neighbouring days |
+| Neighbour support | SNOLITE, BC depth-only (no SWE) | a ≥ 6″ jump without an SWE rise ≥ 0.1″ that day at one of the 3 nearest pillows within 40 km (SNOTEL; for BC also MSNT and BC's direct pillows) |
+| Density | CDEC, BC direct | depth < SWE (physically impossible) |
+| Stuck sensor | CDEC, BC direct | depth unchanged ≥ 3 days while SWE rises ≥ 0.5″ |
+| Spike | CDEC, BC direct | depth > 10″ above both neighbouring days |
 | Source QC | GHCN, ECCC | the provider's own quality flag, accumulated (multi-day) or estimated values |
 | Stale | resorts | the report's own timestamp is > 30 h old |
 | Stuck | resorts | the same non-zero 24 h figure on ≥ 3 consecutive days: repeats after the first are voided |
@@ -193,9 +201,11 @@ jobs up to ~3 h late):
 | `baseline-climatology` | defines 0 |
 | `baseline-zeros`, `baseline-persistence` | trivial floors |
 | `baseline-openmeteo` | Open-Meteo best-match blend, every station |
-| `baseline-gfs`, `-ecmwf`, `-aifs`, `-icon`, `-gem`, `-ukmo` | individual global models (AIFS = ECMWF's AI model), featured stations |
+| `baseline-gfs`, `-ecmwf`, `-aifs` | GFS, ECMWF IFS, ECMWF AIFS (ECMWF's AI model): Open-Meteo on featured stations, the producers' own files on every other station |
+| `baseline-icon`, `-gem`, `-ukmo` | DWD ICON, Environment Canada GEM, Met Office, featured stations |
 | `baseline-nbm`, `-hrrr` | NOAA National Blend and HRRR (US leagues) |
 | `baseline-arome` | Météo-France AROME (Alps) |
+| `baseline-jma` | Japan Meteorological Agency MSM 5 km + GSM (Japan) |
 | `baseline-wpc` | NOAA WPC official snowfall percentiles + P(≥6″) (US) |
 | `baseline-ndfd` | NWS forecast offices' official snow amount (NDFD), 24/48 h (US) |
 | `baseline-consensus` | median of the NWP baselines (≥ 3 models) |
@@ -283,7 +293,10 @@ floors must not. Results (featured stations, 2026-02-01…14):
 |---|---|---|---|---|
 | Observers | +25.1 (GFS) | — | 0 | −46.8 |
 | Alps | +41.1 (ICON) | +41.6 | 0 | −0.8 |
-| Alps · Austria (GeoSphere) | +44.9 (AROME) | +39.6 | 0 | −33.0 |
+| Alps · Austria (GeoSphere), first 22 sites | +44.9 (AROME) | +39.6 | 0 | −33.0 |
+| Alps · Austria, 14 sites added 2026-11 | +57.1 (UKMO) | +57.3 | 0 | −23.1 |
+| Alps · France (nivo), 31 manual posts | +22.9 (UKMO) | +18.2 | 0 | −122.8 |
+| Alps · France (nivo), 23 automated posts | +27.7 (ECMWF) | +22.3 | 0 | −214.3 |
 
 A network whose truth made the models look worse than climatology would
 indicate broken truth and would not launch. Hindcast NWP uses archived

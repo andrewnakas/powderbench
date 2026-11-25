@@ -6,18 +6,18 @@
   "truth_source": "snotel",
   "truth_note": "Ground truth comes from NRCS SNOTEL telemetry \u2014 automated snow pillows and depth sensors high in the mountains, QC\u2019d and voided (for everyone) when sensors glitch.",
   "measured": false,
-  "n_stations": 996,
+  "n_stations": 1043,
   "n_featured": 45,
-  "n_rounds_resolved": 55,
+  "n_rounds_resolved": 56,
   "health": {
-   "last_round": "2026-11-20",
-   "qc_valid_share": 0.967
+   "last_round": "2026-11-21",
+   "qc_valid_share": 0.966
   },
   "open_round": {
-   "round_id": "2026-11-24",
-   "cutoff_utc": "2026-11-24T00:00:00+00:00"
+   "round_id": "2026-11-26",
+   "cutoff_utc": "2026-11-26T00:00:00+00:00"
   },
-  "last_resolved": "2026-11-20"
+  "last_resolved": "2026-11-21"
  },
  {
   "name": "observers",
@@ -26,18 +26,18 @@
   "truth_source": "ghcnd",
   "truth_note": "Truth is measured new snow from volunteer and NWS observers (CoCoRaHS + NWS COOP, via NOAA GHCN-Daily): a person, a snowboard and a ruler every morning. A day's snow is the next morning's report. Scores resolve ~6 days after each round, once late reports are in.",
   "measured": true,
-  "n_stations": 1158,
+  "n_stations": 1635,
   "n_featured": 98,
-  "n_rounds_resolved": 28,
+  "n_rounds_resolved": 29,
   "health": {
-   "last_round": "2026-11-17",
-   "qc_valid_share": 0.005
+   "last_round": "2026-11-18",
+   "qc_valid_share": 0.004
   },
   "open_round": {
-   "round_id": "2026-11-24",
-   "cutoff_utc": "2026-11-24T00:00:00+00:00"
+   "round_id": "2026-11-26",
+   "cutoff_utc": "2026-11-26T00:00:00+00:00"
   },
-  "last_resolved": "2026-11-17"
+  "last_resolved": "2026-11-18"
  },
  {
   "name": "resorts-na",
@@ -46,46 +46,97 @@
   "truth_source": "resort",
   "truth_note": "Truth is each resort\u2019s own published snow report, archived twice daily from the resort\u2019s site. Resort numbers run generous \u2014 but every team is scored against the same report, so it\u2019s a fair fight; cross-check the ERA5 league for the reanalysis view.",
   "measured": true,
-  "n_stations": 37,
-  "n_featured": 37,
-  "n_rounds_resolved": 19,
+  "n_stations": 48,
+  "n_featured": 48,
+  "n_rounds_resolved": 20,
   "health": {
-   "last_round": "2026-11-19",
-   "qc_valid_share": 0.495,
+   "last_round": "2026-11-20",
+   "qc_valid_share": 0.532,
    "latest_scrape": {
-    "at": "2026-11-23T01:44:50+00:00",
+    "at": "2026-11-24T20:34:10+00:00",
     "status": {
-     "ok": 23,
-     "no_report": 4,
+     "ok": 28,
+     "no_report": 10,
      "stale": 10
     }
    }
   },
   "open_round": {
-   "round_id": "2026-11-24",
-   "cutoff_utc": "2026-11-24T00:00:00+00:00"
+   "round_id": "2026-11-26",
+   "cutoff_utc": "2026-11-26T00:00:00+00:00"
   },
-  "last_resolved": "2026-11-19"
+  "last_resolved": "2026-11-20"
  },
  {
   "name": "alps",
-  "label": "Alps \u00b7 Measured new snow (SLF, GeoSphere Austria)",
+  "label": "Alps \u00b7 New snow (SLF, MeteoSwiss, GeoSphere, M\u00e9t\u00e9o-France, DWD, Tirol, Italian Alps)",
   "status": "trial",
   "truth_source": "slf",
   "truth_note": "Truth is the 24h new snow (HN) measured by the WSL Institute for Snow and Avalanche Research SLF \u2014 observers' snowboards at manual study plots across the Swiss Alps (Zermatt, Verbier, St. Moritz, Davos\u2026) plus SLF's automatic IMIS stations, and hand measurements at GeoSphere Austria's climate stations (St. Anton, Obergurgl, Saalbach\u2026). Data \u00a9 SLF and \u00a9 GeoSphere Austria, CC BY 4.0.",
   "measured": true,
-  "n_stations": 238,
-  "n_featured": 27,
-  "n_rounds_resolved": 18,
+  "n_stations": 713,
+  "n_featured": 89,
+  "n_rounds_resolved": 19,
   "health": {
-   "last_round": "2026-11-19",
-   "qc_valid_share": 0.888
+   "last_round": "2026-11-20",
+   "qc_valid_share": 0.892
   },
   "open_round": {
-   "round_id": "2026-11-24",
-   "cutoff_utc": "2026-11-23T21:00:00+00:00"
+   "round_id": "2026-11-26",
+   "cutoff_utc": "2026-11-25T21:00:00+00:00"
   },
-  "last_resolved": "2026-11-19"
+  "last_resolved": "2026-11-20"
+ },
+ {
+  "name": "japan",
+  "label": "Japan \u00b7 Snow-depth sensors (JMA AMeDAS)",
+  "status": "trial",
+  "truth_source": "jma",
+  "truth_note": "Truth is the daily snowfall total (\u964d\u96ea\u306e\u6df1\u3055\u306e\u5408\u8a08) from the Japan Meteorological Agency's automatic snow-depth sensors at AMeDAS stations (Sukayu/Hakkoda, Kutchan/Niseko, Hakuba, Nozawa, Myoko\u2026): the sum of each hour's rise in snow depth over the JST day. Source: \u6c17\u8c61\u5e81\u30db\u30fc\u30e0\u30da\u30fc\u30b8 (Japan Meteorological Agency).",
+  "measured": false,
+  "n_stations": 265,
+  "n_featured": 24,
+  "n_rounds_resolved": 0,
+  "health": {},
+  "open_round": {
+   "round_id": "2026-11-26",
+   "cutoff_utc": "2026-11-25T11:00:00+00:00"
+  },
+  "last_resolved": null
+ },
+ {
+  "name": "nordic",
+  "label": "Nordic \u00b7 Morning snow depth (SMHI, FMI, MET Norway)",
+  "status": "trial",
+  "truth_source": "smhi",
+  "truth_note": "Truth is new snow from the daily morning snow-depth reading at Swedish (SMHI), Finnish (FMI) and Norwegian (MET Norway) weather stations (S\u00e4len, Storlien, Saariselk\u00e4, Salla, Hemsedal, Oppdal\u2026): the rise in depth between two morning readings. Data \u00a9 SMHI, \u00a9 Finnish Meteorological Institute and MET Norway (frost.met.no), CC BY 4.0.",
+  "measured": false,
+  "n_stations": 211,
+  "n_featured": 17,
+  "n_rounds_resolved": 0,
+  "health": {},
+  "open_round": {
+   "round_id": "2026-11-26",
+   "cutoff_utc": "2026-11-25T21:00:00+00:00"
+  },
+  "last_resolved": null
+ },
+ {
+  "name": "world",
+  "label": "World \u00b7 Morning snow (DWD, M\u00e9t\u00e9o-France, \u010cHM\u00da, WMO stations)",
+  "status": "trial",
+  "truth_source": "ghcnh",
+  "truth_note": "Truth is the morning snow reading at mountain weather stations: new snow measured on a board where the station has one (DWD observers in the Black Forest, Bavarian Forest, Fichtelgebirge, Erzgebirge and Harz; \u010cHM\u00da in the Krkono\u0161e, Jizera and Kru\u0161n\u00e9 hory; M\u00e9t\u00e9o-France ski-resort posts in the Pyrenees), otherwise the rise in snow depth to the next morning's reading (WMO stations via NOAA GHCNh in the Low Tatras and Paland\u00f6ken; M\u00e9t\u00e9o-France stations in the Pyrenees, Massif Central, Vosges, Jura and Corsica; ECCC climate stations in the Canadian Rockies and Columbia Mountains). Data: NOAA NCEI GHCNh (CC0 1.0), Deutscher Wetterdienst (CC BY 4.0), \u00a9 \u010cHM\u00da (CC BY 4.0), M\u00e9t\u00e9o-France (Licence Ouverte 2.0), Environment and Climate Change Canada (OGL \u2013 Canada).",
+  "measured": false,
+  "n_stations": 123,
+  "n_featured": 5,
+  "n_rounds_resolved": 0,
+  "health": {},
+  "open_round": {
+   "round_id": "2026-11-26",
+   "cutoff_utc": "2026-11-25T11:00:00+00:00"
+  },
+  "last_resolved": null
  },
  {
   "name": "era5",
@@ -118,9 +169,9 @@
    "last_round": "2026-10-31",
    "qc_valid_share": 0.692,
    "latest_scrape": {
-    "at": "2026-11-24T00:45:41+00:00",
+    "at": "2026-11-24T20:34:10+00:00",
     "status": {
-     "no_report": 4,
+     "no_report": 3,
      "ok": 9
     }
    }

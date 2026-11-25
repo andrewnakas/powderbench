@@ -1197,5 +1197,37 @@
    "open-powder-ensemble": 40.1,
    "open-powder-ml": 42.51
   }
+ },
+ {
+  "round_id": "2026-11-21",
+  "biggest_24h": {
+   "station_id": "646:MT:SNTL",
+   "resort": "Moss Peak",
+   "inches": 8.0
+  },
+  "qc": {
+   "station_horizons_valid": 2879,
+   "station_horizons_voided": 100
+  },
+  "teams": {
+   "baseline-climatology": 0.0,
+   "baseline-consensus": -3.24,
+   "baseline-ecmwf": -1.33,
+   "baseline-gem": -3.32,
+   "baseline-gfs": -17.18,
+   "baseline-icon": -17.4,
+   "baseline-ndfd": -13.22,
+   "baseline-openmeteo": -17.18,
+   "baseline-persistence": -441.83,
+   "baseline-ukmo": 4.6,
+   "baseline-wpc": -40.92,
+   "baseline-zeros": -22.22,
+   "deep-powder": 23.01,
+   "house-analog": -9.15,
+   "house-blend": -18.44,
+   "house-gbm": -48.35,
+   "open-powder-ensemble": 9.2,
+   "open-powder-ml": 13.91
+  }
  }
 ]
