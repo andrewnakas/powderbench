@@ -1,8 +1,26 @@
 {
  "league": "resorts-na",
  "status": "trial",
- "generated_rounds": 20,
+ "generated_rounds": 21,
  "season": [
+  {
+   "team": "deep-powder",
+   "is_baseline": false,
+   "is_house": false,
+   "rounds": 5,
+   "avg_coverage": 1.0,
+   "powder_score": 29.252,
+   "mae": 1.976,
+   "rmse": 4.107,
+   "bias": -1.606,
+   "pinball": 0.806,
+   "brier6": 0.072,
+   "swe_accuracy": null,
+   "density_accuracy": null,
+   "swe_rounds": 0,
+   "eligible": true,
+   "rank": 1
+  },
   {
    "team": "baseline-ecmwf",
    "is_baseline": true,
@@ -19,7 +37,7 @@
    "density_accuracy": null,
    "swe_rounds": 0,
    "eligible": true,
-   "rank": 1
+   "rank": 2
   },
   {
    "team": "baseline-icon",
@@ -37,7 +55,7 @@
    "density_accuracy": null,
    "swe_rounds": 0,
    "eligible": true,
-   "rank": 2
+   "rank": 3
   },
   {
    "team": "baseline-wpc",
@@ -55,7 +73,7 @@
    "density_accuracy": null,
    "swe_rounds": 0,
    "eligible": true,
-   "rank": 3
+   "rank": 4
   },
   {
    "team": "baseline-aifs",
@@ -73,7 +91,7 @@
    "density_accuracy": null,
    "swe_rounds": 0,
    "eligible": true,
-   "rank": 4
+   "rank": 5
   },
   {
    "team": "baseline-zeros",
@@ -91,7 +109,7 @@
    "density_accuracy": null,
    "swe_rounds": 0,
    "eligible": true,
-   "rank": 5
+   "rank": 6
   },
   {
    "team": "baseline-consensus",
@@ -109,25 +127,25 @@
    "density_accuracy": null,
    "swe_rounds": 0,
    "eligible": true,
-   "rank": 6
+   "rank": 7
   },
   {
    "team": "open-powder-ensemble",
    "is_baseline": false,
    "is_house": false,
-   "rounds": 20,
+   "rounds": 21,
    "avg_coverage": 1.0,
-   "powder_score": 5.804,
-   "mae": 1.595,
-   "rmse": 4.208,
-   "bias": -0.826,
-   "pinball": 0.683,
-   "brier6": 0.047,
+   "powder_score": 6.021,
+   "mae": 1.588,
+   "rmse": 4.133,
+   "bias": -0.83,
+   "pinball": 0.676,
+   "brier6": 0.049,
    "swe_accuracy": null,
    "density_accuracy": null,
    "swe_rounds": 0,
    "eligible": true,
-   "rank": 7
+   "rank": 8
   },
   {
    "team": "baseline-nbm",
@@ -145,7 +163,7 @@
    "density_accuracy": null,
    "swe_rounds": 0,
    "eligible": true,
-   "rank": 8
+   "rank": 9
   },
   {
    "team": "baseline-climatology",
@@ -163,7 +181,7 @@
    "density_accuracy": null,
    "swe_rounds": 0,
    "eligible": true,
-   "rank": 9
+   "rank": 10
   },
   {
    "team": "baseline-persistence",
@@ -181,7 +199,7 @@
    "density_accuracy": null,
    "swe_rounds": 0,
    "eligible": true,
-   "rank": 10
+   "rank": 11
   },
   {
    "team": "house-blend",
@@ -199,7 +217,7 @@
    "density_accuracy": null,
    "swe_rounds": 0,
    "eligible": true,
-   "rank": 11
+   "rank": 12
   },
   {
    "team": "baseline-gem",
@@ -217,25 +235,25 @@
    "density_accuracy": null,
    "swe_rounds": 0,
    "eligible": true,
-   "rank": 12
+   "rank": 13
   },
   {
    "team": "open-powder-ml",
    "is_baseline": false,
    "is_house": false,
-   "rounds": 20,
+   "rounds": 21,
    "avg_coverage": 1.0,
-   "powder_score": -23.045,
-   "mae": 1.71,
-   "rmse": 4.373,
-   "bias": -0.787,
-   "pinball": 0.697,
-   "brier6": 0.044,
+   "powder_score": -21.316,
+   "mae": 1.695,
+   "rmse": 4.294,
+   "bias": -0.802,
+   "pinball": 0.691,
+   "brier6": 0.046,
    "swe_accuracy": null,
    "density_accuracy": null,
    "swe_rounds": 0,
    "eligible": true,
-   "rank": 13
+   "rank": 14
   },
   {
    "team": "baseline-gfs",
@@ -253,7 +271,7 @@
    "density_accuracy": null,
    "swe_rounds": 0,
    "eligible": true,
-   "rank": 14
+   "rank": 15
   },
   {
    "team": "baseline-openmeteo",
@@ -271,7 +289,7 @@
    "density_accuracy": null,
    "swe_rounds": 0,
    "eligible": true,
-   "rank": 15
+   "rank": 16
   },
   {
    "team": "baseline-ukmo",
@@ -289,25 +307,7 @@
    "density_accuracy": null,
    "swe_rounds": 0,
    "eligible": true,
-   "rank": 16
-  },
-  {
-   "team": "deep-powder",
-   "is_baseline": false,
-   "is_house": false,
-   "rounds": 4,
-   "avg_coverage": 1.0,
-   "powder_score": 33.227,
-   "mae": 2.122,
-   "rmse": 4.443,
-   "bias": -1.719,
-   "pinball": 0.865,
-   "brier6": 0.068,
-   "swe_accuracy": null,
-   "density_accuracy": null,
-   "swe_rounds": 0,
-   "eligible": false,
-   "rank": null
+   "rank": 17
   },
   {
    "team": "baseline-ndfd",
@@ -330,6 +330,24 @@
  ],
  "last30": [
   {
+   "team": "deep-powder",
+   "is_baseline": false,
+   "is_house": false,
+   "rounds": 5,
+   "avg_coverage": 1.0,
+   "powder_score": 29.252,
+   "mae": 1.976,
+   "rmse": 4.107,
+   "bias": -1.606,
+   "pinball": 0.806,
+   "brier6": 0.072,
+   "swe_accuracy": null,
+   "density_accuracy": null,
+   "swe_rounds": 0,
+   "eligible": true,
+   "rank": 1
+  },
+  {
    "team": "baseline-ecmwf",
    "is_baseline": true,
    "is_house": false,
@@ -345,7 +363,7 @@
    "density_accuracy": null,
    "swe_rounds": 0,
    "eligible": true,
-   "rank": 1
+   "rank": 2
   },
   {
    "team": "baseline-icon",
@@ -363,7 +381,7 @@
    "density_accuracy": null,
    "swe_rounds": 0,
    "eligible": true,
-   "rank": 2
+   "rank": 3
   },
   {
    "team": "baseline-wpc",
@@ -381,7 +399,7 @@
    "density_accuracy": null,
    "swe_rounds": 0,
    "eligible": true,
-   "rank": 3
+   "rank": 4
   },
   {
    "team": "baseline-aifs",
@@ -399,7 +417,7 @@
    "density_accuracy": null,
    "swe_rounds": 0,
    "eligible": true,
-   "rank": 4
+   "rank": 5
   },
   {
    "team": "baseline-zeros",
@@ -417,7 +435,7 @@
    "density_accuracy": null,
    "swe_rounds": 0,
    "eligible": true,
-   "rank": 5
+   "rank": 6
   },
   {
    "team": "baseline-consensus",
@@ -435,25 +453,25 @@
    "density_accuracy": null,
    "swe_rounds": 0,
    "eligible": true,
-   "rank": 6
+   "rank": 7
   },
   {
    "team": "open-powder-ensemble",
    "is_baseline": false,
    "is_house": false,
-   "rounds": 20,
+   "rounds": 21,
    "avg_coverage": 1.0,
-   "powder_score": 5.804,
-   "mae": 1.595,
-   "rmse": 4.208,
-   "bias": -0.826,
-   "pinball": 0.683,
-   "brier6": 0.047,
+   "powder_score": 6.021,
+   "mae": 1.588,
+   "rmse": 4.133,
+   "bias": -0.83,
+   "pinball": 0.676,
+   "brier6": 0.049,
    "swe_accuracy": null,
    "density_accuracy": null,
    "swe_rounds": 0,
    "eligible": true,
-   "rank": 7
+   "rank": 8
   },
   {
    "team": "baseline-nbm",
@@ -471,7 +489,7 @@
    "density_accuracy": null,
    "swe_rounds": 0,
    "eligible": true,
-   "rank": 8
+   "rank": 9
   },
   {
    "team": "baseline-climatology",
@@ -489,7 +507,7 @@
    "density_accuracy": null,
    "swe_rounds": 0,
    "eligible": true,
-   "rank": 9
+   "rank": 10
   },
   {
    "team": "baseline-persistence",
@@ -507,7 +525,7 @@
    "density_accuracy": null,
    "swe_rounds": 0,
    "eligible": true,
-   "rank": 10
+   "rank": 11
   },
   {
    "team": "house-blend",
@@ -525,7 +543,7 @@
    "density_accuracy": null,
    "swe_rounds": 0,
    "eligible": true,
-   "rank": 11
+   "rank": 12
   },
   {
    "team": "baseline-gem",
@@ -543,25 +561,25 @@
    "density_accuracy": null,
    "swe_rounds": 0,
    "eligible": true,
-   "rank": 12
+   "rank": 13
   },
   {
    "team": "open-powder-ml",
    "is_baseline": false,
    "is_house": false,
-   "rounds": 20,
+   "rounds": 21,
    "avg_coverage": 1.0,
-   "powder_score": -23.045,
-   "mae": 1.71,
-   "rmse": 4.373,
-   "bias": -0.787,
-   "pinball": 0.697,
-   "brier6": 0.044,
+   "powder_score": -21.316,
+   "mae": 1.695,
+   "rmse": 4.294,
+   "bias": -0.802,
+   "pinball": 0.691,
+   "brier6": 0.046,
    "swe_accuracy": null,
    "density_accuracy": null,
    "swe_rounds": 0,
    "eligible": true,
-   "rank": 13
+   "rank": 14
   },
   {
    "team": "baseline-gfs",
@@ -579,7 +597,7 @@
    "density_accuracy": null,
    "swe_rounds": 0,
    "eligible": true,
-   "rank": 14
+   "rank": 15
   },
   {
    "team": "baseline-openmeteo",
@@ -597,7 +615,7 @@
    "density_accuracy": null,
    "swe_rounds": 0,
    "eligible": true,
-   "rank": 15
+   "rank": 16
   },
   {
    "team": "baseline-ukmo",
@@ -615,25 +633,7 @@
    "density_accuracy": null,
    "swe_rounds": 0,
    "eligible": true,
-   "rank": 16
-  },
-  {
-   "team": "deep-powder",
-   "is_baseline": false,
-   "is_house": false,
-   "rounds": 4,
-   "avg_coverage": 1.0,
-   "powder_score": 33.227,
-   "mae": 2.122,
-   "rmse": 4.443,
-   "bias": -1.719,
-   "pinball": 0.865,
-   "brier6": 0.068,
-   "swe_accuracy": null,
-   "density_accuracy": null,
-   "swe_rounds": 0,
-   "eligible": false,
-   "rank": null
+   "rank": 17
   },
   {
    "team": "baseline-ndfd",
@@ -674,16 +674,17 @@
   "2026-11-17",
   "2026-11-18",
   "2026-11-19",
-  "2026-11-20"
+  "2026-11-20",
+  "2026-11-21"
  ],
  "months": [
   {
    "month": "2026-11",
-   "rounds": 20,
+   "rounds": 21,
    "champion": {
     "team": "open-powder-ensemble",
-    "powder_score": 5.804,
-    "rounds": 20
+    "powder_score": 6.021,
+    "rounds": 21
    },
    "best_model": {
     "team": "baseline-icon",
@@ -751,6 +752,24 @@
     "rank": 2
    },
    {
+    "team": "deep-powder",
+    "is_baseline": false,
+    "is_house": false,
+    "rounds": 5,
+    "avg_coverage": 1.0,
+    "powder_score": 93.104,
+    "mae": 0.019,
+    "rmse": null,
+    "bias": -0.019,
+    "pinball": null,
+    "brier6": null,
+    "swe_accuracy": null,
+    "density_accuracy": null,
+    "swe_rounds": 0,
+    "eligible": true,
+    "rank": 3
+   },
+   {
     "team": "baseline-climatology",
     "is_baseline": true,
     "is_house": false,
@@ -766,7 +785,7 @@
     "density_accuracy": null,
     "swe_rounds": 0,
     "eligible": true,
-    "rank": 3
+    "rank": 4
    },
    {
     "team": "baseline-ecmwf",
@@ -784,7 +803,7 @@
     "density_accuracy": null,
     "swe_rounds": 0,
     "eligible": true,
-    "rank": 4
+    "rank": 5
    },
    {
     "team": "baseline-icon",
@@ -802,7 +821,7 @@
     "density_accuracy": null,
     "swe_rounds": 0,
     "eligible": true,
-    "rank": 5
+    "rank": 6
    },
    {
     "team": "baseline-aifs",
@@ -820,7 +839,7 @@
     "density_accuracy": null,
     "swe_rounds": 0,
     "eligible": true,
-    "rank": 6
+    "rank": 7
    },
    {
     "team": "baseline-ukmo",
@@ -838,36 +857,18 @@
     "density_accuracy": null,
     "swe_rounds": 0,
     "eligible": true,
-    "rank": 7
+    "rank": 8
    },
    {
     "team": "open-powder-ensemble",
     "is_baseline": false,
     "is_house": false,
-    "rounds": 20,
+    "rounds": 21,
     "avg_coverage": 1.0,
-    "powder_score": -1201.116,
-    "mae": 0.056,
+    "powder_score": -1091.913,
+    "mae": 0.067,
     "rmse": null,
-    "bias": 0.056,
-    "pinball": null,
-    "brier6": null,
-    "swe_accuracy": null,
-    "density_accuracy": null,
-    "swe_rounds": 0,
-    "eligible": true,
-    "rank": 8
-   },
-   {
-    "team": "open-powder-ml",
-    "is_baseline": false,
-    "is_house": false,
-    "rounds": 20,
-    "avg_coverage": 1.0,
-    "powder_score": -1230.274,
-    "mae": 0.074,
-    "rmse": null,
-    "bias": 0.074,
+    "bias": 0.04,
     "pinball": null,
     "brier6": null,
     "swe_accuracy": null,
@@ -875,6 +876,24 @@
     "swe_rounds": 0,
     "eligible": true,
     "rank": 9
+   },
+   {
+    "team": "open-powder-ml",
+    "is_baseline": false,
+    "is_house": false,
+    "rounds": 21,
+    "avg_coverage": 1.0,
+    "powder_score": -1118.366,
+    "mae": 0.084,
+    "rmse": null,
+    "bias": 0.058,
+    "pinball": null,
+    "brier6": null,
+    "swe_accuracy": null,
+    "density_accuracy": null,
+    "swe_rounds": 0,
+    "eligible": true,
+    "rank": 10
    },
    {
     "team": "baseline-wpc",
@@ -892,7 +911,7 @@
     "density_accuracy": null,
     "swe_rounds": 0,
     "eligible": true,
-    "rank": 10
+    "rank": 11
    },
    {
     "team": "baseline-consensus",
@@ -910,7 +929,7 @@
     "density_accuracy": null,
     "swe_rounds": 0,
     "eligible": true,
-    "rank": 11
+    "rank": 12
    },
    {
     "team": "house-blend",
@@ -928,7 +947,7 @@
     "density_accuracy": null,
     "swe_rounds": 0,
     "eligible": true,
-    "rank": 12
+    "rank": 13
    },
    {
     "team": "baseline-nbm",
@@ -946,7 +965,7 @@
     "density_accuracy": null,
     "swe_rounds": 0,
     "eligible": true,
-    "rank": 13
+    "rank": 14
    },
    {
     "team": "baseline-gem",
@@ -964,7 +983,7 @@
     "density_accuracy": null,
     "swe_rounds": 0,
     "eligible": true,
-    "rank": 14
+    "rank": 15
    },
    {
     "team": "baseline-gfs",
@@ -982,7 +1001,7 @@
     "density_accuracy": null,
     "swe_rounds": 0,
     "eligible": true,
-    "rank": 15
+    "rank": 16
    },
    {
     "team": "baseline-openmeteo",
@@ -1000,7 +1019,7 @@
     "density_accuracy": null,
     "swe_rounds": 0,
     "eligible": true,
-    "rank": 16
+    "rank": 17
    },
    {
     "team": "baseline-ndfd",
@@ -1012,24 +1031,6 @@
     "mae": 0.043,
     "rmse": null,
     "bias": 0.043,
-    "pinball": null,
-    "brier6": null,
-    "swe_accuracy": null,
-    "density_accuracy": null,
-    "swe_rounds": 0,
-    "eligible": false,
-    "rank": null
-   },
-   {
-    "team": "deep-powder",
-    "is_baseline": false,
-    "is_house": false,
-    "rounds": 4,
-    "avg_coverage": 1.0,
-    "powder_score": 100.0,
-    "mae": 0.0,
-    "rmse": null,
-    "bias": 0.0,
     "pinball": null,
     "brier6": null,
     "swe_accuracy": null,

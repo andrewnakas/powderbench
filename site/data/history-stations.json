@@ -1229,5 +1229,37 @@
    "open-powder-ensemble": 9.2,
    "open-powder-ml": 13.91
   }
+ },
+ {
+  "round_id": "2026-11-22",
+  "biggest_24h": {
+   "station_id": "1126:WA:SNTL",
+   "resort": "Mt. Tebo",
+   "inches": 9.0
+  },
+  "qc": {
+   "station_horizons_valid": 2891,
+   "station_horizons_voided": 88
+  },
+  "teams": {
+   "baseline-aifs": 6.81,
+   "baseline-climatology": 0.0,
+   "baseline-consensus": -7.4,
+   "baseline-gem": -3.9,
+   "baseline-gfs": -80.74,
+   "baseline-icon": -58.96,
+   "baseline-ndfd": 1.98,
+   "baseline-openmeteo": -80.74,
+   "baseline-persistence": -275.73,
+   "baseline-ukmo": -5.29,
+   "baseline-wpc": -32.63,
+   "baseline-zeros": -3.88,
+   "deep-powder": 24.08,
+   "house-analog": 4.85,
+   "house-blend": -29.6,
+   "house-gbm": -36.14,
+   "open-powder-ensemble": 2.23,
+   "open-powder-ml": 12.03
+  }
  }
 ]

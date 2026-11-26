@@ -1,0 +1,119 @@
+{
+ "round_id": "2026-11-21",
+ "league": "resorts-na",
+ "resolved_utc": "2026-11-26T03:35:43+00:00",
+ "observations_72h": null,
+ "qc": {
+  "station_horizons_valid": 60,
+  "station_horizons_voided": 51
+ },
+ "biggest_24h": {
+  "station_id": "bogus-basin:US:RESORT",
+  "resort": "Bogus Basin",
+  "inches": 6.0
+ },
+ "teams": {
+  "deep-powder": {
+   "n_scorable": 60,
+   "n_scored": 60,
+   "coverage": 1.0,
+   "mae": 1.395,
+   "rmse": 2.7629,
+   "bias": -1.1543,
+   "mae_by_horizon": {
+    "24": 1.0414,
+    "48": 1.3337,
+    "72": 1.8658
+   },
+   "powder_score": 13.35,
+   "n_skill": 60,
+   "pinball": 0.5699,
+   "n_pinball": 60,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": 0.0907,
+   "n_brier6": 22,
+   "tracks": {
+    "region:Northern Michigan": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.0967,
+     "powder_score": 65.52,
+     "bias": -0.0967
+    }
+   },
+   "late": false
+  },
+  "open-powder-ensemble": {
+   "n_scorable": 60,
+   "n_scored": 60,
+   "coverage": 1.0,
+   "mae": 1.4432,
+   "rmse": 2.634,
+   "bias": -0.9095,
+   "mae_by_horizon": {
+    "24": 1.0305,
+    "48": 1.2958,
+    "72": 2.0684
+   },
+   "powder_score": 10.36,
+   "n_skill": 60,
+   "pinball": 0.5507,
+   "n_pinball": 60,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": 0.0906,
+   "n_brier6": 22,
+   "tracks": {
+    "region:Northern Michigan": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.28,
+     "powder_score": 0.12,
+     "bias": -0.28
+    }
+   },
+   "late": false
+  },
+  "open-powder-ml": {
+   "n_scorable": 60,
+   "n_scored": 60,
+   "coverage": 1.0,
+   "mae": 1.3963,
+   "rmse": 2.7149,
+   "bias": -1.1053,
+   "mae_by_horizon": {
+    "24": 1.0227,
+    "48": 1.2689,
+    "72": 1.9563
+   },
+   "powder_score": 13.27,
+   "n_skill": 60,
+   "pinball": 0.5749,
+   "n_pinball": 60,
+   "swe_accuracy": null,
+   "swe_mae": null,
+   "density_accuracy": null,
+   "density_mae": null,
+   "brier6": 0.0905,
+   "n_brier6": 22,
+   "tracks": {
+    "region:Northern Michigan": {
+     "n_scorable": 6,
+     "n_scored": 6,
+     "coverage": 1.0,
+     "mae": 0.2783,
+     "powder_score": 0.71,
+     "bias": -0.2783
+    }
+   },
+   "late": false
+  }
+ }
+}
