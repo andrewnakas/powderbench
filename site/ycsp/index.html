@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>PowderBench · Private league</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❄️</text></svg>">
+  <style>
+    /* private league page: everything below the sign-in comes from the
+       password-gated API; this file holds no league data */
+    .pv { padding: 28px 0 56px; }
+    .pv h1 { margin: 0 0 4px; font-size: 1.6rem; }
+    .pv h2 { margin: 32px 0 10px; font-size: 1.2rem; }
+    .pv .sub { color: var(--muted); margin: 0 0 8px; font-size: .92rem; }
+    .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+    .login { max-width: 380px; margin: 48px auto; }
+    .login label { display: block; color: var(--muted); font-size: .9rem; margin-bottom: 6px; }
+    .login input { width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--line);
+                   background: var(--bg); color: var(--ink); font-size: 1rem; }
+    .btn { margin-top: 12px; width: 100%; padding: 10px; border: 0; border-radius: 8px; background: var(--accent);
+           color: #08111f; font-weight: 600; font-size: 1rem; cursor: pointer; }
+    .btn:disabled { opacity: .6; cursor: default; }
+    .err { color: var(--bad); min-height: 1.4em; margin-top: 8px; font-size: .92rem; }
+    .linkbtn { background: none; border: 0; color: var(--accent); cursor: pointer; font: inherit; padding: 0; }
+    .picks { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+    .pick h3 { margin: 0; font-size: 1.05rem; }
+    .pick .elev { color: var(--muted); font-size: .85rem; }
+    .hz { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 10px; text-align: center; }
+    .hz .lab { color: var(--muted); font-size: .75rem; line-height: 1.2; }
+    .hz .val { font-size: 1.45rem; font-weight: 700; color: var(--accent-2); line-height: 1.3; }
+    .hz .rng { color: var(--muted); font-size: .75rem; }
+    .scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    table.t { border-collapse: collapse; width: 100%; font-size: .9rem; }
+    table.t th, table.t td { padding: 6px 8px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+    table.t th:first-child, table.t td:first-child { text-align: left; }
+    table.t td:first-child { white-space: normal; min-width: 8em; }
+    table.t th { white-space: normal; vertical-align: bottom; }
+    table.t th { color: var(--muted); font-weight: 600; font-size: .8rem; }
+    table.t tr.ours td { color: var(--accent-2); font-weight: 600; }
+    table.t td .r { color: var(--muted); font-size: .78rem; font-weight: 400; }
+    .est { color: var(--muted); font-style: italic; }
+    .snow { color: var(--accent-2); font-weight: 600; }
+    details.plot { margin-top: 10px; }
+    details.plot summary { cursor: pointer; color: var(--accent); }
+    .note { color: var(--muted); font-size: .85rem; margin-top: 8px; }
+    .row-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  </style>
+</head>
+<body>
+  <nav class="topnav">
+    <div class="wrap nav-row">
+      <a class="brand" href="../">❄️ PowderBench</a>
+    </div>
+  </nav>
+
+  <main class="wrap pv">
+    <section id="gate" class="card login" hidden>
+      <h1>Private league</h1>
+      <p class="sub">Sign in to see this league's forecasts and scores.</p>
+      <form id="form">
+        <label for="pw">Password</label>
+        <input id="pw" type="password" autocomplete="current-password" required>
+        <button class="btn" id="go" type="submit">Sign in</button>
+        <div class="err" id="err" role="alert"></div>
+      </form>
+    </section>
+
+    <section id="app" hidden></section>
+  </main>
+
+<script>
+(() => {
+  // a local copy talks to a local mock of the API; the live page only to the real one
+  const API = location.hostname === "localhost" ? "http://localhost:8788" : "https://powderbench-ycsp.andrew-nakas.workers.dev";
+  const KEY = "ycsp_token";
+  const $ = (id) => document.getElementById(id);
+  const store = {
+    get() { try { const t = localStorage.getItem(KEY); return t && Number(t.split(".")[0]) > Date.now() / 1000 ? t : null; } catch { return null; } },
+    set(t) { try { localStorage.setItem(KEY, t); } catch {} },
+    clear() { try { localStorage.removeItem(KEY); } catch {} },
+  };
+  let token = store.get();
+
+  function el(tag, attrs = {}, ...kids) {
+    const e = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) {
+      if (k === "class") e.className = v; else if (k === "text") e.textContent = v; else e.setAttribute(k, v);
+    }
+    for (const k of kids) if (k != null) e.append(k);
+    return e;
+  }
+
+  function showGate(msg = "") {
+    $("app").hidden = true; $("gate").hidden = false; $("err").textContent = msg; $("pw").focus();
+  }
+
+  $("form").addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+    $("go").disabled = true; $("err").textContent = "";
+    try {
+      const r = await fetch(API + "/login", { method: "POST", headers: { "Content-Type": "application/json" },
+                                              body: JSON.stringify({ password: $("pw").value }) });
+      const j = await r.json();
+      if (!r.ok) throw new Error(j.error || "Sign-in failed.");
+      token = j.token; store.set(token); $("pw").value = "";
+      await load();
+    } catch (e) { showGate(e.message || "Sign-in failed."); }
+    finally { $("go").disabled = false; }
+  });
+
+  async function load() {
+    if (!token) return showGate();
+    let r;
+    try { r = await fetch(API + "/data", { headers: { Authorization: "Bearer " + token } }); }
+    catch { return showGate("Could not reach the server. Try again."); }
+    if (r.status === 401) { store.clear(); token = null; return showGate(); }
+    render(await r.json());
+  }
+
+  // ---------- rendering ----------
+  let NAMES = {};
+  const OURS = "yc-gbm";  // the league's own model, highlighted
+  const name = (t) => NAMES[t] || t;
+  const fmt = (v, d = 1) => (v == null ? "–" : Number(v).toFixed(d));
+  const day = (iso, opts = { weekday: "short", month: "short", day: "numeric" }) =>
+    new Date(iso + "T12:00:00Z").toLocaleDateString("en-US", { ...opts, timeZone: "UTC" });
+
+  function hzLabels(rd) {
+    const t = rd.target_days || [];
+    return [24, 48, 72].map((h, i) => (i === 0 ? day(t[0]) : "through " + day(t[i] || t[t.length - 1])));
+  }
+  const row = (rows, sid, h) => (rows || []).find((r) => r.station_id === sid && r.horizon_h === h);
+
+  let TEXT = {};
+  function render(d) {
+    NAMES = d.names || {}; TEXT = d.text || {};
+    $("gate").hidden = true;
+    const app = $("app"); app.hidden = false; app.replaceChildren();
+    const signout = el("button", { class: "linkbtn", text: "Sign out" });
+    signout.onclick = () => { store.clear(); token = null; showGate(); };
+    app.append(el("div", { class: "row-top" },
+      el("h1", { text: d.title || "Private league" }), signout));
+    app.append(el("p", { class: "sub", text: "Data as of " + new Date(d.generated_utc).toLocaleString() +
+      ". " + (TEXT.units || "Snow in inches.") }));
+
+    const rd = (d.rounds || []).find((r) => r.status === "open") || (d.rounds || [])[0];
+    if (rd) renderRound(app, d, rd);
+    renderObserved(app, d);
+    renderLoggers(app, d);
+    renderBoard(app, d);
+  }
+
+  function renderRound(app, d, rd) {
+    const labs = hzLabels(rd);
+    const cutoff = new Date(rd.cutoff_utc);
+    app.append(el("h2", { text: "Forecast for " + day(rd.target_days[0], { weekday: "long", month: "short", day: "numeric" }) +
+      " to " + day(rd.target_days[2]) }));
+    app.append(el("p", { class: "sub", text: "Round " + rd.round_id + ", forecasts locked " + cutoff.toLocaleString() + ". " + (TEXT.round || "") }));
+    const ours = rd.forecasts[OURS];
+    const grid = el("div", { class: "picks" });
+    for (const p of d.plots) {
+      const card = el("div", { class: "card pick" },
+        el("h3", { text: p.name }), el("div", { class: "elev", text: p.elevation_ft.toLocaleString() + " ft" }));
+      const hz = el("div", { class: "hz" });
+      [24, 48, 72].forEach((h, i) => {
+        const r = row(ours, p.id, h);
+        hz.append(el("div", {}, el("div", { class: "lab", text: labs[i] }),
+          el("div", { class: "val", text: r ? fmt(r.snowfall_in) + '"' : "–" }),
+          el("div", { class: "rng", text: r && r.p10 != null ? fmt(r.p10) + "–" + fmt(r.p90) : "" })));
+      });
+      card.append(hz);
+      // every forecast for this plot
+      const det = el("details", { class: "plot" }, el("summary", { text: "All forecasts" }));
+      const tb = el("table", { class: "t" });
+      tb.append(el("tr", {}, el("th", { text: "Forecaster" }), ...labs.map((l) => el("th", { text: l }))));
+      for (const [team, rows] of Object.entries(rd.forecasts)) {
+        if (team === "baseline-zeros") continue;
+        const tr = el("tr", team === OURS ? { class: "ours" } : {}, el("td", { text: name(team) }));
+        for (const h of [24, 48, 72]) {
+          const r = row(rows, p.id, h);
+          tr.append(el("td", {}, r ? fmt(r.snowfall_in) : "–"));
+        }
+        tb.append(tr);
+      }
+      det.append(el("div", { class: "scroll" }, tb));
+      card.append(det);
+      grid.append(card);
+    }
+    app.append(grid);
+  }
+
+  function renderObserved(app, d) {
+    app.append(el("h2", { text: "Observed new snow" }));
+    app.append(el("p", { class: "sub", text: TEXT.observed || "" }));
+    const dates = new Set();
+    for (const p of d.plots) for (const r of d.observed[p.id].days) dates.add(r.date);
+    const sorted = [...dates].sort().reverse();
+    const tb = el("table", { class: "t" });
+    tb.append(el("tr", {}, el("th", { text: "Day" }), ...d.plots.map((p) => el("th", { text: p.name }))));
+    const season = el("tr", {}, el("td", { text: "Season so far" }));
+    for (const p of d.plots) {
+      const o = d.observed[p.id];
+      season.append(o.season_days ? el("td", {}, el("span", { class: "snow", text: fmt(o.season_in) + '"' }),
+        el("span", { class: "r", text: " " + o.season_days + "d" })) : el("td", { text: "–" }));
+    }
+    tb.append(season);
+    for (const dt of sorted) {
+      const tr = el("tr", {}, el("td", { text: day(dt) }));
+      for (const p of d.plots) {
+        const r = d.observed[p.id].days.find((x) => x.date === dt);
+        const td = el("td", {});
+        if (r && r.in != null) {
+          td.textContent = fmt(r.in);
+          if (r.source !== TEXT.primary_source) td.className = "est";
+          else if (r.in > 0) td.className = "snow";
+        } else td.textContent = "–";
+        tr.append(td);
+      }
+      tb.append(tr);
+    }
+    app.append(el("div", { class: "card scroll" }, tb));
+  }
+
+  function renderLoggers(app, d) {
+    const L = d.loggers || {};
+    if (!Object.keys(L).length) return;
+    app.append(el("h2", { text: "Loggers, latest hour" }));
+    const tb = el("table", { class: "t" });
+    tb.append(el("tr", {}, ...["Logger", "Time (local)", "Temp °F", "New snow", "Total snow", "Water", "Wind / gust"]
+      .map((h) => el("th", { text: h }))));
+    for (const lg of Object.values(L)) {
+      const x = lg.latest;
+      const sp = x.speed ?? x.ridge_speed, gu = x.gust ?? x.ridge_gust;
+      const h24 = lg.hours.slice(-24);
+      const water24 = h24.reduce((s, r) => s + (r.h2o_in || 0), 0);
+      tb.append(el("tr", {}, el("td", { text: lg.name }), el("td", { text: day(lg.date) + " " + lg.hour + ":00" }),
+        el("td", { text: fmt(x.temp_f, 0) }), el("td", { text: fmt(x.new_snow_in) }), el("td", { text: fmt(x.total_snow_in) }),
+        el("td", { text: "h2o_in" in x ? fmt(water24, 2) + " (24h)" : "–" }),
+        el("td", { text: sp == null ? "–" : fmt(sp, 0) + " / " + fmt(gu, 0) + " mph" })));
+    }
+    app.append(el("div", { class: "card scroll" }, tb));
+  }
+
+  function renderBoard(app, d) {
+    app.append(el("h2", { text: "Leaderboard" }));
+    const lb = d.leaderboard;
+    const list = lb && (lb.season || lb.last30);
+    if (!list || !list.length) {
+      app.append(el("div", { class: "card note", text: TEXT.board_pending || "No scored rounds yet." }));
+      return;
+    }
+    app.append(el("p", { class: "sub", text: "Powder score: 100 × (1 − MAE ÷ climatology's MAE) per round, averaged over rounds. Higher is better; 0 = no better than climatology." }));
+    const tb = el("table", { class: "t" });
+    tb.append(el("tr", {}, ...["#", "Forecaster", "Score", "Rounds", "MAE", "Bias"].map((h) => el("th", { text: h }))));
+    list.forEach((r, i) => {
+      tb.append(el("tr", r.team === OURS ? { class: "ours" } : {}, el("td", { text: String(r.rank || i + 1) }),
+        el("td", { text: name(r.team) }), el("td", { text: fmt(r.powder_score) }), el("td", { text: String(r.rounds) }),
+        el("td", { text: fmt(r.mae, 2) }), el("td", { text: fmt(r.bias, 2) })));
+    });
+    app.append(el("div", { class: "card scroll" }, tb));
+  }
+
+  load();
+})();
+</script>
+</body>
+</html>
