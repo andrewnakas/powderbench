@@ -1291,5 +1291,35 @@
    "open-powder-ensemble": 30.36,
    "open-powder-ml": 43.68
   }
+ },
+ {
+  "round_id": "2026-11-24",
+  "biggest_24h": {
+   "station_id": "1D06P:BC:MSNT",
+   "resort": "Tenquille Lake",
+   "inches": 12.6
+  },
+  "qc": {
+   "station_horizons_valid": 2881,
+   "station_horizons_voided": 95
+  },
+  "teams": {
+   "baseline-climatology": 0.0,
+   "baseline-consensus": 30.48,
+   "baseline-gem": 30.63,
+   "baseline-gfs": -10.61,
+   "baseline-icon": 17.68,
+   "baseline-ndfd": 12.31,
+   "baseline-openmeteo": -10.61,
+   "baseline-persistence": -80.43,
+   "baseline-ukmo": 22.11,
+   "baseline-zeros": 32.61,
+   "deep-powder": 61.54,
+   "house-analog": 28.26,
+   "house-blend": 17.71,
+   "house-gbm": 18.2,
+   "open-powder-ensemble": 48.41,
+   "open-powder-ml": 54.52
+  }
  }
 ]
