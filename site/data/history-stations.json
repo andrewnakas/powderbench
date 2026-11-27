@@ -1261,5 +1261,35 @@
    "open-powder-ensemble": 2.23,
    "open-powder-ml": 12.03
   }
+ },
+ {
+  "round_id": "2026-11-23",
+  "biggest_24h": {
+   "station_id": "648:WA:SNTL",
+   "resort": "Mount Crag",
+   "inches": 10.0
+  },
+  "qc": {
+   "station_horizons_valid": 2866,
+   "station_horizons_voided": 113
+  },
+  "teams": {
+   "baseline-climatology": 0.0,
+   "baseline-consensus": 15.46,
+   "baseline-gem": 33.64,
+   "baseline-gfs": 12.4,
+   "baseline-icon": 18.03,
+   "baseline-ndfd": -6.53,
+   "baseline-openmeteo": 12.4,
+   "baseline-persistence": -167.21,
+   "baseline-ukmo": 2.13,
+   "baseline-zeros": 25.51,
+   "deep-powder": 44.19,
+   "house-analog": 9.31,
+   "house-blend": 19.17,
+   "house-gbm": 18.42,
+   "open-powder-ensemble": 30.36,
+   "open-powder-ml": 43.68
+  }
  }
 ]

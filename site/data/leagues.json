@@ -8,16 +8,16 @@
   "measured": false,
   "n_stations": 1043,
   "n_featured": 45,
-  "n_rounds_resolved": 57,
+  "n_rounds_resolved": 58,
   "health": {
-   "last_round": "2026-11-22",
-   "qc_valid_share": 0.97
+   "last_round": "2026-11-23",
+   "qc_valid_share": 0.962
   },
   "open_round": {
-   "round_id": "2026-11-26",
-   "cutoff_utc": "2026-11-26T00:00:00+00:00"
+   "round_id": "2026-11-28",
+   "cutoff_utc": "2026-11-28T00:00:00+00:00"
   },
-  "last_resolved": "2026-11-22"
+  "last_resolved": "2026-11-23"
  },
  {
   "name": "observers",
@@ -28,16 +28,16 @@
   "measured": true,
   "n_stations": 1635,
   "n_featured": 98,
-  "n_rounds_resolved": 30,
+  "n_rounds_resolved": 31,
   "health": {
-   "last_round": "2026-11-19",
-   "qc_valid_share": 0.005
+   "last_round": "2026-11-20",
+   "qc_valid_share": 0.004
   },
   "open_round": {
-   "round_id": "2026-11-26",
-   "cutoff_utc": "2026-11-26T00:00:00+00:00"
+   "round_id": "2026-11-28",
+   "cutoff_utc": "2026-11-28T00:00:00+00:00"
   },
-  "last_resolved": "2026-11-19"
+  "last_resolved": "2026-11-20"
  },
  {
   "name": "resorts-na",
@@ -48,25 +48,25 @@
   "measured": true,
   "n_stations": 48,
   "n_featured": 48,
-  "n_rounds_resolved": 21,
+  "n_rounds_resolved": 22,
   "health": {
-   "last_round": "2026-11-21",
-   "qc_valid_share": 0.541,
+   "last_round": "2026-11-22",
+   "qc_valid_share": 0.505,
    "latest_scrape": {
-    "at": "2026-11-25T20:30:40+00:00",
+    "at": "2026-11-26T20:33:19+00:00",
     "status": {
-     "ok": 30,
+     "ok": 33,
      "no_report": 6,
      "http_error": 2,
-     "stale": 10
+     "stale": 7
     }
    }
   },
   "open_round": {
-   "round_id": "2026-11-26",
-   "cutoff_utc": "2026-11-26T00:00:00+00:00"
+   "round_id": "2026-11-28",
+   "cutoff_utc": "2026-11-28T00:00:00+00:00"
   },
-  "last_resolved": "2026-11-21"
+  "last_resolved": "2026-11-22"
  },
  {
   "name": "alps",
@@ -77,16 +77,16 @@
   "measured": true,
   "n_stations": 713,
   "n_featured": 89,
-  "n_rounds_resolved": 20,
+  "n_rounds_resolved": 21,
   "health": {
-   "last_round": "2026-11-21",
-   "qc_valid_share": 0.902
+   "last_round": "2026-11-22",
+   "qc_valid_share": 0.897
   },
   "open_round": {
-   "round_id": "2026-11-27",
-   "cutoff_utc": "2026-11-26T21:00:00+00:00"
+   "round_id": "2026-11-28",
+   "cutoff_utc": "2026-11-27T21:00:00+00:00"
   },
-  "last_resolved": "2026-11-21"
+  "last_resolved": "2026-11-22"
  },
  {
   "name": "japan",
@@ -100,8 +100,8 @@
   "n_rounds_resolved": 0,
   "health": {},
   "open_round": {
-   "round_id": "2026-11-27",
-   "cutoff_utc": "2026-11-26T11:00:00+00:00"
+   "round_id": "2026-11-28",
+   "cutoff_utc": "2026-11-27T11:00:00+00:00"
   },
   "last_resolved": null
  },
@@ -117,8 +117,8 @@
   "n_rounds_resolved": 0,
   "health": {},
   "open_round": {
-   "round_id": "2026-11-27",
-   "cutoff_utc": "2026-11-26T21:00:00+00:00"
+   "round_id": "2026-11-28",
+   "cutoff_utc": "2026-11-27T21:00:00+00:00"
   },
   "last_resolved": null
  },
@@ -134,8 +134,8 @@
   "n_rounds_resolved": 0,
   "health": {},
   "open_round": {
-   "round_id": "2026-11-27",
-   "cutoff_utc": "2026-11-26T11:00:00+00:00"
+   "round_id": "2026-11-28",
+   "cutoff_utc": "2026-11-27T11:00:00+00:00"
   },
   "last_resolved": null
  },
@@ -170,7 +170,7 @@
    "last_round": "2026-10-31",
    "qc_valid_share": 0.692,
    "latest_scrape": {
-    "at": "2026-11-25T20:30:40+00:00",
+    "at": "2026-11-26T20:33:19+00:00",
     "status": {
      "no_report": 3,
      "ok": 9
