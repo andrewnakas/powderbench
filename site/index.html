@@ -74,15 +74,20 @@
         the forecast from whoever has been <strong>most accurate</strong> in this league so far, next
         to every other forecaster's numbers and to what fell last time.</p>
       <div class="board-controls">
-        <input id="station-search" type="search" placeholder="Find a station, resort or region…" list="station-list" autocomplete="off">
-        <datalist id="station-list"></datalist>
+        <div class="search-box">
+          <input id="station-search" type="search" placeholder="Search any station, resort or region…" autocomplete="off"
+            role="combobox" aria-expanded="false" aria-controls="search-results" aria-autocomplete="list" aria-label="Search stations">
+          <ul id="search-results" class="search-results" role="listbox" hidden></ul>
+        </div>
+        <button id="near-me" class="near-btn" type="button">📍 Stations near me</button>
         <span class="rounds-note" id="station-count"></span>
       </div>
+      <div id="near-list" class="near-list" hidden></div>
       <p class="fine" id="fc-status"></p>
       <div class="fc-layout">
         <div id="map"></div>
         <aside id="fc-panel" class="fc-panel">
-          <p class="fc-hint">👆 Tap a station on the map (or search above) to see its forecast.</p>
+          <p class="fc-hint">👆 Tap a station on the map, search above, or use 📍 to find the stations nearest you.</p>
         </aside>
       </div>
       <div class="fc-legend" id="fc-legend"></div>

@@ -471,10 +471,10 @@ function teamOrder() {
 
 /* The best available forecast for a station: the most accurate forecaster
    (by season Powder Accuracy) that forecast it. Climatology is a reference, not a pick. */
-function bestFor(sid) {
-  const rows = state.fc?.current?.rows?.[sid];
+function bestFor(sid, fc = state.fc) {
+  const rows = fc?.current?.rows?.[sid];
   if (!rows) return null;
-  for (const t of state.fc.teams) {
+  for (const t of fc.teams) {
     if (t.team === "baseline-climatology") continue;
     const r = rows[t.team];
     if (r && (r[2] !== null || r[0] !== null)) return { ...t, r };
@@ -501,15 +501,64 @@ function renderLegend() {
     '<span class="lg"><i style="background:#2a3a57"></i>no forecast</span>';
 }
 
+/* Keyless basemaps you can find your way on: hillshaded terrain, rivers and
+   lakes, borders and place names (Esri, OpenTopoMap). The choice is remembered. */
+const ESRI = "https://server.arcgisonline.com/ArcGIS/rest/services/";
+const ESRI_ATTR = "Tiles &copy; Esri &mdash; Esri, USGS, NOAA, Garmin, FAO, NPS, NRCan and the GIS user community";
+const esri = (path, o = {}) => L.tileLayer(`${ESRI}${path}/MapServer/tile/{z}/{y}/{x}`, { maxZoom: 16, attribution: ESRI_ATTR, ...o });
+const rivers = () => L.tileLayer(
+  "https://tiles.arcgis.com/tiles/P3ePLMYs2RVChkJx/arcgis/rest/services/Esri_Hydro_Reference_Overlay/MapServer/tile/{z}/{y}/{x}",
+  { maxZoom: 16, pane: "labels", opacity: 0.8, attribution: ESRI_ATTR });
+
+function addBasemaps(m) {
+  m.createPane("labels");
+  m.getPane("labels").style.zIndex = 390;  // over the tiles, under the station dots
+  m.getPane("labels").style.pointerEvents = "none";
+  const bases = {
+    "Terrain (dark)": L.layerGroup([
+      esri("Elevation/World_Hillshade_Dark"),
+      esri("Canvas/World_Dark_Gray_Base", { opacity: 0.4 }),
+      rivers(),
+      esri("Canvas/World_Dark_Gray_Reference", { pane: "labels" }),
+    ]),
+    "Topo (roads, rivers, towns)": esri("World_Topo_Map"),
+    "Satellite": L.layerGroup([
+      esri("World_Imagery", { maxZoom: 18 }),
+      esri("Reference/World_Boundaries_and_Places", { pane: "labels" }),
+    ]),
+    "Contours (OpenTopoMap)": L.tileLayer("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", {
+      maxZoom: 17, subdomains: "abc",
+      attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, SRTM &middot; style &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (CC-BY-SA)',
+    }),
+  };
+  let pick = "Terrain (dark)";
+  try { const v = localStorage.getItem("pb-basemap"); if (v && bases[v]) pick = v; } catch (e) { /* storage off */ }
+  bases[pick].addTo(m);
+  L.control.layers(bases, null, { position: "topright" }).addTo(m);
+  m.on("baselayerchange", (e) => { try { localStorage.setItem("pb-basemap", e.name); } catch (err) { /* storage off */ } });
+  L.control.scale({ position: "bottomleft" }).addTo(m);
+  const Near = L.Control.extend({
+    options: { position: "topleft" },
+    onAdd() {
+      const b = L.DomUtil.create("button", "map-near");
+      b.type = "button"; b.title = "Stations near me"; b.setAttribute("aria-label", "Stations near me");
+      b.textContent = "📍";
+      L.DomEvent.disableClickPropagation(b);
+      L.DomEvent.on(b, "click", nearMe);
+      return b;
+    },
+  });
+  new Near().addTo(m);
+}
+
 function renderMap(stations) {
   if (!map) {
     // canvas renderer: thousands of network stations stay smooth
     map = L.map("map", { scrollWheelZoom: false, preferCanvas: true });
-    // keyless dark basemap (CARTO's now answers every tile with "API KEY REQUIRED")
-    L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}", {
-      attribution: "Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ",
-      maxZoom: 16,
-    }).addTo(map);
+    addBasemaps(map);
+    // the page scrolls past the map until you click into it; then the wheel zooms
+    map.on("click focus", () => map.scrollWheelZoom.enable());
+    map.on("mouseout blur", () => map.scrollWheelZoom.disable());
   }
   if (markerLayer) markerLayer.remove();
   markerLayer = L.layerGroup();
@@ -539,13 +588,7 @@ function renderMap(stations) {
   document.getElementById("station-count").textContent = nFeat < stations.length
     ? `${stations.length.toLocaleString()} stations · bigger dots are the ${nFeat} headline stations`
     : `${stations.length.toLocaleString()} stations`;
-  const list = document.getElementById("station-list");
-  list.innerHTML = "";
-  for (const s of stations) {
-    const o = document.createElement("option");
-    o.value = `${s.resort} · ${s.name} · ${s.region} · ${s.station_id}`;
-    list.appendChild(o);
-  }
+  if (meMarker) meMarker.addTo(map);
   renderLegend();
   renderForecastStatus();
   // open the snowiest headline station so the panel is never empty
@@ -652,9 +695,137 @@ function showStation(sid, pan = true) {
   });
 }
 
-function findStation(q) {
-  const sid = q.split(" · ").pop();
-  if (markers[sid]) showStation(sid);
+/* ---- Search every league, and stations near me ---- */
+let allStations = null;
+const fcCache = {};
+let meMarker = null;
+
+async function loadAllStations() {
+  if (allStations) return allStations;
+  const parts = await Promise.all(state.leagues.map(async (lg) => {
+    try {
+      return (await loadJSON(`data/stations-${lg.name}.json`)).map((s) => ({ ...s, league: lg.name }));
+    } catch (e) { return []; }
+  }));
+  allStations = parts.flat();
+  for (const s of allStations) {
+    s._q = [s.resort, s.name, s.region, s.state, s.station_id].filter(Boolean).join(" ").toLowerCase();
+  }
+  return allStations;
+}
+
+async function forecastFor(league) {
+  if (league === state.league && state.fc) return state.fc;
+  if (!(league in fcCache)) {
+    try { fcCache[league] = await loadJSON(`data/forecasts-${league}.json`); } catch (e) { fcCache[league] = null; }
+  }
+  return fcCache[league];
+}
+
+const leagueShort = (name) => (state.leagues.find((l) => l.name === name)?.label || name).split(" · ")[0];
+const esc = (t) => String(t ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+
+async function goToStation(league, sid) {
+  if (league !== state.league) await selectLeague(league);
+  showStation(sid);
+  document.getElementById("forecast").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function distKm(lat1, lon1, lat2, lon2) {
+  const r = Math.PI / 180;
+  const a = Math.sin((lat2 - lat1) * r / 2) ** 2 +
+    Math.cos(lat1 * r) * Math.cos(lat2 * r) * Math.sin((lon2 - lon1) * r / 2) ** 2;
+  return 12742 * Math.asin(Math.sqrt(a));
+}
+
+function searchMatches(q) {
+  const words = q.toLowerCase().split(/\s+/).filter(Boolean);
+  if (!words.length || !allStations) return [];
+  const hits = allStations.filter((s) => words.every((w) => s._q.includes(w)));
+  const rank = (s) => (s.league === state.league ? 0 : 2) + ((s.tier || "featured") === "featured" ? 0 : 1) +
+    ((s.resort || "").toLowerCase().startsWith(words[0]) || (s.name || "").toLowerCase().startsWith(words[0]) ? -3 : 0);
+  return hits.sort((a, b) => rank(a) - rank(b)).slice(0, 12);
+}
+
+function initSearch() {
+  const input = document.getElementById("station-search");
+  const box = document.getElementById("search-results");
+  let hits = [], active = -1;
+  const close = () => { box.hidden = true; input.setAttribute("aria-expanded", "false"); active = -1; };
+  const pick = (i) => { const s = hits[i]; if (!s) return; close(); input.value = s.resort || s.name; goToStation(s.league, s.station_id); };
+  const draw = () => {
+    box.innerHTML = hits.length
+      ? hits.map((s, i) => `<li role="option" data-i="${i}" class="${i === active ? "active" : ""}" aria-selected="${i === active}">
+          <b>${esc(s.resort || s.name)}</b> <span>${esc(s.name)} · ${esc(s.region)}</span>
+          <em>${esc(leagueShort(s.league))}${s.elevation_ft ? ` · ${Math.round(s.elevation_ft).toLocaleString()} ft` : ""}</em></li>`).join("")
+      : `<li class="none">No station matches “${esc(input.value)}”.</li>`;
+    box.hidden = false; input.setAttribute("aria-expanded", "true");
+  };
+  input.addEventListener("focus", loadAllStations, { once: true });
+  input.addEventListener("input", async () => {
+    await loadAllStations();
+    if (!input.value.trim()) { close(); return; }
+    hits = searchMatches(input.value); active = hits.length ? 0 : -1; draw();
+  });
+  input.addEventListener("keydown", (e) => {
+    if (box.hidden) return;
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      e.preventDefault();
+      active = (active + (e.key === "ArrowDown" ? 1 : hits.length - 1)) % Math.max(hits.length, 1); draw();
+    } else if (e.key === "Enter") { e.preventDefault(); pick(active); }
+    else if (e.key === "Escape") close();
+  });
+  box.addEventListener("mousedown", (e) => { const li = e.target.closest("li[data-i]"); if (li) { e.preventDefault(); pick(+li.dataset.i); } });
+  document.addEventListener("click", (e) => { if (!e.target.closest(".search-box")) close(); });
+}
+
+/* Your location stays in your browser: the nearest stations are worked out here, on your device. */
+function nearMe() {
+  const out = document.getElementById("near-list");
+  out.hidden = false;
+  if (!navigator.geolocation) { out.innerHTML = '<p class="fine">Your browser can\'t share a location. Search for a station instead.</p>'; return; }
+  out.innerHTML = '<p class="fine">Finding stations near you…</p>';
+  navigator.geolocation.getCurrentPosition(async (pos) => {
+    const { latitude: lat, longitude: lon } = pos.coords;
+    const all = await loadAllStations();
+    const near = all.map((s) => ({ s, km: distKm(lat, lon, s.latitude, s.longitude) }))
+      .sort((a, b) => a.km - b.km).slice(0, 8);
+    const fcs = {};
+    for (const lg of new Set(near.map((n) => n.s.league))) fcs[lg] = await forecastFor(lg);
+    if (meMarker) meMarker.remove();
+    meMarker = L.circleMarker([lat, lon], { radius: 8, color: "#ffffff", weight: 3, fillColor: "#ff5d73", fillOpacity: 1 })
+      .bindTooltip("You are here").addTo(map);
+    const mi = (km) => (km < 16 ? `${(km / 1.609).toFixed(1)} mi` : `${Math.round(km / 1.609)} mi`);
+    out.innerHTML = `<div class="near-head"><b>Nearest stations</b><span class="fine">Your location stays on your device.</span>
+        <button type="button" class="near-x" aria-label="Close">×</button></div>
+      <ol class="near-cards">${near.map(({ s, km }, i) => {
+        const best = bestFor(s.station_id, fcs[s.league]);
+        const tot = totalOf(best?.r);
+        return `<li><button type="button" data-i="${i}">
+          <span class="nc-snow" style="color:${snowColor(tot)}">${tot === null ? "—" : inch(tot)}</span>
+          <span class="nc-name">${esc(s.resort || s.name)}</span>
+          <span class="nc-sub">${esc(s.name)} · ${mi(km)} · ${esc(leagueShort(s.league))}</span></button></li>`;
+      }).join("")}</ol>
+      <p class="fine">Snow is the next 3 days from the most accurate forecaster in that league (— when it has no forecast right now).</p>`;
+    out.querySelector(".near-x").addEventListener("click", () => { out.hidden = true; });
+    out.querySelectorAll(".near-cards button").forEach((b) => b.addEventListener("click", async () => {
+      const { s } = near[+b.dataset.i];
+      await goToStation(s.league, s.station_id);
+      if (meMarker && markers[s.station_id]) map.fitBounds(L.latLngBounds([meMarker.getLatLng(), markers[s.station_id].getLatLng()]).pad(0.4));
+    }));
+    const here = near.find((n) => n.s.league === state.league && markers[n.s.station_id]);
+    if (here) showStation(here.s.station_id, false);
+    const first = near[0]?.s;
+    if (first && first.league === state.league && markers[first.station_id]) {
+      map.fitBounds(L.latLngBounds([[lat, lon], ...near.filter((n) => n.s.league === state.league).map((n) => [n.s.latitude, n.s.longitude])]).pad(0.3));
+    } else {
+      map.setView([lat, lon], 8);
+    }
+  }, (err) => {
+    out.innerHTML = `<p class="fine">${err.code === 1
+      ? "Location is turned off for this site. Allow it in your browser's site settings, or search for a station above."
+      : "Couldn't get your location just now. Try again, or search for a station above."}</p>`;
+  }, { timeout: 12000, maximumAge: 600000 });
 }
 
 function renderTrackOptions() {
@@ -846,9 +1017,10 @@ function renderHeroStats(leagues) {
       renderCurrentBoard();
     })
   );
-  document.getElementById("station-search").addEventListener("change", (e) => findStation(e.target.value));
+  initSearch();
+  document.getElementById("near-me").addEventListener("click", nearMe);
   try { sznArchive = await loadJSON("data/seasons/southern-stations/index.json"); } catch (e) { /* optional */ }
-  const fromHash = location.hash.match(/^#league=(\w+)$/)?.[1];
+  const fromHash = location.hash.match(/^#league=([\w-]+)$/)?.[1];
   const initial =
     state.leagues.find((l) => l.name === fromHash) ||
     state.leagues.find(leagueActive) ||
