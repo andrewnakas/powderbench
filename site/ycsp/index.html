@@ -145,8 +145,15 @@
     app.append(el("p", { class: "sub", text: "Data as of " + new Date(d.generated_utc).toLocaleString() +
       ". " + (TEXT.units || "Snow in inches.") }));
 
-    const rd = (d.rounds || []).find((r) => r.status === "open") || (d.rounds || [])[0];
+    // the newest round with our forecast in; a round just opened has none until its forecast day
+    const rounds = d.rounds || [];
+    const rd = rounds.find((r) => r.status !== "resolved" && r.forecasts[OURS]) ||
+      rounds.find((r) => r.forecasts[OURS]) || rounds[0];
+    if (rd && rounds[0] && rd !== rounds[0])
+      app.append(el("div", { class: "card note", text: "Round " + rounds[0].round_id + " (" + day(rounds[0].target_days[0]) +
+        " on) takes forecasts until " + new Date(rounds[0].cutoff_utc).toLocaleString() + "; they show here once posted." }));
     if (rd) renderRound(app, d, rd);
+    renderLast(app, d);
     renderObserved(app, d);
     renderLoggers(app, d);
     renderBoard(app, d);
@@ -189,6 +196,38 @@
       grid.append(card);
     }
     app.append(grid);
+  }
+
+  // the newest scored round: what fell against what was forecast, and the round's scores
+  function renderLast(app, d) {
+    const rs = (d.rounds || []).find((r) => r.result && r.truth);
+    if (!rs) return;
+    const labs = hzLabels(rs);
+    app.append(el("h2", { text: "Last scored round: " + day(rs.target_days[0]) + " to " + day(rs.target_days[2]) }));
+    app.append(el("p", { class: "sub", text: "Observed totals, with " + name(OURS) + "'s forecast below each. Missing plots were not scored." }));
+    const tb = el("table", { class: "t" });
+    tb.append(el("tr", {}, el("th", { text: "Plot" }), ...labs.map((l) => el("th", { text: l }))));
+    for (const p of d.plots) {
+      const tr = el("tr", {}, el("td", { text: p.name }));
+      for (const h of [24, 48, 72]) {
+        const t = rs.truth.find((r) => r.station_id === p.id && r.horizon_h === h);
+        const f = row(rs.forecasts[OURS], p.id, h);
+        tr.append(t ? el("td", {}, el("span", { class: t.in > 0 ? "snow" : "", text: fmt(t.in) }),
+          el("div", { class: "r", text: f ? "fcst " + fmt(f.snowfall_in) : "" })) : el("td", { text: "–" }));
+      }
+      tb.append(tr);
+    }
+    app.append(el("div", { class: "card scroll" }, tb));
+    const teams = Object.entries(rs.result.teams || {})
+      .filter(([t, m]) => !m.invalid && m.powder_score != null && t !== "baseline-climatology")
+      .sort((a, b) => b[1].powder_score - a[1].powder_score);
+    if (!teams.length) return;
+    const st = el("table", { class: "t" });
+    st.append(el("tr", {}, ...["#", "Forecaster", "Round score", "MAE"].map((h) => el("th", { text: h }))));
+    teams.forEach(([t, m], i) => st.append(el("tr", t === OURS ? { class: "ours" } : {}, el("td", { text: String(i + 1) }),
+      el("td", { text: name(t) }), el("td", { text: fmt(m.powder_score) }), el("td", { text: fmt(m.mae, 2) }))));
+    const det = el("details", { class: "plot" }, el("summary", { text: "Scores for this round" }), el("div", { class: "scroll" }, st));
+    app.append(el("div", { class: "card" }, det));
   }
 
   function renderObserved(app, d) {
