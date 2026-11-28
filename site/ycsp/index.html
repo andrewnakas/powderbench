@@ -33,12 +33,14 @@
     .hz .rng { color: var(--muted); font-size: .75rem; }
     .scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
     table.t { border-collapse: collapse; width: 100%; font-size: .9rem; }
-    table.t th, table.t td { padding: 6px 8px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+    table.t th, table.t td { padding: 6px 8px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap;
+                             font-variant-numeric: tabular-nums; }
     table.t th:first-child, table.t td:first-child { text-align: left; }
     table.t td:first-child { white-space: normal; min-width: 8em; }
     table.t th { white-space: normal; vertical-align: bottom; }
     table.t th { color: var(--muted); font-weight: 600; font-size: .8rem; }
     table.t tr.ours td { color: var(--accent-2); font-weight: 600; }
+    table.t tr.blend td { color: var(--ink); font-weight: 700; }
     table.t td .r { color: var(--muted); font-size: .78rem; font-weight: 400; }
     .est { color: var(--muted); font-style: italic; }
     .snow { color: var(--accent-2); font-weight: 600; }
@@ -46,6 +48,50 @@
     details.plot summary { cursor: pointer; color: var(--accent); }
     .note { color: var(--muted); font-size: .85rem; margin-top: 8px; }
     .row-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+    .lg-bar { padding-top: 6px; }
+
+    /* compare and blend */
+    .seg { display: inline-flex; flex-wrap: wrap; gap: 6px; }
+    .seg button, .btnsm { background: var(--panel-2); color: var(--muted); border: 1px solid var(--line); border-radius: 8px;
+                          padding: 6px 10px; font: inherit; font-size: .85rem; cursor: pointer; }
+    .seg button.on { color: var(--ink); border-color: var(--accent); }
+    .btnsm:hover, .seg button:hover { color: var(--ink); }
+    .ctl { display: flex; flex-wrap: wrap; gap: 10px 20px; align-items: center; margin: 4px 0 12px; }
+    .ctl .lab { color: var(--muted); font-size: .8rem; margin-right: 6px; }
+    .bl-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 14px; align-items: start; }
+    @media (max-width: 860px) { .bl-grid { grid-template-columns: minmax(0, 1fr); } }
+    .grp { color: var(--muted); font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; margin: 12px 0 2px; }
+    .mrow { display: grid; grid-template-columns: minmax(0, 1fr) minmax(90px, 150px) 3em; gap: 2px 10px;
+            align-items: center; padding: 6px 0; border-bottom: 1px solid var(--line); }
+    .mrow label { display: flex; align-items: center; gap: 8px; cursor: pointer; min-width: 0; }
+    .mrow .nm { font-size: .9rem; overflow-wrap: anywhere; }
+    .mrow input[type=range] { width: 100%; accent-color: var(--accent); margin: 0; }
+    .mrow .pct { text-align: right; font-variant-numeric: tabular-nums; font-size: .88rem; color: var(--muted); }
+    .mrow .pct.on { color: var(--ink); font-weight: 600; }
+    @media (max-width: 560px) {
+      .mrow { grid-template-columns: minmax(0, 1fr) 3em; }
+      .mrow input[type=range] { grid-column: 1 / -1; grid-row: 2; }
+    }
+    .sw { display: inline-block; width: 20px; height: 0; border-top: 3px solid; border-radius: 2px; flex: none; }
+    .sw.dash { border-top-style: dashed; }
+    .sw.obs { height: 10px; border: 0; border-radius: 2px; width: 10px; }
+    .presets { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+    .msg { color: var(--muted); font-size: .85rem; margin-top: 10px; line-height: 1.45; }
+    .msg strong { color: var(--ink); }
+    .msg .r { font-size: .8rem; }
+    .delta { display: block; font-size: .74rem; color: var(--muted); font-weight: 400; }
+    .chart { position: relative; margin-top: 6px; touch-action: pan-y; }
+    .chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+    .tip { position: absolute; top: 0; pointer-events: none; background: var(--panel-2); border: 1px solid var(--line);
+           border-radius: 8px; padding: 8px 10px; font-size: .78rem; min-width: 160px; z-index: 2;
+           box-shadow: 0 6px 18px rgba(0, 0, 0, .4); }
+    .tip .d { color: var(--muted); margin-bottom: 4px; }
+    .tip .ln { display: flex; align-items: center; gap: 8px; }
+    .tip .ln b { margin-left: auto; font-variant-numeric: tabular-nums; font-weight: 600; }
+    .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: .8rem; color: var(--muted); }
+    .legend span { display: inline-flex; align-items: center; gap: 6px; }
+    .sec { margin-top: 18px; }
+    .sec h3 { margin: 0 0 6px; font-size: 1rem; }
   </style>
 </head>
 <body>
@@ -81,6 +127,10 @@
     set(t) { try { localStorage.setItem(KEY, t); } catch {} },
     clear() { try { localStorage.removeItem(KEY); } catch {} },
   };
+  const prefs = {
+    get(k) { try { return JSON.parse(localStorage.getItem(k) || "null"); } catch { return null; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
+  };
   let token = store.get();
 
   function el(tag, attrs = {}, ...kids) {
@@ -89,6 +139,12 @@
       if (k === "class") e.className = v; else if (k === "text") e.textContent = v; else e.setAttribute(k, v);
     }
     for (const k of kids) if (k != null) e.append(k);
+    return e;
+  }
+  const SVGNS = "http://www.w3.org/2000/svg";
+  function sv(tag, attrs = {}) {
+    const e = document.createElementNS(SVGNS, tag);
+    for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
     return e;
   }
 
@@ -117,13 +173,25 @@
     catch { return showGate("Could not reach the server. Try again."); }
     if (r.status === 401) { store.clear(); token = null; return showGate(); }
     render(await r.json());
+    loadHistory();
+  }
+
+  // the track record behind compare-and-blend: fetched after the page is up
+  let HIST = null, histState = "loading";
+  async function loadHistory() {
+    try {
+      const r = await fetch(API + "/history", { headers: { Authorization: "Bearer " + token } });
+      if (!r.ok) throw new Error(String(r.status));
+      HIST = await r.json(); histState = "ok";
+    } catch { histState = "failed"; }
+    if (CUR) drawBlender(CUR);
   }
 
   // ---------- rendering ----------
-  let NAMES = {};
-  const OURS = "yc-gbm";  // the league's own model, highlighted
-  const name = (t) => NAMES[t] || t;
-  const fmt = (v, d = 1) => (v == null ? "–" : Number(v).toFixed(d));
+  let NAMES = {}, KINDS = {}, TEXT = {}, OURS = "yc-gbm", CUR = null, LEAGUES = [];
+  const name = (t) => (t === "__blend" ? "Your blend" : NAMES[t] || t);
+  const fmt = (v, d = 1) => (v == null || Number.isNaN(v) ? "–" : Number(v).toFixed(d));
+  const sgn = (v, d = 1) => (v == null ? "" : (v > 0 ? "+" : v < 0 ? "−" : "±") + Math.abs(v).toFixed(d));
   const day = (iso, opts = { weekday: "short", month: "short", day: "numeric" }) =>
     new Date(iso + "T12:00:00Z").toLocaleDateString("en-US", { ...opts, timeZone: "UTC" });
 
@@ -133,33 +201,69 @@
   }
   const row = (rows, sid, h) => (rows || []).find((r) => r.station_id === sid && r.horizon_h === h);
 
-  let TEXT = {};
+  function leaguesOf(d) {
+    const out = [{ key: "yc", short: "Yellowstone Club", title: d.title, ours: d.ours || "yc-gbm", text: d.text || {},
+                   plots: d.plots, rounds: d.rounds || [], observed: d.observed, loggers: d.loggers, leaderboard: d.leaderboard }];
+    const SHORT = { bb: "Bridger Bowl" };
+    for (const [k, v] of Object.entries(d.leagues || {})) out.push({ key: k, short: SHORT[k] || v.title || k, ...v });
+    return out;
+  }
+
+  let DATA = null;
   function render(d) {
-    NAMES = d.names || {}; TEXT = d.text || {};
+    DATA = d; NAMES = d.names || {}; KINDS = d.kinds || {};
+    LEAGUES = leaguesOf(d);
     $("gate").hidden = true;
     const app = $("app"); app.hidden = false; app.replaceChildren();
     const signout = el("button", { class: "linkbtn", text: "Sign out" });
     signout.onclick = () => { store.clear(); token = null; showGate(); };
-    app.append(el("div", { class: "row-top" },
-      el("h1", { text: d.title || "Private league" }), signout));
-    app.append(el("p", { class: "sub", text: "Data as of " + new Date(d.generated_utc).toLocaleString() +
-      ". " + (TEXT.units || "Snow in inches.") }));
+    const head = el("div", { class: "row-top" }, el("h1", { id: "lgtitle" }), signout);
+    app.append(head);
+    app.append(el("p", { class: "sub", id: "lgsub" }));
+    if (LEAGUES.length > 1) {
+      const bar = el("div", { class: "league-bar lg-bar", role: "tablist" });
+      for (const L of LEAGUES) {
+        const b = el("button", { class: "league-tab", role: "tab", text: L.short });
+        b.onclick = () => { prefs.set("ycsp_league", L.key); showLeague(L.key); };
+        b.dataset.key = L.key;
+        bar.append(b);
+      }
+      app.append(bar);
+    }
+    app.append(el("div", { id: "lg" }));
+    const saved = prefs.get("ycsp_league");
+    showLeague(LEAGUES.some((L) => L.key === saved) ? saved : LEAGUES[0].key);
+  }
+
+  function showLeague(key) {
+    const L = LEAGUES.find((x) => x.key === key) || LEAGUES[0];
+    CUR = L; OURS = L.ours; TEXT = L.text || {};
+    for (const b of document.querySelectorAll(".lg-bar .league-tab")) {
+      b.classList.toggle("active", b.dataset.key === L.key);
+      b.setAttribute("aria-selected", b.dataset.key === L.key ? "true" : "false");
+    }
+    $("lgtitle").textContent = L.title || "Private league";
+    $("lgsub").textContent = "Data as of " + new Date(DATA.generated_utc).toLocaleString() + ". " + (TEXT.units || "Snow in inches.");
+    const app = $("lg"); app.replaceChildren();
 
     // the newest round with our forecast in; a round just opened has none until its forecast day
-    const rounds = d.rounds || [];
+    const rounds = L.rounds || [];
     const rd = rounds.find((r) => r.status !== "resolved" && r.forecasts[OURS]) ||
       rounds.find((r) => r.forecasts[OURS]) || rounds[0];
+    L._rd = rd;
     if (rd && rounds[0] && rd !== rounds[0])
       app.append(el("div", { class: "card note", text: "Round " + rounds[0].round_id + " (" + day(rounds[0].target_days[0]) +
         " on) takes forecasts until " + new Date(rounds[0].cutoff_utc).toLocaleString() + "; they show here once posted." }));
-    if (rd) renderRound(app, d, rd);
-    renderLast(app, d);
-    renderObserved(app, d);
-    renderLoggers(app, d);
-    renderBoard(app, d);
+    if (rd) renderRound(app, L, rd);
+    app.append(el("div", { id: "blend" }));
+    drawBlender(L);
+    renderLast(app, L);
+    renderObserved(app, L);
+    renderLoggers(app, L);
+    renderBoard(app, L);
   }
 
-  function renderRound(app, d, rd) {
+  function renderRound(app, L, rd) {
     const labs = hzLabels(rd);
     const cutoff = new Date(rd.cutoff_utc);
     app.append(el("h2", { text: "Forecast for " + day(rd.target_days[0], { weekday: "long", month: "short", day: "numeric" }) +
@@ -167,7 +271,7 @@
     app.append(el("p", { class: "sub", text: "Round " + rd.round_id + ", forecasts locked " + cutoff.toLocaleString() + ". " + (TEXT.round || "") }));
     const ours = rd.forecasts[OURS];
     const grid = el("div", { class: "picks" });
-    for (const p of d.plots) {
+    for (const p of L.plots) {
       const card = el("div", { class: "card pick" },
         el("h3", { text: p.name }), el("div", { class: "elev", text: p.elevation_ft.toLocaleString() + " ft" }));
       const hz = el("div", { class: "hz" });
@@ -198,16 +302,560 @@
     app.append(grid);
   }
 
+  // ======================= compare and blend =======================
+  // Categorical slots (validated on this page's dark panel). Colour follows the
+  // forecaster, never the selection: the ML model is slot 1, the common
+  // baselines have fixed slots, the rest share a muted colour told apart by dash.
+  const PAL = ["#3987e5", "#d95926", "#199e70", "#c98500", "#d55181", "#008300", "#9085e9", "#e66767"];
+  const SLOT = { "baseline-consensus": 1, "baseline-ecmwf": 2, "baseline-aifs": 3, "baseline-gfs": 4,
+                 "baseline-nbm": 5, "baseline-wpc": 6, "baseline-ndfd": 7 };
+  const OTHER = "#93a4c3", DASHES = ["6 4", "2 3", "9 3 2 3", "4 2", "1 3"];
+  const BLEND_C = "#f4f7ff", OBS_C = "#4d6696";
+  const KIND_RANK = { ml: 0, product: 1, raw: 2, ref: 3 };
+  const KIND_NAME = { ml: "ML station models", product: "Blends and NWS forecasts", raw: "Raw weather models", ref: "Reference" };
+  const kindOf = (t) => KINDS[t] || (HIST && Object.values(HIST).map((h) => h.kinds && h.kinds[t]).find(Boolean)) ||
+    (/^(yc|bb)-gbm|^deep-powder|^open-powder/.test(t) ? "ml" : /climatology|persistence|zeros/.test(t) ? "ref" : "product");
+
+  function teamsOf(L) {
+    const h = HIST && HIST[L.key];
+    const set = new Set(h ? h.teams : []);
+    if (L._rd) for (const t of Object.keys(L._rd.forecasts)) set.add(t);
+    set.delete("baseline-zeros");
+    const order = Object.keys(NAMES);
+    const pos = (t) => (order.indexOf(t) < 0 ? 999 : order.indexOf(t));
+    return [...set].sort((a, b) => (a !== L.ours) - (b !== L.ours) || KIND_RANK[kindOf(a)] - KIND_RANK[kindOf(b)] ||
+      pos(a) - pos(b) || a.localeCompare(b));
+  }
+  function styleOf(L, t) {
+    if (t === "__blend") return { c: BLEND_C, w: 2.75, dash: "" };
+    if (t === L.ours) return { c: PAL[0], w: 2, dash: "" };
+    if (t in SLOT) return { c: PAL[SLOT[t]], w: 2, dash: "" };
+    const others = teamsOf(L).filter((x) => x !== L.ours && !(x in SLOT));
+    return { c: OTHER, w: 1.5, dash: DASHES[Math.max(0, others.indexOf(t)) % DASHES.length] };
+  }
+  const swatch = (L, t) => {
+    const s = styleOf(L, t);
+    return el("span", { class: "sw" + (s.dash ? " dash" : ""), style: `border-top-color:${s.c}` });
+  };
+
+  const winterOf = (iso) => { const y = +iso.slice(0, 4), m = +iso.slice(5, 7); return m >= 8 ? y : y - 1; };
+  const winterName = (w) => w + "-" + String((w + 1) % 100).padStart(2, "0");
+
+  // per-league view state (remembered on this device only)
+  const STATE = {};
+  function stateOf(L) {
+    if (STATE[L.key]) return STATE[L.key];
+    const saved = prefs.get("ycsp_blend_" + L.key) || {};
+    const s = { plot: null, scope: "plot", period: null, hz: 72, mode: "total", w: {}, show: {} , ...saved, msg: "" };
+    if (!saved.w) {
+      s.w = { [L.ours]: 100 };
+      for (const t of [L.ours, "baseline-consensus", "baseline-gfs", "baseline-ecmwf"]) s.show[t] = true;
+    }
+    STATE[L.key] = s;
+    return s;
+  }
+  const save = (L) => { const { msg, expand, ...s } = stateOf(L); prefs.set("ycsp_blend_" + L.key, s); };
+
+  function periodsOf(h) {
+    const live = new Set(h.live || []);
+    const count = {};
+    for (const d of h.dates) if (!live.has(d)) count[winterOf(d)] = (count[winterOf(d)] || 0) + 1;
+    const out = Object.keys(count).filter((w) => count[w] >= 20).map(Number).sort()
+      .map((w) => ({ key: "w" + w, label: winterName(w), test: (d) => !live.has(d) && winterOf(d) === w }));
+    if (live.size) out.push({ key: "live", label: "Live rounds", test: (d) => live.has(d) });
+    out.push({ key: "all", label: "Everything", test: () => true });
+    return out;
+  }
+
+  // the blend at row i of the history: weighted mean of the weighted forecasters'
+  // medians, made only where every one of them has a forecast
+  function blendVals(h, W) {
+    const ts = Object.keys(W).filter((t) => W[t] > 0);
+    const n = h.r.length, out = new Array(n).fill(null);
+    if (!ts.length) return out;
+    const sw = ts.reduce((a, t) => a + W[t], 0);
+    const cols = ts.map((t) => h.f[t]);
+    if (cols.some((c) => !c)) return out;
+    for (let i = 0; i < n; i++) {
+      let acc = 0, ok = true;
+      for (let j = 0; j < ts.length; j++) { const v = cols[j][i]; if (v == null) { ok = false; break; } acc += W[ts[j]] * v; }
+      if (ok) out[i] = acc / sw;
+    }
+    return out;
+  }
+
+  // score rows the way the leaderboard does: per round 100 × (1 − MAE ÷ climatology MAE), averaged;
+  // pooled is the same over every row at once
+  function score(h, idx, vals) {
+    let ae = 0, ac = 0, bias = 0, n = 0;
+    const per = new Map();
+    for (const i of idx) {
+      const v = vals[i];
+      if (v == null) continue;
+      const e = Math.abs(v - h.y[i]), c = Math.abs(h.c[i] - h.y[i]);
+      ae += e; ac += c; bias += v - h.y[i]; n++;
+      const p = per.get(h.r[i]) || [0, 0];
+      p[0] += e; p[1] += c; per.set(h.r[i], p);
+    }
+    if (!n) return null;
+    let bs = 0, bn = 0;
+    for (const [e, c] of per.values()) if (c > 0) { bs += 100 * (1 - e / c); bn++; }
+    return { board: bn ? bs / bn : null, pooled: ac > 0 ? 100 * (1 - ae / ac) : null, mae: ae / n, bias: bias / n,
+             rounds: per.size, rows: n };
+  }
+
+  // best mix on a 5% grid: start from the ML model alone and keep moving 5% of the
+  // weight between two forecasters while the MAE drops
+  function fitMix(h, cands, idx, ours) {
+    const k = cands.length, n = idx.length;
+    const F = cands.map((t) => Float64Array.from(idx, (i) => h.f[t][i]));
+    const Y = Float64Array.from(idx, (i) => h.y[i]);
+    const w = cands.map((t) => (t === ours ? 20 : 0));
+    if (!w.some(Boolean)) w[0] = 20;
+    const pred = new Float64Array(n);
+    for (let j = 0; j < k; j++) if (w[j]) for (let i = 0; i < n; i++) pred[i] += (w[j] / 20) * F[j][i];
+    const mae = (p) => { let s = 0; for (let i = 0; i < n; i++) s += Math.abs(p[i] - Y[i]); return s / n; };
+    let cur = mae(pred);
+    const tmp = new Float64Array(n);
+    for (let it = 0; it < 400; it++) {
+      let best = null;
+      for (let a = 0; a < k; a++) {
+        if (!w[a]) continue;
+        for (let b = 0; b < k; b++) {
+          if (b === a) continue;
+          let s = 0;
+          for (let i = 0; i < n; i++) { tmp[i] = pred[i] + (F[b][i] - F[a][i]) / 20; s += Math.abs(tmp[i] - Y[i]); }
+          if (s / n < cur - 1e-9 && (!best || s / n < best.e)) best = { a, b, e: s / n };
+        }
+      }
+      if (!best) break;
+      w[best.a]--; w[best.b]++; cur = best.e;
+      for (let i = 0; i < n; i++) pred[i] += (F[best.b][i] - F[best.a][i]) / 20;
+    }
+    const out = {};
+    cands.forEach((t, j) => { if (w[j]) out[t] = w[j] * 5; });
+    return out;
+  }
+
+  function drawBlender(L) {
+    const box = $("blend");
+    if (!box || CUR !== L) return;
+    box.replaceChildren();
+    const S = stateOf(L);
+    const h = HIST && HIST[L.key];
+    const teams = teamsOf(L);
+    const plots = L.plots.filter((p) => (h && h.stations.includes(p.id)) || (L._rd && row(L._rd.forecasts[L.ours], p.id, 24)));
+    if (!plots.length) return;
+    if (!plots.some((p) => p.id === S.plot)) S.plot = plots[0].id;
+    for (const t of Object.keys(S.w)) if (!teams.includes(t)) delete S.w[t];
+    const periods = h ? periodsOf(h) : [];
+    if (h && !periods.some((p) => p.key === S.period)) S.period = (periods.find((p) => p.key === "live" && h.live.length >= 20) ||
+      periods.filter((p) => p.key.startsWith("w")).pop() || periods[0]).key;
+
+    box.append(el("h2", { text: "Compare and blend" }));
+    box.append(el("p", { class: "sub", text: "Put the ML station model next to the raw weather models, mix any of them " +
+      "with the sliders, and see what the mix forecasts now and how it would have scored. The blend is a weighted " +
+      "average of the forecasters' medians." }));
+    const card = el("div", { class: "card" });
+    box.append(card);
+
+    // controls: plot, period
+    const ctl = el("div", { class: "ctl" });
+    const seg = (label, opts, cur, onpick) => {
+      const s = el("div", { class: "seg", role: "group", "aria-label": label });
+      for (const o of opts) {
+        const b = el("button", { class: o.key === cur ? "on" : "", text: o.label, "aria-pressed": o.key === cur ? "true" : "false" });
+        b.onclick = () => onpick(o.key);
+        s.append(b);
+      }
+      return el("div", {}, el("span", { class: "lab", text: label }), s);
+    };
+    ctl.append(seg("Plot", plots.map((p) => ({ key: p.id, label: p.name })), S.plot, (k) => { S.plot = k; save(L); drawBlender(L); }));
+    if (periods.length) ctl.append(seg("History", periods, S.period, (k) => { S.period = k; save(L); drawBlender(L); }));
+    card.append(ctl);
+
+    const grid = el("div", { class: "bl-grid" });
+    card.append(grid);
+    const left = el("div", {}), right = el("div", {});
+    grid.append(left, right);
+
+    // the mix: show it / weight it
+    left.append(el("div", { class: "note", style: "margin-top:0",
+      text: "Tick a forecaster to draw it; slide to give it weight in your blend." }));
+    const pctEls = {};
+    let lastKind = null;
+    // forecasters with a track record by kind, then the ones that only have this round
+    const hasHistory = (t) => !!(h && h.teams.includes(t));
+    let listed = h ? [...teams.filter(hasHistory), ...teams.filter((t) => !hasHistory(t))] : teams;
+    // small screens: only the ticked ones until asked, so the forecasts stay in reach
+    const compact = window.innerWidth < 860 && !S.expand;
+    const total = listed.length;
+    if (compact) listed = listed.filter((t) => S.show[t] || S.w[t] > 0);
+    for (const t of listed) {
+      const k = !h || hasHistory(t) ? kindOf(t) : "new";
+      if (k !== lastKind) {
+        left.append(el("div", { class: "grp", text: k === "new" ? "This round only (no track record yet)" : KIND_NAME[k] || k }));
+        lastKind = k;
+      }
+      const cb = el("input", { type: "checkbox", "aria-label": "Show " + name(t) });
+      cb.checked = !!S.show[t] || (S.w[t] || 0) > 0;
+      const rng = el("input", { type: "range", min: "0", max: "100", step: "5", "aria-label": "Weight for " + name(t) });
+      rng.value = String(S.w[t] || 0);
+      const pct = el("span", { class: "pct" });
+      pctEls[t] = pct;
+      cb.onchange = () => { S.show[t] = cb.checked; if (!cb.checked) { S.w[t] = 0; rng.value = "0"; } save(L); update(); };
+      rng.oninput = () => { S.w[t] = +rng.value; if (S.w[t] > 0 && !cb.checked) { cb.checked = true; S.show[t] = true; } S.msg = ""; update(); };
+      rng.onchange = () => save(L);
+      const lab = el("label", {}, cb, swatch(L, t), el("span", { class: "nm" }, name(t)));
+      left.append(el("div", { class: "mrow" }, lab, rng, pct));
+    }
+
+    if (window.innerWidth < 860) {
+      const more = el("button", { class: "btnsm", style: "margin-top:10px",
+        text: compact ? "Add forecasters (" + (total - listed.length) + " more)" : "Show only the ticked ones" });
+      more.onclick = () => { S.expand = !S.expand; drawBlender(L); };
+      left.append(more);
+    }
+    const presets = el("div", { class: "presets" });
+    const pbtn = (txt, fn) => { const b = el("button", { class: "btnsm", text: txt }); b.onclick = fn; presets.append(b); return b; };
+    pbtn(name(L.ours) + " only", () => { S.w = { [L.ours]: 100 }; S.show[L.ours] = true; S.msg = ""; save(L); drawBlender(L); });
+    pbtn("Equal mix of the ticked", () => {
+      const ts = teams.filter((t) => S.show[t] || S.w[t] > 0);
+      S.w = {}; for (const t of ts) S.w[t] = 50;
+      S.msg = ""; save(L); drawBlender(L);
+    });
+    const best = pbtn("Find the best mix of the ticked", () => {
+      best.disabled = true; best.textContent = "Searching…";
+      setTimeout(() => { bestMix(L, h, teams); save(L); drawBlender(L); }, 20);
+    });
+    if (!h) best.disabled = true;
+    left.append(presets);
+    const msg = el("div", { class: "msg" });
+    if (S.msg) msg.innerHTML = S.msg;
+    left.append(msg);
+
+    const out = el("div", {});
+    right.append(out);
+
+    function update() {
+      const sw = teams.reduce((a, t) => a + (S.w[t] || 0), 0);
+      for (const t of teams) {
+        const v = S.w[t] || 0;
+        if (!pctEls[t]) continue;
+        pctEls[t].textContent = v && sw ? Math.round((100 * v) / sw) + "%" : "–";
+        pctEls[t].className = "pct" + (v ? " on" : "");
+      }
+      drawOutputs(L, out, teams);
+    }
+    update();
+  }
+
+  function bestMix(L, h, teams) {
+    const S = stateOf(L);
+    const cands = teams.filter((t) => (S.show[t] || S.w[t] > 0) && h.teams.includes(t) && h.f[t]);
+    if (!cands.includes(L.ours) && h.f[L.ours]) cands.unshift(L.ours);
+    if (cands.length < 2) { S.msg = "Tick at least one forecaster besides " + name(L.ours) + " that has a track record."; return; }
+    const inScope = (i) => S.scope === "all" || h.stations[h.s[i]] === S.plot;
+    const idx = [];
+    for (let i = 0; i < h.r.length; i++) if (inScope(i) && cands.every((t) => h.f[t][i] != null)) idx.push(i);
+    if (idx.length < 60) { S.msg = "Too few rounds where all the ticked forecasters have a forecast."; return; }
+    // held out: fit on every other winter, score the winter left out; with only one
+    // winter, fit on one half of it (by date) and score the other half
+    let wk = (i) => (h.live.includes(h.dates[h.r[i]]) ? "live" : winterOf(h.dates[h.r[i]]));
+    const rounds = (ix) => new Set(ix.map((i) => h.r[i])).size;
+    const groupBy = () => {
+      const g = new Map();
+      for (const i of idx) { const k = wk(i); if (!g.has(k)) g.set(k, []); g.get(k).push(i); }
+      return [...g.entries()].filter(([, ix]) => rounds(ix) >= 20);
+    };
+    let folds = groupBy(), halves = false;
+    if (folds.length < 2) {
+      const rs = [...new Set(idx.map((i) => h.r[i]))].sort((a, b) => a - b), mid = rs[Math.floor(rs.length / 2)];
+      wk = (i) => (h.r[i] < mid ? "first half" : "second half");
+      folds = groupBy(); halves = true;
+    }
+    const held = new Array(h.r.length).fill(null), test = [];
+    let foldText = [];
+    if (folds.length >= 2) {
+      for (const [k, ix] of folds) {
+        const tr = idx.filter((i) => wk(i) !== k);
+        const W = fitMix(h, cands, tr, L.ours);
+        const bv = blendVals(h, W);
+        for (const i of ix) { held[i] = bv[i]; test.push(i); }
+        foldText.push((typeof k === "number" ? winterName(k) : k) + ": " + mixText(W, true));
+      }
+    }
+    const W = fitMix(h, cands, idx, L.ours);
+    S.w = W;
+    for (const t of Object.keys(W)) S.show[t] = true;
+    const ml = h.f[L.ours];
+    let txt = "<strong>Best mix on every row:</strong> " + mixText(W) + ". ";
+    if (test.length) {
+      const a = score(h, test, held), b = score(h, test, ml);
+      const beats = a.board > b.board && a.pooled > b.pooled;
+      txt += "<br><strong>Held out</strong> (weights fit without the " + (halves ? "half-winter" : "winter") +
+        " they are scored on" + (halves ? ": the ticked forecasters share only one winter" : "") + "): score " + fmt(a.board) +
+        " vs " + fmt(b.board) + " for " + name(L.ours) + " alone, pooled " + fmt(a.pooled) + " vs " + fmt(b.pooled) + ". " +
+        (beats ? "The mix beats it on both, out of sample."
+               : "It does not beat " + name(L.ours) + " alone out of sample, so any weight past it is mostly fitting noise.") +
+        "<br><span class='r'>Weights per held-out fit: " + foldText.join("; ") + ".</span>";
+    } else txt += "Too few rounds to check this mix out of sample.";
+    S.msg = txt;
+  }
+  const mixText = (W, short) => Object.entries(W).sort((a, b) => b[1] - a[1])
+    .map(([t, v]) => (short ? (NAMES[t] || t).split(" (")[0] : name(t)) + " " + v + "%").join(", ");
+
+  function drawOutputs(L, out, teams) {
+    out.replaceChildren();
+    const S = stateOf(L);
+    const h = HIST && HIST[L.key];
+    const W = {};
+    for (const t of teams) if ((S.w[t] || 0) > 0) W[t] = S.w[t];
+    const shown = teams.filter((t) => S.show[t] || W[t]);
+    const series = ["__blend", ...shown];
+    const plot = L.plots.find((p) => p.id === S.plot);
+
+    // ---- this round
+    const rd = L._rd;
+    if (rd && rd.forecasts[L.ours]) {
+      const labs = hzLabels(rd);
+      const sec = el("div", { class: "sec", style: "margin-top:0" });
+      sec.append(el("h3", { text: "This round at " + plot.name }));
+      const val = (t, hz) => {
+        if (t !== "__blend") { const r = row(rd.forecasts[t], S.plot, hz); return r ? r.snowfall_in : null; }
+        const ts = Object.keys(W); if (!ts.length) return null;
+        let acc = 0, sw = 0;
+        for (const x of ts) { const r = row(rd.forecasts[x], S.plot, hz); if (!r) return null; acc += W[x] * r.snowfall_in; sw += W[x]; }
+        return acc / sw;
+      };
+      const tb = el("table", { class: "t" });
+      tb.append(el("tr", {}, el("th", { text: "Forecaster" }), ...labs.map((l) => el("th", { text: l }))));
+      for (const t of series) {
+        const tr = el("tr", t === "__blend" ? { class: "blend" } : t === L.ours ? { class: "ours" } : {});
+        tr.append(el("td", {}, el("span", { style: "display:inline-flex;align-items:center;gap:8px" }, t === "__blend"
+          ? el("span", { class: "sw", style: `border-top-color:${BLEND_C}` }) : swatch(L, t), name(t))));
+        for (const hz of [24, 48, 72]) {
+          const v = val(t, hz), m = val(L.ours, hz);
+          tr.append(el("td", {}, v == null ? "–" : fmt(v) + '"',
+            v != null && m != null && t !== L.ours ? el("span", { class: "delta", text: sgn(v - m) + " vs ML" }) : null));
+        }
+        tb.append(tr);
+      }
+      sec.append(el("div", { class: "scroll" }, tb));
+      if (Object.keys(W).length && [24, 48, 72].every((hz) => val("__blend", hz) == null))
+        sec.append(el("div", { class: "note", text: "A forecaster in your blend has no forecast for this round yet." }));
+      out.append(sec);
+    }
+
+    if (!h) {
+      out.append(el("div", { class: "note", text: histState === "failed" ? "The track record did not load. Reload the page to try again."
+        : "Loading the track record…" }));
+      return;
+    }
+
+    // ---- track record
+    const period = periodsOf(h).find((p) => p.key === S.period);
+    const inP = (i) => period.test(h.dates[h.r[i]]);
+    const inScope = (i) => S.scope === "all" || h.stations[h.s[i]] === S.plot;
+    const bv = blendVals(h, W);
+    const ml = h.f[L.ours] || [];
+    const get = (t) => (t === "__blend" ? bv : h.f[t] || []);
+    const base = [];
+    for (let i = 0; i < h.r.length; i++) if (inP(i) && inScope(i) && bv[i] != null && ml[i] != null) base.push(i);
+
+    const sec = el("div", { class: "sec" });
+    const scopeSeg = el("div", { class: "seg" });
+    for (const [k, lab] of [["plot", plot.name], ["all", "All plots"]]) {
+      const b = el("button", { class: S.scope === k ? "on" : "", text: lab, "aria-pressed": S.scope === k ? "true" : "false" });
+      b.onclick = () => { S.scope = k; save(L); drawOutputs(L, out, teams); };
+      scopeSeg.append(b);
+    }
+    sec.append(el("div", { class: "row-top" }, el("h3", { text: "Track record, " + period.label }), scopeSeg));
+    if (!Object.keys(W).length) sec.append(el("div", { class: "note", text: "Give at least one forecaster some weight to make a blend." }));
+    else if (!base.length) sec.append(el("div", { class: "note", text: "No scored rounds here where every forecaster in your blend had a forecast." }));
+    else {
+      const rows = [];
+      for (const t of series) {
+        const ix = t === "__blend" ? base : base.filter((i) => get(t)[i] != null);
+        const s = score(h, ix, get(t));
+        if (!s) { rows.push({ t, none: true }); continue; }
+        const m = score(h, ix, ml);
+        rows.push({ t, s, d: t === L.ours ? null : s.board - m.board, dp: t === L.ours ? null : s.pooled - m.pooled, short: ix.length < base.length });
+      }
+      rows.sort((a, b) => (a.none - b.none) || ((b.s ? b.s.board : 0) - (a.s ? a.s.board : 0)));
+      const tb = el("table", { class: "t" });
+      tb.append(el("tr", {}, ...["Forecaster", "Score", "Pooled", "MAE", "Bias", "Rounds", "Score vs ML"].map((x) => el("th", { text: x }))));
+      for (const r of rows) {
+        const tr = el("tr", r.t === "__blend" ? { class: "blend" } : r.t === L.ours ? { class: "ours" } : {});
+        tr.append(el("td", {}, el("span", { style: "display:inline-flex;align-items:center;gap:8px" }, r.t === "__blend"
+          ? el("span", { class: "sw", style: `border-top-color:${BLEND_C}` }) : swatch(L, r.t), name(r.t))));
+        if (r.none) { tr.append(el("td", { colspan: "6", class: "r", text: "no forecasts on these rounds" })); tb.append(tr); continue; }
+        tr.append(el("td", { text: fmt(r.s.board) }), el("td", { text: fmt(r.s.pooled) }), el("td", { text: fmt(r.s.mae, 2) }),
+          el("td", { text: sgn(r.s.bias, 2) }), el("td", { text: String(r.s.rounds) + (r.short ? "*" : "") }),
+          el("td", { text: r.d == null ? "–" : sgn(r.d) }));
+        tb.append(tr);
+      }
+      sec.append(el("div", { class: "scroll" }, tb));
+      const r0 = h.dates[h.r[base[0]]], r1 = h.dates[h.r[base[base.length - 1]]];
+      sec.append(el("div", { class: "note", text: "Scored like the leaderboard over the 1-, 2- and 3-day totals: score = 100 × (1 − MAE ÷ " +
+        "climatology's MAE) per round, averaged over rounds; pooled = the same over every row at once. Higher is better. " +
+        "Rounds from " + day(r0, { month: "short", day: "numeric", year: "numeric" }) + " to " + day(r1, { month: "short", day: "numeric", year: "numeric" }) +
+        " where your blend can be made. * = fewer rounds (that forecaster is missing some); its \"vs ML\" is on its own rounds. " + (h.note || "") }));
+    }
+    out.append(sec);
+
+    // ---- chart: forecast vs observed through the period
+    const csec = el("div", { class: "sec" });
+    const hzSeg = el("div", { class: "seg" });
+    for (const [k, lab] of [[24, "Day 1"], [48, "2-day total"], [72, "3-day total"]]) {
+      const b = el("button", { class: S.hz === k ? "on" : "", text: lab, "aria-pressed": S.hz === k ? "true" : "false" });
+      b.onclick = () => { S.hz = k; save(L); drawOutputs(L, out, teams); };
+      hzSeg.append(b);
+    }
+    const modeSeg = el("div", { class: "seg" });
+    for (const [k, lab] of [["total", "Snow"], ["error", "Error (forecast − observed)"]]) {
+      const b = el("button", { class: S.mode === k ? "on" : "", text: lab, "aria-pressed": S.mode === k ? "true" : "false" });
+      b.onclick = () => { S.mode = k; save(L); drawOutputs(L, out, teams); };
+      modeSeg.append(b);
+    }
+    csec.append(el("h3", { text: "Forecast vs observed at " + plot.name + ", " + period.label }));
+    csec.append(el("div", { class: "ctl", style: "margin:4px 0 8px" }, hzSeg, modeSeg));
+    const cix = [];
+    for (let i = 0; i < h.r.length; i++) if (inP(i) && h.stations[h.s[i]] === S.plot && h.h[i] === S.hz) cix.push(i);
+    if (!cix.length) { csec.append(el("div", { class: "note", text: "No scored rounds at this plot in this period." })); out.append(csec); return; }
+    const legend = el("div", { class: "legend" });
+    if (S.mode === "total") legend.append(el("span", {}, el("span", { class: "sw obs", style: `background:${OBS_C}` }), "Observed"));
+    for (const t of series) legend.append(el("span", {}, t === "__blend" ? el("span", { class: "sw", style: `border-top-color:${BLEND_C}` }) : swatch(L, t), name(t)));
+    csec.append(legend);
+    const wrap = el("div", { class: "chart" });
+    csec.append(wrap);
+    out.append(csec);
+    drawChart(L, wrap, h, cix, series, get, S.mode);
+    const det = el("details", { class: "plot" }, el("summary", { text: "These numbers as a table" }));
+    det.addEventListener("toggle", () => {
+      if (!det.open || det.querySelector("table")) return;
+      const tb = el("table", { class: "t" });
+      tb.append(el("tr", {}, el("th", { text: "Round" }), el("th", { text: "Observed" }), ...series.map((t) => el("th", { text: name(t) }))));
+      for (const i of [...cix].reverse()) tb.append(el("tr", {}, el("td", { text: day(h.dates[h.r[i]], { month: "short", day: "numeric", year: "numeric" }) }),
+        el("td", { text: fmt(h.y[i]) }), ...series.map((t) => el("td", { text: fmt(get(t)[i]) }))));
+      det.append(el("div", { class: "scroll", style: "max-height:420px;overflow-y:auto" }, tb));
+    });
+    csec.append(det);
+  }
+
+  function drawChart(L, wrap, h, cix, series, get, mode) {
+    const Wd = Math.max(300, Math.round(wrap.clientWidth || 600)), Ht = Wd < 520 ? 210 : 250;
+    const m = { l: 34, r: 8, t: 10, b: 24 };
+    const iw = Wd - m.l - m.r, ih = Ht - m.t - m.b, n = cix.length;
+    const step = iw / n;
+    const X = (k) => m.l + step * (k + 0.5);
+    const vals = series.map((t) => cix.map((i) => { const v = get(t)[i]; return v == null ? null : mode === "error" ? v - h.y[i] : v; }));
+    let lo = 0, hi = 0;
+    for (const arr of vals) for (const v of arr) if (v != null) { hi = Math.max(hi, v); lo = Math.min(lo, v); }
+    if (mode === "total") for (const i of cix) hi = Math.max(hi, h.y[i]);
+    else { const a = Math.max(Math.abs(lo), Math.abs(hi), 1); lo = -a; hi = a; }
+    const nice = (v) => { const p = Math.pow(10, Math.floor(Math.log10(Math.max(v, 1e-6)))); for (const k of [1, 2, 2.5, 5, 10]) if (k * p >= v) return k * p; return 10 * p; };
+    const tick = nice((hi - lo) / 4 || 1);
+    hi = Math.ceil(hi / tick) * tick || tick; lo = Math.floor(lo / tick) * tick;
+    const Y = (v) => m.t + ih * (1 - (v - lo) / (hi - lo));
+    const svg = sv("svg", { viewBox: `0 0 ${Wd} ${Ht}`, role: "img",
+      "aria-label": (mode === "error" ? "Forecast error" : "Forecast and observed snow") + ", " + n + " rounds" });
+    // grid + y labels
+    for (let v = lo; v <= hi + 1e-9; v += tick) {
+      svg.append(sv("line", { x1: m.l, x2: Wd - m.r, y1: Y(v), y2: Y(v), stroke: Math.abs(v) < 1e-9 ? "#3a4c6e" : "#1f2c45", "stroke-width": 1 }));
+      const tx = sv("text", { x: m.l - 6, y: Y(v) + 4, "text-anchor": "end", fill: "#93a4c3", "font-size": 11 });
+      tx.textContent = (Math.abs(v) < 1e-9 ? "0" : +v.toFixed(1)) + '"';
+      svg.append(tx);
+    }
+    // month ticks and winter breaks
+    let lastM = null, lastX = -99, lastW = null;
+    cix.forEach((i, k) => {
+      const d = h.dates[h.r[i]], mo = d.slice(0, 7), w = winterOf(d);
+      if (lastW != null && w !== lastW) {
+        svg.append(sv("line", { x1: X(k) - step / 2, x2: X(k) - step / 2, y1: m.t, y2: Ht - m.b, stroke: "#3a4c6e", "stroke-dasharray": "3 3" }));
+        const tw = sv("text", { x: X(k) - step / 2 + 4, y: m.t + 10, fill: "#93a4c3", "font-size": 11 });
+        tw.textContent = winterName(w); svg.append(tw);
+      }
+      lastW = w;
+      if (mo !== lastM) {
+        lastM = mo;
+        if (X(k) - lastX >= 30) {
+          const t = sv("text", { x: X(k), y: Ht - 6, "text-anchor": "start", fill: "#93a4c3", "font-size": 11 });
+          t.textContent = new Date(d + "T12:00:00Z").toLocaleDateString("en-US", { month: "short", timeZone: "UTC" });
+          svg.append(t); lastX = X(k);
+        }
+      }
+    });
+    // observed bars
+    if (mode === "total") {
+      const bw = Math.max(1, step - (step > 4 ? 2 : step > 2 ? 1 : 0));
+      cix.forEach((i, k) => {
+        const v = h.y[i];
+        if (!(v > 0)) return;
+        svg.append(sv("rect", { x: X(k) - bw / 2, y: Y(v), width: bw, height: Math.max(0.5, Y(0) - Y(v)), rx: Math.min(2, bw / 2), fill: OBS_C }));
+      });
+    }
+    // lines: the blend last so it sits on top
+    const order = series.map((t, j) => j).sort((a, b) => (series[a] === "__blend") - (series[b] === "__blend"));
+    for (const j of order) {
+      const t = series[j], st = styleOf(L, t);
+      let d = "", pen = false;
+      vals[j].forEach((v, k) => {
+        if (v == null) { pen = false; return; }
+        d += (pen ? "L" : "M") + X(k).toFixed(1) + " " + Y(v).toFixed(1);
+        pen = true;
+      });
+      if (!d) continue;
+      if (t === "__blend") svg.append(sv("path", { d, fill: "none", stroke: "#121c30", "stroke-width": st.w + 2, "stroke-linejoin": "round" }));
+      svg.append(sv("path", { d, fill: "none", stroke: st.c, "stroke-width": st.w, "stroke-linejoin": "round", "stroke-linecap": "round",
+        ...(st.dash ? { "stroke-dasharray": st.dash } : {}) }));
+    }
+    // hover: crosshair and a tooltip with every value for that round
+    const cross = sv("line", { y1: m.t, y2: Ht - m.b, stroke: "#93a4c3", "stroke-width": 1, visibility: "hidden" });
+    svg.append(cross);
+    const hit = sv("rect", { x: m.l, y: 0, width: iw, height: Ht, fill: "transparent" });
+    svg.append(hit);
+    wrap.append(svg);
+    const tip = el("div", { class: "tip", hidden: "" });
+    wrap.append(tip);
+    const move = (ev) => {
+      const box = svg.getBoundingClientRect();
+      const x = ((ev.clientX - box.left) / box.width) * Wd;
+      const k = Math.max(0, Math.min(n - 1, Math.floor((x - m.l) / step)));
+      const i = cix[k];
+      cross.setAttribute("x1", X(k)); cross.setAttribute("x2", X(k)); cross.setAttribute("visibility", "visible");
+      tip.replaceChildren(el("div", { class: "d", text: day(h.dates[h.r[i]], { weekday: "short", month: "short", day: "numeric", year: "numeric" }) +
+        " · " + (S_hzLabel(h.h[i])) }));
+      tip.append(el("div", { class: "ln" }, el("span", { class: "sw obs", style: `background:${OBS_C}` }), "Observed", el("b", { text: fmt(h.y[i]) + '"' })));
+      series.forEach((t, j) => {
+        const v = get(t)[i];
+        tip.append(el("div", { class: "ln" }, t === "__blend" ? el("span", { class: "sw", style: `border-top-color:${BLEND_C}` }) : swatch(L, t),
+          (NAMES[t] || name(t)).split(" (")[0], el("b", { text: v == null ? "–" : fmt(v) + '"' + (mode === "error" ? " (" + sgn(v - h.y[i]) + ")" : "") })));
+      });
+      tip.hidden = false;
+      const px = (X(k) / Wd) * box.width, tw = tip.offsetWidth;
+      tip.style.left = (px + 14 + tw > box.width ? Math.max(0, px - 14 - tw) : px + 14) + "px";
+    };
+    hit.addEventListener("pointermove", move);
+    hit.addEventListener("pointerdown", move);
+    hit.addEventListener("pointerleave", () => { tip.hidden = true; cross.setAttribute("visibility", "hidden"); });
+  }
+  const S_hzLabel = (hz) => ({ 24: "day 1", 48: "2-day total", 72: "3-day total" }[hz] || hz + " h");
+
+  let rsz = null;
+  window.addEventListener("resize", () => { clearTimeout(rsz); rsz = setTimeout(() => CUR && drawBlender(CUR), 200); });
+
+  // ======================= the rest of the page =======================
   // the newest scored round: what fell against what was forecast, and the round's scores
-  function renderLast(app, d) {
-    const rs = (d.rounds || []).find((r) => r.result && r.truth);
+  function renderLast(app, L) {
+    const rs = (L.rounds || []).find((r) => r.result && r.truth);
     if (!rs) return;
     const labs = hzLabels(rs);
     app.append(el("h2", { text: "Last scored round: " + day(rs.target_days[0]) + " to " + day(rs.target_days[2]) }));
     app.append(el("p", { class: "sub", text: "Observed totals, with " + name(OURS) + "'s forecast below each. Missing plots were not scored." }));
     const tb = el("table", { class: "t" });
     tb.append(el("tr", {}, el("th", { text: "Plot" }), ...labs.map((l) => el("th", { text: l }))));
-    for (const p of d.plots) {
+    for (const p of L.plots) {
       const tr = el("tr", {}, el("td", { text: p.name }));
       for (const h of [24, 48, 72]) {
         const t = rs.truth.find((r) => r.station_id === p.id && r.horizon_h === h);
@@ -230,25 +878,26 @@
     app.append(el("div", { class: "card" }, det));
   }
 
-  function renderObserved(app, d) {
+  function renderObserved(app, L) {
+    if (!L.observed) return;
     app.append(el("h2", { text: "Observed new snow" }));
     app.append(el("p", { class: "sub", text: TEXT.observed || "" }));
     const dates = new Set();
-    for (const p of d.plots) for (const r of d.observed[p.id].days) dates.add(r.date);
+    for (const p of L.plots) for (const r of (L.observed[p.id] || { days: [] }).days) dates.add(r.date);
     const sorted = [...dates].sort().reverse();
     const tb = el("table", { class: "t" });
-    tb.append(el("tr", {}, el("th", { text: "Day" }), ...d.plots.map((p) => el("th", { text: p.name }))));
+    tb.append(el("tr", {}, el("th", { text: "Day" }), ...L.plots.map((p) => el("th", { text: p.name }))));
     const season = el("tr", {}, el("td", { text: "Season so far" }));
-    for (const p of d.plots) {
-      const o = d.observed[p.id];
-      season.append(o.season_days ? el("td", {}, el("span", { class: "snow", text: fmt(o.season_in) + '"' }),
+    for (const p of L.plots) {
+      const o = L.observed[p.id];
+      season.append(o && o.season_days ? el("td", {}, el("span", { class: "snow", text: fmt(o.season_in) + '"' }),
         el("span", { class: "r", text: " " + o.season_days + "d" })) : el("td", { text: "–" }));
     }
     tb.append(season);
     for (const dt of sorted) {
       const tr = el("tr", {}, el("td", { text: day(dt) }));
-      for (const p of d.plots) {
-        const r = d.observed[p.id].days.find((x) => x.date === dt);
+      for (const p of L.plots) {
+        const r = ((L.observed[p.id] || {}).days || []).find((x) => x.date === dt);
         const td = el("td", {});
         if (r && r.in != null) {
           td.textContent = fmt(r.in);
@@ -262,14 +911,14 @@
     app.append(el("div", { class: "card scroll" }, tb));
   }
 
-  function renderLoggers(app, d) {
-    const L = d.loggers || {};
-    if (!Object.keys(L).length) return;
+  function renderLoggers(app, L) {
+    const G = L.loggers || {};
+    if (!Object.keys(G).length) return;
     app.append(el("h2", { text: "Loggers, latest hour" }));
     const tb = el("table", { class: "t" });
     tb.append(el("tr", {}, ...["Logger", "Time (local)", "Temp °F", "New snow", "Total snow", "Water", "Wind / gust"]
       .map((h) => el("th", { text: h }))));
-    for (const lg of Object.values(L)) {
+    for (const lg of Object.values(G)) {
       const x = lg.latest;
       const sp = x.speed ?? x.ridge_speed, gu = x.gust ?? x.ridge_gust;
       const h24 = lg.hours.slice(-24);
@@ -282,9 +931,9 @@
     app.append(el("div", { class: "card scroll" }, tb));
   }
 
-  function renderBoard(app, d) {
+  function renderBoard(app, L) {
     app.append(el("h2", { text: "Leaderboard" }));
-    const lb = d.leaderboard;
+    const lb = L.leaderboard;
     const list = lb && (lb.season || lb.last30);
     if (!list || !list.length) {
       app.append(el("div", { class: "card note", text: TEXT.board_pending || "No scored rounds yet." }));
